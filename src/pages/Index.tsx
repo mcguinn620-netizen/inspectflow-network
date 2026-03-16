@@ -1,16 +1,35 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { DashboardLayout } from "@/components/DashboardLayout";
+import { KanbanBoard } from "@/components/KanbanBoard";
+import { StatsRow } from "@/components/StatsRow";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
-    </div>
+    <DashboardLayout>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">Command Center</h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              Inspection lifecycle overview · March 16, 2026
+            </p>
+          </div>
+          <Button className="gap-2">
+            <Plus className="h-4 w-4" />
+            New Inspection
+          </Button>
+        </div>
+        <StatsRow />
+        <div>
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-4">
+            Inspection Pipeline
+          </h2>
+          <KanbanBoard />
+        </div>
+      </div>
+    </DashboardLayout>
   );
 };
-
-const Index = PlaceholderIndex;
 
 export default Index;
