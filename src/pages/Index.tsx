@@ -1,8 +1,7 @@
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { KanbanBoard } from "@/components/KanbanBoard";
 import { StatsRow } from "@/components/StatsRow";
-import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ImportInspectionDialog } from "@/components/intake/ImportInspectionDialog";
 
 const Index = () => {
   return (
