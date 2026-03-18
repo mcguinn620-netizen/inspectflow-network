@@ -14,7 +14,107 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      inspection_requests: {
+        Row: {
+          client_name: string | null
+          company_name: string | null
+          created_at: string | null
+          id: string
+          inspection_location: string | null
+          inspection_type: string | null
+          mileage: string | null
+          notes: string | null
+          priority: string | null
+          requested_date: string | null
+          status: string | null
+          template_name: string | null
+          updated_at: string | null
+          vehicle_make: string | null
+          vehicle_model: string | null
+          vehicle_year: string | null
+          vin: string | null
+        }
+        Insert: {
+          client_name?: string | null
+          company_name?: string | null
+          created_at?: string | null
+          id?: string
+          inspection_location?: string | null
+          inspection_type?: string | null
+          mileage?: string | null
+          notes?: string | null
+          priority?: string | null
+          requested_date?: string | null
+          status?: string | null
+          template_name?: string | null
+          updated_at?: string | null
+          vehicle_make?: string | null
+          vehicle_model?: string | null
+          vehicle_year?: string | null
+          vin?: string | null
+        }
+        Update: {
+          client_name?: string | null
+          company_name?: string | null
+          created_at?: string | null
+          id?: string
+          inspection_location?: string | null
+          inspection_type?: string | null
+          mileage?: string | null
+          notes?: string | null
+          priority?: string | null
+          requested_date?: string | null
+          status?: string | null
+          template_name?: string | null
+          updated_at?: string | null
+          vehicle_make?: string | null
+          vehicle_model?: string | null
+          vehicle_year?: string | null
+          vin?: string | null
+        }
+        Relationships: []
+      }
+      parsed_documents: {
+        Row: {
+          created_at: string | null
+          id: string
+          inspection_request_id: string | null
+          original_text: string | null
+          parsed_data: Json | null
+          source_file_name: string | null
+          source_file_path: string | null
+          source_type: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          inspection_request_id?: string | null
+          original_text?: string | null
+          parsed_data?: Json | null
+          source_file_name?: string | null
+          source_file_path?: string | null
+          source_type: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          inspection_request_id?: string | null
+          original_text?: string | null
+          parsed_data?: Json | null
+          source_file_name?: string | null
+          source_file_path?: string | null
+          source_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parsed_documents_inspection_request_id_fkey"
+            columns: ["inspection_request_id"]
+            isOneToOne: false
+            referencedRelation: "inspection_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
