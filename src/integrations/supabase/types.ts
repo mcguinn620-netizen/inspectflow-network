@@ -14,21 +14,184 @@ export type Database = {
   }
   public: {
     Tables: {
+      availability_schedules: {
+        Row: {
+          created_at: string | null
+          day_of_week: number
+          end_time: string
+          id: string
+          inspector_id: string
+          is_available: boolean | null
+          start_time: string
+        }
+        Insert: {
+          created_at?: string | null
+          day_of_week: number
+          end_time: string
+          id?: string
+          inspector_id: string
+          is_available?: boolean | null
+          start_time: string
+        }
+        Update: {
+          created_at?: string | null
+          day_of_week?: number
+          end_time?: string
+          id?: string
+          inspector_id?: string
+          is_available?: boolean | null
+          start_time?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "availability_schedules_inspector_id_fkey"
+            columns: ["inspector_id"]
+            isOneToOne: false
+            referencedRelation: "inspectors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      companies: {
+        Row: {
+          address: string | null
+          city: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          logo_url: string | null
+          name: string
+          slug: string
+          state: string | null
+          subscription_tier: string | null
+          updated_at: string | null
+          zip: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string | null
+          name: string
+          slug: string
+          state?: string | null
+          subscription_tier?: string | null
+          updated_at?: string | null
+          zip?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string | null
+          name?: string
+          slug?: string
+          state?: string | null
+          subscription_tier?: string | null
+          updated_at?: string | null
+          zip?: string | null
+        }
+        Relationships: []
+      }
+      dispatch_assignments: {
+        Row: {
+          accepted_at: string | null
+          assigned_by: string | null
+          assignment_type: string | null
+          completed_at: string | null
+          created_at: string | null
+          dispatch_score: number | null
+          distance_miles: number | null
+          id: string
+          inspection_request_id: string
+          inspector_id: string | null
+          notes: string | null
+          scheduled_date: string | null
+          scheduled_time: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          accepted_at?: string | null
+          assigned_by?: string | null
+          assignment_type?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          dispatch_score?: number | null
+          distance_miles?: number | null
+          id?: string
+          inspection_request_id: string
+          inspector_id?: string | null
+          notes?: string | null
+          scheduled_date?: string | null
+          scheduled_time?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          accepted_at?: string | null
+          assigned_by?: string | null
+          assignment_type?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          dispatch_score?: number | null
+          distance_miles?: number | null
+          id?: string
+          inspection_request_id?: string
+          inspector_id?: string | null
+          notes?: string | null
+          scheduled_date?: string | null
+          scheduled_time?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dispatch_assignments_inspection_request_id_fkey"
+            columns: ["inspection_request_id"]
+            isOneToOne: false
+            referencedRelation: "inspection_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dispatch_assignments_inspector_id_fkey"
+            columns: ["inspector_id"]
+            isOneToOne: false
+            referencedRelation: "inspectors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       inspection_requests: {
         Row: {
           client_name: string | null
+          company_id: string | null
           company_name: string | null
           created_at: string | null
           id: string
           inspection_location: string | null
           inspection_type: string | null
+          inspector_id: string | null
           mileage: string | null
           notes: string | null
+          overall_score: number | null
           priority: string | null
           requested_date: string | null
           status: string | null
+          template_id: string | null
           template_name: string | null
           updated_at: string | null
+          vehicle_condition_rating: string | null
           vehicle_make: string | null
           vehicle_model: string | null
           vehicle_year: string | null
@@ -36,18 +199,23 @@ export type Database = {
         }
         Insert: {
           client_name?: string | null
+          company_id?: string | null
           company_name?: string | null
           created_at?: string | null
           id?: string
           inspection_location?: string | null
           inspection_type?: string | null
+          inspector_id?: string | null
           mileage?: string | null
           notes?: string | null
+          overall_score?: number | null
           priority?: string | null
           requested_date?: string | null
           status?: string | null
+          template_id?: string | null
           template_name?: string | null
           updated_at?: string | null
+          vehicle_condition_rating?: string | null
           vehicle_make?: string | null
           vehicle_model?: string | null
           vehicle_year?: string | null
@@ -55,24 +223,272 @@ export type Database = {
         }
         Update: {
           client_name?: string | null
+          company_id?: string | null
           company_name?: string | null
           created_at?: string | null
           id?: string
           inspection_location?: string | null
           inspection_type?: string | null
+          inspector_id?: string | null
           mileage?: string | null
           notes?: string | null
+          overall_score?: number | null
           priority?: string | null
           requested_date?: string | null
           status?: string | null
+          template_id?: string | null
           template_name?: string | null
           updated_at?: string | null
+          vehicle_condition_rating?: string | null
           vehicle_make?: string | null
           vehicle_model?: string | null
           vehicle_year?: string | null
           vin?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "inspection_requests_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inspection_requests_inspector_id_fkey"
+            columns: ["inspector_id"]
+            isOneToOne: false
+            referencedRelation: "inspectors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inspection_requests_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "inspection_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inspection_scores: {
+        Row: {
+          created_at: string | null
+          id: string
+          inspection_request_id: string
+          overall_score: number | null
+          section_scores: Json | null
+          vehicle_condition_rating: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          inspection_request_id: string
+          overall_score?: number | null
+          section_scores?: Json | null
+          vehicle_condition_rating?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          inspection_request_id?: string
+          overall_score?: number | null
+          section_scores?: Json | null
+          vehicle_condition_rating?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inspection_scores_inspection_request_id_fkey"
+            columns: ["inspection_request_id"]
+            isOneToOne: false
+            referencedRelation: "inspection_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inspection_templates: {
+        Row: {
+          company_id: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          inspection_type: string | null
+          is_marketplace: boolean | null
+          is_published: boolean | null
+          name: string
+          source_provider: string | null
+          updated_at: string | null
+          version: number | null
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          inspection_type?: string | null
+          is_marketplace?: boolean | null
+          is_published?: boolean | null
+          name: string
+          source_provider?: string | null
+          updated_at?: string | null
+          version?: number | null
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          inspection_type?: string | null
+          is_marketplace?: boolean | null
+          is_published?: boolean | null
+          name?: string
+          source_provider?: string | null
+          updated_at?: string | null
+          version?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inspection_templates_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inspector_blocked_dates: {
+        Row: {
+          blocked_date: string
+          created_at: string | null
+          id: string
+          inspector_id: string
+          reason: string | null
+        }
+        Insert: {
+          blocked_date: string
+          created_at?: string | null
+          id?: string
+          inspector_id: string
+          reason?: string | null
+        }
+        Update: {
+          blocked_date?: string
+          created_at?: string | null
+          id?: string
+          inspector_id?: string
+          reason?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inspector_blocked_dates_inspector_id_fkey"
+            columns: ["inspector_id"]
+            isOneToOne: false
+            referencedRelation: "inspectors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inspector_ratings: {
+        Row: {
+          comment: string | null
+          created_at: string | null
+          id: string
+          inspection_request_id: string | null
+          inspector_id: string
+          rated_by: string | null
+          score: number | null
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          inspection_request_id?: string | null
+          inspector_id: string
+          rated_by?: string | null
+          score?: number | null
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          inspection_request_id?: string | null
+          inspector_id?: string
+          rated_by?: string | null
+          score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inspector_ratings_inspection_request_id_fkey"
+            columns: ["inspection_request_id"]
+            isOneToOne: false
+            referencedRelation: "inspection_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inspector_ratings_inspector_id_fkey"
+            columns: ["inspector_id"]
+            isOneToOne: false
+            referencedRelation: "inspectors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inspectors: {
+        Row: {
+          avatar_url: string | null
+          certifications: string[] | null
+          company_id: string | null
+          completed_jobs: number | null
+          created_at: string | null
+          email: string | null
+          hourly_rate: number | null
+          id: string
+          name: string
+          phone: string | null
+          rating: number | null
+          status: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          certifications?: string[] | null
+          company_id?: string | null
+          completed_jobs?: number | null
+          created_at?: string | null
+          email?: string | null
+          hourly_rate?: number | null
+          id?: string
+          name: string
+          phone?: string | null
+          rating?: number | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          certifications?: string[] | null
+          company_id?: string | null
+          completed_jobs?: number | null
+          created_at?: string | null
+          email?: string | null
+          hourly_rate?: number | null
+          id?: string
+          name?: string
+          phone?: string | null
+          rating?: number | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inspectors_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       parsed_documents: {
         Row: {
@@ -115,15 +531,376 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          company_id: string | null
+          created_at: string | null
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          company_id?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          company_id?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      repair_estimates: {
+        Row: {
+          created_at: string | null
+          estimated_cost: number | null
+          id: string
+          inspection_request_id: string
+          item_label: string
+          labor_hours: number | null
+          labor_rate: number | null
+          notes: string | null
+          parts_cost: number | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          estimated_cost?: number | null
+          id?: string
+          inspection_request_id: string
+          item_label: string
+          labor_hours?: number | null
+          labor_rate?: number | null
+          notes?: string | null
+          parts_cost?: number | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          estimated_cost?: number | null
+          id?: string
+          inspection_request_id?: string
+          item_label?: string
+          labor_hours?: number | null
+          labor_rate?: number | null
+          notes?: string | null
+          parts_cost?: number | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "repair_estimates_inspection_request_id_fkey"
+            columns: ["inspection_request_id"]
+            isOneToOne: false
+            referencedRelation: "inspection_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      template_checklist_items: {
+        Row: {
+          created_at: string | null
+          id: string
+          input_type: string | null
+          is_required: boolean | null
+          label: string
+          options: Json | null
+          requires_photo: boolean | null
+          requires_video: boolean | null
+          section_id: string
+          sort_order: number | null
+          weight: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          input_type?: string | null
+          is_required?: boolean | null
+          label: string
+          options?: Json | null
+          requires_photo?: boolean | null
+          requires_video?: boolean | null
+          section_id: string
+          sort_order?: number | null
+          weight?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          input_type?: string | null
+          is_required?: boolean | null
+          label?: string
+          options?: Json | null
+          requires_photo?: boolean | null
+          requires_video?: boolean | null
+          section_id?: string
+          sort_order?: number | null
+          weight?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "template_checklist_items_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "template_sections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      template_required_photos: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          label: string
+          sort_order: number | null
+          template_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          label: string
+          sort_order?: number | null
+          template_id: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          label?: string
+          sort_order?: number | null
+          template_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "template_required_photos_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "inspection_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      template_sections: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          sort_order: number | null
+          template_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          sort_order?: number | null
+          template_id: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          sort_order?: number | null
+          template_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "template_sections_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "inspection_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      template_special_instructions: {
+        Row: {
+          created_at: string | null
+          id: string
+          instruction: string
+          sort_order: number | null
+          template_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          instruction: string
+          sort_order?: number | null
+          template_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          instruction?: string
+          sort_order?: number | null
+          template_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "template_special_instructions_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "inspection_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      template_subscriptions: {
+        Row: {
+          company_id: string
+          id: string
+          is_active: boolean | null
+          subscribed_at: string | null
+          template_id: string
+        }
+        Insert: {
+          company_id: string
+          id?: string
+          is_active?: boolean | null
+          subscribed_at?: string | null
+          template_id: string
+        }
+        Update: {
+          company_id?: string
+          id?: string
+          is_active?: boolean | null
+          subscribed_at?: string | null
+          template_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "template_subscriptions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "template_subscriptions_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "inspection_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      territories: {
+        Row: {
+          city: string | null
+          created_at: string | null
+          id: string
+          inspector_id: string
+          is_active: boolean | null
+          latitude: number | null
+          longitude: number | null
+          name: string
+          radius_miles: number | null
+          state: string | null
+          zip_codes: string[] | null
+        }
+        Insert: {
+          city?: string | null
+          created_at?: string | null
+          id?: string
+          inspector_id: string
+          is_active?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          name: string
+          radius_miles?: number | null
+          state?: string | null
+          zip_codes?: string[] | null
+        }
+        Update: {
+          city?: string | null
+          created_at?: string | null
+          id?: string
+          inspector_id?: string
+          is_active?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          name?: string
+          radius_miles?: number | null
+          state?: string | null
+          zip_codes?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "territories_inspector_id_fkey"
+            columns: ["inspector_id"]
+            isOneToOne: false
+            referencedRelation: "inspectors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role:
+        | "super_admin"
+        | "network_admin"
+        | "company_admin"
+        | "repair_shop_manager"
+        | "inspector"
+        | "technician"
+        | "client"
+        | "fleet_manager"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -250,6 +1027,17 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: [
+        "super_admin",
+        "network_admin",
+        "company_admin",
+        "repair_shop_manager",
+        "inspector",
+        "technician",
+        "client",
+        "fleet_manager",
+      ],
+    },
   },
 } as const
