@@ -1,11 +1,16 @@
 import { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { supabase } from "@/integrations/supabase/client";
-import { Store, Star, FileCheck, ChevronRight, Camera, ListChecks, AlertCircle } from "lucide-react";
+import { Store, ChevronRight, Camera, ListChecks, AlertCircle, Pencil, Archive } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ConfirmDeleteDialog } from "@/components/ConfirmDeleteDialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { toast } from "sonner";
+import { logAudit } from "@/hooks/useAuditLog";
 
 interface Template {
   id: string;
@@ -16,6 +21,7 @@ interface Template {
   is_published: boolean | null;
   is_marketplace: boolean | null;
   version: number | null;
+  deleted_at: string | null;
 }
 
 interface TemplateSection {
@@ -64,13 +70,20 @@ export default function MarketplacePage() {
   const [photos, setPhotos] = useState<RequiredPhoto[]>([]);
   const [instructions, setInstructions] = useState<SpecialInstruction[]>([]);
   const [detailLoading, setDetailLoading] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editDesc, setEditDesc] = useState("");
+  const [archiveTarget, setArchiveTarget] = useState<Template | null>(null);
 
-  useEffect(() => {
-    loadTemplates();
-  }, []);
+  useEffect(() => { loadTemplates(); }, []);
 
   const loadTemplates = async () => {
-    const { data } = await supabase.from("inspection_templates").select("*").eq("is_marketplace", true).order("name");
+    const { data } = await supabase
+      .from("inspection_templates")
+      .select("*")
+      .is("deleted_at", null)
+      .eq("is_marketplace", true)
+      .order("name");
     setTemplates((data as Template[]) || []);
     setLoading(false);
   };
@@ -78,31 +91,53 @@ export default function MarketplacePage() {
   const loadTemplateDetails = async (templateId: string) => {
     setDetailLoading(true);
     setSelectedTemplate(templateId);
-
     const [sectionsRes, photosRes, instructionsRes] = await Promise.all([
       supabase.from("template_sections").select("*").eq("template_id", templateId).order("sort_order"),
       supabase.from("template_required_photos").select("*").eq("template_id", templateId).order("sort_order"),
       supabase.from("template_special_instructions").select("*").eq("template_id", templateId).order("sort_order"),
     ]);
-
     const secs = (sectionsRes.data || []) as any[];
     const secIds = secs.map((s) => s.id);
-
     let items: any[] = [];
     if (secIds.length > 0) {
       const { data } = await supabase.from("template_checklist_items").select("*").in("section_id", secIds).order("sort_order");
       items = data || [];
     }
-
-    const sectionsWithItems: TemplateSection[] = secs.map((s) => ({
-      ...s,
-      items: items.filter((i) => i.section_id === s.id),
-    }));
-
-    setSections(sectionsWithItems);
+    setSections(secs.map((s) => ({ ...s, items: items.filter((i) => i.section_id === s.id) })));
     setPhotos((photosRes.data as RequiredPhoto[]) || []);
     setInstructions((instructionsRes.data as SpecialInstruction[]) || []);
     setDetailLoading(false);
+  };
+
+  const openEditTemplate = () => {
+    const t = templates.find((t) => t.id === selectedTemplate);
+    if (!t) return;
+    setEditName(t.name);
+    setEditDesc(t.description || "");
+    setEditOpen(true);
+  };
+
+  const saveTemplate = async () => {
+    if (!selectedTemplate || !editName.trim()) return;
+    const { error } = await supabase.from("inspection_templates").update({
+      name: editName, description: editDesc || null, updated_at: new Date().toISOString(),
+    }).eq("id", selectedTemplate);
+    if (error) { toast.error(error.message); return; }
+    await logAudit("template", selectedTemplate, "update", { name: { before: template?.name, after: editName } });
+    toast.success("Template updated");
+    setEditOpen(false);
+    loadTemplates();
+  };
+
+  const archiveTemplate = async () => {
+    if (!archiveTarget) return;
+    await supabase.from("inspection_templates").update({
+      is_published: false, is_marketplace: false, updated_at: new Date().toISOString(),
+    }).eq("id", archiveTarget.id);
+    await logAudit("template", archiveTarget.id, "update", { is_marketplace: { before: true, after: false } });
+    toast.success("Template archived (unpublished)");
+    setArchiveTarget(null);
+    loadTemplates();
   };
 
   const template = templates.find((t) => t.id === selectedTemplate);
@@ -113,10 +148,30 @@ export default function MarketplacePage() {
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Inspection Marketplace</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Browse, preview, and deploy inspection templates from industry providers
-          </p>
+          <p className="text-sm text-muted-foreground mt-1">Browse, preview, and deploy inspection templates</p>
         </div>
+
+        <ConfirmDeleteDialog
+          open={!!archiveTarget}
+          onOpenChange={(o) => !o && setArchiveTarget(null)}
+          onConfirm={archiveTemplate}
+          title="Archive Template?"
+          description="This will unpublish the template from the marketplace. Existing inspections using it won't be affected."
+          actionLabel="Archive"
+          variant="archive"
+        />
+
+        {/* Edit dialog */}
+        <Dialog open={editOpen} onOpenChange={setEditOpen}>
+          <DialogContent>
+            <DialogHeader><DialogTitle>Edit Template</DialogTitle></DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2"><Label>Name</Label><Input value={editName} onChange={(e) => setEditName(e.target.value)} /></div>
+              <div className="space-y-2"><Label>Description</Label><Input value={editDesc} onChange={(e) => setEditDesc(e.target.value)} /></div>
+              <Button onClick={saveTemplate} className="w-full">Save Changes</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {loading ? (
           <div className="flex justify-center p-12">
@@ -136,9 +191,7 @@ export default function MarketplacePage() {
                         {t.inspection_type?.replace("_", " ")}
                       </Badge>
                     </div>
-                    <h3 className="text-sm font-semibold mb-1 group-hover:text-primary transition-colors duration-150">
-                      {t.name}
-                    </h3>
+                    <h3 className="text-sm font-semibold mb-1 group-hover:text-primary transition-colors duration-150">{t.name}</h3>
                     <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{t.description}</p>
                     <div className="flex items-center justify-between pt-3 border-t">
                       <span className="text-xs text-muted-foreground">by {t.source_provider}</span>
@@ -168,21 +221,16 @@ export default function MarketplacePage() {
                           <span>v{template?.version}</span>
                         </div>
 
-                        {template?.description && (
-                          <p className="text-sm text-muted-foreground">{template.description}</p>
-                        )}
+                        {template?.description && <p className="text-sm text-muted-foreground">{template.description}</p>}
 
                         {instructions.length > 0 && (
                           <div>
                             <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
-                              <AlertCircle className="h-4 w-4 text-warning" />
-                              Special Instructions
+                              <AlertCircle className="h-4 w-4 text-warning" />Special Instructions
                             </h3>
                             <ul className="space-y-1.5">
                               {instructions.map((i) => (
-                                <li key={i.id} className="text-xs text-muted-foreground bg-warning/5 rounded px-3 py-2 border border-warning/10">
-                                  {i.instruction}
-                                </li>
+                                <li key={i.id} className="text-xs text-muted-foreground bg-warning/5 rounded px-3 py-2 border border-warning/10">{i.instruction}</li>
                               ))}
                             </ul>
                           </div>
@@ -200,9 +248,7 @@ export default function MarketplacePage() {
                                   </div>
                                   <div className="flex items-center gap-2">
                                     <Badge variant="outline" className="text-[10px]">{item.input_type?.replace("_", " ")}</Badge>
-                                    {item.weight && item.weight > 1 && (
-                                      <span className="text-[10px] text-warning font-medium">×{item.weight}</span>
-                                    )}
+                                    {item.weight && item.weight > 1 && <span className="text-[10px] text-warning font-medium">×{item.weight}</span>}
                                   </div>
                                 </div>
                               ))}
@@ -212,21 +258,22 @@ export default function MarketplacePage() {
 
                         {photos.length > 0 && (
                           <div>
-                            <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
-                              <Camera className="h-4 w-4 text-primary" />
-                              Required Photos
-                            </h3>
+                            <h3 className="text-sm font-semibold mb-2 flex items-center gap-2"><Camera className="h-4 w-4 text-primary" />Required Photos</h3>
                             <div className="grid grid-cols-2 gap-2">
                               {photos.map((p) => (
-                                <div key={p.id} className="text-xs bg-muted/50 rounded px-3 py-2">
-                                  {p.label}
-                                </div>
+                                <div key={p.id} className="text-xs bg-muted/50 rounded px-3 py-2">{p.label}</div>
                               ))}
                             </div>
                           </div>
                         )}
 
-                        <Button className="w-full">Deploy Template</Button>
+                        <div className="flex gap-2">
+                          <Button className="flex-1">Deploy Template</Button>
+                          <Button variant="outline" size="icon" onClick={openEditTemplate}><Pencil className="h-4 w-4" /></Button>
+                          <Button variant="outline" size="icon" onClick={() => template && setArchiveTarget(template)}>
+                            <Archive className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
                     </ScrollArea>
                   )}

@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_log: {
+        Row: {
+          action: string
+          changes: Json | null
+          created_at: string | null
+          entity_id: string
+          entity_type: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          changes?: Json | null
+          created_at?: string | null
+          entity_id: string
+          entity_type: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          changes?: Json | null
+          created_at?: string | null
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       availability_schedules: {
         Row: {
           created_at: string | null
@@ -59,6 +89,8 @@ export type Database = {
           contact_email: string | null
           contact_phone: string | null
           created_at: string | null
+          created_by: string | null
+          deleted_at: string | null
           id: string
           is_active: boolean | null
           logo_url: string | null
@@ -67,6 +99,7 @@ export type Database = {
           state: string | null
           subscription_tier: string | null
           updated_at: string | null
+          updated_by: string | null
           zip: string | null
         }
         Insert: {
@@ -75,6 +108,8 @@ export type Database = {
           contact_email?: string | null
           contact_phone?: string | null
           created_at?: string | null
+          created_by?: string | null
+          deleted_at?: string | null
           id?: string
           is_active?: boolean | null
           logo_url?: string | null
@@ -83,6 +118,7 @@ export type Database = {
           state?: string | null
           subscription_tier?: string | null
           updated_at?: string | null
+          updated_by?: string | null
           zip?: string | null
         }
         Update: {
@@ -91,6 +127,8 @@ export type Database = {
           contact_email?: string | null
           contact_phone?: string | null
           created_at?: string | null
+          created_by?: string | null
+          deleted_at?: string | null
           id?: string
           is_active?: boolean | null
           logo_url?: string | null
@@ -99,6 +137,7 @@ export type Database = {
           state?: string | null
           subscription_tier?: string | null
           updated_at?: string | null
+          updated_by?: string | null
           zip?: string | null
         }
         Relationships: []
@@ -110,6 +149,8 @@ export type Database = {
           assignment_type: string | null
           completed_at: string | null
           created_at: string | null
+          created_by: string | null
+          deleted_at: string | null
           dispatch_score: number | null
           distance_miles: number | null
           id: string
@@ -120,6 +161,7 @@ export type Database = {
           scheduled_time: string | null
           status: string | null
           updated_at: string | null
+          updated_by: string | null
         }
         Insert: {
           accepted_at?: string | null
@@ -127,6 +169,8 @@ export type Database = {
           assignment_type?: string | null
           completed_at?: string | null
           created_at?: string | null
+          created_by?: string | null
+          deleted_at?: string | null
           dispatch_score?: number | null
           distance_miles?: number | null
           id?: string
@@ -137,6 +181,7 @@ export type Database = {
           scheduled_time?: string | null
           status?: string | null
           updated_at?: string | null
+          updated_by?: string | null
         }
         Update: {
           accepted_at?: string | null
@@ -144,6 +189,8 @@ export type Database = {
           assignment_type?: string | null
           completed_at?: string | null
           created_at?: string | null
+          created_by?: string | null
+          deleted_at?: string | null
           dispatch_score?: number | null
           distance_miles?: number | null
           id?: string
@@ -154,6 +201,7 @@ export type Database = {
           scheduled_time?: string | null
           status?: string | null
           updated_at?: string | null
+          updated_by?: string | null
         }
         Relationships: [
           {
@@ -178,6 +226,8 @@ export type Database = {
           company_id: string | null
           company_name: string | null
           created_at: string | null
+          created_by: string | null
+          deleted_at: string | null
           id: string
           inspection_location: string | null
           inspection_type: string | null
@@ -191,7 +241,9 @@ export type Database = {
           template_id: string | null
           template_name: string | null
           updated_at: string | null
+          updated_by: string | null
           vehicle_condition_rating: string | null
+          vehicle_id: string | null
           vehicle_make: string | null
           vehicle_model: string | null
           vehicle_year: string | null
@@ -202,6 +254,8 @@ export type Database = {
           company_id?: string | null
           company_name?: string | null
           created_at?: string | null
+          created_by?: string | null
+          deleted_at?: string | null
           id?: string
           inspection_location?: string | null
           inspection_type?: string | null
@@ -215,7 +269,9 @@ export type Database = {
           template_id?: string | null
           template_name?: string | null
           updated_at?: string | null
+          updated_by?: string | null
           vehicle_condition_rating?: string | null
+          vehicle_id?: string | null
           vehicle_make?: string | null
           vehicle_model?: string | null
           vehicle_year?: string | null
@@ -226,6 +282,8 @@ export type Database = {
           company_id?: string | null
           company_name?: string | null
           created_at?: string | null
+          created_by?: string | null
+          deleted_at?: string | null
           id?: string
           inspection_location?: string | null
           inspection_type?: string | null
@@ -239,7 +297,9 @@ export type Database = {
           template_id?: string | null
           template_name?: string | null
           updated_at?: string | null
+          updated_by?: string | null
           vehicle_condition_rating?: string | null
+          vehicle_id?: string | null
           vehicle_make?: string | null
           vehicle_model?: string | null
           vehicle_year?: string | null
@@ -265,6 +325,13 @@ export type Database = {
             columns: ["template_id"]
             isOneToOne: false
             referencedRelation: "inspection_templates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inspection_requests_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
             referencedColumns: ["id"]
           },
         ]
@@ -308,6 +375,8 @@ export type Database = {
         Row: {
           company_id: string | null
           created_at: string | null
+          created_by: string | null
+          deleted_at: string | null
           description: string | null
           id: string
           inspection_type: string | null
@@ -316,11 +385,14 @@ export type Database = {
           name: string
           source_provider: string | null
           updated_at: string | null
+          updated_by: string | null
           version: number | null
         }
         Insert: {
           company_id?: string | null
           created_at?: string | null
+          created_by?: string | null
+          deleted_at?: string | null
           description?: string | null
           id?: string
           inspection_type?: string | null
@@ -329,11 +401,14 @@ export type Database = {
           name: string
           source_provider?: string | null
           updated_at?: string | null
+          updated_by?: string | null
           version?: number | null
         }
         Update: {
           company_id?: string | null
           created_at?: string | null
+          created_by?: string | null
+          deleted_at?: string | null
           description?: string | null
           id?: string
           inspection_type?: string | null
@@ -342,6 +417,7 @@ export type Database = {
           name?: string
           source_provider?: string | null
           updated_at?: string | null
+          updated_by?: string | null
           version?: number | null
         }
         Relationships: [
@@ -438,6 +514,8 @@ export type Database = {
           company_id: string | null
           completed_jobs: number | null
           created_at: string | null
+          created_by: string | null
+          deleted_at: string | null
           email: string | null
           hourly_rate: number | null
           id: string
@@ -446,6 +524,7 @@ export type Database = {
           rating: number | null
           status: string | null
           updated_at: string | null
+          updated_by: string | null
           user_id: string | null
         }
         Insert: {
@@ -454,6 +533,8 @@ export type Database = {
           company_id?: string | null
           completed_jobs?: number | null
           created_at?: string | null
+          created_by?: string | null
+          deleted_at?: string | null
           email?: string | null
           hourly_rate?: number | null
           id?: string
@@ -462,6 +543,7 @@ export type Database = {
           rating?: number | null
           status?: string | null
           updated_at?: string | null
+          updated_by?: string | null
           user_id?: string | null
         }
         Update: {
@@ -470,6 +552,8 @@ export type Database = {
           company_id?: string | null
           completed_jobs?: number | null
           created_at?: string | null
+          created_by?: string | null
+          deleted_at?: string | null
           email?: string | null
           hourly_rate?: number | null
           id?: string
@@ -478,6 +562,7 @@ export type Database = {
           rating?: number | null
           status?: string | null
           updated_at?: string | null
+          updated_by?: string | null
           user_id?: string | null
         }
         Relationships: [
@@ -875,6 +960,57 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      vehicles: {
+        Row: {
+          company_id: string | null
+          created_at: string | null
+          created_by: string | null
+          deleted_at: string | null
+          id: string
+          is_archived: boolean | null
+          make: string | null
+          mileage: string | null
+          model: string | null
+          trim: string | null
+          updated_at: string | null
+          updated_by: string | null
+          vin: string
+          year: string | null
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          deleted_at?: string | null
+          id?: string
+          is_archived?: boolean | null
+          make?: string | null
+          mileage?: string | null
+          model?: string | null
+          trim?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+          vin: string
+          year?: string | null
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          deleted_at?: string | null
+          id?: string
+          is_archived?: boolean | null
+          make?: string | null
+          mileage?: string | null
+          model?: string | null
+          trim?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+          vin?: string
+          year?: string | null
         }
         Relationships: []
       }
