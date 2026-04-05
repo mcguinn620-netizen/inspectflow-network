@@ -15,7 +15,7 @@ const PlaceholderPage = ({ title, description }: { title: string; description: s
 );
 
 export const DispatchPage = () => <PlaceholderPage title="Dispatch" description="Intelligent inspection routing and assignment" />;
-export const InspectionsPage = () => <PlaceholderPage title="Inspections" description="All inspection records and history" />;
+
 export const ReportsPage = () => <PlaceholderPage title="Reports" description="Automated report generation and analytics" />;
 export const RepairShopPage = () => <PlaceholderPage title="Repair Shop" description="Work orders and technician management" />;
 export const ClientPortalPage = () => <PlaceholderPage title="Client Portal" description="Customer-facing inspection access" />;

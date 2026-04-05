@@ -10,8 +10,8 @@ import DispatchPage from "./pages/Dispatch";
 import InspectorsPage from "./pages/Inspectors";
 import VehiclesPage from "./pages/Vehicles";
 import MarketplacePage from "./pages/Marketplace";
+import InspectionsPage from "./pages/Inspections";
 import {
-  InspectionsPage,
   ReportsPage,
   RepairShopPage,
   ClientPortalPage,
