@@ -81,14 +81,14 @@ export default function InspectionsPage() {
 
   const handleSave = async () => {
     if (!selected) return;
-    const updates: Record<string, any> = {
+    const updates = {
       notes: editForm.notes,
       status: editForm.status,
       inspector_id: editForm.inspector_id || null,
       requested_date: editForm.requested_date,
       updated_at: new Date().toISOString(),
     };
-    const { error } = await supabase.from("inspection_requests").update(updates).eq("id", selected.id);
+    const { error } = await (supabase.from("inspection_requests") as any).update(updates).eq("id", selected.id);
     if (error) { toast.error("Failed to update"); return; }
     await logAudit("inspection_request", selected.id, "update", {
       status: { before: selected.status, after: editForm.status },
