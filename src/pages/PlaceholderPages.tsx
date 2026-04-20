@@ -19,4 +19,3 @@ export const DispatchPage = () => <PlaceholderPage title="Dispatch" description=
 export const ReportsPage = () => <PlaceholderPage title="Reports" description="Automated report generation and analytics" />;
 export const RepairShopPage = () => <PlaceholderPage title="Repair Shop" description="Work orders and technician management" />;
 export const ClientPortalPage = () => <PlaceholderPage title="Client Portal" description="Customer-facing inspection access" />;
-export const SettingsPage = () => <PlaceholderPage title="Settings" description="Platform configuration and company management" />;
