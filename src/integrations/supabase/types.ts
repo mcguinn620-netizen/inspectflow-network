@@ -1132,6 +1132,7 @@ export type Database = {
         Row: {
           address: string | null
           arrived_at: string | null
+          completed_at: string | null
           created_at: string
           departed_at: string | null
           id: string
@@ -1142,11 +1143,13 @@ export type Database = {
           miles_from_previous: number | null
           notes: string | null
           sort_order: number
+          status: string
           trip_id: string
         }
         Insert: {
           address?: string | null
           arrived_at?: string | null
+          completed_at?: string | null
           created_at?: string
           departed_at?: string | null
           id?: string
@@ -1157,11 +1160,13 @@ export type Database = {
           miles_from_previous?: number | null
           notes?: string | null
           sort_order?: number
+          status?: string
           trip_id: string
         }
         Update: {
           address?: string | null
           arrived_at?: string | null
+          completed_at?: string | null
           created_at?: string
           departed_at?: string | null
           id?: string
@@ -1172,6 +1177,7 @@ export type Database = {
           miles_from_previous?: number | null
           notes?: string | null
           sort_order?: number
+          status?: string
           trip_id?: string
         }
         Relationships: [
@@ -1193,13 +1199,16 @@ export type Database = {
       }
       trips: {
         Row: {
+          completed_at: string | null
           created_at: string
           drive_minutes: number | null
           end_time: string | null
           id: string
           notes: string | null
           organization_id: string
+          paused_at: string | null
           start_time: string | null
+          started_at: string | null
           status: string
           total_miles: number | null
           trip_date: string
@@ -1208,13 +1217,16 @@ export type Database = {
           work_minutes: number | null
         }
         Insert: {
+          completed_at?: string | null
           created_at?: string
           drive_minutes?: number | null
           end_time?: string | null
           id?: string
           notes?: string | null
           organization_id: string
+          paused_at?: string | null
           start_time?: string | null
+          started_at?: string | null
           status?: string
           total_miles?: number | null
           trip_date?: string
@@ -1223,13 +1235,16 @@ export type Database = {
           work_minutes?: number | null
         }
         Update: {
+          completed_at?: string | null
           created_at?: string
           drive_minutes?: number | null
           end_time?: string | null
           id?: string
           notes?: string | null
           organization_id?: string
+          paused_at?: string | null
           start_time?: string | null
+          started_at?: string | null
           status?: string
           total_miles?: number | null
           trip_date?: string
