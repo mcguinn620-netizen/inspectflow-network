@@ -4,10 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
 import { toast } from "sonner";
+import { Info } from "lucide-react";
 
 interface Settings {
   default_job_fee: number;
@@ -15,25 +17,32 @@ interface Settings {
   estimated_tax_rate: number;
 }
 
+interface PeriodStats {
+  jobs: number;
+  miles: number;
+  jobEarnings: number;
+  mileageEarnings: number;
+}
+
 export default function InspectorTax() {
   const { user } = useAuth();
   const { activeOrgId } = useUserRoles();
   const [settings, setSettings] = useState<Settings>({ default_job_fee: 75, mileage_rate: 0.67, estimated_tax_rate: 0.25 });
-  const [stats, setStats] = useState({
-    weekJobs: 0, weekMiles: 0, weekEarnings: 0,
-    monthJobs: 0, monthMiles: 0, monthEarnings: 0, monthMileageDeduction: 0,
-  });
+  const [period, setPeriod] = useState<"week" | "month">("week");
+  const [week, setWeek] = useState<PeriodStats>({ jobs: 0, miles: 0, jobEarnings: 0, mileageEarnings: 0 });
+  const [month, setMonth] = useState<PeriodStats>({ jobs: 0, miles: 0, jobEarnings: 0, mileageEarnings: 0 });
   const [saving, setSaving] = useState(false);
 
   const load = async () => {
     if (!user || !activeOrgId) return;
     const { data: s } = await supabase.from("earnings_settings")
       .select("*").eq("user_id", user.id).maybeSingle();
-    if (s) setSettings({
+    const cfg: Settings = s ? {
       default_job_fee: Number(s.default_job_fee),
       mileage_rate: Number(s.mileage_rate),
       estimated_tax_rate: Number(s.estimated_tax_rate),
-    });
+    } : settings;
+    if (s) setSettings(cfg);
 
     const now = new Date();
     const weekAgo = new Date(); weekAgo.setDate(now.getDate() - 7);
@@ -41,33 +50,26 @@ export default function InspectorTax() {
 
     const { data: jobs } = await supabase.from("jobs")
       .select("status,fee_override,actual_end_time")
-      .eq("organization_id", activeOrgId)
-      .eq("status", "completed")
+      .eq("organization_id", activeOrgId).eq("status", "completed")
       .gte("actual_end_time", monthStart.toISOString());
 
     const { data: trips } = await supabase.from("trips")
-      .select("trip_date,total_miles")
-      .eq("user_id", user.id)
+      .select("trip_date,total_miles").eq("user_id", user.id)
       .gte("trip_date", monthStart.toISOString().slice(0,10));
 
-    const fee = s ? Number(s.default_job_fee) : 75;
-    const mRate = s ? Number(s.mileage_rate) : 0.67;
+    const fee = cfg.default_job_fee;
+    const mRate = cfg.mileage_rate;
+
+    const calc = (jobsList: any[], tripsList: any[]): PeriodStats => {
+      const miles = tripsList.reduce((sum, t) => sum + Number(t.total_miles || 0), 0);
+      const jobEarnings = jobsList.reduce((sum, j) => sum + Number(j.fee_override ?? fee), 0);
+      return { jobs: jobsList.length, miles, jobEarnings, mileageEarnings: miles * mRate };
+    };
 
     const weekJobsList = (jobs ?? []).filter((j: any) => j.actual_end_time && new Date(j.actual_end_time) >= weekAgo);
-    const weekMiles = (trips ?? []).filter((t: any) => new Date(t.trip_date) >= weekAgo).reduce((sum, t: any) => sum + Number(t.total_miles || 0), 0);
-    const monthMiles = (trips ?? []).reduce((sum, t: any) => sum + Number(t.total_miles || 0), 0);
-    const weekEarn = weekJobsList.reduce((sum, j: any) => sum + Number(j.fee_override ?? fee), 0) + weekMiles * mRate;
-    const monthEarn = (jobs ?? []).reduce((sum, j: any) => sum + Number(j.fee_override ?? fee), 0) + monthMiles * mRate;
-
-    setStats({
-      weekJobs: weekJobsList.length,
-      weekMiles,
-      weekEarnings: weekEarn,
-      monthJobs: (jobs ?? []).length,
-      monthMiles,
-      monthEarnings: monthEarn,
-      monthMileageDeduction: monthMiles * mRate,
-    });
+    const weekTripsList = (trips ?? []).filter((t: any) => new Date(t.trip_date) >= weekAgo);
+    setWeek(calc(weekJobsList, weekTripsList));
+    setMonth(calc(jobs ?? [], trips ?? []));
   };
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [user, activeOrgId]);
 
@@ -75,8 +77,7 @@ export default function InspectorTax() {
     if (!user || !activeOrgId) return;
     setSaving(true);
     const { error } = await supabase.from("earnings_settings").upsert({
-      organization_id: activeOrgId,
-      user_id: user.id,
+      organization_id: activeOrgId, user_id: user.id,
       default_job_fee: settings.default_job_fee,
       mileage_rate: settings.mileage_rate,
       estimated_tax_rate: settings.estimated_tax_rate,
@@ -87,22 +88,45 @@ export default function InspectorTax() {
     load();
   };
 
-  const taxOwed = stats.monthEarnings * settings.estimated_tax_rate;
+  const current = period === "week" ? week : month;
+  const gross = current.jobEarnings + current.mileageEarnings;
+  const taxOwed = gross * settings.estimated_tax_rate;
+  const net = gross - taxOwed;
 
   return (
     <DashboardLayout>
       <div className="space-y-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Tax & Earnings</h1>
-          <p className="text-sm text-muted-foreground mt-1">Estimates based on completed jobs and logged miles</p>
+        <div className="flex items-start justify-between flex-wrap gap-3">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">Tax &amp; Earnings</h1>
+            <p className="text-sm text-muted-foreground mt-1">Estimates based on completed jobs and logged miles</p>
+          </div>
+          <Tabs value={period} onValueChange={v => setPeriod(v as "week" | "month")}>
+            <TabsList>
+              <TabsTrigger value="week">This week</TabsTrigger>
+              <TabsTrigger value="month">This month</TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <Stat label="This week" value={`$${stats.weekEarnings.toFixed(0)}`} sub={`${stats.weekJobs} jobs · ${stats.weekMiles.toFixed(0)} mi`} />
-          <Stat label="This month" value={`$${stats.monthEarnings.toFixed(0)}`} sub={`${stats.monthJobs} jobs · ${stats.monthMiles.toFixed(0)} mi`} />
-          <Stat label="Mileage deduction (mo)" value={`$${stats.monthMileageDeduction.toFixed(0)}`} sub={`${stats.monthMiles.toFixed(0)} mi × $${settings.mileage_rate}`} />
-          <Stat label="Est. tax owed (mo)" value={`$${taxOwed.toFixed(0)}`} sub={`${(settings.estimated_tax_rate*100).toFixed(0)}% of earnings`} />
+          <Stat label="Job earnings" value={`$${current.jobEarnings.toFixed(0)}`} sub={`${current.jobs} job${current.jobs !== 1 ? "s" : ""} × $${settings.default_job_fee.toFixed(0)} default`} />
+          <Stat label="Mileage earnings" value={`$${current.mileageEarnings.toFixed(0)}`} sub={`${current.miles.toFixed(0)} mi × $${settings.mileage_rate.toFixed(2)}/mi`} />
+          <Stat label="Estimated tax" value={`-$${taxOwed.toFixed(0)}`} sub={`${(settings.estimated_tax_rate * 100).toFixed(0)}% of gross`} muted />
+          <Stat label="Estimated net" value={`$${net.toFixed(0)}`} sub={`${period === "week" ? "Past 7 days" : "Month-to-date"}`} highlight />
         </div>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm flex items-center gap-2"><Info className="h-4 w-4" />How this is calculated</CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm text-muted-foreground space-y-1">
+            <p><span className="text-foreground font-medium">Gross</span> = Job earnings ({current.jobs} × ${settings.default_job_fee.toFixed(0)} unless overridden) + Mileage ({current.miles.toFixed(0)} mi × ${settings.mileage_rate.toFixed(2)})</p>
+            <p><span className="text-foreground font-medium">Tax estimate</span> = Gross × {(settings.estimated_tax_rate * 100).toFixed(0)}%</p>
+            <p><span className="text-foreground font-medium">Net</span> = Gross − Tax estimate</p>
+            <p className="text-xs pt-2">First-pass estimator — confirm with a tax professional.</p>
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader><CardTitle className="text-base">Earnings settings</CardTitle></CardHeader>
@@ -127,21 +151,19 @@ export default function InspectorTax() {
             <Button onClick={save} disabled={saving}>{saving ? "Saving..." : "Save settings"}</Button>
           </CardContent>
         </Card>
-
-        <p className="text-xs text-muted-foreground">
-          This is a first-pass estimator. Always confirm with a tax professional.
-        </p>
       </div>
     </DashboardLayout>
   );
 }
 
-function Stat({ label, value, sub }: { label: string; value: string; sub: string }) {
+function Stat({ label, value, sub, highlight, muted }: { label: string; value: string; sub: string; highlight?: boolean; muted?: boolean }) {
   return (
-    <Card><CardContent className="p-4">
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="text-2xl font-semibold mt-1">{value}</p>
-      <p className="text-xs text-muted-foreground mt-1">{sub}</p>
-    </CardContent></Card>
+    <Card className={highlight ? "border-primary/40 bg-primary/5" : ""}>
+      <CardContent className="p-4">
+        <p className="text-xs text-muted-foreground">{label}</p>
+        <p className={`text-2xl font-semibold mt-1 ${muted ? "text-muted-foreground" : ""}`}>{value}</p>
+        <p className="text-xs text-muted-foreground mt-1">{sub}</p>
+      </CardContent>
+    </Card>
   );
 }

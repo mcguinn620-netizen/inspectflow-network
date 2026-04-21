@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,11 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Plus, MapPin, Trash2 } from "lucide-react";
+import { Plus, Trash2, Play, Pause, CheckCircle2, ArrowUp, ArrowDown, Flag, SkipForward, Briefcase } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
 import { toast } from "sonner";
+import { OpenInMapsButton } from "@/components/maps/OpenInMapsButton";
+import { TripMapOverlay, type MapStop } from "@/components/maps/TripMapOverlay";
+import { Link } from "react-router-dom";
 
 interface Trip {
   id: string;
@@ -20,14 +23,24 @@ interface Trip {
   work_minutes: number;
   status: string;
   notes: string | null;
+  started_at: string | null;
+  paused_at: string | null;
+  completed_at: string | null;
 }
 interface Stop {
   id: string;
   trip_id: string;
+  job_id: string | null;
   sort_order: number;
   label: string | null;
   address: string | null;
   miles_from_previous: number;
+  status: string;
+  arrived_at: string | null;
+  departed_at: string | null;
+  completed_at: string | null;
+  latitude: number | null;
+  longitude: number | null;
 }
 
 export default function InspectorTrips() {
@@ -38,28 +51,24 @@ export default function InspectorTrips() {
   const [open, setOpen] = useState(false);
   const [stopOpen, setStopOpen] = useState<string | null>(null);
   const [stopForm, setStopForm] = useState<Partial<Stop>>({});
+  const [selectedStopId, setSelectedStopId] = useState<string | null>(null);
   const [form, setForm] = useState<Partial<Trip>>({
     trip_date: new Date().toISOString().slice(0,10),
-    total_miles: 0, drive_minutes: 0, work_minutes: 0, status: "planned",
+    total_miles: 0, drive_minutes: 0, work_minutes: 0, status: "draft",
   });
 
   const load = async () => {
     if (!user || !activeOrgId) return;
     const { data: t } = await supabase
-      .from("trips").select("*")
-      .eq("user_id", user.id)
+      .from("trips").select("*").eq("user_id", user.id)
       .order("trip_date", { ascending: false }).limit(60);
     const trips = (t ?? []) as Trip[];
     setTrips(trips);
     if (trips.length) {
       const { data: s } = await supabase
-        .from("trip_stops").select("*")
-        .in("trip_id", trips.map(x => x.id))
-        .order("sort_order");
+        .from("trip_stops").select("*").in("trip_id", trips.map(x => x.id)).order("sort_order");
       const map: Record<string, Stop[]> = {};
-      for (const stop of (s ?? []) as Stop[]) {
-        (map[stop.trip_id] ??= []).push(stop);
-      }
+      for (const stop of (s ?? []) as Stop[]) (map[stop.trip_id] ??= []).push(stop);
       setStops(map);
     }
   };
@@ -68,17 +77,22 @@ export default function InspectorTrips() {
   const today = new Date().toISOString().slice(0,10);
   const todayTrip = trips.find(t => t.trip_date === today);
   const todayMiles = trips.filter(t => t.trip_date === today).reduce((s,t) => s + Number(t.total_miles||0), 0);
+  const activeTrip = useMemo(() => trips.find(t => ["active","paused","draft","planned"].includes(t.status)) ?? null, [trips]);
+  const activeStops = activeTrip ? (stops[activeTrip.id] ?? []) : [];
+
+  const mapStops: MapStop[] = activeStops.map(s => ({
+    id: s.id, label: s.label, address: s.address, latitude: s.latitude, longitude: s.longitude,
+  }));
 
   const createTrip = async () => {
     if (!user || !activeOrgId) return;
     const { error } = await supabase.from("trips").insert({
-      organization_id: activeOrgId,
-      user_id: user.id,
+      organization_id: activeOrgId, user_id: user.id,
       trip_date: form.trip_date,
       total_miles: form.total_miles ?? 0,
       drive_minutes: form.drive_minutes ?? 0,
       work_minutes: form.work_minutes ?? 0,
-      status: form.status ?? "planned",
+      status: form.status ?? "draft",
       notes: form.notes ?? null,
     });
     if (error) return toast.error(error.message);
@@ -87,15 +101,28 @@ export default function InspectorTrips() {
     load();
   };
 
+  const setTripStatus = async (trip: Trip, status: string) => {
+    const updates: any = { status };
+    if (status === "active" && !trip.started_at) updates.started_at = new Date().toISOString();
+    if (status === "paused") updates.paused_at = new Date().toISOString();
+    if (status === "completed") updates.completed_at = new Date().toISOString();
+    const { error } = await supabase.from("trips").update(updates).eq("id", trip.id);
+    if (error) return toast.error(error.message);
+    toast.success(`Trip ${status}`);
+    load();
+  };
+
   const addStop = async () => {
     if (!stopOpen) return;
     const list = stops[stopOpen] ?? [];
     const { error } = await supabase.from("trip_stops").insert({
-      trip_id: stopOpen,
-      sort_order: list.length,
+      trip_id: stopOpen, sort_order: list.length,
       label: stopForm.label ?? null,
       address: stopForm.address ?? null,
       miles_from_previous: stopForm.miles_from_previous ?? 0,
+      latitude: stopForm.latitude ?? null,
+      longitude: stopForm.longitude ?? null,
+      status: "pending",
     });
     if (error) return toast.error(error.message);
     setStopForm({});
@@ -108,15 +135,49 @@ export default function InspectorTrips() {
     load();
   };
 
+  const moveStop = async (s: Stop, dir: -1 | 1) => {
+    const list = stops[s.trip_id] ?? [];
+    const idx = list.findIndex(x => x.id === s.id);
+    const swap = list[idx + dir];
+    if (!swap) return;
+    await supabase.from("trip_stops").update({ sort_order: swap.sort_order }).eq("id", s.id);
+    await supabase.from("trip_stops").update({ sort_order: s.sort_order }).eq("id", swap.id);
+    load();
+  };
+
+  const setStopStatus = async (s: Stop, status: string) => {
+    const updates: any = { status };
+    if (status === "arrived") updates.arrived_at = new Date().toISOString();
+    if (status === "completed") {
+      updates.completed_at = new Date().toISOString();
+      updates.departed_at = new Date().toISOString();
+      // Mirror to the linked job if any
+      if (s.job_id) await supabase.from("jobs").update({ status: "completed", actual_end_time: new Date().toISOString() }).eq("id", s.job_id);
+    }
+    if (status === "skipped") updates.departed_at = new Date().toISOString();
+    const { error } = await supabase.from("trip_stops").update(updates).eq("id", s.id);
+    if (error) return toast.error(error.message);
+    load();
+  };
+
+  const startJobFromStop = async (s: Stop) => {
+    if (!s.job_id) return toast.info("This stop has no linked job");
+    await supabase.from("jobs").update({ status: "in_progress", actual_start_time: new Date().toISOString() }).eq("id", s.job_id);
+    await setStopStatus(s, "arrived");
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-4">
         <div className="flex items-start justify-between flex-wrap gap-3">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">Trips</h1>
-            <p className="text-sm text-muted-foreground mt-1">Mileage and travel log</p>
+            <p className="text-sm text-muted-foreground mt-1">Plan, run, and log your day</p>
           </div>
-          <Button onClick={() => setOpen(true)}><Plus className="h-4 w-4 mr-1.5" />Log trip</Button>
+          <div className="flex gap-2">
+            <Button asChild variant="outline" size="sm"><Link to="/app/inspector/schedule">Build from schedule</Link></Button>
+            <Button onClick={() => setOpen(true)}><Plus className="h-4 w-4 mr-1.5" />Log trip</Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -125,17 +186,92 @@ export default function InspectorTrips() {
           <Card><CardContent className="p-4"><p className="text-xs text-muted-foreground">Today work</p><p className="text-2xl font-semibold">{todayTrip?.work_minutes ?? 0}m</p></CardContent></Card>
         </div>
 
-        <Card className="border-dashed">
-          <CardContent className="p-6 text-center">
-            <MapPin className="h-6 w-6 text-muted-foreground mx-auto mb-2" />
-            <p className="text-sm text-muted-foreground">Map view coming soon. GPS auto-tracking will appear here.</p>
-          </CardContent>
-        </Card>
+        {/* Active trip planner with map overlay */}
+        {activeTrip && (
+          <div className="space-y-2">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <h2 className="text-sm font-semibold flex items-center gap-2">
+                Active trip
+                <Badge variant="outline" className="capitalize text-xs">{activeTrip.status}</Badge>
+              </h2>
+              <div className="flex gap-2">
+                {activeTrip.status !== "active" && (
+                  <Button size="sm" variant="outline" onClick={() => setTripStatus(activeTrip, "active")}><Play className="h-3.5 w-3.5 mr-1" />Start</Button>
+                )}
+                {activeTrip.status === "active" && (
+                  <Button size="sm" variant="outline" onClick={() => setTripStatus(activeTrip, "paused")}><Pause className="h-3.5 w-3.5 mr-1" />Pause</Button>
+                )}
+                <Button size="sm" variant="default" onClick={() => setTripStatus(activeTrip, "completed")}><CheckCircle2 className="h-3.5 w-3.5 mr-1" />Complete</Button>
+              </div>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-3">
+              <TripMapOverlay
+                stops={mapStops}
+                selectedId={selectedStopId}
+                onSelect={setSelectedStopId}
+              />
+              <Card>
+                <CardContent className="p-3 space-y-2">
+                  {activeStops.length === 0 && <p className="text-sm text-muted-foreground p-3">No stops yet. Add stops or build from schedule.</p>}
+                  {activeStops.map((s, i) => (
+                    <div
+                      key={s.id}
+                      onClick={() => setSelectedStopId(s.id)}
+                      className={`rounded-md border p-2 cursor-pointer transition-colors ${selectedStopId === s.id ? "border-primary bg-primary/5" : "hover:bg-muted/40"}`}
+                    >
+                      <div className="flex items-center justify-between gap-2 flex-wrap">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="text-xs text-muted-foreground">#{i+1}</span>
+                          <span className="font-medium text-sm truncate">{s.label || s.address || "Stop"}</span>
+                          <Badge variant="outline" className="capitalize text-xs">{s.status}</Badge>
+                          {s.job_id && <Badge variant="outline" className="text-xs"><Briefcase className="h-3 w-3 mr-1" />Job</Badge>}
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Button size="icon" variant="ghost" className="h-7 w-7" onClick={(e) => { e.stopPropagation(); moveStop(s, -1); }}><ArrowUp className="h-3.5 w-3.5" /></Button>
+                          <Button size="icon" variant="ghost" className="h-7 w-7" onClick={(e) => { e.stopPropagation(); moveStop(s, 1); }}><ArrowDown className="h-3.5 w-3.5" /></Button>
+                          <OpenInMapsButton target={{ address: s.address, latitude: s.latitude, longitude: s.longitude, label: s.label }} iconOnly />
+                          <Button size="icon" variant="ghost" className="h-7 w-7" onClick={(e) => { e.stopPropagation(); delStop(s.id); }}><Trash2 className="h-3.5 w-3.5" /></Button>
+                        </div>
+                      </div>
+                      {s.address && <p className="text-xs text-muted-foreground mt-1 ml-6 truncate">{s.address}</p>}
+                      <div className="flex flex-wrap gap-1 mt-2 ml-6">
+                        {s.status === "pending" && (
+                          <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); setStopStatus(s, "arrived"); }}>
+                            <Flag className="h-3 w-3 mr-1" />Arrived
+                          </Button>
+                        )}
+                        {s.job_id && s.status !== "completed" && (
+                          <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); startJobFromStop(s); }}>
+                            <Play className="h-3 w-3 mr-1" />Start job
+                          </Button>
+                        )}
+                        {s.status !== "completed" && s.status !== "skipped" && (
+                          <Button size="sm" variant="default" onClick={(e) => { e.stopPropagation(); setStopStatus(s, "completed"); }}>
+                            <CheckCircle2 className="h-3 w-3 mr-1" />Complete
+                          </Button>
+                        )}
+                        {s.status === "pending" && (
+                          <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); setStopStatus(s, "skipped"); }}>
+                            <SkipForward className="h-3 w-3 mr-1" />Skip
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                  <Button size="sm" variant="outline" className="w-full" onClick={() => { setStopOpen(activeTrip.id); setStopForm({}); }}>
+                    <Plus className="h-3.5 w-3.5 mr-1" />Add stop
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )}
 
         <div className="space-y-3">
           <h2 className="text-sm font-semibold">History</h2>
           {trips.length === 0 && <p className="text-sm text-muted-foreground">No trips yet.</p>}
-          {trips.map(t => (
+          {trips.filter(t => !activeTrip || t.id !== activeTrip.id).map(t => (
             <Card key={t.id}>
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between flex-wrap gap-2">
@@ -148,21 +284,19 @@ export default function InspectorTrips() {
               </CardHeader>
               <CardContent className="space-y-2">
                 {(stops[t.id] ?? []).map((s, i) => (
-                  <div key={s.id} className="flex items-center justify-between rounded-md border px-3 py-2 text-sm">
+                  <div key={s.id} className="flex items-center justify-between rounded-md border bg-background/40 px-3 py-2 text-sm">
                     <div className="flex items-center gap-2 min-w-0">
                       <span className="text-xs text-muted-foreground">#{i+1}</span>
                       <span className="font-medium truncate">{s.label || s.address || "Stop"}</span>
-                      {s.address && s.label && <span className="text-xs text-muted-foreground truncate">{s.address}</span>}
+                      <Badge variant="outline" className="capitalize text-xs">{s.status}</Badge>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-muted-foreground">{Number(s.miles_from_previous).toFixed(1)} mi</span>
-                      <Button size="sm" variant="ghost" onClick={() => delStop(s.id)}><Trash2 className="h-3.5 w-3.5" /></Button>
+                      <OpenInMapsButton target={{ address: s.address, latitude: s.latitude, longitude: s.longitude, label: s.label }} iconOnly />
                     </div>
                   </div>
                 ))}
-                <Button size="sm" variant="outline" onClick={() => { setStopOpen(t.id); setStopForm({}); }}>
-                  <Plus className="h-3.5 w-3.5 mr-1" />Add stop
-                </Button>
+                {(stops[t.id] ?? []).length === 0 && <p className="text-xs text-muted-foreground">No stops</p>}
               </CardContent>
             </Card>
           ))}
@@ -193,7 +327,12 @@ export default function InspectorTrips() {
           <div className="space-y-3">
             <div className="space-y-1.5"><Label>Label</Label><Input value={stopForm.label ?? ""} onChange={e => setStopForm({ ...stopForm, label: e.target.value })} placeholder="Customer pickup" /></div>
             <div className="space-y-1.5"><Label>Address</Label><Input value={stopForm.address ?? ""} onChange={e => setStopForm({ ...stopForm, address: e.target.value })} /></div>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1.5"><Label className="text-xs">Latitude</Label><Input type="number" step="0.000001" value={stopForm.latitude ?? ""} onChange={e => setStopForm({ ...stopForm, latitude: e.target.value ? Number(e.target.value) : null })} /></div>
+              <div className="space-y-1.5"><Label className="text-xs">Longitude</Label><Input type="number" step="0.000001" value={stopForm.longitude ?? ""} onChange={e => setStopForm({ ...stopForm, longitude: e.target.value ? Number(e.target.value) : null })} /></div>
+            </div>
             <div className="space-y-1.5"><Label>Miles from previous</Label><Input type="number" step="0.1" value={stopForm.miles_from_previous ?? 0} onChange={e => setStopForm({ ...stopForm, miles_from_previous: Number(e.target.value) })} /></div>
+            <p className="text-xs text-muted-foreground">Coordinates enable the map. Future GPS auto-fill will populate these automatically.</p>
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setStopOpen(null)}>Cancel</Button>
