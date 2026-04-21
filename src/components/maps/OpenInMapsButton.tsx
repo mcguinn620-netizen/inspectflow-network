@@ -1,0 +1,46 @@
+import { Button } from "@/components/ui/button";
+import { Navigation } from "lucide-react";
+import { openInMaps, type MapTarget, buildMapsUrl } from "@/lib/maps";
+import { cn } from "@/lib/utils";
+
+interface Props {
+  target: MapTarget;
+  size?: "sm" | "default" | "icon";
+  variant?: "outline" | "ghost" | "secondary" | "default";
+  iconOnly?: boolean;
+  className?: string;
+  label?: string;
+}
+
+/**
+ * Reusable map handoff button — single integration point for future
+ * CarPlay / Android Auto bindings. Hides itself if no target data exists.
+ */
+export function OpenInMapsButton({
+  target,
+  size = "sm",
+  variant = "ghost",
+  iconOnly,
+  className,
+  label = "Open in Maps",
+}: Props) {
+  const url = buildMapsUrl(target);
+  if (!url) return null;
+  return (
+    <Button
+      size={iconOnly ? "icon" : size}
+      variant={variant}
+      onClick={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        openInMaps(target);
+      }}
+      className={cn(iconOnly && "h-8 w-8", className)}
+      aria-label={label}
+      title={label}
+    >
+      <Navigation className={cn("h-3.5 w-3.5", !iconOnly && "mr-1.5")} />
+      {!iconOnly && label}
+    </Button>
+  );
+}
