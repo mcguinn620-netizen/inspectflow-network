@@ -10,6 +10,10 @@ import {
   UserCircle,
   Settings,
   ChevronLeft,
+  CalendarDays,
+  Route,
+  Receipt,
+  Briefcase,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import {
@@ -24,8 +28,17 @@ import {
   SidebarFooter,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useUserRoles } from "@/hooks/useUserRoles";
 
-const mainNav = [
+const inspectorNav = [
+  { title: "Dashboard", url: "/app/inspector/dashboard", icon: LayoutDashboard },
+  { title: "Schedule", url: "/app/inspector/schedule", icon: CalendarDays },
+  { title: "Jobs", url: "/app/inspector/jobs", icon: Briefcase },
+  { title: "Trips", url: "/app/inspector/trips", icon: Route },
+  { title: "Tax / Earnings", url: "/app/inspector/tax", icon: Receipt },
+];
+
+const opsNav = [
   { title: "Command Center", url: "/", icon: LayoutDashboard },
   { title: "Dispatch", url: "/dispatch", icon: Send },
   { title: "Marketplace", url: "/marketplace", icon: Store },
@@ -47,6 +60,31 @@ const bottomNav = [
 export function AppSidebar() {
   const { state, toggleSidebar } = useSidebar();
   const collapsed = state === "collapsed";
+  const { hasRole, isAdmin, loading } = useUserRoles();
+
+  const showInspector = !loading && (hasRole("inspector") || isAdmin);
+  const showOps = !loading && isAdmin;
+  const showManage = !loading && isAdmin;
+
+  const renderItems = (items: typeof inspectorNav) => (
+    <SidebarMenu>
+      {items.map((item) => (
+        <SidebarMenuItem key={item.title}>
+          <SidebarMenuButton asChild>
+            <NavLink
+              to={item.url}
+              end={item.url === "/"}
+              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors duration-150"
+              activeClassName="bg-sidebar-accent text-sidebar-primary-foreground font-medium"
+            >
+              <item.icon className="h-4 w-4 shrink-0" />
+              {!collapsed && <span>{item.title}</span>}
+            </NavLink>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      ))}
+    </SidebarMenu>
+  );
 
   return (
     <Sidebar collapsible="icon" className="border-r-0">
@@ -70,54 +108,32 @@ export function AppSidebar() {
       </div>
 
       <SidebarContent className="px-2 pt-2">
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-[10px] uppercase tracking-wider text-sidebar-muted font-semibold mb-1">
-            Operations
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {mainNav.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink
-                      to={item.url}
-                      end={item.url === "/"}
-                      className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors duration-150"
-                      activeClassName="bg-sidebar-accent text-sidebar-primary-foreground font-medium"
-                    >
-                      <item.icon className="h-4 w-4 shrink-0" />
-                      {!collapsed && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {showInspector && (
+          <SidebarGroup>
+            <SidebarGroupLabel className="text-[10px] uppercase tracking-wider text-sidebar-muted font-semibold mb-1">
+              Inspector
+            </SidebarGroupLabel>
+            <SidebarGroupContent>{renderItems(inspectorNav)}</SidebarGroupContent>
+          </SidebarGroup>
+        )}
 
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-[10px] uppercase tracking-wider text-sidebar-muted font-semibold mb-1">
-            Manage
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {manageNav.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink
-                      to={item.url}
-                      className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors duration-150"
-                      activeClassName="bg-sidebar-accent text-sidebar-primary-foreground font-medium"
-                    >
-                      <item.icon className="h-4 w-4 shrink-0" />
-                      {!collapsed && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {showOps && (
+          <SidebarGroup>
+            <SidebarGroupLabel className="text-[10px] uppercase tracking-wider text-sidebar-muted font-semibold mb-1">
+              Operations
+            </SidebarGroupLabel>
+            <SidebarGroupContent>{renderItems(opsNav)}</SidebarGroupContent>
+          </SidebarGroup>
+        )}
+
+        {showManage && (
+          <SidebarGroup>
+            <SidebarGroupLabel className="text-[10px] uppercase tracking-wider text-sidebar-muted font-semibold mb-1">
+              Manage
+            </SidebarGroupLabel>
+            <SidebarGroupContent>{renderItems(manageNav)}</SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
 
       <SidebarFooter className="px-2 pb-3 border-t border-sidebar-border">
