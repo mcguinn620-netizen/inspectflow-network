@@ -38,6 +38,14 @@ const inspectorNav = [
   { title: "Tax / Earnings", url: "/app/inspector/tax", icon: Receipt },
 ];
 
+const mechanicNav = [
+  { title: "Mechanic Dashboard", url: "/app/mechanic/dashboard", icon: Wrench },
+];
+
+const dispatcherNav = [
+  { title: "Dispatch Hub", url: "/app/dispatch/dashboard", icon: Send },
+];
+
 const opsNav = [
   { title: "Command Center", url: "/", icon: LayoutDashboard },
   { title: "Dispatch", url: "/dispatch", icon: Send },
@@ -63,6 +71,8 @@ export function AppSidebar() {
   const { hasRole, isAdmin, loading } = useUserRoles();
 
   const showInspector = !loading && (hasRole("inspector") || isAdmin);
+  const showMechanic = !loading && (hasRole("mechanic") || isAdmin);
+  const showDispatcher = !loading && (hasRole("dispatcher") || isAdmin);
   const showOps = !loading && isAdmin;
   const showManage = !loading && isAdmin;
 
@@ -114,6 +124,24 @@ export function AppSidebar() {
               Inspector
             </SidebarGroupLabel>
             <SidebarGroupContent>{renderItems(inspectorNav)}</SidebarGroupContent>
+          </SidebarGroup>
+        )}
+
+        {showMechanic && (
+          <SidebarGroup>
+            <SidebarGroupLabel className="text-[10px] uppercase tracking-wider text-sidebar-muted font-semibold mb-1">
+              Mechanic
+            </SidebarGroupLabel>
+            <SidebarGroupContent>{renderItems(mechanicNav)}</SidebarGroupContent>
+          </SidebarGroup>
+        )}
+
+        {showDispatcher && (
+          <SidebarGroup>
+            <SidebarGroupLabel className="text-[10px] uppercase tracking-wider text-sidebar-muted font-semibold mb-1">
+              Dispatcher
+            </SidebarGroupLabel>
+            <SidebarGroupContent>{renderItems(dispatcherNav)}</SidebarGroupContent>
           </SidebarGroup>
         )}
 
