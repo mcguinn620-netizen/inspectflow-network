@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { useUserRoles } from "@/hooks/useUserRoles";
 import Index from "./pages/Index";
 import AuthPage from "./pages/Auth";
 import DispatchPage from "./pages/Dispatch";
@@ -19,6 +20,11 @@ import {
 } from "./pages/PlaceholderPages";
 import SettingsPage from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import InspectorDashboard from "./pages/inspector/InspectorDashboard";
+import InspectorSchedule from "./pages/inspector/InspectorSchedule";
+import InspectorJobs from "./pages/inspector/InspectorJobs";
+import InspectorTrips from "./pages/inspector/InspectorTrips";
+import InspectorTax from "./pages/inspector/InspectorTax";
 
 const queryClient = new QueryClient();
 
@@ -29,10 +35,25 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function HomeRedirect() {
+  const { isAdmin, loading } = useUserRoles();
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-background"><div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full" /></div>;
+  return isAdmin ? <Index /> : <Navigate to="/app/inspector/dashboard" replace />;
+}
+
 const AppRoutes = () => (
   <Routes>
     <Route path="/auth" element={<AuthPage />} />
-    <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+    <Route path="/" element={<ProtectedRoute><HomeRedirect /></ProtectedRoute>} />
+
+    {/* Inspector workspace */}
+    <Route path="/app/inspector/dashboard" element={<ProtectedRoute><InspectorDashboard /></ProtectedRoute>} />
+    <Route path="/app/inspector/schedule" element={<ProtectedRoute><InspectorSchedule /></ProtectedRoute>} />
+    <Route path="/app/inspector/jobs" element={<ProtectedRoute><InspectorJobs /></ProtectedRoute>} />
+    <Route path="/app/inspector/trips" element={<ProtectedRoute><InspectorTrips /></ProtectedRoute>} />
+    <Route path="/app/inspector/tax" element={<ProtectedRoute><InspectorTax /></ProtectedRoute>} />
+
+    {/* Existing admin/ops pages */}
     <Route path="/dispatch" element={<ProtectedRoute><DispatchPage /></ProtectedRoute>} />
     <Route path="/marketplace" element={<ProtectedRoute><MarketplacePage /></ProtectedRoute>} />
     <Route path="/inspections" element={<ProtectedRoute><InspectionsPage /></ProtectedRoute>} />

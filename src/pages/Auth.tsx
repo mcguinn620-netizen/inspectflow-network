@@ -5,6 +5,8 @@ import { Car } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export default function AuthPage() {
@@ -13,20 +15,28 @@ export default function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [role, setRole] = useState("inspector");
   const [submitting, setSubmitting] = useState(false);
-  const { signIn, signUp } = useAuth();
+  const { signIn } = useAuth();
 
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-background"><div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full" /></div>;
-  if (user) return <Navigate to="/" replace />;
+  if (user) return <Navigate to="/app/inspector/dashboard" replace />;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     try {
       if (isSignUp) {
-        const { error } = await signUp(email, password, fullName);
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/app/inspector/dashboard`,
+            data: { full_name: fullName, role },
+          },
+        });
         if (error) throw error;
-        toast.success("Account created! Check your email for verification.");
+        toast.success("Account created! You can sign in now.");
       } else {
         const { error } = await signIn(email, password);
         if (error) throw error;
@@ -48,10 +58,10 @@ export default function AuthPage() {
           </div>
           <h1 className="text-3xl font-bold text-[hsl(var(--navy-foreground))]">Drive Smooth</h1>
           <p className="text-[hsl(var(--sidebar-muted))] text-lg">
-            Autonomous Vehicle Inspection SaaS Platform
+            Automotive Operations Hub for Inspectors & Teams
           </p>
           <div className="grid grid-cols-2 gap-4 pt-8">
-            {["Intelligent Dispatch", "Template Marketplace", "Real-time Tracking", "Auto Reports"].map((f) => (
+            {["Schedule", "Trips & Mileage", "Earnings & Tax", "Inspection Jobs"].map((f) => (
               <div key={f} className="rounded-lg bg-[hsl(var(--sidebar-accent))] p-3">
                 <p className="text-sm text-[hsl(var(--sidebar-foreground))]">{f}</p>
               </div>
@@ -71,15 +81,31 @@ export default function AuthPage() {
               {isSignUp ? "Create account" : "Welcome back"}
             </h2>
             <p className="text-sm text-muted-foreground">
-              {isSignUp ? "Set up your inspection platform" : "Sign in to your dashboard"}
+              {isSignUp ? "Set up your workspace" : "Sign in to your dashboard"}
             </p>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
             {isSignUp && (
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <Input id="name" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="John Smith" required />
-              </div>
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="name">Full Name</Label>
+                  <Input id="name" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="John Smith" required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="role">I am a...</Label>
+                  <Select value={role} onValueChange={setRole}>
+                    <SelectTrigger id="role"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="inspector">Vehicle Inspector</SelectItem>
+                      <SelectItem value="mechanic">Mobile Mechanic</SelectItem>
+                      <SelectItem value="repair_shop_manager">Repair Center</SelectItem>
+                      <SelectItem value="dispatcher">Dispatcher</SelectItem>
+                      <SelectItem value="company_admin">Company Admin</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">You can change this later in Settings.</p>
+                </div>
+              </>
             )}
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
