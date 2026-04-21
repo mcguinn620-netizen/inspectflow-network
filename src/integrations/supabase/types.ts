@@ -220,6 +220,44 @@ export type Database = {
           },
         ]
       }
+      earnings_settings: {
+        Row: {
+          default_job_fee: number
+          estimated_tax_rate: number
+          id: string
+          mileage_rate: number
+          organization_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          default_job_fee?: number
+          estimated_tax_rate?: number
+          id?: string
+          mileage_rate?: number
+          organization_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          default_job_fee?: number
+          estimated_tax_rate?: number
+          id?: string
+          mileage_rate?: number
+          organization_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "earnings_settings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       inspection_requests: {
         Row: {
           client_name: string | null
@@ -574,6 +612,151 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      jobs: {
+        Row: {
+          actual_end_time: string | null
+          actual_start_time: string | null
+          assigned_to: string | null
+          created_at: string
+          created_by: string | null
+          customer_name: string | null
+          deleted_at: string | null
+          estimated_duration_minutes: number | null
+          fee_override: number | null
+          id: string
+          inspection_request_id: string | null
+          location: string | null
+          notes: string | null
+          organization_id: string
+          scheduled_at: string | null
+          status: string
+          title: string
+          updated_at: string
+          updated_by: string | null
+          vehicle_id: string | null
+        }
+        Insert: {
+          actual_end_time?: string | null
+          actual_start_time?: string | null
+          assigned_to?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_name?: string | null
+          deleted_at?: string | null
+          estimated_duration_minutes?: number | null
+          fee_override?: number | null
+          id?: string
+          inspection_request_id?: string | null
+          location?: string | null
+          notes?: string | null
+          organization_id: string
+          scheduled_at?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          updated_by?: string | null
+          vehicle_id?: string | null
+        }
+        Update: {
+          actual_end_time?: string | null
+          actual_start_time?: string | null
+          assigned_to?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_name?: string | null
+          deleted_at?: string | null
+          estimated_duration_minutes?: number | null
+          fee_override?: number | null
+          id?: string
+          inspection_request_id?: string | null
+          location?: string | null
+          notes?: string | null
+          organization_id?: string
+          scheduled_at?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+          vehicle_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organization_users: {
+        Row: {
+          created_at: string
+          id: string
+          is_default: boolean
+          organization_id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          organization_id: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          organization_id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_users_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organizations: {
+        Row: {
+          created_at: string
+          deleted_at: string | null
+          id: string
+          name: string
+          owner_id: string | null
+          slug: string | null
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          deleted_at?: string | null
+          id?: string
+          name: string
+          owner_id?: string | null
+          slug?: string | null
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          deleted_at?: string | null
+          id?: string
+          name?: string
+          owner_id?: string | null
+          slug?: string | null
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       parsed_documents: {
         Row: {
@@ -945,6 +1128,125 @@ export type Database = {
           },
         ]
       }
+      trip_stops: {
+        Row: {
+          address: string | null
+          arrived_at: string | null
+          created_at: string
+          departed_at: string | null
+          id: string
+          job_id: string | null
+          label: string | null
+          latitude: number | null
+          longitude: number | null
+          miles_from_previous: number | null
+          notes: string | null
+          sort_order: number
+          trip_id: string
+        }
+        Insert: {
+          address?: string | null
+          arrived_at?: string | null
+          created_at?: string
+          departed_at?: string | null
+          id?: string
+          job_id?: string | null
+          label?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          miles_from_previous?: number | null
+          notes?: string | null
+          sort_order?: number
+          trip_id: string
+        }
+        Update: {
+          address?: string | null
+          arrived_at?: string | null
+          created_at?: string
+          departed_at?: string | null
+          id?: string
+          job_id?: string | null
+          label?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          miles_from_previous?: number | null
+          notes?: string | null
+          sort_order?: number
+          trip_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_stops_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_stops_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trips: {
+        Row: {
+          created_at: string
+          drive_minutes: number | null
+          end_time: string | null
+          id: string
+          notes: string | null
+          organization_id: string
+          start_time: string | null
+          status: string
+          total_miles: number | null
+          trip_date: string
+          updated_at: string
+          user_id: string
+          work_minutes: number | null
+        }
+        Insert: {
+          created_at?: string
+          drive_minutes?: number | null
+          end_time?: string | null
+          id?: string
+          notes?: string | null
+          organization_id: string
+          start_time?: string | null
+          status?: string
+          total_miles?: number | null
+          trip_date?: string
+          updated_at?: string
+          user_id: string
+          work_minutes?: number | null
+        }
+        Update: {
+          created_at?: string
+          drive_minutes?: number | null
+          end_time?: string | null
+          id?: string
+          notes?: string | null
+          organization_id?: string
+          start_time?: string | null
+          status?: string
+          total_miles?: number | null
+          trip_date?: string
+          updated_at?: string
+          user_id?: string
+          work_minutes?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trips_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -1026,6 +1328,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_org_member: { Args: { _org_id: string }; Returns: boolean }
     }
     Enums: {
       app_role:
@@ -1037,6 +1340,8 @@ export type Database = {
         | "technician"
         | "client"
         | "fleet_manager"
+        | "mechanic"
+        | "dispatcher"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1173,6 +1478,8 @@ export const Constants = {
         "technician",
         "client",
         "fleet_manager",
+        "mechanic",
+        "dispatcher",
       ],
     },
   },
