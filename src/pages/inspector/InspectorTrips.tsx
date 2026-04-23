@@ -286,10 +286,13 @@ export default function InspectorTrips() {
             <Card key={t.id}>
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between flex-wrap gap-2">
-                  <CardTitle className="text-base">{new Date(t.trip_date).toLocaleDateString([], { weekday:"short", month:"short", day:"numeric" })}</CardTitle>
+                  <CardTitle className="text-base">
+                    {t.title ? t.title : new Date(t.trip_date).toLocaleDateString([], { weekday:"short", month:"short", day:"numeric" })}
+                  </CardTitle>
                   <div className="flex items-center gap-2">
                     <Badge variant="outline" className="capitalize">{t.status}</Badge>
                     <span className="text-sm text-muted-foreground">{Number(t.total_miles).toFixed(1)} mi · {t.drive_minutes}m drive</span>
+                    <Button size="sm" variant="ghost" onClick={() => setEditingTrip(t)}><Pencil className="h-3.5 w-3.5 mr-1" />Edit</Button>
                   </div>
                 </div>
               </CardHeader>
@@ -313,6 +316,15 @@ export default function InspectorTrips() {
           ))}
         </div>
       </div>
+
+      <TripDetailSheet
+        trip={editingTrip as any}
+        stops={(editingTrip ? stops[editingTrip.id] : []) as any}
+        vehicles={vehicles as any}
+        open={!!editingTrip}
+        onOpenChange={(o) => !o && setEditingTrip(null)}
+        onSaved={load}
+      />
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-sm">
