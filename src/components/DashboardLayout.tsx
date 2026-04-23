@@ -73,7 +73,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                     </div>
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuContent align="end" className="w-56 bg-secondary">
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
                       <p className="text-sm font-medium leading-none">{displayName}</p>
@@ -88,7 +88,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                     <Link to="/settings"><SettingsIcon className="h-4 w-4 mr-2" />Settings</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
+                  <DropdownMenuItem onClick={handleLogout} className="text-navy-foreground">
                     <LogOut className="h-4 w-4 mr-2" />Sign out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
