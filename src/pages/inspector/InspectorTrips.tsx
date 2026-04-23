@@ -58,6 +58,8 @@ export default function InspectorTrips() {
   const [stopOpen, setStopOpen] = useState<string | null>(null);
   const [stopForm, setStopForm] = useState<Partial<Stop>>({});
   const [selectedStopId, setSelectedStopId] = useState<string | null>(null);
+  const [vehicles, setVehicles] = useState<any[]>([]);
+  const [editingTrip, setEditingTrip] = useState<Trip | null>(null);
   const [form, setForm] = useState<Partial<Trip>>({
     trip_date: new Date().toISOString().slice(0,10),
     total_miles: 0, drive_minutes: 0, work_minutes: 0, status: "draft",
