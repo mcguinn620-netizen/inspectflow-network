@@ -44,7 +44,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       <div className="min-h-screen flex w-full">
         <AppSidebar onLogout={handleLogout} />
         <div className="flex-1 flex flex-col min-w-0">
-          <header className="h-14 flex items-center justify-between border-b bg-card px-4 shrink-0">
+          <header className="h-14 flex items-center justify-between border-b bg-card px-4 shrink-0 py-0 my-[30px]">
             <div className="flex items-center gap-3">
               <SidebarTrigger className="text-muted-foreground hover:text-foreground transition-colors duration-150" />
               <div className="hidden sm:flex items-center gap-2 rounded-md bg-muted px-3 py-1.5">
