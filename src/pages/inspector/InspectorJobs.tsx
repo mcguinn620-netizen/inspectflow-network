@@ -28,6 +28,7 @@ interface Job {
   actual_end_time: string | null;
   status: string;
   fee_override: number | null;
+  mileage_fee: number | null;
   notes: string | null;
 }
 
@@ -42,7 +43,8 @@ export default function InspectorJobs() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Job | null>(null);
   const [form, setForm] = useState<Partial<Job>>({ title: "", status: "scheduled", estimated_duration_minutes: 60 });
-  const [tripJobMap, setTripJobMap] = useState<Record<string, string>>({}); // job_id -> trip_id
+  const [tripJobMap, setTripJobMap] = useState<Record<string, string>>({});
+  const [defaults, setDefaults] = useState<{ fee: number; mileageFee: number }>({ fee: 75, mileageFee: 0 });
 
   const load = async () => {
     if (!activeOrgId || !user) return;
@@ -50,6 +52,14 @@ export default function InspectorJobs() {
       .from("jobs").select("*").eq("organization_id", activeOrgId)
       .is("deleted_at", null).order("scheduled_at", { ascending: true, nullsFirst: false });
     setJobs((data ?? []) as Job[]);
+
+    const { data: settings } = await supabase
+      .from("earnings_settings").select("default_job_fee, default_mileage_fee")
+      .eq("user_id", user.id).maybeSingle();
+    setDefaults({
+      fee: Number(settings?.default_job_fee ?? 75),
+      mileageFee: Number((settings as any)?.default_mileage_fee ?? 0),
+    });
 
     const { data: liveTrip } = await supabase
       .from("trips").select("id").eq("user_id", user.id)
