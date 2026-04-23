@@ -1,97 +1,125 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
-import { toast } from "sonner";
-import { Info } from "lucide-react";
+import { Info, Settings as SettingsIcon, TrendingUp, Receipt, Car, Calculator } from "lucide-react";
 
 interface Settings {
   default_job_fee: number;
+  default_mileage_fee: number;
   mileage_rate: number;
   estimated_tax_rate: number;
+  federal_tax_rate: number;
+  state_tax_rate: number;
+  self_employment_tax_rate: number;
+  state_code: string | null;
+  filing_status: string;
 }
 
 interface PeriodStats {
   jobs: number;
   miles: number;
   jobEarnings: number;
-  mileageEarnings: number;
+  mileageFeeEarnings: number;
 }
+
+const DEFAULTS: Settings = {
+  default_job_fee: 75,
+  default_mileage_fee: 0,
+  mileage_rate: 0.67,
+  estimated_tax_rate: 0.25,
+  federal_tax_rate: 0.15,
+  state_tax_rate: 0.05,
+  self_employment_tax_rate: 0.153,
+  state_code: null,
+  filing_status: "single",
+};
 
 export default function InspectorTax() {
   const { user } = useAuth();
   const { activeOrgId } = useUserRoles();
-  const [settings, setSettings] = useState<Settings>({ default_job_fee: 75, mileage_rate: 0.67, estimated_tax_rate: 0.25 });
-  const [period, setPeriod] = useState<"week" | "month">("week");
-  const [week, setWeek] = useState<PeriodStats>({ jobs: 0, miles: 0, jobEarnings: 0, mileageEarnings: 0 });
-  const [month, setMonth] = useState<PeriodStats>({ jobs: 0, miles: 0, jobEarnings: 0, mileageEarnings: 0 });
-  const [saving, setSaving] = useState(false);
+  const [settings, setSettings] = useState<Settings>(DEFAULTS);
+  const [period, setPeriod] = useState<"week" | "month" | "ytd">("week");
+  const [week, setWeek] = useState<PeriodStats>({ jobs: 0, miles: 0, jobEarnings: 0, mileageFeeEarnings: 0 });
+  const [month, setMonth] = useState<PeriodStats>({ jobs: 0, miles: 0, jobEarnings: 0, mileageFeeEarnings: 0 });
+  const [ytd, setYtd] = useState<PeriodStats>({ jobs: 0, miles: 0, jobEarnings: 0, mileageFeeEarnings: 0 });
 
   const load = async () => {
     if (!user || !activeOrgId) return;
-    const { data: s } = await supabase.from("earnings_settings")
-      .select("*").eq("user_id", user.id).maybeSingle();
+    const { data: s } = await supabase.from("earnings_settings").select("*").eq("user_id", user.id).maybeSingle();
     const cfg: Settings = s ? {
       default_job_fee: Number(s.default_job_fee),
+      default_mileage_fee: Number((s as any).default_mileage_fee ?? 0),
       mileage_rate: Number(s.mileage_rate),
       estimated_tax_rate: Number(s.estimated_tax_rate),
-    } : settings;
-    if (s) setSettings(cfg);
+      federal_tax_rate: Number((s as any).federal_tax_rate ?? 0.15),
+      state_tax_rate: Number((s as any).state_tax_rate ?? 0.05),
+      self_employment_tax_rate: Number((s as any).self_employment_tax_rate ?? 0.153),
+      state_code: (s as any).state_code ?? null,
+      filing_status: (s as any).filing_status ?? "single",
+    } : DEFAULTS;
+    setSettings(cfg);
 
     const now = new Date();
     const weekAgo = new Date(); weekAgo.setDate(now.getDate() - 7);
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const yearStart = new Date(now.getFullYear(), 0, 1);
 
     const { data: jobs } = await supabase.from("jobs")
-      .select("status,fee_override,actual_end_time")
+      .select("status,fee_override,mileage_fee,actual_end_time")
       .eq("organization_id", activeOrgId).eq("status", "completed")
-      .gte("actual_end_time", monthStart.toISOString());
+      .gte("actual_end_time", yearStart.toISOString());
 
     const { data: trips } = await supabase.from("trips")
       .select("trip_date,total_miles").eq("user_id", user.id)
-      .gte("trip_date", monthStart.toISOString().slice(0,10));
-
-    const fee = cfg.default_job_fee;
-    const mRate = cfg.mileage_rate;
+      .gte("trip_date", yearStart.toISOString().slice(0,10));
 
     const calc = (jobsList: any[], tripsList: any[]): PeriodStats => {
       const miles = tripsList.reduce((sum, t) => sum + Number(t.total_miles || 0), 0);
-      const jobEarnings = jobsList.reduce((sum, j) => sum + Number(j.fee_override ?? fee), 0);
-      return { jobs: jobsList.length, miles, jobEarnings, mileageEarnings: miles * mRate };
+      const jobEarnings = jobsList.reduce((sum, j) => sum + Number(j.fee_override ?? cfg.default_job_fee), 0);
+      const mileageFeeEarnings = jobsList.reduce((sum, j) => sum + Number(j.mileage_fee ?? cfg.default_mileage_fee), 0);
+      return { jobs: jobsList.length, miles, jobEarnings, mileageFeeEarnings };
     };
 
-    const weekJobsList = (jobs ?? []).filter((j: any) => j.actual_end_time && new Date(j.actual_end_time) >= weekAgo);
-    const weekTripsList = (trips ?? []).filter((t: any) => new Date(t.trip_date) >= weekAgo);
-    setWeek(calc(weekJobsList, weekTripsList));
-    setMonth(calc(jobs ?? [], trips ?? []));
+    const inRange = (d: string | null | undefined, from: Date) => d ? new Date(d) >= from : false;
+
+    setWeek(calc(
+      (jobs ?? []).filter((j: any) => inRange(j.actual_end_time, weekAgo)),
+      (trips ?? []).filter((t: any) => new Date(t.trip_date) >= weekAgo),
+    ));
+    setMonth(calc(
+      (jobs ?? []).filter((j: any) => inRange(j.actual_end_time, monthStart)),
+      (trips ?? []).filter((t: any) => new Date(t.trip_date) >= monthStart),
+    ));
+    setYtd(calc(jobs ?? [], trips ?? []));
   };
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [user, activeOrgId]);
 
-  const save = async () => {
-    if (!user || !activeOrgId) return;
-    setSaving(true);
-    const { error } = await supabase.from("earnings_settings").upsert({
-      organization_id: activeOrgId, user_id: user.id,
-      default_job_fee: settings.default_job_fee,
-      mileage_rate: settings.mileage_rate,
-      estimated_tax_rate: settings.estimated_tax_rate,
-    }, { onConflict: "organization_id,user_id" });
-    setSaving(false);
-    if (error) return toast.error(error.message);
-    toast.success("Settings saved");
-    load();
-  };
+  const current = period === "week" ? week : period === "month" ? month : ytd;
+  const periodLabel = period === "week" ? "Past 7 days" : period === "month" ? "Month-to-date" : "Year-to-date";
 
-  const current = period === "week" ? week : month;
-  const gross = current.jobEarnings + current.mileageEarnings;
-  const taxOwed = gross * settings.estimated_tax_rate;
-  const net = gross - taxOwed;
+  // Earnings breakdown
+  const grossJobs = current.jobEarnings;
+  const grossMileageFees = current.mileageFeeEarnings;
+  const gross = grossJobs + grossMileageFees;
+
+  // Mileage deduction (IRS standard mileage method) reduces taxable income
+  const mileageDeduction = current.miles * settings.mileage_rate;
+  const taxable = Math.max(gross - mileageDeduction, 0);
+
+  // Tax breakdown — use detailed rates if present, else fallback to combined estimate
+  const useDetailed = settings.federal_tax_rate > 0 || settings.state_tax_rate > 0 || settings.self_employment_tax_rate > 0;
+  const seTax = useDetailed ? taxable * settings.self_employment_tax_rate : 0;
+  const fedTax = useDetailed ? taxable * settings.federal_tax_rate : taxable * settings.estimated_tax_rate;
+  const stateTax = useDetailed ? taxable * settings.state_tax_rate : 0;
+  const totalTax = seTax + fedTax + stateTax;
+  const net = gross - totalTax;
 
   return (
     <DashboardLayout>
@@ -99,56 +127,101 @@ export default function InspectorTax() {
         <div className="flex items-start justify-between flex-wrap gap-3">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">Tax &amp; Earnings</h1>
-            <p className="text-sm text-muted-foreground mt-1">Estimates based on completed jobs and logged miles</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Estimates based on completed jobs and logged miles
+              {settings.state_code && <> · State: <span className="font-medium text-foreground">{settings.state_code}</span></>}
+            </p>
           </div>
-          <Tabs value={period} onValueChange={v => setPeriod(v as "week" | "month")}>
-            <TabsList>
-              <TabsTrigger value="week">This week</TabsTrigger>
-              <TabsTrigger value="month">This month</TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <div className="flex gap-2">
+            <Tabs value={period} onValueChange={(v) => setPeriod(v as any)}>
+              <TabsList>
+                <TabsTrigger value="week">Week</TabsTrigger>
+                <TabsTrigger value="month">Month</TabsTrigger>
+                <TabsTrigger value="ytd">YTD</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            <Button asChild variant="outline" size="sm">
+              <Link to="/settings"><SettingsIcon className="h-4 w-4 mr-1.5" />Tax settings</Link>
+            </Button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <Stat label="Job earnings" value={`$${current.jobEarnings.toFixed(0)}`} sub={`${current.jobs} job${current.jobs !== 1 ? "s" : ""} × $${settings.default_job_fee.toFixed(0)} default`} />
-          <Stat label="Mileage earnings" value={`$${current.mileageEarnings.toFixed(0)}`} sub={`${current.miles.toFixed(0)} mi × $${settings.mileage_rate.toFixed(2)}/mi`} />
-          <Stat label="Estimated tax" value={`-$${taxOwed.toFixed(0)}`} sub={`${(settings.estimated_tax_rate * 100).toFixed(0)}% of gross`} muted />
-          <Stat label="Estimated net" value={`$${net.toFixed(0)}`} sub={`${period === "week" ? "Past 7 days" : "Month-to-date"}`} highlight />
+        {/* Hero summary */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <Card className="md:col-span-1">
+            <CardContent className="p-5">
+              <div className="flex items-center gap-2 mb-1 text-muted-foreground">
+                <TrendingUp className="h-4 w-4" />
+                <span className="text-xs uppercase tracking-wide">Gross earnings</span>
+              </div>
+              <p className="text-3xl font-semibold tabular-nums">${gross.toFixed(0)}</p>
+              <p className="text-xs text-muted-foreground mt-1">{periodLabel} · {current.jobs} job{current.jobs !== 1 ? "s" : ""}</p>
+            </CardContent>
+          </Card>
+          <Card className="md:col-span-1">
+            <CardContent className="p-5">
+              <div className="flex items-center gap-2 mb-1 text-muted-foreground">
+                <Receipt className="h-4 w-4" />
+                <span className="text-xs uppercase tracking-wide">Estimated tax</span>
+              </div>
+              <p className="text-3xl font-semibold tabular-nums text-muted-foreground">−${totalTax.toFixed(0)}</p>
+              <p className="text-xs text-muted-foreground mt-1">SE + Federal + State</p>
+            </CardContent>
+          </Card>
+          <Card className="md:col-span-1 border-primary/40 bg-primary/5">
+            <CardContent className="p-5">
+              <div className="flex items-center gap-2 mb-1 text-primary">
+                <Calculator className="h-4 w-4" />
+                <span className="text-xs uppercase tracking-wide">Estimated net</span>
+              </div>
+              <p className="text-3xl font-semibold tabular-nums">${net.toFixed(0)}</p>
+              <p className="text-xs text-muted-foreground mt-1">After estimated taxes</p>
+            </CardContent>
+          </Card>
         </div>
+
+        {/* Breakdown */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">Earnings breakdown</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <BreakdownRow label="Job fees" sub={`${current.jobs} jobs · base $${settings.default_job_fee.toFixed(0)} unless overridden`} value={grossJobs} />
+            <BreakdownRow label="Mileage fees billed" sub={`Flat mileage fee per job`} value={grossMileageFees} />
+            <Divider />
+            <BreakdownRow label="Gross earnings" value={gross} bold />
+            <BreakdownRow
+              label="Mileage deduction"
+              sub={<>{current.miles.toFixed(0)} mi × ${settings.mileage_rate.toFixed(2)}/mi <Badge variant="outline" className="ml-1 text-[10px]"><Car className="h-2.5 w-2.5 mr-1" />IRS standard</Badge></>}
+              value={-mileageDeduction}
+            />
+            <Divider />
+            <BreakdownRow label="Taxable estimate" value={taxable} bold muted />
+            {useDetailed && (
+              <>
+                <BreakdownRow label="Self-employment tax" sub={`${(settings.self_employment_tax_rate*100).toFixed(1)}%`} value={-seTax} />
+                <BreakdownRow label="Federal tax" sub={`${(settings.federal_tax_rate*100).toFixed(0)}% · ${settings.filing_status.replace("_"," ")}`} value={-fedTax} />
+                <BreakdownRow label={`State tax${settings.state_code ? ` (${settings.state_code})` : ""}`} sub={`${(settings.state_tax_rate*100).toFixed(0)}%`} value={-stateTax} />
+              </>
+            )}
+            {!useDetailed && (
+              <BreakdownRow label="Combined tax estimate" sub={`${(settings.estimated_tax_rate*100).toFixed(0)}%`} value={-totalTax} />
+            )}
+            <Divider />
+            <BreakdownRow label="Estimated tax owed" value={-totalTax} bold muted />
+            <BreakdownRow label="Estimated net" value={net} bold highlight />
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2"><Info className="h-4 w-4" />How this is calculated</CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-muted-foreground space-y-1">
-            <p><span className="text-foreground font-medium">Gross</span> = Job earnings ({current.jobs} × ${settings.default_job_fee.toFixed(0)} unless overridden) + Mileage ({current.miles.toFixed(0)} mi × ${settings.mileage_rate.toFixed(2)})</p>
-            <p><span className="text-foreground font-medium">Tax estimate</span> = Gross × {(settings.estimated_tax_rate * 100).toFixed(0)}%</p>
-            <p><span className="text-foreground font-medium">Net</span> = Gross − Tax estimate</p>
-            <p className="text-xs pt-2">First-pass estimator — confirm with a tax professional.</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader><CardTitle className="text-base">Earnings settings</CardTitle></CardHeader>
-          <CardContent className="space-y-3">
-            <div className="grid md:grid-cols-3 gap-3">
-              <div className="space-y-1.5">
-                <Label>Default job fee ($)</Label>
-                <Input type="number" step="0.01" value={settings.default_job_fee} onChange={e => setSettings({ ...settings, default_job_fee: Number(e.target.value) })} />
-                <p className="text-xs text-muted-foreground">Used when a job has no override.</p>
-              </div>
-              <div className="space-y-1.5">
-                <Label>Mileage rate ($/mi)</Label>
-                <Input type="number" step="0.01" value={settings.mileage_rate} onChange={e => setSettings({ ...settings, mileage_rate: Number(e.target.value) })} />
-                <p className="text-xs text-muted-foreground">Separate mileage line on earnings.</p>
-              </div>
-              <div className="space-y-1.5">
-                <Label>Tax rate (0–1)</Label>
-                <Input type="number" step="0.01" value={settings.estimated_tax_rate} onChange={e => setSettings({ ...settings, estimated_tax_rate: Number(e.target.value) })} />
-                <p className="text-xs text-muted-foreground">e.g. 0.25 for 25%.</p>
-              </div>
-            </div>
-            <Button onClick={save} disabled={saving}>{saving ? "Saving..." : "Save settings"}</Button>
+            <p><span className="text-foreground font-medium">Gross</span> = Job fees + mileage fees billed.</p>
+            <p><span className="text-foreground font-medium">Taxable</span> = Gross − mileage deduction (miles × IRS rate).</p>
+            <p><span className="text-foreground font-medium">Tax</span> = SE + federal + state, applied to taxable income.</p>
+            <p className="text-xs pt-2">Configure rates in <Link to="/settings" className="text-primary underline">Settings</Link>. First-pass estimator only — confirm with a tax professional.</p>
           </CardContent>
         </Card>
       </div>
@@ -156,14 +229,22 @@ export default function InspectorTax() {
   );
 }
 
-function Stat({ label, value, sub, highlight, muted }: { label: string; value: string; sub: string; highlight?: boolean; muted?: boolean }) {
+function BreakdownRow({
+  label, sub, value, bold, highlight, muted,
+}: { label: React.ReactNode; sub?: React.ReactNode; value: number; bold?: boolean; highlight?: boolean; muted?: boolean }) {
   return (
-    <Card className={highlight ? "border-primary/40 bg-primary/5" : ""}>
-      <CardContent className="p-4">
-        <p className="text-xs text-muted-foreground">{label}</p>
-        <p className={`text-2xl font-semibold mt-1 ${muted ? "text-muted-foreground" : ""}`}>{value}</p>
-        <p className="text-xs text-muted-foreground mt-1">{sub}</p>
-      </CardContent>
-    </Card>
+    <div className={`flex items-start justify-between py-2 gap-3 ${highlight ? "bg-primary/5 -mx-3 px-3 rounded" : ""}`}>
+      <div className="min-w-0">
+        <p className={`text-sm ${bold ? "font-semibold" : ""} ${highlight ? "text-primary" : ""}`}>{label}</p>
+        {sub && <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>}
+      </div>
+      <p className={`text-sm tabular-nums ${bold ? "font-semibold" : ""} ${muted ? "text-muted-foreground" : ""} ${highlight ? "text-primary text-base" : ""}`}>
+        {value < 0 ? "−" : ""}${Math.abs(value).toFixed(2)}
+      </p>
+    </div>
   );
+}
+
+function Divider() {
+  return <div className="border-t my-1" />;
 }
