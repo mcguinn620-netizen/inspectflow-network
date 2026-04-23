@@ -168,6 +168,24 @@ export default function InspectorJobs() {
     return true;
   }), [jobs, filter, today, tomorrow]);
 
+  const earningsFor = (j: Job) => {
+    const base = j.fee_override != null ? Number(j.fee_override) : defaults.fee;
+    const mileage = j.mileage_fee != null ? Number(j.mileage_fee) : 0;
+    const gross = base + mileage;
+    return { base, mileage, gross, taxable: gross * defaults.taxRate, net: gross * (1 - defaults.taxRate) };
+  };
+
+  const totals = useMemo(() => {
+    return filtered.reduce((acc, j) => {
+      const e = earningsFor(j);
+      acc.base += e.base; acc.mileage += e.mileage; acc.gross += e.gross; acc.taxable += e.taxable;
+      return acc;
+    }, { base: 0, mileage: 0, gross: 0, taxable: 0 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filtered, defaults]);
+
+  const fmt = (n: number) => `$${n.toFixed(2)}`;
+
   return (
     <DashboardLayout>
       <div className="space-y-4">
