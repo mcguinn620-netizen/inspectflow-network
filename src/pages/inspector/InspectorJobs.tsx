@@ -44,7 +44,7 @@ export default function InspectorJobs() {
   const [editing, setEditing] = useState<Job | null>(null);
   const [form, setForm] = useState<Partial<Job>>({ title: "", status: "scheduled", estimated_duration_minutes: 60 });
   const [tripJobMap, setTripJobMap] = useState<Record<string, string>>({});
-  const [defaults, setDefaults] = useState<{ fee: number; mileageFee: number }>({ fee: 75, mileageFee: 0 });
+  const [defaults, setDefaults] = useState<{ fee: number; mileageFee: number; taxRate: number }>({ fee: 75, mileageFee: 0, taxRate: 0.25 });
 
   const load = async () => {
     if (!activeOrgId || !user) return;
