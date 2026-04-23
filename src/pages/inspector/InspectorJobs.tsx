@@ -144,7 +144,7 @@ export default function InspectorJobs() {
       organization_id: activeOrgId, assigned_to: user.id, created_by: user.id,
       title: `${j.title} (copy)`, customer_name: j.customer_name, location: j.location,
       estimated_duration_minutes: j.estimated_duration_minutes ?? 60,
-      status: "scheduled", fee_override: j.fee_override, notes: j.notes,
+      status: "scheduled", fee_override: j.fee_override, mileage_fee: j.mileage_fee, notes: j.notes,
     });
     if (error) return toast.error(error.message);
     toast.success("Job duplicated");
