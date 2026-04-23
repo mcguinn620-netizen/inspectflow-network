@@ -271,6 +271,28 @@ export default function InspectorJobs() {
                       {j.scheduled_at ? new Date(j.scheduled_at).toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}) : "Unscheduled"}
                       {j.estimated_duration_minutes && <> · {j.estimated_duration_minutes}min</>}
                     </p>
+                    {(() => {
+                      const e = earningsFor(j);
+                      return (
+                        <div className="mt-2 flex items-center gap-x-3 gap-y-1 flex-wrap text-[11px] tabular-nums">
+                          <span className="text-muted-foreground">
+                            Base <span className="text-foreground font-medium">{fmt(e.base)}</span>
+                            {j.fee_override != null && Number(j.fee_override) !== Number(defaults.fee) && (
+                              <span className="ml-1 text-[10px] text-muted-foreground">(custom)</span>
+                            )}
+                          </span>
+                          <span className="text-muted-foreground">
+                            Mileage <span className="text-foreground font-medium">{fmt(e.mileage)}</span>
+                          </span>
+                          <span className="text-muted-foreground">
+                            Gross <span className="text-primary font-semibold">{fmt(e.gross)}</span>
+                          </span>
+                          <span className="text-muted-foreground">
+                            Est. tax <span className="text-warning font-medium">{fmt(e.taxable)}</span>
+                          </span>
+                        </div>
+                      );
+                    })()}
                   </div>
                   <div className="flex items-center gap-1 flex-wrap">
                     <OpenInMapsButton target={{ address: j.location, label: j.title }} iconOnly />
