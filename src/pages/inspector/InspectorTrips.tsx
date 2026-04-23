@@ -13,19 +13,25 @@ import { useUserRoles } from "@/hooks/useUserRoles";
 import { toast } from "sonner";
 import { OpenInMapsButton } from "@/components/maps/OpenInMapsButton";
 import { TripMapOverlay, type MapStop } from "@/components/maps/TripMapOverlay";
+import { TripDetailSheet } from "@/components/trips/TripDetailSheet";
 import { Link } from "react-router-dom";
+import { Pencil, Download } from "lucide-react";
 
 interface Trip {
   id: string;
+  title: string | null;
   trip_date: string;
   total_miles: number;
   drive_minutes: number;
   work_minutes: number;
   status: string;
   notes: string | null;
+  start_time: string | null;
+  end_time: string | null;
   started_at: string | null;
   paused_at: string | null;
   completed_at: string | null;
+  inspector_vehicle_id: string | null;
 }
 interface Stop {
   id: string;
@@ -52,6 +58,8 @@ export default function InspectorTrips() {
   const [stopOpen, setStopOpen] = useState<string | null>(null);
   const [stopForm, setStopForm] = useState<Partial<Stop>>({});
   const [selectedStopId, setSelectedStopId] = useState<string | null>(null);
+  const [vehicles, setVehicles] = useState<any[]>([]);
+  const [editingTrip, setEditingTrip] = useState<Trip | null>(null);
   const [form, setForm] = useState<Partial<Trip>>({
     trip_date: new Date().toISOString().slice(0,10),
     total_miles: 0, drive_minutes: 0, work_minutes: 0, status: "draft",
@@ -71,6 +79,9 @@ export default function InspectorTrips() {
       for (const stop of (s ?? []) as Stop[]) (map[stop.trip_id] ??= []).push(stop);
       setStops(map);
     }
+    const { data: v } = await supabase.from("inspector_vehicles" as any)
+      .select("*").eq("user_id", user.id).eq("is_archived", false);
+    setVehicles((v ?? []) as any[]);
   };
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [user, activeOrgId]);
 
@@ -201,6 +212,7 @@ export default function InspectorTrips() {
                 {activeTrip.status === "active" && (
                   <Button size="sm" variant="outline" onClick={() => setTripStatus(activeTrip, "paused")}><Pause className="h-3.5 w-3.5 mr-1" />Pause</Button>
                 )}
+                <Button size="sm" variant="outline" onClick={() => setEditingTrip(activeTrip)}><Pencil className="h-3.5 w-3.5 mr-1" />Edit</Button>
                 <Button size="sm" variant="default" onClick={() => setTripStatus(activeTrip, "completed")}><CheckCircle2 className="h-3.5 w-3.5 mr-1" />Complete</Button>
               </div>
             </div>
@@ -275,10 +287,13 @@ export default function InspectorTrips() {
             <Card key={t.id}>
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between flex-wrap gap-2">
-                  <CardTitle className="text-base">{new Date(t.trip_date).toLocaleDateString([], { weekday:"short", month:"short", day:"numeric" })}</CardTitle>
+                  <CardTitle className="text-base">
+                    {t.title ? t.title : new Date(t.trip_date).toLocaleDateString([], { weekday:"short", month:"short", day:"numeric" })}
+                  </CardTitle>
                   <div className="flex items-center gap-2">
                     <Badge variant="outline" className="capitalize">{t.status}</Badge>
                     <span className="text-sm text-muted-foreground">{Number(t.total_miles).toFixed(1)} mi · {t.drive_minutes}m drive</span>
+                    <Button size="sm" variant="ghost" onClick={() => setEditingTrip(t)}><Pencil className="h-3.5 w-3.5 mr-1" />Edit</Button>
                   </div>
                 </div>
               </CardHeader>
@@ -302,6 +317,15 @@ export default function InspectorTrips() {
           ))}
         </div>
       </div>
+
+      <TripDetailSheet
+        trip={editingTrip as any}
+        stops={(editingTrip ? stops[editingTrip.id] : []) as any}
+        vehicles={vehicles as any}
+        open={!!editingTrip}
+        onOpenChange={(o) => !o && setEditingTrip(null)}
+        onSaved={load}
+      />
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-sm">

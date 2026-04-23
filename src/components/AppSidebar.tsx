@@ -14,6 +14,7 @@ import {
   Route,
   Receipt,
   Briefcase,
+  LogOut,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import {
@@ -65,7 +66,7 @@ const bottomNav = [
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 
-export function AppSidebar() {
+export function AppSidebar({ onLogout }: { onLogout?: () => void } = {}) {
   const { state, toggleSidebar } = useSidebar();
   const collapsed = state === "collapsed";
   const { hasRole, isAdmin, loading } = useUserRoles();
@@ -180,6 +181,17 @@ export function AppSidebar() {
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
+          {onLogout && (
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={onLogout}
+                className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-destructive transition-colors duration-150"
+              >
+                <LogOut className="h-4 w-4 shrink-0" />
+                {!collapsed && <span>Sign out</span>}
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>

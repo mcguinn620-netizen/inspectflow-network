@@ -28,6 +28,7 @@ interface Job {
   actual_end_time: string | null;
   status: string;
   fee_override: number | null;
+  mileage_fee: number | null;
   notes: string | null;
 }
 
@@ -42,7 +43,8 @@ export default function InspectorJobs() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Job | null>(null);
   const [form, setForm] = useState<Partial<Job>>({ title: "", status: "scheduled", estimated_duration_minutes: 60 });
-  const [tripJobMap, setTripJobMap] = useState<Record<string, string>>({}); // job_id -> trip_id
+  const [tripJobMap, setTripJobMap] = useState<Record<string, string>>({});
+  const [defaults, setDefaults] = useState<{ fee: number; mileageFee: number }>({ fee: 75, mileageFee: 0 });
 
   const load = async () => {
     if (!activeOrgId || !user) return;
@@ -50,6 +52,14 @@ export default function InspectorJobs() {
       .from("jobs").select("*").eq("organization_id", activeOrgId)
       .is("deleted_at", null).order("scheduled_at", { ascending: true, nullsFirst: false });
     setJobs((data ?? []) as Job[]);
+
+    const { data: settings } = await supabase
+      .from("earnings_settings").select("default_job_fee, default_mileage_fee")
+      .eq("user_id", user.id).maybeSingle();
+    setDefaults({
+      fee: Number(settings?.default_job_fee ?? 75),
+      mileageFee: Number((settings as any)?.default_mileage_fee ?? 0),
+    });
 
     const { data: liveTrip } = await supabase
       .from("trips").select("id").eq("user_id", user.id)
@@ -66,17 +76,33 @@ export default function InspectorJobs() {
 
   const openNew = () => {
     setEditing(null);
-    setForm({ title: "", status: "scheduled", estimated_duration_minutes: 60, scheduled_at: new Date().toISOString().slice(0,16) });
+    setForm({
+      title: "", status: "scheduled", estimated_duration_minutes: 60,
+      scheduled_at: new Date().toISOString().slice(0,16),
+      fee_override: defaults.fee,        // prefill base fee, editable
+      mileage_fee: defaults.mileageFee,  // prefill default mileage fee
+    });
     setOpen(true);
   };
   const openEdit = (j: Job) => {
     setEditing(j);
-    setForm({ ...j, scheduled_at: j.scheduled_at ? j.scheduled_at.slice(0,16) : "" });
+    setForm({
+      ...j,
+      scheduled_at: j.scheduled_at ? j.scheduled_at.slice(0,16) : "",
+      fee_override: j.fee_override ?? defaults.fee,
+      mileage_fee: j.mileage_fee ?? defaults.mileageFee,
+    });
     setOpen(true);
   };
 
   const save = async () => {
     if (!user || !activeOrgId || !form.title) return;
+    // Treat override as "custom fee" only if it differs from default base fee.
+    const overrideValue = form.fee_override === undefined || form.fee_override === null
+      ? null
+      : Number(form.fee_override) === Number(defaults.fee)
+        ? null
+        : Number(form.fee_override);
     const payload: any = {
       title: form.title,
       customer_name: form.customer_name || null,
@@ -84,7 +110,8 @@ export default function InspectorJobs() {
       scheduled_at: form.scheduled_at ? new Date(form.scheduled_at).toISOString() : null,
       estimated_duration_minutes: form.estimated_duration_minutes ?? 60,
       status: form.status ?? "scheduled",
-      fee_override: form.fee_override ?? null,
+      fee_override: overrideValue,
+      mileage_fee: form.mileage_fee !== undefined && form.mileage_fee !== null ? Number(form.mileage_fee) : null,
       notes: form.notes || null,
     };
     if (editing) {
@@ -117,7 +144,7 @@ export default function InspectorJobs() {
       organization_id: activeOrgId, assigned_to: user.id, created_by: user.id,
       title: `${j.title} (copy)`, customer_name: j.customer_name, location: j.location,
       estimated_duration_minutes: j.estimated_duration_minutes ?? 60,
-      status: "scheduled", fee_override: j.fee_override, notes: j.notes,
+      status: "scheduled", fee_override: j.fee_override, mileage_fee: j.mileage_fee, notes: j.notes,
     });
     if (error) return toast.error(error.message);
     toast.success("Job duplicated");
@@ -225,15 +252,36 @@ export default function InspectorJobs() {
               <div className="space-y-1.5"><Label>Scheduled</Label><Input type="datetime-local" value={(form.scheduled_at as any) ?? ""} onChange={e => setForm({ ...form, scheduled_at: e.target.value as any })} /></div>
               <div className="space-y-1.5"><Label>Duration (min)</Label><Input type="number" value={form.estimated_duration_minutes ?? 60} onChange={e => setForm({ ...form, estimated_duration_minutes: Number(e.target.value) })} /></div>
             </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div className="space-y-1.5">
-                <Label>Status</Label>
-                <Select value={form.status ?? "scheduled"} onValueChange={v => setForm({ ...form, status: v })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>{STATUSES.map(s => <SelectItem key={s} value={s} className="capitalize">{s.replace("_"," ")}</SelectItem>)}</SelectContent>
-                </Select>
+            <div className="space-y-1.5">
+              <Label>Status</Label>
+              <Select value={form.status ?? "scheduled"} onValueChange={v => setForm({ ...form, status: v })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>{STATUSES.map(s => <SelectItem key={s} value={s} className="capitalize">{s.replace("_"," ")}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+            <div className="rounded-md border bg-muted/30 p-3 space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Fees</p>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1.5">
+                  <Label className="text-xs flex items-center gap-1.5">
+                    Base inspection fee ($)
+                    {Number(form.fee_override) !== Number(defaults.fee) && (
+                      <Badge variant="outline" className="text-[10px]">Custom</Badge>
+                    )}
+                  </Label>
+                  <Input type="number" step="0.01"
+                    value={form.fee_override ?? defaults.fee}
+                    onChange={e => setForm({ ...form, fee_override: e.target.value === "" ? null : Number(e.target.value) })} />
+                  <p className="text-[10px] text-muted-foreground">Default ${defaults.fee.toFixed(2)} from Settings. Edit to override for this job.</p>
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Mileage fee ($)</Label>
+                  <Input type="number" step="0.01"
+                    value={form.mileage_fee ?? defaults.mileageFee}
+                    onChange={e => setForm({ ...form, mileage_fee: e.target.value === "" ? null : Number(e.target.value) })} />
+                  <p className="text-[10px] text-muted-foreground">Flat mileage fee added to this job.</p>
+                </div>
               </div>
-              <div className="space-y-1.5"><Label>Fee override ($)</Label><Input type="number" value={form.fee_override ?? ""} onChange={e => setForm({ ...form, fee_override: e.target.value ? Number(e.target.value) : null })} /></div>
             </div>
             <div className="space-y-1.5"><Label>Notes</Label><Textarea rows={3} value={form.notes ?? ""} onChange={e => setForm({ ...form, notes: e.target.value })} /></div>
           </div>

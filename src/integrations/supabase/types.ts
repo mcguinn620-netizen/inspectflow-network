@@ -223,28 +223,46 @@ export type Database = {
       earnings_settings: {
         Row: {
           default_job_fee: number
+          default_mileage_fee: number
           estimated_tax_rate: number
+          federal_tax_rate: number
+          filing_status: string
           id: string
           mileage_rate: number
           organization_id: string
+          self_employment_tax_rate: number
+          state_code: string | null
+          state_tax_rate: number
           updated_at: string
           user_id: string
         }
         Insert: {
           default_job_fee?: number
+          default_mileage_fee?: number
           estimated_tax_rate?: number
+          federal_tax_rate?: number
+          filing_status?: string
           id?: string
           mileage_rate?: number
           organization_id: string
+          self_employment_tax_rate?: number
+          state_code?: string | null
+          state_tax_rate?: number
           updated_at?: string
           user_id: string
         }
         Update: {
           default_job_fee?: number
+          default_mileage_fee?: number
           estimated_tax_rate?: number
+          federal_tax_rate?: number
+          filing_status?: string
           id?: string
           mileage_rate?: number
           organization_id?: string
+          self_employment_tax_rate?: number
+          state_code?: string | null
+          state_tax_rate?: number
           updated_at?: string
           user_id?: string
         }
@@ -545,6 +563,51 @@ export type Database = {
           },
         ]
       }
+      inspector_vehicles: {
+        Row: {
+          created_at: string
+          id: string
+          is_archived: boolean
+          is_default: boolean
+          license_plate: string | null
+          make: string | null
+          model: string | null
+          nickname: string
+          organization_id: string
+          updated_at: string
+          user_id: string
+          year: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_archived?: boolean
+          is_default?: boolean
+          license_plate?: string | null
+          make?: string | null
+          model?: string | null
+          nickname: string
+          organization_id: string
+          updated_at?: string
+          user_id: string
+          year?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_archived?: boolean
+          is_default?: boolean
+          license_plate?: string | null
+          make?: string | null
+          model?: string | null
+          nickname?: string
+          organization_id?: string
+          updated_at?: string
+          user_id?: string
+          year?: string | null
+        }
+        Relationships: []
+      }
       inspectors: {
         Row: {
           avatar_url: string | null
@@ -627,6 +690,7 @@ export type Database = {
           id: string
           inspection_request_id: string | null
           location: string | null
+          mileage_fee: number | null
           notes: string | null
           organization_id: string
           scheduled_at: string | null
@@ -649,6 +713,7 @@ export type Database = {
           id?: string
           inspection_request_id?: string | null
           location?: string | null
+          mileage_fee?: number | null
           notes?: string | null
           organization_id: string
           scheduled_at?: string | null
@@ -671,6 +736,7 @@ export type Database = {
           id?: string
           inspection_request_id?: string | null
           location?: string | null
+          mileage_fee?: number | null
           notes?: string | null
           organization_id?: string
           scheduled_at?: string | null
@@ -1204,12 +1270,14 @@ export type Database = {
           drive_minutes: number | null
           end_time: string | null
           id: string
+          inspector_vehicle_id: string | null
           notes: string | null
           organization_id: string
           paused_at: string | null
           start_time: string | null
           started_at: string | null
           status: string
+          title: string | null
           total_miles: number | null
           trip_date: string
           updated_at: string
@@ -1222,12 +1290,14 @@ export type Database = {
           drive_minutes?: number | null
           end_time?: string | null
           id?: string
+          inspector_vehicle_id?: string | null
           notes?: string | null
           organization_id: string
           paused_at?: string | null
           start_time?: string | null
           started_at?: string | null
           status?: string
+          title?: string | null
           total_miles?: number | null
           trip_date?: string
           updated_at?: string
@@ -1240,12 +1310,14 @@ export type Database = {
           drive_minutes?: number | null
           end_time?: string | null
           id?: string
+          inspector_vehicle_id?: string | null
           notes?: string | null
           organization_id?: string
           paused_at?: string | null
           start_time?: string | null
           started_at?: string | null
           status?: string
+          title?: string | null
           total_miles?: number | null
           trip_date?: string
           updated_at?: string

@@ -1,16 +1,44 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
-import { Bell, Search } from "lucide-react";
+import { Bell, Search, LogOut, Settings as SettingsIcon, User } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useUserRoles } from "@/hooks/useUserRoles";
+import { useNavigate, Link } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
+  const { user, signOut } = useAuth();
+  const { roles } = useUserRoles();
+  const navigate = useNavigate();
+
+  const fullName = (user?.user_metadata as any)?.full_name as string | undefined;
+  const displayName = fullName || user?.email?.split("@")[0] || "User";
+  const initials = (fullName || user?.email || "U")
+    .split(/[\s@.]+/).filter(Boolean).slice(0, 2).map((s) => s[0]?.toUpperCase()).join("") || "U";
+  const primaryRole = roles[0] ? roles[0].replace("_", " ") : "Member";
+
+  const handleLogout = async () => {
+    await signOut();
+    toast.success("Signed out");
+    navigate("/auth", { replace: true });
+  };
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
-        <AppSidebar />
+        <AppSidebar onLogout={handleLogout} />
         <div className="flex-1 flex flex-col min-w-0">
           <header className="h-14 flex items-center justify-between border-b bg-card px-4 shrink-0">
             <div className="flex items-center gap-3">
@@ -29,15 +57,38 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <Bell className="h-4 w-4 text-muted-foreground" />
                 <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-destructive" />
               </button>
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
-                  <span className="text-xs font-semibold text-primary-foreground">SA</span>
-                </div>
-                <div className="hidden sm:block">
-                  <p className="text-sm font-medium leading-none">Super Admin</p>
-                  <p className="text-xs text-muted-foreground">Network Admin</p>
-                </div>
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center gap-2 rounded-md hover:bg-muted px-1.5 py-1 transition-colors">
+                    <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
+                      <span className="text-xs font-semibold text-primary-foreground">{initials}</span>
+                    </div>
+                    <div className="hidden sm:block text-left">
+                      <p className="text-sm font-medium leading-none">{displayName}</p>
+                      <p className="text-xs text-muted-foreground capitalize">{primaryRole}</p>
+                    </div>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{displayName}</p>
+                      <p className="text-xs leading-none text-muted-foreground truncate">{user?.email}</p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/settings"><User className="h-4 w-4 mr-2" />Profile & Settings</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/settings"><SettingsIcon className="h-4 w-4 mr-2" />Settings</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
+                    <LogOut className="h-4 w-4 mr-2" />Sign out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </header>
           <main className="flex-1 overflow-auto p-4 md:p-6">
