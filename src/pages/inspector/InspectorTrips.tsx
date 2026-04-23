@@ -14,6 +14,8 @@ import { toast } from "sonner";
 import { OpenInMapsButton } from "@/components/maps/OpenInMapsButton";
 import { TripMapOverlay, type MapStop } from "@/components/maps/TripMapOverlay";
 import { TripDetailSheet } from "@/components/trips/TripDetailSheet";
+import { NextStopCard } from "@/components/inspector/NextStopCard";
+import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
 import { Pencil, Download } from "lucide-react";
 
@@ -197,15 +199,29 @@ export default function InspectorTrips() {
           <Card><CardContent className="p-4"><p className="text-xs text-muted-foreground">Today work</p><p className="text-2xl font-semibold">{todayTrip?.work_minutes ?? 0}m</p></CardContent></Card>
         </div>
 
+        {/* Next-stop quick-action card (mobile-friendly primary action) */}
+        <NextStopCard />
+
         {/* Active trip planner with map overlay */}
-        {activeTrip && (
+        {activeTrip && (() => {
+          const completedCount = activeStops.filter(s => s.status === "completed" || s.status === "skipped").length;
+          const pct = activeStops.length ? Math.round((completedCount / activeStops.length) * 100) : 0;
+          return (
           <div className="space-y-2">
             <div className="flex items-center justify-between flex-wrap gap-2">
-              <h2 className="text-sm font-semibold flex items-center gap-2">
-                Active trip
-                <Badge variant="outline" className="capitalize text-xs">{activeTrip.status}</Badge>
-              </h2>
-              <div className="flex gap-2">
+              <div className="min-w-0">
+                <h2 className="text-sm font-semibold flex items-center gap-2 flex-wrap">
+                  Active trip
+                  <Badge variant="outline" className="capitalize text-xs">{activeTrip.status}</Badge>
+                  {activeStops.length > 0 && (
+                    <span className="text-xs text-muted-foreground tabular-nums">
+                      {completedCount}/{activeStops.length} stops
+                    </span>
+                  )}
+                </h2>
+                {activeStops.length > 0 && <Progress value={pct} className="h-1.5 mt-1.5 w-40" />}
+              </div>
+              <div className="flex gap-2 flex-wrap">
                 {activeTrip.status !== "active" && (
                   <Button size="sm" variant="outline" onClick={() => setTripStatus(activeTrip, "active")}><Play className="h-3.5 w-3.5 mr-1" />Start</Button>
                 )}

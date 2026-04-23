@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
 import { OpenInMapsButton } from "@/components/maps/OpenInMapsButton";
+import { NextStopCard } from "@/components/inspector/NextStopCard";
 import { toast } from "sonner";
 
 interface Job {
@@ -169,7 +170,9 @@ export default function InspectorDashboard() {
           ))}
         </div>
 
-        {activeTrip && (
+        <NextStopCard />
+
+        {activeTrip && !nextStop && (
           <Card className="border-primary/40 bg-primary/5">
             <CardContent className="p-4 flex items-center justify-between flex-wrap gap-2">
               <div className="flex items-center gap-3 min-w-0">
@@ -177,20 +180,11 @@ export default function InspectorDashboard() {
                 <div className="min-w-0">
                   <p className="text-sm font-medium capitalize">Trip {activeTrip.status}</p>
                   <p className="text-xs text-muted-foreground truncate">
-                    {Number(activeTrip.total_miles || 0).toFixed(1)} mi tracked
-                    {nextStop && <> · next: {nextStop.label || nextStop.address || "Stop"}</>}
+                    {Number(activeTrip.total_miles || 0).toFixed(1)} mi tracked · all stops handled
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                {nextStop && (
-                  <OpenInMapsButton
-                    target={{ address: nextStop.address, latitude: nextStop.latitude, longitude: nextStop.longitude, label: nextStop.label }}
-                    variant="outline"
-                  />
-                )}
-                <Button asChild size="sm" variant="outline"><Link to="/app/inspector/trips">Open trip</Link></Button>
-              </div>
+              <Button asChild size="sm" variant="outline"><Link to="/app/inspector/trips">Open trip</Link></Button>
             </CardContent>
           </Card>
         )}
