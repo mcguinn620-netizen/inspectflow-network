@@ -3,9 +3,11 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { InstallPrompt } from "@/components/InstallPrompt";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { useUserRoles } from "@/hooks/useUserRoles";
+import { ActiveTripProvider } from "@/hooks/useActiveTrip";
 import Index from "./pages/Index";
 import AuthPage from "./pages/Auth";
 import DispatchPage from "./pages/Dispatch";
@@ -82,7 +84,10 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <AuthProvider>
-            <AppRoutes />
+            <ActiveTripProvider>
+              <AppRoutes />
+              <InstallPrompt />
+            </ActiveTripProvider>
           </AuthProvider>
         </BrowserRouter>
       </TooltipProvider>

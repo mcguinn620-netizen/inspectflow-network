@@ -3,7 +3,9 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { Bell, Search, LogOut, Settings as SettingsIcon, User } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
+import { MobileTabBar } from "@/components/MobileTabBar";
+import { ActiveTripBanner } from "@/components/inspector/ActiveTripBanner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,6 +24,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const { user, signOut } = useAuth();
   const { roles } = useUserRoles();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const isInspectorPage = pathname.startsWith("/app/inspector") || pathname.startsWith("/app/");
 
   const fullName = (user?.user_metadata as any)?.full_name as string | undefined;
   const displayName = fullName || user?.email?.split("@")[0] || "User";
@@ -91,9 +95,18 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               </DropdownMenu>
             </div>
           </header>
-          <main className="flex-1 overflow-auto p-4 md:p-6">
+          <main
+            className="flex-1 overflow-auto p-4 md:p-6"
+            style={{ paddingBottom: isInspectorPage ? "calc(env(safe-area-inset-bottom) + 5rem)" : undefined }}
+          >
+            {isInspectorPage && (
+              <div className="mb-3">
+                <ActiveTripBanner />
+              </div>
+            )}
             {children}
           </main>
+          <MobileTabBar />
         </div>
       </div>
     </SidebarProvider>

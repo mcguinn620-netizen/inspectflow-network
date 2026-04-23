@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Navigation } from "lucide-react";
-import { openInMaps, type MapTarget, buildMapsUrl } from "@/lib/maps";
+import { platformMaps } from "@/platform";
+import type { MapTarget } from "@/platform/maps";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -24,7 +25,7 @@ export function OpenInMapsButton({
   className,
   label = "Open in Maps",
 }: Props) {
-  const url = buildMapsUrl(target);
+  const url = platformMaps.buildMapsUrl(target);
   if (!url) return null;
   return (
     <Button
@@ -33,7 +34,7 @@ export function OpenInMapsButton({
       onClick={(e) => {
         e.stopPropagation();
         e.preventDefault();
-        openInMaps(target);
+        platformMaps.open(target);
       }}
       className={cn(iconOnly && "h-8 w-8", className)}
       aria-label={label}
