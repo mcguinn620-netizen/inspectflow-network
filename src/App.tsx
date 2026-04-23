@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { InstallPrompt } from "@/components/InstallPrompt";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { useUserRoles } from "@/hooks/useUserRoles";
@@ -85,6 +86,7 @@ const App = () => (
           <AuthProvider>
             <ActiveTripProvider>
               <AppRoutes />
+              <InstallPrompt />
             </ActiveTripProvider>
           </AuthProvider>
         </BrowserRouter>
