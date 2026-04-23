@@ -252,15 +252,36 @@ export default function InspectorJobs() {
               <div className="space-y-1.5"><Label>Scheduled</Label><Input type="datetime-local" value={(form.scheduled_at as any) ?? ""} onChange={e => setForm({ ...form, scheduled_at: e.target.value as any })} /></div>
               <div className="space-y-1.5"><Label>Duration (min)</Label><Input type="number" value={form.estimated_duration_minutes ?? 60} onChange={e => setForm({ ...form, estimated_duration_minutes: Number(e.target.value) })} /></div>
             </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div className="space-y-1.5">
-                <Label>Status</Label>
-                <Select value={form.status ?? "scheduled"} onValueChange={v => setForm({ ...form, status: v })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>{STATUSES.map(s => <SelectItem key={s} value={s} className="capitalize">{s.replace("_"," ")}</SelectItem>)}</SelectContent>
-                </Select>
+            <div className="space-y-1.5">
+              <Label>Status</Label>
+              <Select value={form.status ?? "scheduled"} onValueChange={v => setForm({ ...form, status: v })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>{STATUSES.map(s => <SelectItem key={s} value={s} className="capitalize">{s.replace("_"," ")}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+            <div className="rounded-md border bg-muted/30 p-3 space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Fees</p>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1.5">
+                  <Label className="text-xs flex items-center gap-1.5">
+                    Base inspection fee ($)
+                    {Number(form.fee_override) !== Number(defaults.fee) && (
+                      <Badge variant="outline" className="text-[10px]">Custom</Badge>
+                    )}
+                  </Label>
+                  <Input type="number" step="0.01"
+                    value={form.fee_override ?? defaults.fee}
+                    onChange={e => setForm({ ...form, fee_override: e.target.value === "" ? null : Number(e.target.value) })} />
+                  <p className="text-[10px] text-muted-foreground">Default ${defaults.fee.toFixed(2)} from Settings. Edit to override for this job.</p>
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Mileage fee ($)</Label>
+                  <Input type="number" step="0.01"
+                    value={form.mileage_fee ?? defaults.mileageFee}
+                    onChange={e => setForm({ ...form, mileage_fee: e.target.value === "" ? null : Number(e.target.value) })} />
+                  <p className="text-[10px] text-muted-foreground">Flat mileage fee added to this job.</p>
+                </div>
               </div>
-              <div className="space-y-1.5"><Label>Fee override ($)</Label><Input type="number" value={form.fee_override ?? ""} onChange={e => setForm({ ...form, fee_override: e.target.value ? Number(e.target.value) : null })} /></div>
             </div>
             <div className="space-y-1.5"><Label>Notes</Label><Textarea rows={3} value={form.notes ?? ""} onChange={e => setForm({ ...form, notes: e.target.value })} /></div>
           </div>
