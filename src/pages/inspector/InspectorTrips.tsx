@@ -79,6 +79,9 @@ export default function InspectorTrips() {
       for (const stop of (s ?? []) as Stop[]) (map[stop.trip_id] ??= []).push(stop);
       setStops(map);
     }
+    const { data: v } = await supabase.from("inspector_vehicles" as any)
+      .select("*").eq("user_id", user.id).eq("is_archived", false);
+    setVehicles((v ?? []) as any[]);
   };
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [user, activeOrgId]);
 
