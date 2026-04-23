@@ -19,15 +19,19 @@ import { Pencil, Download } from "lucide-react";
 
 interface Trip {
   id: string;
+  title: string | null;
   trip_date: string;
   total_miles: number;
   drive_minutes: number;
   work_minutes: number;
   status: string;
   notes: string | null;
+  start_time: string | null;
+  end_time: string | null;
   started_at: string | null;
   paused_at: string | null;
   completed_at: string | null;
+  inspector_vehicle_id: string | null;
 }
 interface Stop {
   id: string;
