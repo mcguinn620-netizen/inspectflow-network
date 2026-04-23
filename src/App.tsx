@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { useUserRoles } from "@/hooks/useUserRoles";
+import { ActiveTripProvider } from "@/hooks/useActiveTrip";
 import Index from "./pages/Index";
 import AuthPage from "./pages/Auth";
 import DispatchPage from "./pages/Dispatch";
@@ -82,7 +83,9 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <AuthProvider>
-            <AppRoutes />
+            <ActiveTripProvider>
+              <AppRoutes />
+            </ActiveTripProvider>
           </AuthProvider>
         </BrowserRouter>
       </TooltipProvider>
