@@ -212,6 +212,7 @@ export default function InspectorTrips() {
                 {activeTrip.status === "active" && (
                   <Button size="sm" variant="outline" onClick={() => setTripStatus(activeTrip, "paused")}><Pause className="h-3.5 w-3.5 mr-1" />Pause</Button>
                 )}
+                <Button size="sm" variant="outline" onClick={() => setEditingTrip(activeTrip)}><Pencil className="h-3.5 w-3.5 mr-1" />Edit</Button>
                 <Button size="sm" variant="default" onClick={() => setTripStatus(activeTrip, "completed")}><CheckCircle2 className="h-3.5 w-3.5 mr-1" />Complete</Button>
               </div>
             </div>
