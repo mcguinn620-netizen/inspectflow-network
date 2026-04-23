@@ -54,11 +54,16 @@ export default function InspectorJobs() {
     setJobs((data ?? []) as Job[]);
 
     const { data: settings } = await supabase
-      .from("earnings_settings").select("default_job_fee, default_mileage_fee")
+      .from("earnings_settings").select("default_job_fee, default_mileage_fee, estimated_tax_rate, federal_tax_rate, state_tax_rate, self_employment_tax_rate")
       .eq("user_id", user.id).maybeSingle();
+    const s: any = settings ?? {};
+    const computedTax = Number(s.estimated_tax_rate ?? 0)
+      || (Number(s.federal_tax_rate ?? 0) + Number(s.state_tax_rate ?? 0) + Number(s.self_employment_tax_rate ?? 0))
+      || 0.25;
     setDefaults({
-      fee: Number(settings?.default_job_fee ?? 75),
-      mileageFee: Number((settings as any)?.default_mileage_fee ?? 0),
+      fee: Number(s.default_job_fee ?? 75),
+      mileageFee: Number(s.default_mileage_fee ?? 0),
+      taxRate: computedTax,
     });
 
     const { data: liveTrip } = await supabase
