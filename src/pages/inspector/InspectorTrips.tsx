@@ -294,7 +294,8 @@ export default function InspectorTrips() {
               </Card>
             </div>
           </div>
-        )}
+          );
+        })()}
 
         <div className="space-y-3">
           <h2 className="text-sm font-semibold">History</h2>
