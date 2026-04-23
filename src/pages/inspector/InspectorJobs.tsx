@@ -44,7 +44,7 @@ export default function InspectorJobs() {
   const [editing, setEditing] = useState<Job | null>(null);
   const [form, setForm] = useState<Partial<Job>>({ title: "", status: "scheduled", estimated_duration_minutes: 60 });
   const [tripJobMap, setTripJobMap] = useState<Record<string, string>>({});
-  const [defaults, setDefaults] = useState<{ fee: number; mileageFee: number }>({ fee: 75, mileageFee: 0 });
+  const [defaults, setDefaults] = useState<{ fee: number; mileageFee: number; taxRate: number }>({ fee: 75, mileageFee: 0, taxRate: 0.25 });
 
   const load = async () => {
     if (!activeOrgId || !user) return;
@@ -54,11 +54,16 @@ export default function InspectorJobs() {
     setJobs((data ?? []) as Job[]);
 
     const { data: settings } = await supabase
-      .from("earnings_settings").select("default_job_fee, default_mileage_fee")
+      .from("earnings_settings").select("default_job_fee, default_mileage_fee, estimated_tax_rate, federal_tax_rate, state_tax_rate, self_employment_tax_rate")
       .eq("user_id", user.id).maybeSingle();
+    const s: any = settings ?? {};
+    const computedTax = Number(s.estimated_tax_rate ?? 0)
+      || (Number(s.federal_tax_rate ?? 0) + Number(s.state_tax_rate ?? 0) + Number(s.self_employment_tax_rate ?? 0))
+      || 0.25;
     setDefaults({
-      fee: Number(settings?.default_job_fee ?? 75),
-      mileageFee: Number((settings as any)?.default_mileage_fee ?? 0),
+      fee: Number(s.default_job_fee ?? 75),
+      mileageFee: Number(s.default_mileage_fee ?? 0),
+      taxRate: computedTax,
     });
 
     const { data: liveTrip } = await supabase
@@ -163,6 +168,24 @@ export default function InspectorJobs() {
     return true;
   }), [jobs, filter, today, tomorrow]);
 
+  const earningsFor = (j: Job) => {
+    const base = j.fee_override != null ? Number(j.fee_override) : defaults.fee;
+    const mileage = j.mileage_fee != null ? Number(j.mileage_fee) : 0;
+    const gross = base + mileage;
+    return { base, mileage, gross, taxable: gross * defaults.taxRate, net: gross * (1 - defaults.taxRate) };
+  };
+
+  const totals = useMemo(() => {
+    return filtered.reduce((acc, j) => {
+      const e = earningsFor(j);
+      acc.base += e.base; acc.mileage += e.mileage; acc.gross += e.gross; acc.taxable += e.taxable;
+      return acc;
+    }, { base: 0, mileage: 0, gross: 0, taxable: 0 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filtered, defaults]);
+
+  const fmt = (n: number) => `$${n.toFixed(2)}`;
+
   return (
     <DashboardLayout>
       <div className="space-y-4">
@@ -183,6 +206,41 @@ export default function InspectorJobs() {
             <TabsTrigger value="all">All</TabsTrigger>
           </TabsList>
         </Tabs>
+
+        {filtered.length > 0 && (
+          <Card className="bg-muted/30 border-dashed">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Earnings summary · {filter} ({filtered.length} job{filtered.length === 1 ? "" : "s"})
+                  </p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">
+                    Tax estimate at {(defaults.taxRate * 100).toFixed(1)}% from Settings
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 text-right">
+                  <div>
+                    <p className="text-[10px] uppercase text-muted-foreground">Base fees</p>
+                    <p className="text-sm font-semibold tabular-nums">{fmt(totals.base)}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase text-muted-foreground">Mileage fees</p>
+                    <p className="text-sm font-semibold tabular-nums">{fmt(totals.mileage)}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase text-muted-foreground">Gross</p>
+                    <p className="text-sm font-semibold tabular-nums text-primary">{fmt(totals.gross)}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase text-muted-foreground">Est. tax</p>
+                    <p className="text-sm font-semibold tabular-nums text-warning">{fmt(totals.taxable)}</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <div className="grid gap-2">
           {filtered.length === 0 && (
@@ -213,6 +271,28 @@ export default function InspectorJobs() {
                       {j.scheduled_at ? new Date(j.scheduled_at).toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}) : "Unscheduled"}
                       {j.estimated_duration_minutes && <> · {j.estimated_duration_minutes}min</>}
                     </p>
+                    {(() => {
+                      const e = earningsFor(j);
+                      return (
+                        <div className="mt-2 flex items-center gap-x-3 gap-y-1 flex-wrap text-[11px] tabular-nums">
+                          <span className="text-muted-foreground">
+                            Base <span className="text-foreground font-medium">{fmt(e.base)}</span>
+                            {j.fee_override != null && Number(j.fee_override) !== Number(defaults.fee) && (
+                              <span className="ml-1 text-[10px] text-muted-foreground">(custom)</span>
+                            )}
+                          </span>
+                          <span className="text-muted-foreground">
+                            Mileage <span className="text-foreground font-medium">{fmt(e.mileage)}</span>
+                          </span>
+                          <span className="text-muted-foreground">
+                            Gross <span className="text-primary font-semibold">{fmt(e.gross)}</span>
+                          </span>
+                          <span className="text-muted-foreground">
+                            Est. tax <span className="text-warning font-medium">{fmt(e.taxable)}</span>
+                          </span>
+                        </div>
+                      );
+                    })()}
                   </div>
                   <div className="flex items-center gap-1 flex-wrap">
                     <OpenInMapsButton target={{ address: j.location, label: j.title }} iconOnly />
