@@ -13,7 +13,9 @@ import { useUserRoles } from "@/hooks/useUserRoles";
 import { toast } from "sonner";
 import { OpenInMapsButton } from "@/components/maps/OpenInMapsButton";
 import { TripMapOverlay, type MapStop } from "@/components/maps/TripMapOverlay";
+import { TripDetailSheet } from "@/components/trips/TripDetailSheet";
 import { Link } from "react-router-dom";
+import { Pencil, Download } from "lucide-react";
 
 interface Trip {
   id: string;
