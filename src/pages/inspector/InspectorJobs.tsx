@@ -234,7 +234,7 @@ export default function InspectorJobs() {
                   </div>
                   <div>
                     <p className="text-[10px] uppercase text-muted-foreground">Est. tax</p>
-                    <p className="text-sm font-semibold tabular-nums text-amber-500">{fmt(totals.taxable)}</p>
+                    <p className="text-sm font-semibold tabular-nums text-warning">{fmt(totals.taxable)}</p>
                   </div>
                 </div>
               </div>
