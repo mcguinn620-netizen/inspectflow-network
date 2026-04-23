@@ -76,17 +76,33 @@ export default function InspectorJobs() {
 
   const openNew = () => {
     setEditing(null);
-    setForm({ title: "", status: "scheduled", estimated_duration_minutes: 60, scheduled_at: new Date().toISOString().slice(0,16) });
+    setForm({
+      title: "", status: "scheduled", estimated_duration_minutes: 60,
+      scheduled_at: new Date().toISOString().slice(0,16),
+      fee_override: defaults.fee,        // prefill base fee, editable
+      mileage_fee: defaults.mileageFee,  // prefill default mileage fee
+    });
     setOpen(true);
   };
   const openEdit = (j: Job) => {
     setEditing(j);
-    setForm({ ...j, scheduled_at: j.scheduled_at ? j.scheduled_at.slice(0,16) : "" });
+    setForm({
+      ...j,
+      scheduled_at: j.scheduled_at ? j.scheduled_at.slice(0,16) : "",
+      fee_override: j.fee_override ?? defaults.fee,
+      mileage_fee: j.mileage_fee ?? defaults.mileageFee,
+    });
     setOpen(true);
   };
 
   const save = async () => {
     if (!user || !activeOrgId || !form.title) return;
+    // Treat override as "custom fee" only if it differs from default base fee.
+    const overrideValue = form.fee_override === undefined || form.fee_override === null
+      ? null
+      : Number(form.fee_override) === Number(defaults.fee)
+        ? null
+        : Number(form.fee_override);
     const payload: any = {
       title: form.title,
       customer_name: form.customer_name || null,
@@ -94,7 +110,8 @@ export default function InspectorJobs() {
       scheduled_at: form.scheduled_at ? new Date(form.scheduled_at).toISOString() : null,
       estimated_duration_minutes: form.estimated_duration_minutes ?? 60,
       status: form.status ?? "scheduled",
-      fee_override: form.fee_override ?? null,
+      fee_override: overrideValue,
+      mileage_fee: form.mileage_fee !== undefined && form.mileage_fee !== null ? Number(form.mileage_fee) : null,
       notes: form.notes || null,
     };
     if (editing) {
