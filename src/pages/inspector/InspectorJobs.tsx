@@ -207,6 +207,41 @@ export default function InspectorJobs() {
           </TabsList>
         </Tabs>
 
+        {filtered.length > 0 && (
+          <Card className="bg-muted/30 border-dashed">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Earnings summary · {filter} ({filtered.length} job{filtered.length === 1 ? "" : "s"})
+                  </p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">
+                    Tax estimate at {(defaults.taxRate * 100).toFixed(1)}% from Settings
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 text-right">
+                  <div>
+                    <p className="text-[10px] uppercase text-muted-foreground">Base fees</p>
+                    <p className="text-sm font-semibold tabular-nums">{fmt(totals.base)}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase text-muted-foreground">Mileage fees</p>
+                    <p className="text-sm font-semibold tabular-nums">{fmt(totals.mileage)}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase text-muted-foreground">Gross</p>
+                    <p className="text-sm font-semibold tabular-nums text-primary">{fmt(totals.gross)}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase text-muted-foreground">Est. tax</p>
+                    <p className="text-sm font-semibold tabular-nums text-amber-500">{fmt(totals.taxable)}</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         <div className="grid gap-2">
           {filtered.length === 0 && (
             <Card><CardContent className="p-8 text-center text-sm text-muted-foreground">No jobs to show.</CardContent></Card>
