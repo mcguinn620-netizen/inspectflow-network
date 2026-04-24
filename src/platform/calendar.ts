@@ -105,3 +105,37 @@ export function downloadIcs(filename: string, events: CalendarEvent[], calName?:
 export function toWebcal(httpsUrl: string): string {
   return httpsUrl.replace(/^https?:\/\//, "webcal://");
 }
+
+/**
+ * Add an event to the device calendar.
+ * - Native: uses @ebarooni/capacitor-calendar to write directly to EventKit /
+ *   CalendarContract (requires the user to grant permission once).
+ * - Web: falls back to downloading a single-event .ics file.
+ *
+ * Returns true if the operation was attempted successfully.
+ */
+export async function addEvent(event: CalendarEvent): Promise<boolean> {
+  if (isNative()) {
+    const mod = await loadNativePlugin<any>("@ebarooni/capacitor-calendar");
+    const cal = mod?.CapacitorCalendar;
+    if (cal) {
+      try {
+        // Plugin auto-requests permission on first call in modern versions.
+        const dur = Math.max(5, event.durationMinutes ?? 60);
+        await cal.createEvent({
+          title: event.title,
+          location: event.location ?? undefined,
+          notes: event.description ?? undefined,
+          startDate: event.start.getTime(),
+          endDate: event.start.getTime() + dur * 60_000,
+        });
+        return true;
+      } catch {
+        /* fall through to .ics download */
+      }
+    }
+  }
+  downloadIcs(event.uid.replace(/[^\w-]/g, "_"), [event], event.title);
+  return true;
+}
+
