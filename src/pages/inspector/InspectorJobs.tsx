@@ -139,13 +139,16 @@ export default function InspectorJobs() {
     load();
   };
 
-  const setStatus = async (j: Job, status: string) => {
-    const updates: any = { status };
-    if (status === "in_progress" && !j.actual_start_time) updates.actual_start_time = new Date().toISOString();
-    if (status === "completed") updates.actual_end_time = new Date().toISOString();
-    const { error } = await supabase.from("jobs").update(updates).eq("id", j.id);
-    if (error) return toast.error(error.message);
-    load();
+  const setStatus = async (j: Job, status: "in_progress" | "completed" | "canceled") => {
+    const key = `${j.id}:${status}`;
+    if (pendingId) return;
+    setPendingId(key);
+    try {
+      const ok = await setJobStatusSafe(j, status);
+      if (ok) load();
+    } finally {
+      setPendingId(null);
+    }
   };
 
   const duplicate = async (j: Job) => {
