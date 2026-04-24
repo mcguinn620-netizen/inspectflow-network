@@ -1,22 +1,23 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Navigation, Flag, Play, CheckCircle2, MapPin, ArrowRight } from "lucide-react";
+import { Navigation, Flag, Play, CheckCircle2, MapPin, ArrowRight, Loader2 } from "lucide-react";
 import { useActiveTrip, type ActiveStop } from "@/hooks/useActiveTrip";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 import { platformMaps } from "@/platform";
+import { setStopStatus, canArriveStop, canCompleteStop } from "@/lib/tripLifecycle";
 
 /**
- * Next-stop card for Dashboard / Trips top — Phase 5.
+ * Next-stop card — Phase 5 one-tap workflow + Phase 6 idempotency.
  *
- * One-tap field workflow: Navigate → Arrive (+ start job) → Complete.
- * After complete, realtime updates auto-advance to the next stop in the
- * same card (the user never leaves trip context).
+ * Each lifecycle button is disabled mid-mutation and routes through the
+ * centralized lifecycle helper. Buttons disappear when their transition
+ * is no longer valid (canArriveStop / canCompleteStop).
  */
 export function NextStopCard() {
   const { trip, nextStop, stops, progress, refresh } = useActiveTrip();
+  const [pending, setPending] = useState(false);
   if (!trip || !nextStop) return null;
 
   const upcomingAfter = stops
@@ -25,24 +26,17 @@ export function NextStopCard() {
   const pct = progress.total ? Math.round((progress.completed / progress.total) * 100) : 0;
   const stopNumber = progress.completed + 1;
 
-  const setStop = async (s: ActiveStop, status: string, opts: { startJob?: boolean; completeJob?: boolean } = {}) => {
-    const updates: any = { status };
-    const now = new Date().toISOString();
-    if (status === "arrived") updates.arrived_at = now;
-    if (status === "completed") { updates.completed_at = now; updates.departed_at = now; }
-    if (status === "skipped") updates.departed_at = now;
-    const { error } = await supabase.from("trip_stops").update(updates).eq("id", s.id);
-    if (error) return toast.error(error.message);
-
-    if (s.job_id) {
-      if (opts.startJob)
-        await supabase.from("jobs").update({ status: "in_progress", actual_start_time: now }).eq("id", s.job_id);
-      if (opts.completeJob)
-        await supabase.from("jobs").update({ status: "completed", actual_end_time: now }).eq("id", s.job_id);
-    }
-    if (status === "completed") toast.success("Stop completed — moving to next");
+  const guard = async (fn: () => Promise<unknown>) => {
+    if (pending) return;
+    setPending(true);
+    try { await fn(); } finally { setPending(false); }
     refresh();
   };
+
+  const arrive = (s: ActiveStop) =>
+    guard(() => setStopStatus(s, "arrived", { startJob: !!s.job_id }));
+  const complete = (s: ActiveStop) =>
+    guard(() => setStopStatus(s, "completed", { completeJob: !!s.job_id }));
 
   const navigate = () => platformMaps.open({
     address: nextStop.address, latitude: nextStop.latitude, longitude: nextStop.longitude, label: nextStop.label,
@@ -71,58 +65,34 @@ export function NextStopCard() {
 
         {progress.total > 1 && <Progress value={pct} className="h-1.5" />}
 
-        {/* One-tap action ladder */}
         <div className="grid grid-cols-2 gap-2">
-          <Button
-            size="default"
-            variant="outline"
-            onClick={navigate}
+          <Button size="default" variant="outline" onClick={navigate}
             disabled={!nextStop.address && nextStop.latitude == null}
-            className="h-11"
-          >
+            className="h-11">
             <Navigation className="h-4 w-4 mr-1.5" />Navigate
           </Button>
-          {nextStop.status === "pending" ? (
-            <Button
-              size="default"
-              variant="outline"
-              onClick={() => setStop(nextStop, "arrived", { startJob: !!nextStop.job_id })}
-              className="h-11"
-            >
-              <Flag className="h-4 w-4 mr-1.5" />
+
+          {canArriveStop(nextStop.status) ? (
+            <Button size="default" variant="outline" disabled={pending}
+              onClick={() => arrive(nextStop)} className="h-11">
+              {pending ? <Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> : <Flag className="h-4 w-4 mr-1.5" />}
               {nextStop.job_id ? "Arrive + Start" : "Arrived"}
             </Button>
-          ) : nextStop.status === "arrived" && nextStop.job_id ? (
-            <Button
-              size="default"
-              variant="outline"
-              onClick={() => setStop(nextStop, "arrived", { startJob: true })}
-              className="h-11"
-            >
-              <Play className="h-4 w-4 mr-1.5" />Start job
-            </Button>
           ) : (
-            <Button
-              size="default"
-              variant="outline"
-              disabled
-              className="h-11"
-            >
+            <Button size="default" variant="outline" disabled className="h-11">
               <Flag className="h-4 w-4 mr-1.5" />On site
             </Button>
           )}
-          <Button
-            size="default"
-            variant="default"
+
+          <Button size="default" variant="default"
             className="col-span-2 h-12 text-base font-semibold"
-            onClick={() => setStop(nextStop, "completed", { completeJob: !!nextStop.job_id })}
-          >
-            <CheckCircle2 className="h-5 w-5 mr-2" />
+            disabled={pending || !canCompleteStop(nextStop.status)}
+            onClick={() => complete(nextStop)}>
+            {pending ? <Loader2 className="h-5 w-5 mr-2 animate-spin" /> : <CheckCircle2 className="h-5 w-5 mr-2" />}
             {nextStop.job_id ? "Complete stop + job" : "Complete stop"}
           </Button>
         </div>
 
-        {/* "Up next" preview keeps user in trip context after completion */}
         {upcomingAfter && (
           <div className="flex items-center gap-2 pt-1 text-[11px] text-muted-foreground border-t">
             <ArrowRight className="h-3 w-3 shrink-0" />

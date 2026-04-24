@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Plus, Trash2, Play, Pause, CheckCircle2, ArrowUp, ArrowDown, Flag, SkipForward, Briefcase } from "lucide-react";
+import { Plus, Trash2, Play, Pause, CheckCircle2, ArrowUp, ArrowDown, Flag, SkipForward, Briefcase, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
@@ -18,6 +18,13 @@ import { NextStopCard } from "@/components/inspector/NextStopCard";
 import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
 import { Pencil, Download } from "lucide-react";
+import {
+  setTripStatus as setTripStatusSafe,
+  setStopStatus as setStopStatusSafe,
+  canStartTrip, canPauseTrip, canCompleteTrip,
+  canArriveStop, canCompleteStop, canSkipStop,
+  isStopTerminal,
+} from "@/lib/tripLifecycle";
 
 interface Trip {
   id: string;
@@ -62,6 +69,7 @@ export default function InspectorTrips() {
   const [selectedStopId, setSelectedStopId] = useState<string | null>(null);
   const [vehicles, setVehicles] = useState<any[]>([]);
   const [editingTrip, setEditingTrip] = useState<Trip | null>(null);
+  const [pendingId, setPendingId] = useState<string | null>(null);
   const [form, setForm] = useState<Partial<Trip>>({
     trip_date: new Date().toISOString().slice(0,10),
     total_miles: 0, drive_minutes: 0, work_minutes: 0, status: "draft",
@@ -114,16 +122,17 @@ export default function InspectorTrips() {
     load();
   };
 
-  const setTripStatus = async (trip: Trip, status: string) => {
-    const updates: any = { status };
-    if (status === "active" && !trip.started_at) updates.started_at = new Date().toISOString();
-    if (status === "paused") updates.paused_at = new Date().toISOString();
-    if (status === "completed") updates.completed_at = new Date().toISOString();
-    const { error } = await supabase.from("trips").update(updates).eq("id", trip.id);
-    if (error) return toast.error(error.message);
-    toast.success(`Trip ${status}`);
-    load();
+  const guard = async <T,>(id: string, fn: () => Promise<T>): Promise<T | undefined> => {
+    if (pendingId) return undefined;
+    setPendingId(id);
+    try { return await fn(); } finally { setPendingId(null); }
   };
+
+  const setTripStatus = (trip: Trip, status: "active" | "paused" | "completed") =>
+    guard(`trip:${trip.id}:${status}`, async () => {
+      const ok = await setTripStatusSafe(trip, status);
+      if (ok) load();
+    });
 
   const addStop = async () => {
     if (!stopOpen) return;
@@ -158,26 +167,20 @@ export default function InspectorTrips() {
     load();
   };
 
-  const setStopStatus = async (s: Stop, status: string) => {
-    const updates: any = { status };
-    if (status === "arrived") updates.arrived_at = new Date().toISOString();
-    if (status === "completed") {
-      updates.completed_at = new Date().toISOString();
-      updates.departed_at = new Date().toISOString();
-      // Mirror to the linked job if any
-      if (s.job_id) await supabase.from("jobs").update({ status: "completed", actual_end_time: new Date().toISOString() }).eq("id", s.job_id);
-    }
-    if (status === "skipped") updates.departed_at = new Date().toISOString();
-    const { error } = await supabase.from("trip_stops").update(updates).eq("id", s.id);
-    if (error) return toast.error(error.message);
-    load();
-  };
+  const setStopStatus = (s: Stop, status: "arrived" | "completed" | "skipped") =>
+    guard(`stop:${s.id}:${status}`, async () => {
+      const ok = await setStopStatusSafe(s, status, {
+        completeJob: status === "completed" && !!s.job_id,
+      });
+      if (ok) load();
+    });
 
-  const startJobFromStop = async (s: Stop) => {
-    if (!s.job_id) return toast.info("This stop has no linked job");
-    await supabase.from("jobs").update({ status: "in_progress", actual_start_time: new Date().toISOString() }).eq("id", s.job_id);
-    await setStopStatus(s, "arrived");
-  };
+  const startJobFromStop = (s: Stop) =>
+    guard(`stop:${s.id}:start`, async () => {
+      if (!s.job_id) { toast.info("This stop has no linked job"); return; }
+      const ok = await setStopStatusSafe(s, "arrived", { startJob: true });
+      if (ok) load();
+    });
 
   return (
     <DashboardLayout>
@@ -222,14 +225,25 @@ export default function InspectorTrips() {
                 {activeStops.length > 0 && <Progress value={pct} className="h-1.5 mt-1.5 w-40" />}
               </div>
               <div className="flex gap-2 flex-wrap">
-                {activeTrip.status !== "active" && (
-                  <Button size="sm" variant="outline" onClick={() => setTripStatus(activeTrip, "active")}><Play className="h-3.5 w-3.5 mr-1" />Start</Button>
+                {canStartTrip(activeTrip.status) && (
+                  <Button size="sm" variant="outline" disabled={!!pendingId}
+                    onClick={() => setTripStatus(activeTrip, "active")}>
+                    {pendingId === `trip:${activeTrip.id}:active` ? <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" /> : <Play className="h-3.5 w-3.5 mr-1" />}Start
+                  </Button>
                 )}
-                {activeTrip.status === "active" && (
-                  <Button size="sm" variant="outline" onClick={() => setTripStatus(activeTrip, "paused")}><Pause className="h-3.5 w-3.5 mr-1" />Pause</Button>
+                {canPauseTrip(activeTrip.status) && (
+                  <Button size="sm" variant="outline" disabled={!!pendingId}
+                    onClick={() => setTripStatus(activeTrip, "paused")}>
+                    {pendingId === `trip:${activeTrip.id}:paused` ? <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" /> : <Pause className="h-3.5 w-3.5 mr-1" />}Pause
+                  </Button>
                 )}
                 <Button size="sm" variant="outline" onClick={() => setEditingTrip(activeTrip)}><Pencil className="h-3.5 w-3.5 mr-1" />Edit</Button>
-                <Button size="sm" variant="default" onClick={() => setTripStatus(activeTrip, "completed")}><CheckCircle2 className="h-3.5 w-3.5 mr-1" />Complete</Button>
+                {canCompleteTrip(activeTrip.status) && (
+                  <Button size="sm" variant="default" disabled={!!pendingId}
+                    onClick={() => setTripStatus(activeTrip, "completed")}>
+                    {pendingId === `trip:${activeTrip.id}:completed` ? <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" /> : <CheckCircle2 className="h-3.5 w-3.5 mr-1" />}Complete
+                  </Button>
+                )}
               </div>
             </div>
 
@@ -279,23 +293,27 @@ export default function InspectorTrips() {
                       </div>
                       {s.address && <p className="text-xs text-muted-foreground mt-1 ml-6 truncate">{s.address}</p>}
                       <div className="flex flex-wrap gap-1 mt-2 ml-6">
-                        {s.status === "pending" && (
-                          <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); setStopStatus(s, "arrived"); }}>
-                            <Flag className="h-3 w-3 mr-1" />Arrived
+                        {canArriveStop(s.status) && (
+                          <Button size="sm" variant="outline" disabled={!!pendingId}
+                            onClick={(e) => { e.stopPropagation(); setStopStatus(s, "arrived"); }}>
+                            {pendingId === `stop:${s.id}:arrived` ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Flag className="h-3 w-3 mr-1" />}Arrived
                           </Button>
                         )}
-                        {s.job_id && s.status !== "completed" && (
-                          <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); startJobFromStop(s); }}>
-                            <Play className="h-3 w-3 mr-1" />Start job
+                        {s.job_id && !isStopTerminal(s.status) && (
+                          <Button size="sm" variant="outline" disabled={!!pendingId}
+                            onClick={(e) => { e.stopPropagation(); startJobFromStop(s); }}>
+                            {pendingId === `stop:${s.id}:start` ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Play className="h-3 w-3 mr-1" />}Start job
                           </Button>
                         )}
-                        {s.status !== "completed" && s.status !== "skipped" && (
-                          <Button size="sm" variant="default" onClick={(e) => { e.stopPropagation(); setStopStatus(s, "completed"); }}>
-                            <CheckCircle2 className="h-3 w-3 mr-1" />Complete
+                        {canCompleteStop(s.status) && (
+                          <Button size="sm" variant="default" disabled={!!pendingId}
+                            onClick={(e) => { e.stopPropagation(); setStopStatus(s, "completed"); }}>
+                            {pendingId === `stop:${s.id}:completed` ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <CheckCircle2 className="h-3 w-3 mr-1" />}Complete
                           </Button>
                         )}
-                        {s.status === "pending" && (
-                          <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); setStopStatus(s, "skipped"); }}>
+                        {canSkipStop(s.status) && (
+                          <Button size="sm" variant="ghost" disabled={!!pendingId}
+                            onClick={(e) => { e.stopPropagation(); setStopStatus(s, "skipped"); }}>
                             <SkipForward className="h-3 w-3 mr-1" />Skip
                           </Button>
                         )}

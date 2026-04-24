@@ -9,13 +9,17 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Pencil, Play, CheckCircle2, X, Route as RouteIcon, Copy } from "lucide-react";
+import { Plus, Pencil, Play, CheckCircle2, X, Route as RouteIcon, Copy, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { OpenInMapsButton } from "@/components/maps/OpenInMapsButton";
+import {
+  setJobStatus as setJobStatusSafe,
+  canStartJob, canCompleteJob, canCancelJob, isJobTerminal,
+} from "@/lib/tripLifecycle";
 
 interface Job {
   id: string;
@@ -44,6 +48,7 @@ export default function InspectorJobs() {
   const [editing, setEditing] = useState<Job | null>(null);
   const [form, setForm] = useState<Partial<Job>>({ title: "", status: "scheduled", estimated_duration_minutes: 60 });
   const [tripJobMap, setTripJobMap] = useState<Record<string, string>>({});
+  const [pendingId, setPendingId] = useState<string | null>(null);
   const [defaults, setDefaults] = useState<{ fee: number; mileageFee: number; taxRate: number }>({ fee: 75, mileageFee: 0, taxRate: 0.25 });
 
   const load = async () => {
@@ -134,13 +139,16 @@ export default function InspectorJobs() {
     load();
   };
 
-  const setStatus = async (j: Job, status: string) => {
-    const updates: any = { status };
-    if (status === "in_progress" && !j.actual_start_time) updates.actual_start_time = new Date().toISOString();
-    if (status === "completed") updates.actual_end_time = new Date().toISOString();
-    const { error } = await supabase.from("jobs").update(updates).eq("id", j.id);
-    if (error) return toast.error(error.message);
-    load();
+  const setStatus = async (j: Job, status: "in_progress" | "completed" | "canceled") => {
+    const key = `${j.id}:${status}`;
+    if (pendingId) return;
+    setPendingId(key);
+    try {
+      const ok = await setJobStatusSafe(j, status);
+      if (ok) load();
+    } finally {
+      setPendingId(null);
+    }
   };
 
   const duplicate = async (j: Job) => {
@@ -296,18 +304,26 @@ export default function InspectorJobs() {
                   </div>
                   <div className="flex items-center gap-1 flex-wrap">
                     <OpenInMapsButton target={{ address: j.location, label: j.title }} iconOnly />
-                    {j.status === "scheduled" && (
-                      <Button size="sm" variant="outline" onClick={() => setStatus(j, "in_progress")}>
-                        <Play className="h-3.5 w-3.5 mr-1" />Start
+                    {canStartJob(j.status) && (
+                      <Button size="sm" variant="outline" disabled={!!pendingId}
+                        onClick={() => setStatus(j, "in_progress")}>
+                        {pendingId === `${j.id}:in_progress` ? <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" /> : <Play className="h-3.5 w-3.5 mr-1" />}Start
                       </Button>
                     )}
-                    {j.status === "in_progress" && (
-                      <Button size="sm" variant="default" onClick={() => setStatus(j, "completed")}>
-                        <CheckCircle2 className="h-3.5 w-3.5 mr-1" />Complete
+                    {canCompleteJob(j.status) && (
+                      <Button size="sm" variant="default" disabled={!!pendingId}
+                        onClick={() => setStatus(j, "completed")}>
+                        {pendingId === `${j.id}:completed` ? <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" /> : <CheckCircle2 className="h-3.5 w-3.5 mr-1" />}Complete
                       </Button>
                     )}
-                    {(j.status === "scheduled" || j.status === "in_progress") && (
-                      <Button size="sm" variant="ghost" onClick={() => setStatus(j, "canceled")}><X className="h-3.5 w-3.5" /></Button>
+                    {canCancelJob(j.status) && (
+                      <Button size="sm" variant="ghost" disabled={!!pendingId}
+                        onClick={() => setStatus(j, "canceled")} title="Cancel">
+                        {pendingId === `${j.id}:canceled` ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <X className="h-3.5 w-3.5" />}
+                      </Button>
+                    )}
+                    {isJobTerminal(j.status) && (
+                      <Badge variant="outline" className="text-[10px] capitalize">{j.status}</Badge>
                     )}
                     <Button size="sm" variant="ghost" onClick={() => duplicate(j)} title="Duplicate"><Copy className="h-3.5 w-3.5" /></Button>
                     <Button size="sm" variant="ghost" onClick={() => openEdit(j)}><Pencil className="h-3.5 w-3.5" /></Button>

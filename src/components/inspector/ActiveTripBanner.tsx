@@ -1,38 +1,38 @@
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Play, Pause, CheckCircle2, Route as RouteIcon, Navigation, MapPin } from "lucide-react";
+import { Play, Pause, CheckCircle2, Route as RouteIcon, Navigation, MapPin, Loader2 } from "lucide-react";
 import { useActiveTrip } from "@/hooks/useActiveTrip";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 import { platformMaps } from "@/platform";
+import {
+  setTripStatus, canPauseTrip, canResumeTrip, canCompleteTrip, isTripTerminal,
+} from "@/lib/tripLifecycle";
 
 /**
- * Global active-trip banner — Phase 5 trip dominance.
+ * Global active-trip banner — Phase 5 trip dominance + Phase 6 idempotency.
  *
- * Visual priority above page content. On mobile the banner sticks to the
- * top of the scroll container so the next action is always visible while
- * the inspector is in trip mode.
+ * All lifecycle calls flow through tripLifecycle helpers so a stale view or
+ * double-tap cannot re-complete a trip. Buttons are disabled while a
+ * mutation is in flight to harden against rapid taps on mobile.
  */
 export function ActiveTripBanner() {
   const { trip, nextStop, progress, refresh } = useActiveTrip();
   const { pathname } = useLocation();
+  const [pending, setPending] = useState(false);
 
   if (!trip) return null;
-  // /trips already shows the full trip surface — keep the banner there
-  // hidden to avoid duplication, but show on every other inspector page.
   if (pathname.startsWith("/app/inspector/trips")) return null;
   if (!pathname.startsWith("/app/inspector")) return null;
+  // Once a trip is finalized, the realtime hook will drop it shortly — but
+  // be defensive: never render banner controls for a terminal trip.
+  if (isTripTerminal(trip.status)) return null;
 
-  const setStatus = async (status: string) => {
-    const updates: any = { status };
-    if (status === "active" && !trip.started_at) updates.started_at = new Date().toISOString();
-    if (status === "paused") updates.paused_at = new Date().toISOString();
-    if (status === "completed") updates.completed_at = new Date().toISOString();
-    const { error } = await supabase.from("trips").update(updates).eq("id", trip.id);
-    if (error) return toast.error(error.message);
-    toast.success(`Trip ${status}`);
+  const guard = async (fn: () => Promise<unknown>) => {
+    if (pending) return;
+    setPending(true);
+    try { await fn(); } finally { setPending(false); }
     refresh();
   };
 
@@ -52,7 +52,6 @@ export function ActiveTripBanner() {
   return (
     <div className="sticky top-0 z-30 -mx-4 md:mx-0 px-4 md:px-0 pt-1 pb-2 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="rounded-lg border-2 border-primary bg-primary/10 shadow-sm overflow-hidden">
-        {/* Top row: trip identity + progress */}
         <div className="px-3 pt-2.5 pb-1.5 flex items-center gap-2 flex-wrap">
           <div className={`h-2.5 w-2.5 rounded-full bg-primary ${trip.status === "active" ? "animate-pulse" : ""}`} />
           <p className="text-sm font-semibold truncate min-w-0 flex-1">
@@ -66,12 +65,8 @@ export function ActiveTripBanner() {
           )}
         </div>
 
-        {/* Progress bar */}
-        {progress.total > 0 && (
-          <Progress value={pct} className="h-1 rounded-none" />
-        )}
+        {progress.total > 0 && <Progress value={pct} className="h-1 rounded-none" />}
 
-        {/* Next stop strip */}
         <div className="px-3 py-2 flex items-center justify-between gap-2 flex-wrap">
           <div className="min-w-0 flex-1">
             {nextStop ? (
@@ -91,25 +86,29 @@ export function ActiveTripBanner() {
           </div>
           <div className="flex items-center gap-1.5 flex-wrap shrink-0">
             {nextStop && (nextStop.address || (nextStop.latitude != null && nextStop.longitude != null)) && (
-              <Button size="sm" variant="default" onClick={navigateNext} className="h-8">
+              <Button size="sm" variant="default" onClick={navigateNext} disabled={pending} className="h-8">
                 <Navigation className="h-3.5 w-3.5 mr-1" />Go
               </Button>
             )}
-            {trip.status === "active" ? (
-              <Button size="sm" variant="ghost" onClick={() => setStatus("paused")} className="h-8 px-2">
-                <Pause className="h-3.5 w-3.5" />
+            {canPauseTrip(trip.status) && (
+              <Button size="sm" variant="ghost" disabled={pending}
+                onClick={() => guard(() => setTripStatus(trip, "paused"))} className="h-8 px-2">
+                {pending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Pause className="h-3.5 w-3.5" />}
               </Button>
-            ) : (
-              <Button size="sm" variant="ghost" onClick={() => setStatus("active")} className="h-8 px-2">
-                <Play className="h-3.5 w-3.5" />
+            )}
+            {canResumeTrip(trip.status) && (
+              <Button size="sm" variant="ghost" disabled={pending}
+                onClick={() => guard(() => setTripStatus(trip, "active"))} className="h-8 px-2">
+                {pending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Play className="h-3.5 w-3.5" />}
               </Button>
             )}
             <Button size="sm" variant="outline" asChild className="h-8">
               <Link to="/app/inspector/trips"><RouteIcon className="h-3.5 w-3.5 mr-1" />Open</Link>
             </Button>
-            {!nextStop && (
-              <Button size="sm" variant="default" onClick={() => setStatus("completed")} className="h-8">
-                <CheckCircle2 className="h-3.5 w-3.5 mr-1" />End
+            {!nextStop && canCompleteTrip(trip.status) && (
+              <Button size="sm" variant="default" disabled={pending}
+                onClick={() => guard(() => setTripStatus(trip, "completed"))} className="h-8">
+                {pending ? <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" /> : <CheckCircle2 className="h-3.5 w-3.5 mr-1" />}End
               </Button>
             )}
           </div>

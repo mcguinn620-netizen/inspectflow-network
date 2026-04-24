@@ -12,6 +12,7 @@ import { OpenInMapsButton } from "@/components/maps/OpenInMapsButton";
 import { NextStopCard } from "@/components/inspector/NextStopCard";
 import { StartMyDayCard } from "@/components/inspector/StartMyDayCard";
 import { toast } from "sonner";
+import { setTripStatus as setTripStatusSafe } from "@/lib/tripLifecycle";
 
 interface Job {
   id: string;
@@ -113,8 +114,8 @@ export default function InspectorDashboard() {
 
   const pauseTrip = async () => {
     if (!activeTrip) return;
-    await supabase.from("trips").update({ status: "paused", paused_at: new Date().toISOString() }).eq("id", activeTrip.id);
-    load();
+    const ok = await setTripStatusSafe(activeTrip, "paused");
+    if (ok) load();
   };
 
   const today = new Date(); today.setHours(0,0,0,0);
