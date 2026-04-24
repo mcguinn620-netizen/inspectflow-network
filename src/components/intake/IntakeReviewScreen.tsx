@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Check, AlertTriangle, Car } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { LocationAutocomplete } from "@/components/maps/LocationAutocomplete";
 
 interface ParsedData {
   client_name: string | null;
@@ -118,15 +119,17 @@ export function IntakeReviewScreen({ originalText, parsedData, onSave, onBack }:
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1">
-                <Label className="text-xs text-muted-foreground">Mileage</Label>
-                <Input value={editData.mileage || ""} onChange={(e) => update("mileage", e.target.value)} />
-              </div>
-              <div className="space-y-1">
-                <Label className="text-xs text-muted-foreground">Location</Label>
-                <Input value={editData.inspection_location || ""} onChange={(e) => update("inspection_location", e.target.value)} />
-              </div>
+            <div className="space-y-1">
+              <Label className="text-xs text-muted-foreground">Mileage</Label>
+              <Input value={editData.mileage || ""} onChange={(e) => update("mileage", e.target.value)} />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs text-muted-foreground">Location</Label>
+              <LocationAutocomplete
+                value={editData.inspection_location || ""}
+                onChange={(loc) => update("inspection_location", loc.address)}
+                placeholder="Search address…"
+              />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
