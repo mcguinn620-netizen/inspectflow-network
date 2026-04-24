@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { calculateTax, buildQuarterlyEstimates, type PeriodIncome } from "@/lib/taxCalculator";
 import type { FilingStatus } from "@/data/federalTaxTables";
-import { quarterOf, quarterRange } from "@/data/federalTaxTables";
+import { quarterOf } from "@/data/federalTaxTables";
 import { STATE_TAX_2025 } from "@/data/stateTaxTables";
 import { toCsv, downloadCsv } from "@/platform/export";
 import { toast } from "sonner";
