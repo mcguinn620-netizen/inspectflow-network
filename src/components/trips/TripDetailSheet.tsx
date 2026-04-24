@@ -33,33 +33,51 @@ export function TripDetailSheet({
   open: boolean; onOpenChange: (v: boolean) => void; onSaved: () => void;
 }) {
   const [form, setForm] = useState<Partial<Trip>>({});
+  const [saving, setSaving] = useState(false);
+
+  // Re-hydrate form whenever a different trip is opened (or sheet re-opens
+  // with the same trip after server changes). Keying on trip.id + open ensures
+  // edits don't get stuck in stale state.
   useEffect(() => {
-    if (trip) setForm({
-      ...trip,
-      start_time: trip.start_time ? trip.start_time.slice(0,16) : "",
-      end_time: trip.end_time ? trip.end_time.slice(0,16) : "",
-    });
-  }, [trip]);
+    if (trip && open) {
+      setForm({
+        ...trip,
+        start_time: trip.start_time ? trip.start_time.slice(0, 16) : "",
+        end_time: trip.end_time ? trip.end_time.slice(0, 16) : "",
+      });
+    }
+  }, [trip?.id, open]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!trip) return null;
 
   const save = async () => {
-    const { error } = await supabase.from("trips").update({
-      title: form.title || null,
-      trip_date: form.trip_date,
-      status: form.status,
-      start_time: form.start_time ? new Date(form.start_time).toISOString() : null,
-      end_time: form.end_time ? new Date(form.end_time).toISOString() : null,
-      total_miles: Number(form.total_miles ?? 0),
-      drive_minutes: Number(form.drive_minutes ?? 0),
-      work_minutes: Number(form.work_minutes ?? 0),
-      notes: form.notes || null,
-      inspector_vehicle_id: form.inspector_vehicle_id || null,
-    }).eq("id", trip.id);
-    if (error) return toast.error(error.message);
-    toast.success("Trip saved");
-    onSaved();
-    onOpenChange(false);
+    if (saving) return;
+    setSaving(true);
+    try {
+      const { error } = await supabase.from("trips").update({
+        title: form.title || null,
+        trip_date: form.trip_date as string,
+        status: form.status as string,
+        start_time: form.start_time ? new Date(form.start_time as string).toISOString() : null,
+        end_time: form.end_time ? new Date(form.end_time as string).toISOString() : null,
+        total_miles: Number(form.total_miles ?? 0),
+        drive_minutes: Number(form.drive_minutes ?? 0),
+        work_minutes: Number(form.work_minutes ?? 0),
+        notes: form.notes || null,
+        inspector_vehicle_id: form.inspector_vehicle_id || null,
+      }).eq("id", trip.id);
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+      toast.success("Trip saved");
+      onSaved();
+      onOpenChange(false);
+    } catch (e: any) {
+      toast.error(e?.message || "Failed to save trip");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const exportCsv = () => {
