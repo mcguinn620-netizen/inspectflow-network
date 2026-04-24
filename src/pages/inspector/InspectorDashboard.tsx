@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
 import { OpenInMapsButton } from "@/components/maps/OpenInMapsButton";
 import { NextStopCard } from "@/components/inspector/NextStopCard";
+import { StartMyDayCard } from "@/components/inspector/StartMyDayCard";
 import { toast } from "sonner";
 
 interface Job {
@@ -169,6 +170,13 @@ export default function InspectorDashboard() {
             </Card>
           ))}
         </div>
+
+        {/* Phase 5: Start-My-Day entry point — only renders when no active trip in progress */}
+        <StartMyDayCard
+          hasJobsToday={todayJobs.length > 0}
+          todayJobCount={todayJobs.length}
+          onStartTodayTrip={startTodayTrip}
+        />
 
         <NextStopCard />
 
