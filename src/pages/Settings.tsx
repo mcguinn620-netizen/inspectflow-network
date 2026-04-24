@@ -353,6 +353,35 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
 
+        {/* Maps & Navigation provider preference (Phase 7C) */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Navigation className="h-5 w-5" />Maps & Navigation
+            </CardTitle>
+            <CardDescription>
+              Choose which maps app the "Navigate" button hands off to. On mobile, the device will open the installed app automatically.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <Label>Preferred maps app</Label>
+            <Select
+              value={mapProvider}
+              onValueChange={(v) => { setMapProvider(v as MapProvider); setMapProviderState(v as MapProvider); toast.success("Map preference saved"); }}
+            >
+              <SelectTrigger className="max-w-sm"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {(["auto","apple","google","waze"] as MapProvider[]).map(p => (
+                  <SelectItem key={p} value={p}>{PROVIDER_LABELS[p]}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              Automatic uses Apple Maps on Apple devices and Google Maps elsewhere. You can also choose per-stop from the dropdown next to each "Navigate" button.
+            </p>
+          </CardContent>
+        </Card>
+
         {/* Inspector Vehicles */}
         <Card>
           <CardHeader>
