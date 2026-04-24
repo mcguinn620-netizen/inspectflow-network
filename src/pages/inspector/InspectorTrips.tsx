@@ -13,6 +13,7 @@ import { useUserRoles } from "@/hooks/useUserRoles";
 import { toast } from "sonner";
 import { OpenInMapsButton } from "@/components/maps/OpenInMapsButton";
 import { TripMapOverlay, type MapStop } from "@/components/maps/TripMapOverlay";
+import { LocationAutocomplete } from "@/components/maps/LocationAutocomplete";
 import { TripDetailSheet } from "@/components/trips/TripDetailSheet";
 import { NextStopCard } from "@/components/inspector/NextStopCard";
 import { Progress } from "@/components/ui/progress";
@@ -402,13 +403,25 @@ export default function InspectorTrips() {
           <DialogHeader><DialogTitle>Add stop</DialogTitle></DialogHeader>
           <div className="space-y-3">
             <div className="space-y-1.5"><Label>Label</Label><Input value={stopForm.label ?? ""} onChange={e => setStopForm({ ...stopForm, label: e.target.value })} placeholder="Customer pickup" /></div>
-            <div className="space-y-1.5"><Label>Address</Label><Input value={stopForm.address ?? ""} onChange={e => setStopForm({ ...stopForm, address: e.target.value })} /></div>
+            <div className="space-y-1.5">
+              <Label>Address</Label>
+              <LocationAutocomplete
+                value={stopForm.address ?? ""}
+                onChange={(loc) => setStopForm({
+                  ...stopForm,
+                  address: loc.address,
+                  latitude: loc.latitude ?? stopForm.latitude ?? null,
+                  longitude: loc.longitude ?? stopForm.longitude ?? null,
+                })}
+                placeholder="Search address or use my location"
+              />
+            </div>
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-1.5"><Label className="text-xs">Latitude</Label><Input type="number" step="0.000001" value={stopForm.latitude ?? ""} onChange={e => setStopForm({ ...stopForm, latitude: e.target.value ? Number(e.target.value) : null })} /></div>
               <div className="space-y-1.5"><Label className="text-xs">Longitude</Label><Input type="number" step="0.000001" value={stopForm.longitude ?? ""} onChange={e => setStopForm({ ...stopForm, longitude: e.target.value ? Number(e.target.value) : null })} /></div>
             </div>
             <div className="space-y-1.5"><Label>Miles from previous</Label><Input type="number" step="0.1" value={stopForm.miles_from_previous ?? 0} onChange={e => setStopForm({ ...stopForm, miles_from_previous: Number(e.target.value) })} /></div>
-            <p className="text-xs text-muted-foreground">Coordinates enable the map. Future GPS auto-fill will populate these automatically.</p>
+            <p className="text-xs text-muted-foreground">Address lookup auto-fills coordinates so the map and "Open in Maps" work.</p>
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setStopOpen(null)}>Cancel</Button>
