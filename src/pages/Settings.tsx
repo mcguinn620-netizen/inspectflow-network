@@ -308,6 +308,48 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
 
+        {/* Calendar Sync */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Calendar className="h-5 w-5" />Calendar Sync
+            </CardTitle>
+            <CardDescription>
+              Subscribe to a live, read-only feed of your upcoming jobs in Apple Calendar, Google Calendar, or Outlook.
+              Updates automatically — no manual export needed.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {!feedToken ? (
+              <Button onClick={generateFeedToken} disabled={feedBusy}>
+                <Calendar className="h-4 w-4 mr-2" />
+                {feedBusy ? "Enabling..." : "Enable calendar sync"}
+              </Button>
+            ) : (
+              <>
+                <div className="rounded-md border bg-muted/30 p-3 space-y-2">
+                  <Label className="text-xs uppercase tracking-wide text-muted-foreground">Subscription URL</Label>
+                  <Input readOnly value={webcalUrl ?? ""} className="font-mono text-xs" onFocus={(e) => e.currentTarget.select()} />
+                  <p className="text-xs text-muted-foreground">
+                    On iPhone: tap the link to subscribe. On Google Calendar: <em>Settings → Add calendar → From URL</em>.
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button size="sm" variant="outline" onClick={copyFeedUrl}>
+                    <Copy className="h-3.5 w-3.5 mr-1.5" />Copy URL
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={generateFeedToken} disabled={feedBusy}>
+                    <RefreshCw className="h-3.5 w-3.5 mr-1.5" />Rotate token
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={revokeFeedToken} disabled={feedBusy}>
+                    <Trash2 className="h-3.5 w-3.5 mr-1.5" />Disable
+                  </Button>
+                </div>
+              </>
+            )}
+          </CardContent>
+        </Card>
+
         {/* Inspector Vehicles */}
         <Card>
           <CardHeader>
