@@ -43,7 +43,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
         <AppSidebar onLogout={handleLogout} />
-        <div className="flex-1 flex flex-col min-w-0">
+        <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
           <header className="h-14 flex items-center justify-between border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 px-4 shrink-0 sticky top-0 z-40">
             <div className="flex items-center gap-3">
               <SidebarTrigger className="text-muted-foreground hover:text-foreground transition-colors duration-150" />
@@ -96,7 +96,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             </div>
           </header>
           <main
-            className="flex-1 overflow-auto p-4 md:p-6"
+            className="flex-1 p-4 md:p-6"
             style={{ paddingBottom: isInspectorPage ? "calc(env(safe-area-inset-bottom) + 5rem)" : undefined }}
           >
             {isInspectorPage && (
