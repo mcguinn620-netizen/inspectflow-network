@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Plus, Trash2, Play, Pause, CheckCircle2, ArrowUp, ArrowDown, Flag, SkipForward, Briefcase } from "lucide-react";
+import { Plus, Trash2, Play, Pause, CheckCircle2, ArrowUp, ArrowDown, Flag, SkipForward, Briefcase, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
@@ -18,6 +18,13 @@ import { NextStopCard } from "@/components/inspector/NextStopCard";
 import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
 import { Pencil, Download } from "lucide-react";
+import {
+  setTripStatus as setTripStatusSafe,
+  setStopStatus as setStopStatusSafe,
+  canStartTrip, canPauseTrip, canCompleteTrip,
+  canArriveStop, canCompleteStop, canSkipStop,
+  isStopTerminal,
+} from "@/lib/tripLifecycle";
 
 interface Trip {
   id: string;
