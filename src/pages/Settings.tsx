@@ -9,7 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { useTheme } from "next-themes";
-import { Monitor, Moon, Sun, Plus, Trash2, Star, LogOut, Calendar, Copy, RefreshCw } from "lucide-react";
+import { Monitor, Moon, Sun, Plus, Trash2, Star, LogOut, Calendar, Copy, RefreshCw, Navigation } from "lucide-react";
+import { getProvider as getMapProvider, setProvider as setMapProvider, PROVIDER_LABELS, type MapProvider } from "@/platform/maps";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
