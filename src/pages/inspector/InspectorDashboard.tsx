@@ -12,6 +12,7 @@ import { OpenInMapsButton } from "@/components/maps/OpenInMapsButton";
 import { NextStopCard } from "@/components/inspector/NextStopCard";
 import { StartMyDayCard } from "@/components/inspector/StartMyDayCard";
 import { toast } from "sonner";
+import { setTripStatus as setTripStatusSafe } from "@/lib/tripLifecycle";
 
 interface Job {
   id: string;
