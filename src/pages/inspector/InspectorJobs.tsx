@@ -16,6 +16,7 @@ import { useUserRoles } from "@/hooks/useUserRoles";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { OpenInMapsButton } from "@/components/maps/OpenInMapsButton";
+import { LocationAutocomplete } from "@/components/maps/LocationAutocomplete";
 import {
   setJobStatus as setJobStatusSafe,
   canStartJob, canCompleteJob, canCancelJob, isJobTerminal,
@@ -340,9 +341,14 @@ export default function InspectorJobs() {
           <DialogHeader><DialogTitle>{editing ? "Edit Job" : "New Job"}</DialogTitle></DialogHeader>
           <div className="space-y-3">
             <div className="space-y-1.5"><Label>Title</Label><Input value={form.title ?? ""} onChange={e => setForm({ ...form, title: e.target.value })} /></div>
-            <div className="grid grid-cols-2 gap-2">
-              <div className="space-y-1.5"><Label>Customer</Label><Input value={form.customer_name ?? ""} onChange={e => setForm({ ...form, customer_name: e.target.value })} /></div>
-              <div className="space-y-1.5"><Label>Location</Label><Input value={form.location ?? ""} onChange={e => setForm({ ...form, location: e.target.value })} /></div>
+            <div className="space-y-1.5"><Label>Customer</Label><Input value={form.customer_name ?? ""} onChange={e => setForm({ ...form, customer_name: e.target.value })} /></div>
+            <div className="space-y-1.5">
+              <Label>Location</Label>
+              <LocationAutocomplete
+                value={form.location ?? ""}
+                onChange={(loc) => setForm({ ...form, location: loc.address })}
+                placeholder="Search address…"
+              />
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-1.5"><Label>Scheduled</Label><Input type="datetime-local" value={(form.scheduled_at as any) ?? ""} onChange={e => setForm({ ...form, scheduled_at: e.target.value as any })} /></div>

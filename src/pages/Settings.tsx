@@ -9,7 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { useTheme } from "next-themes";
-import { Monitor, Moon, Sun, Plus, Trash2, Star, LogOut, Calendar, Copy, RefreshCw } from "lucide-react";
+import { Monitor, Moon, Sun, Plus, Trash2, Star, LogOut, Calendar, Copy, RefreshCw, Navigation } from "lucide-react";
+import { getProvider as getMapProvider, setProvider as setMapProvider, PROVIDER_LABELS, type MapProvider } from "@/platform/maps";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
@@ -71,6 +72,8 @@ export default function SettingsPage() {
   const [vForm, setVForm] = useState<Partial<InspectorVehicle>>({ nickname: "" });
   const [feedToken, setFeedToken] = useState<string | null>(null);
   const [feedBusy, setFeedBusy] = useState(false);
+  const [mapProvider, setMapProviderState] = useState<MapProvider>("auto");
+  useEffect(() => { setMapProviderState(getMapProvider()); }, []);
 
   const feedUrl = feedToken
     ? `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/calendar-feed?token=${feedToken}`
@@ -347,6 +350,35 @@ export default function SettingsPage() {
                 </div>
               </>
             )}
+          </CardContent>
+        </Card>
+
+        {/* Maps & Navigation provider preference (Phase 7C) */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Navigation className="h-5 w-5" />Maps & Navigation
+            </CardTitle>
+            <CardDescription>
+              Choose which maps app the "Navigate" button hands off to. On mobile, the device will open the installed app automatically.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <Label>Preferred maps app</Label>
+            <Select
+              value={mapProvider}
+              onValueChange={(v) => { setMapProvider(v as MapProvider); setMapProviderState(v as MapProvider); toast.success("Map preference saved"); }}
+            >
+              <SelectTrigger className="max-w-sm"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {(["auto","apple","google","waze"] as MapProvider[]).map(p => (
+                  <SelectItem key={p} value={p}>{PROVIDER_LABELS[p]}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              Automatic uses Apple Maps on Apple devices and Google Maps elsewhere. You can also choose per-stop from the dropdown next to each "Navigate" button.
+            </p>
           </CardContent>
         </Card>
 

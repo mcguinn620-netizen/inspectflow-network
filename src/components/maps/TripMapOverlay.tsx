@@ -45,13 +45,27 @@ interface Props {
 function FitBounds({ points }: { points: [number, number][] }) {
   const map = useMap();
   useEffect(() => {
-    if (!points.length) return;
-    if (points.length === 1) {
-      map.setView(points[0], 13);
-      return;
-    }
-    map.fitBounds(L.latLngBounds(points), { padding: [40, 40], maxZoom: 14 });
+    // Force layout recalculation — Leaflet often paints blank when mounted
+    // inside flex/grid containers whose height is determined after first paint.
+    const ids: number[] = [];
+    ids.push(window.setTimeout(() => map.invalidateSize(), 0));
+    ids.push(window.setTimeout(() => map.invalidateSize(), 200));
+    ids.push(window.setTimeout(() => {
+      if (!points.length) return;
+      if (points.length === 1) map.setView(points[0], 13);
+      else map.fitBounds(L.latLngBounds(points), { padding: [40, 40], maxZoom: 14 });
+    }, 50));
+    return () => ids.forEach((i) => window.clearTimeout(i));
   }, [points, map]);
+
+  // Re-invalidate on container resize (e.g. orientation change, sidebar toggle)
+  useEffect(() => {
+    const el = map.getContainer();
+    const ro = new ResizeObserver(() => map.invalidateSize());
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [map]);
+
   return null;
 }
 
@@ -72,7 +86,7 @@ export function TripMapOverlay({ stops, selectedId, onSelect, className }: Props
         <CardContent className="p-6 text-center min-h-[260px] flex flex-col items-center justify-center text-sm text-muted-foreground">
           <MapPin className="h-6 w-6 mb-2" />
           <p>No mapped stops yet.</p>
-          <p className="text-xs mt-1">Add coordinates to stops to see them on the map.</p>
+          <p className="text-xs mt-1">Add an address (with location lookup) to see stops on the map.</p>
         </CardContent>
       </Card>
     );
@@ -81,12 +95,13 @@ export function TripMapOverlay({ stops, selectedId, onSelect, className }: Props
   return (
     <Card className={className} ref={containerRef as any}>
       <CardContent className="p-0 overflow-hidden rounded-lg">
-        <div style={{ height: 320, width: "100%" }}>
+        {/* Explicit pixel height — Leaflet requires an absolute height to paint */}
+        <div className="relative w-full" style={{ height: 320 }}>
           <MapContainer
             center={points[0]}
             zoom={12}
             scrollWheelZoom={false}
-            style={{ height: "100%", width: "100%" }}
+            style={{ height: "100%", width: "100%", position: "absolute", inset: 0 }}
           >
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'

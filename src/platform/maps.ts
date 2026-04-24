@@ -1,7 +1,13 @@
 // Maps platform layer.
-// Web: opens Apple/Google Maps in a new tab.
-// Future Capacitor: forward to native intent (Apple Maps app, Google Maps app,
-// Waze) via @capacitor/app or a custom plugin.
+// Web: opens Apple/Google/Waze in a new tab using deep links the user prefers.
+// Capacitor (future): swap `open()` to `@capacitor/app` `App.openUrl()` so iOS
+// hands off to the installed Apple Maps / Google Maps / Waze app, and Android
+// uses the geo: intent. The interface here stays stable.
+//
+// User preference is read from localStorage key `mapProvider` and falls back
+// to platform default (Apple on Apple devices, Google elsewhere).
+
+export type MapProvider = "auto" | "apple" | "google" | "waze";
 
 export interface MapTarget {
   address?: string | null;
@@ -10,9 +16,28 @@ export interface MapTarget {
   label?: string | null;
 }
 
+const STORAGE_KEY = "mapProvider";
+
+export function getProvider(): MapProvider {
+  if (typeof localStorage === "undefined") return "auto";
+  const v = localStorage.getItem(STORAGE_KEY);
+  if (v === "apple" || v === "google" || v === "waze") return v;
+  return "auto";
+}
+
+export function setProvider(p: MapProvider) {
+  if (typeof localStorage === "undefined") return;
+  if (p === "auto") localStorage.removeItem(STORAGE_KEY);
+  else localStorage.setItem(STORAGE_KEY, p);
+}
+
 function isApplePlatform() {
   if (typeof navigator === "undefined") return false;
   return /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent || "");
+}
+
+function isCapacitor() {
+  return typeof (globalThis as any).Capacitor !== "undefined" && (globalThis as any).Capacitor?.isNativePlatform?.();
 }
 
 function buildQuery(t: MapTarget) {
@@ -20,17 +45,69 @@ function buildQuery(t: MapTarget) {
   return t.address ?? t.label ?? "";
 }
 
-export function buildMapsUrl(t: MapTarget): string | null {
-  const q = buildQuery(t);
-  if (!q) return null;
-  if (isApplePlatform()) return `https://maps.apple.com/?q=${encodeURIComponent(q)}`;
-  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
+function resolveProvider(): "apple" | "google" | "waze" {
+  const p = getProvider();
+  if (p !== "auto") return p;
+  return isApplePlatform() ? "apple" : "google";
 }
 
-export function open(t: MapTarget): boolean {
-  const url = buildMapsUrl(t);
+/**
+ * Build a deep link URL for the chosen provider.
+ * Returns null when the target has no address/coords.
+ */
+export function buildMapsUrl(t: MapTarget, override?: MapProvider): string | null {
+  const q = buildQuery(t);
+  if (!q) return null;
+  const provider = override && override !== "auto" ? override : resolveProvider();
+  const hasCoords = t.latitude != null && t.longitude != null;
+
+  switch (provider) {
+    case "apple":
+      // Apple Maps universal link — works in browser + native iOS/macOS handoff
+      return `https://maps.apple.com/?q=${encodeURIComponent(q)}${
+        hasCoords ? `&ll=${t.latitude},${t.longitude}` : ""
+      }${t.label ? `&t=${encodeURIComponent(t.label)}` : ""}`;
+    case "waze":
+      return hasCoords
+        ? `https://waze.com/ul?ll=${t.latitude}%2C${t.longitude}&navigate=yes`
+        : `https://waze.com/ul?q=${encodeURIComponent(q)}&navigate=yes`;
+    case "google":
+    default:
+      return hasCoords
+        ? `https://www.google.com/maps/dir/?api=1&destination=${t.latitude},${t.longitude}`
+        : `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(q)}`;
+  }
+}
+
+/**
+ * Open the chosen map provider with a navigation intent.
+ * Web: window.open. Capacitor: hand off to native via App.openUrl()
+ * (the universal links above will route to installed apps automatically).
+ */
+export function open(t: MapTarget, override?: MapProvider): boolean {
+  const url = buildMapsUrl(t, override);
   if (!url) return false;
-  // TODO: when running under Capacitor, use @capacitor/browser or native intent
+  if (isCapacitor()) {
+    // Native: forward to system; iOS/Android resolve maps.apple.com /
+    // google.com/maps / waze.com to the installed app automatically.
+    try {
+      // dynamic import keeps this file usable in pure web builds
+      import("@capacitor/app" as any)
+        .then((m) => m?.App?.openUrl?.({ url }))
+        .catch(() => window.open(url, "_blank", "noopener,noreferrer"));
+      return true;
+    } catch {
+      window.open(url, "_blank", "noopener,noreferrer");
+      return true;
+    }
+  }
   window.open(url, "_blank", "noopener,noreferrer");
   return true;
 }
+
+export const PROVIDER_LABELS: Record<MapProvider, string> = {
+  auto: "Automatic (system default)",
+  apple: "Apple Maps",
+  google: "Google Maps",
+  waze: "Waze",
+};

@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Download, Save } from "lucide-react";
+import { Download, Save, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { toCsv, downloadCsv } from "@/lib/exportCsv";
@@ -33,33 +33,51 @@ export function TripDetailSheet({
   open: boolean; onOpenChange: (v: boolean) => void; onSaved: () => void;
 }) {
   const [form, setForm] = useState<Partial<Trip>>({});
+  const [saving, setSaving] = useState(false);
+
+  // Re-hydrate form whenever a different trip is opened (or sheet re-opens
+  // with the same trip after server changes). Keying on trip.id + open ensures
+  // edits don't get stuck in stale state.
   useEffect(() => {
-    if (trip) setForm({
-      ...trip,
-      start_time: trip.start_time ? trip.start_time.slice(0,16) : "",
-      end_time: trip.end_time ? trip.end_time.slice(0,16) : "",
-    });
-  }, [trip]);
+    if (trip && open) {
+      setForm({
+        ...trip,
+        start_time: trip.start_time ? trip.start_time.slice(0, 16) : "",
+        end_time: trip.end_time ? trip.end_time.slice(0, 16) : "",
+      });
+    }
+  }, [trip?.id, open]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!trip) return null;
 
   const save = async () => {
-    const { error } = await supabase.from("trips").update({
-      title: form.title || null,
-      trip_date: form.trip_date,
-      status: form.status,
-      start_time: form.start_time ? new Date(form.start_time).toISOString() : null,
-      end_time: form.end_time ? new Date(form.end_time).toISOString() : null,
-      total_miles: Number(form.total_miles ?? 0),
-      drive_minutes: Number(form.drive_minutes ?? 0),
-      work_minutes: Number(form.work_minutes ?? 0),
-      notes: form.notes || null,
-      inspector_vehicle_id: form.inspector_vehicle_id || null,
-    }).eq("id", trip.id);
-    if (error) return toast.error(error.message);
-    toast.success("Trip saved");
-    onSaved();
-    onOpenChange(false);
+    if (saving) return;
+    setSaving(true);
+    try {
+      const { error } = await supabase.from("trips").update({
+        title: form.title || null,
+        trip_date: form.trip_date as string,
+        status: form.status as string,
+        start_time: form.start_time ? new Date(form.start_time as string).toISOString() : null,
+        end_time: form.end_time ? new Date(form.end_time as string).toISOString() : null,
+        total_miles: Number(form.total_miles ?? 0),
+        drive_minutes: Number(form.drive_minutes ?? 0),
+        work_minutes: Number(form.work_minutes ?? 0),
+        notes: form.notes || null,
+        inspector_vehicle_id: form.inspector_vehicle_id || null,
+      }).eq("id", trip.id);
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+      toast.success("Trip saved");
+      onSaved();
+      onOpenChange(false);
+    } catch (e: any) {
+      toast.error(e?.message || "Failed to save trip");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const exportCsv = () => {
@@ -94,7 +112,7 @@ export function TripDetailSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:max-w-lg overflow-y-auto">
+      <SheetContent side="right" className="w-full sm:max-w-lg">
         <SheetHeader>
           <SheetTitle>Trip · {new Date(trip.trip_date).toLocaleDateString()}</SheetTitle>
           <SheetDescription>Edit trip details, route, times and export for filings.</SheetDescription>
@@ -178,7 +196,10 @@ export function TripDetailSheet({
           </div>
 
           <div className="flex flex-wrap gap-2 pt-2">
-            <Button onClick={save}><Save className="h-4 w-4 mr-1.5" />Save trip</Button>
+            <Button onClick={save} disabled={saving}>
+              {saving ? <Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> : <Save className="h-4 w-4 mr-1.5" />}
+              {saving ? "Saving…" : "Save trip"}
+            </Button>
             <Button variant="outline" onClick={exportCsv}><Download className="h-4 w-4 mr-1.5" />Export CSV</Button>
           </div>
         </div>
