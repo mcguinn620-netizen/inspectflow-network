@@ -88,11 +88,14 @@ export function open(t: MapTarget, override?: MapProvider): boolean {
   const url = buildMapsUrl(t, override);
   if (!url) return false;
   if (isCapacitor()) {
-    // Native: forward to system; iOS/Android resolve maps.apple.com /
-    // google.com/maps / waze.com to the installed app automatically.
+    // Native: forward to system via Capacitor App plugin if present at runtime.
+    // We avoid a static import so the web build doesn't try to resolve
+    // "@capacitor/app" (it's only installed in the native shell).
     try {
-      // dynamic import keeps this file usable in pure web builds
-      import("@capacitor/app" as any)
+      const moduleName = "@capacitor/app";
+      // eslint-disable-next-line @typescript-eslint/no-implied-eval
+      const dynamicImport = new Function("m", "return import(m)") as (m: string) => Promise<any>;
+      dynamicImport(moduleName)
         .then((m) => m?.App?.openUrl?.({ url }))
         .catch(() => window.open(url, "_blank", "noopener,noreferrer"));
       return true;
