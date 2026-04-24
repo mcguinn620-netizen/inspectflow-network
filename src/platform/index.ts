@@ -6,3 +6,4 @@ export * as platformMaps from "./maps";
 export * as platformExport from "./export";
 export * as platformShare from "./share";
 export * as platformLocation from "./location";
+export * as platformCalendar from "./calendar";
