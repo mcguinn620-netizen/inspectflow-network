@@ -113,8 +113,8 @@ export default function InspectorDashboard() {
 
   const pauseTrip = async () => {
     if (!activeTrip) return;
-    await supabase.from("trips").update({ status: "paused", paused_at: new Date().toISOString() }).eq("id", activeTrip.id);
-    load();
+    const ok = await setTripStatusSafe(activeTrip, "paused");
+    if (ok) load();
   };
 
   const today = new Date(); today.setHours(0,0,0,0);
