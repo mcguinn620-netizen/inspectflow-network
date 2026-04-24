@@ -4,6 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Drive Smooth Inspector</title>
+    <style>
+      :root {
+        --safe-top: env(safe-area-inset-top, 0px);
+        --safe-bottom: env(safe-area-inset-bottom, 0px);
+        --app-header-h: 3.5rem;
+        --app-tabbar-h: 3.5rem;
+      }
+      html, body, #root { height: 100%; }
+      body { overscroll-behavior-y: none; }
+    </style>
     <meta name="description" content="Field execution tool for vehicle inspectors — schedule, trips, jobs, and tax." />
     <meta name="author" content="Drive Smooth" />
 
