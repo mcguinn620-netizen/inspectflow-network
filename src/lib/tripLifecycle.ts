@@ -76,7 +76,7 @@ export async function setTripStatus(
     return false;
   }
 
-  const updates: Record<string, unknown> = { status };
+  const updates: any = { status };
   const now = new Date().toISOString();
   if (status === "active" && !trip.started_at) updates.started_at = now;
   if (status === "paused") updates.paused_at = now;
@@ -149,7 +149,7 @@ export async function setStopStatus(
   }
 
   const now = new Date().toISOString();
-  const updates: Record<string, unknown> = { status };
+  const updates: any = { status };
   // Never overwrite arrived_at if it already exists.
   if (status === "arrived" && !stop.arrived_at) updates.arrived_at = now;
   if (status === "completed") {
