@@ -242,17 +242,32 @@ export default function InspectorTrips() {
               <Card>
                 <CardContent className="p-3 space-y-2">
                   {activeStops.length === 0 && <p className="text-sm text-muted-foreground p-3">No stops yet. Add stops or build from schedule.</p>}
-                  {activeStops.map((s, i) => (
+                  {(() => {
+                    // Determine current/next stop for visual emphasis
+                    const nextIdx = activeStops.findIndex(s => s.status !== "completed" && s.status !== "skipped");
+                    return activeStops.map((s, i) => {
+                      const isDone = s.status === "completed" || s.status === "skipped";
+                      const isNext = i === nextIdx;
+                      return (
                     <div
                       key={s.id}
                       onClick={() => setSelectedStopId(s.id)}
-                      className={`rounded-md border p-2 cursor-pointer transition-colors ${selectedStopId === s.id ? "border-primary bg-primary/5" : "hover:bg-muted/40"}`}
+                      className={`rounded-md border p-2 cursor-pointer transition-colors ${
+                        selectedStopId === s.id
+                          ? "border-primary bg-primary/5"
+                          : isNext
+                            ? "border-primary/60 bg-primary/5 ring-1 ring-primary/30"
+                            : isDone
+                              ? "opacity-60 hover:opacity-100"
+                              : "hover:bg-muted/40"
+                      }`}
                     >
                       <div className="flex items-center justify-between gap-2 flex-wrap">
                         <div className="flex items-center gap-2 min-w-0">
-                          <span className="text-xs text-muted-foreground">#{i+1}</span>
-                          <span className="font-medium text-sm truncate">{s.label || s.address || "Stop"}</span>
-                          <Badge variant="outline" className="capitalize text-xs">{s.status}</Badge>
+                          <span className={`text-xs tabular-nums ${isNext ? "text-primary font-semibold" : "text-muted-foreground"}`}>#{i+1}</span>
+                          <span className={`font-medium text-sm truncate ${isDone ? "line-through" : ""}`}>{s.label || s.address || "Stop"}</span>
+                          {isNext && <Badge variant="default" className="capitalize text-[10px] h-4">Next</Badge>}
+                          {!isNext && <Badge variant="outline" className="capitalize text-xs">{s.status}</Badge>}
                           {s.job_id && <Badge variant="outline" className="text-xs"><Briefcase className="h-3 w-3 mr-1" />Job</Badge>}
                         </div>
                         <div className="flex items-center gap-1">
@@ -286,7 +301,9 @@ export default function InspectorTrips() {
                         )}
                       </div>
                     </div>
-                  ))}
+                      );
+                    });
+                  })()}
                   <Button size="sm" variant="outline" className="w-full" onClick={() => { setStopOpen(activeTrip.id); setStopForm({}); }}>
                     <Plus className="h-3.5 w-3.5 mr-1" />Add stop
                   </Button>
