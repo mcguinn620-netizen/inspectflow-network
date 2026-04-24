@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { useTheme } from "next-themes";
-import { Monitor, Moon, Sun, Plus, Trash2, Star, LogOut } from "lucide-react";
+import { Monitor, Moon, Sun, Plus, Trash2, Star, LogOut, Calendar, Copy, RefreshCw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
@@ -69,6 +69,13 @@ export default function SettingsPage() {
   const [savingSettings, setSavingSettings] = useState(false);
   const [vehicles, setVehicles] = useState<InspectorVehicle[]>([]);
   const [vForm, setVForm] = useState<Partial<InspectorVehicle>>({ nickname: "" });
+  const [feedToken, setFeedToken] = useState<string | null>(null);
+  const [feedBusy, setFeedBusy] = useState(false);
+
+  const feedUrl = feedToken
+    ? `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/calendar-feed?token=${feedToken}`
+    : null;
+  const webcalUrl = feedUrl ? feedUrl.replace(/^https?:\/\//, "webcal://") : null;
 
   const load = async () => {
     if (!user || !activeOrgId) return;
@@ -91,6 +98,46 @@ export default function SettingsPage() {
       .select("*").eq("user_id", user.id).eq("is_archived", false)
       .order("is_default", { ascending: false }).order("created_at");
     setVehicles((v ?? []) as any);
+
+    const { data: prof } = await supabase.from("profiles")
+      .select("calendar_feed_token").eq("id", user.id).maybeSingle();
+    setFeedToken((prof as { calendar_feed_token?: string | null } | null)?.calendar_feed_token ?? null);
+  };
+
+  const generateFeedToken = async () => {
+    if (!user) return;
+    setFeedBusy(true);
+    // 32 random bytes → URL-safe hex
+    const buf = new Uint8Array(24);
+    crypto.getRandomValues(buf);
+    const token = Array.from(buf, b => b.toString(16).padStart(2, "0")).join("");
+    const { error } = await supabase.from("profiles")
+      .update({ calendar_feed_token: token }).eq("id", user.id);
+    setFeedBusy(false);
+    if (error) return toast.error(error.message);
+    setFeedToken(token);
+    toast.success("Calendar feed enabled");
+  };
+
+  const revokeFeedToken = async () => {
+    if (!user) return;
+    setFeedBusy(true);
+    const { error } = await supabase.from("profiles")
+      .update({ calendar_feed_token: null }).eq("id", user.id);
+    setFeedBusy(false);
+    if (error) return toast.error(error.message);
+    setFeedToken(null);
+    toast.success("Calendar feed disabled");
+  };
+
+  const copyFeedUrl = async () => {
+    if (!feedUrl) return;
+    try {
+      await navigator.clipboard.writeText(feedUrl);
+      toast.success("Calendar URL copied");
+    } catch {
+      toast.error("Could not copy — long-press to select");
+    }
   };
 
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [user, activeOrgId]);
