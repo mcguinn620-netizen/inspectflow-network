@@ -122,16 +122,17 @@ export default function InspectorTrips() {
     load();
   };
 
-  const setTripStatus = async (trip: Trip, status: string) => {
-    const updates: any = { status };
-    if (status === "active" && !trip.started_at) updates.started_at = new Date().toISOString();
-    if (status === "paused") updates.paused_at = new Date().toISOString();
-    if (status === "completed") updates.completed_at = new Date().toISOString();
-    const { error } = await supabase.from("trips").update(updates).eq("id", trip.id);
-    if (error) return toast.error(error.message);
-    toast.success(`Trip ${status}`);
-    load();
+  const guard = async <T,>(id: string, fn: () => Promise<T>): Promise<T | undefined> => {
+    if (pendingId) return undefined;
+    setPendingId(id);
+    try { return await fn(); } finally { setPendingId(null); }
   };
+
+  const setTripStatus = (trip: Trip, status: "active" | "paused" | "completed") =>
+    guard(`trip:${trip.id}:${status}`, async () => {
+      const ok = await setTripStatusSafe(trip, status);
+      if (ok) load();
+    });
 
   const addStop = async () => {
     if (!stopOpen) return;
@@ -166,26 +167,20 @@ export default function InspectorTrips() {
     load();
   };
 
-  const setStopStatus = async (s: Stop, status: string) => {
-    const updates: any = { status };
-    if (status === "arrived") updates.arrived_at = new Date().toISOString();
-    if (status === "completed") {
-      updates.completed_at = new Date().toISOString();
-      updates.departed_at = new Date().toISOString();
-      // Mirror to the linked job if any
-      if (s.job_id) await supabase.from("jobs").update({ status: "completed", actual_end_time: new Date().toISOString() }).eq("id", s.job_id);
-    }
-    if (status === "skipped") updates.departed_at = new Date().toISOString();
-    const { error } = await supabase.from("trip_stops").update(updates).eq("id", s.id);
-    if (error) return toast.error(error.message);
-    load();
-  };
+  const setStopStatus = (s: Stop, status: "arrived" | "completed" | "skipped") =>
+    guard(`stop:${s.id}:${status}`, async () => {
+      const ok = await setStopStatusSafe(s, status, {
+        completeJob: status === "completed" && !!s.job_id,
+      });
+      if (ok) load();
+    });
 
-  const startJobFromStop = async (s: Stop) => {
-    if (!s.job_id) return toast.info("This stop has no linked job");
-    await supabase.from("jobs").update({ status: "in_progress", actual_start_time: new Date().toISOString() }).eq("id", s.job_id);
-    await setStopStatus(s, "arrived");
-  };
+  const startJobFromStop = (s: Stop) =>
+    guard(`stop:${s.id}:start`, async () => {
+      if (!s.job_id) { toast.info("This stop has no linked job"); return; }
+      const ok = await setStopStatusSafe(s, "arrived", { startJob: true });
+      if (ok) load();
+    });
 
   return (
     <DashboardLayout>
