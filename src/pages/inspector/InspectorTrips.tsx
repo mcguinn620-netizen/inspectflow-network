@@ -225,14 +225,25 @@ export default function InspectorTrips() {
                 {activeStops.length > 0 && <Progress value={pct} className="h-1.5 mt-1.5 w-40" />}
               </div>
               <div className="flex gap-2 flex-wrap">
-                {activeTrip.status !== "active" && (
-                  <Button size="sm" variant="outline" onClick={() => setTripStatus(activeTrip, "active")}><Play className="h-3.5 w-3.5 mr-1" />Start</Button>
+                {canStartTrip(activeTrip.status) && (
+                  <Button size="sm" variant="outline" disabled={!!pendingId}
+                    onClick={() => setTripStatus(activeTrip, "active")}>
+                    {pendingId === `trip:${activeTrip.id}:active` ? <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" /> : <Play className="h-3.5 w-3.5 mr-1" />}Start
+                  </Button>
                 )}
-                {activeTrip.status === "active" && (
-                  <Button size="sm" variant="outline" onClick={() => setTripStatus(activeTrip, "paused")}><Pause className="h-3.5 w-3.5 mr-1" />Pause</Button>
+                {canPauseTrip(activeTrip.status) && (
+                  <Button size="sm" variant="outline" disabled={!!pendingId}
+                    onClick={() => setTripStatus(activeTrip, "paused")}>
+                    {pendingId === `trip:${activeTrip.id}:paused` ? <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" /> : <Pause className="h-3.5 w-3.5 mr-1" />}Pause
+                  </Button>
                 )}
                 <Button size="sm" variant="outline" onClick={() => setEditingTrip(activeTrip)}><Pencil className="h-3.5 w-3.5 mr-1" />Edit</Button>
-                <Button size="sm" variant="default" onClick={() => setTripStatus(activeTrip, "completed")}><CheckCircle2 className="h-3.5 w-3.5 mr-1" />Complete</Button>
+                {canCompleteTrip(activeTrip.status) && (
+                  <Button size="sm" variant="default" disabled={!!pendingId}
+                    onClick={() => setTripStatus(activeTrip, "completed")}>
+                    {pendingId === `trip:${activeTrip.id}:completed` ? <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" /> : <CheckCircle2 className="h-3.5 w-3.5 mr-1" />}Complete
+                  </Button>
+                )}
               </div>
             </div>
 
@@ -282,23 +293,27 @@ export default function InspectorTrips() {
                       </div>
                       {s.address && <p className="text-xs text-muted-foreground mt-1 ml-6 truncate">{s.address}</p>}
                       <div className="flex flex-wrap gap-1 mt-2 ml-6">
-                        {s.status === "pending" && (
-                          <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); setStopStatus(s, "arrived"); }}>
-                            <Flag className="h-3 w-3 mr-1" />Arrived
+                        {canArriveStop(s.status) && (
+                          <Button size="sm" variant="outline" disabled={!!pendingId}
+                            onClick={(e) => { e.stopPropagation(); setStopStatus(s, "arrived"); }}>
+                            {pendingId === `stop:${s.id}:arrived` ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Flag className="h-3 w-3 mr-1" />}Arrived
                           </Button>
                         )}
-                        {s.job_id && s.status !== "completed" && (
-                          <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); startJobFromStop(s); }}>
-                            <Play className="h-3 w-3 mr-1" />Start job
+                        {s.job_id && !isStopTerminal(s.status) && (
+                          <Button size="sm" variant="outline" disabled={!!pendingId}
+                            onClick={(e) => { e.stopPropagation(); startJobFromStop(s); }}>
+                            {pendingId === `stop:${s.id}:start` ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Play className="h-3 w-3 mr-1" />}Start job
                           </Button>
                         )}
-                        {s.status !== "completed" && s.status !== "skipped" && (
-                          <Button size="sm" variant="default" onClick={(e) => { e.stopPropagation(); setStopStatus(s, "completed"); }}>
-                            <CheckCircle2 className="h-3 w-3 mr-1" />Complete
+                        {canCompleteStop(s.status) && (
+                          <Button size="sm" variant="default" disabled={!!pendingId}
+                            onClick={(e) => { e.stopPropagation(); setStopStatus(s, "completed"); }}>
+                            {pendingId === `stop:${s.id}:completed` ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <CheckCircle2 className="h-3 w-3 mr-1" />}Complete
                           </Button>
                         )}
-                        {s.status === "pending" && (
-                          <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); setStopStatus(s, "skipped"); }}>
+                        {canSkipStop(s.status) && (
+                          <Button size="sm" variant="ghost" disabled={!!pendingId}
+                            onClick={(e) => { e.stopPropagation(); setStopStatus(s, "skipped"); }}>
                             <SkipForward className="h-3 w-3 mr-1" />Skip
                           </Button>
                         )}
