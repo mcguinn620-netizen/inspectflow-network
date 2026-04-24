@@ -17,7 +17,7 @@ import { calculateTax, buildQuarterlyEstimates, type PeriodIncome } from "@/lib/
 import type { FilingStatus } from "@/data/federalTaxTables";
 import { quarterOf, quarterRange } from "@/data/federalTaxTables";
 import { STATE_TAX_2025 } from "@/data/stateTaxTables";
-import { downloadCsv } from "@/platform/export";
+import { toCsv, downloadCsv } from "@/platform/export";
 import { toast } from "sonner";
 
 interface Settings {
@@ -170,7 +170,7 @@ export default function InspectorTax() {
       toast.info("No completed jobs to export this year.");
       return;
     }
-    downloadCsv(`1099-summary-${year}.csv`, rows, ["customer", "jobs", "gross"]);
+    downloadCsv(`1099-summary-${year}.csv`, toCsv(rows, ["customer", "jobs", "gross"]));
     toast.success(`Exported ${rows.length} customer rows`);
   };
 
