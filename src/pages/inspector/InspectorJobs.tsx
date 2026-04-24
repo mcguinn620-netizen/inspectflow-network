@@ -304,18 +304,26 @@ export default function InspectorJobs() {
                   </div>
                   <div className="flex items-center gap-1 flex-wrap">
                     <OpenInMapsButton target={{ address: j.location, label: j.title }} iconOnly />
-                    {j.status === "scheduled" && (
-                      <Button size="sm" variant="outline" onClick={() => setStatus(j, "in_progress")}>
-                        <Play className="h-3.5 w-3.5 mr-1" />Start
+                    {canStartJob(j.status) && (
+                      <Button size="sm" variant="outline" disabled={!!pendingId}
+                        onClick={() => setStatus(j, "in_progress")}>
+                        {pendingId === `${j.id}:in_progress` ? <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" /> : <Play className="h-3.5 w-3.5 mr-1" />}Start
                       </Button>
                     )}
-                    {j.status === "in_progress" && (
-                      <Button size="sm" variant="default" onClick={() => setStatus(j, "completed")}>
-                        <CheckCircle2 className="h-3.5 w-3.5 mr-1" />Complete
+                    {canCompleteJob(j.status) && (
+                      <Button size="sm" variant="default" disabled={!!pendingId}
+                        onClick={() => setStatus(j, "completed")}>
+                        {pendingId === `${j.id}:completed` ? <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" /> : <CheckCircle2 className="h-3.5 w-3.5 mr-1" />}Complete
                       </Button>
                     )}
-                    {(j.status === "scheduled" || j.status === "in_progress") && (
-                      <Button size="sm" variant="ghost" onClick={() => setStatus(j, "canceled")}><X className="h-3.5 w-3.5" /></Button>
+                    {canCancelJob(j.status) && (
+                      <Button size="sm" variant="ghost" disabled={!!pendingId}
+                        onClick={() => setStatus(j, "canceled")} title="Cancel">
+                        {pendingId === `${j.id}:canceled` ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <X className="h-3.5 w-3.5" />}
+                      </Button>
+                    )}
+                    {isJobTerminal(j.status) && (
+                      <Badge variant="outline" className="text-[10px] capitalize">{j.status}</Badge>
                     )}
                     <Button size="sm" variant="ghost" onClick={() => duplicate(j)} title="Duplicate"><Copy className="h-3.5 w-3.5" /></Button>
                     <Button size="sm" variant="ghost" onClick={() => openEdit(j)}><Pencil className="h-3.5 w-3.5" /></Button>
