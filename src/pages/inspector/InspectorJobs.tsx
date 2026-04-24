@@ -9,13 +9,17 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Pencil, Play, CheckCircle2, X, Route as RouteIcon, Copy } from "lucide-react";
+import { Plus, Pencil, Play, CheckCircle2, X, Route as RouteIcon, Copy, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { OpenInMapsButton } from "@/components/maps/OpenInMapsButton";
+import {
+  setJobStatus as setJobStatusSafe,
+  canStartJob, canCompleteJob, canCancelJob, isJobTerminal,
+} from "@/lib/tripLifecycle";
 
 interface Job {
   id: string;
