@@ -72,6 +72,8 @@ export default function SettingsPage() {
   const [vForm, setVForm] = useState<Partial<InspectorVehicle>>({ nickname: "" });
   const [feedToken, setFeedToken] = useState<string | null>(null);
   const [feedBusy, setFeedBusy] = useState(false);
+  const [mapProvider, setMapProviderState] = useState<MapProvider>("auto");
+  useEffect(() => { setMapProviderState(getMapProvider()); }, []);
 
   const feedUrl = feedToken
     ? `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/calendar-feed?token=${feedToken}`
