@@ -1,125 +1,178 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
-import { Info, Settings as SettingsIcon, TrendingUp, Receipt, Car, Calculator } from "lucide-react";
+import {
+  Info, Settings as SettingsIcon, TrendingUp, Receipt, Car, Calculator,
+  Calendar, Download, ChevronDown, AlertCircle,
+} from "lucide-react";
+import { calculateTax, buildQuarterlyEstimates, type PeriodIncome } from "@/lib/taxCalculator";
+import type { FilingStatus } from "@/data/federalTaxTables";
+import { quarterOf, quarterRange } from "@/data/federalTaxTables";
+import { STATE_TAX_2025 } from "@/data/stateTaxTables";
+import { downloadCsv } from "@/platform/export";
+import { toast } from "sonner";
 
 interface Settings {
   default_job_fee: number;
   default_mileage_fee: number;
   mileage_rate: number;
-  estimated_tax_rate: number;
-  federal_tax_rate: number;
-  state_tax_rate: number;
-  self_employment_tax_rate: number;
   state_code: string | null;
-  filing_status: string;
-}
-
-interface PeriodStats {
-  jobs: number;
-  miles: number;
-  jobEarnings: number;
-  mileageFeeEarnings: number;
+  filing_status: FilingStatus;
 }
 
 const DEFAULTS: Settings = {
   default_job_fee: 75,
   default_mileage_fee: 0,
   mileage_rate: 0.67,
-  estimated_tax_rate: 0.25,
-  federal_tax_rate: 0.15,
-  state_tax_rate: 0.05,
-  self_employment_tax_rate: 0.153,
   state_code: null,
   filing_status: "single",
 };
+
+interface JobRow {
+  fee_override: number | null;
+  mileage_fee: number | null;
+  actual_end_time: string | null;
+  customer_name: string | null;
+}
+interface TripRow {
+  trip_date: string;
+  total_miles: number | null;
+}
 
 export default function InspectorTax() {
   const { user } = useAuth();
   const { activeOrgId } = useUserRoles();
   const [settings, setSettings] = useState<Settings>(DEFAULTS);
   const [period, setPeriod] = useState<"week" | "month" | "ytd">("week");
-  const [week, setWeek] = useState<PeriodStats>({ jobs: 0, miles: 0, jobEarnings: 0, mileageFeeEarnings: 0 });
-  const [month, setMonth] = useState<PeriodStats>({ jobs: 0, miles: 0, jobEarnings: 0, mileageFeeEarnings: 0 });
-  const [ytd, setYtd] = useState<PeriodStats>({ jobs: 0, miles: 0, jobEarnings: 0, mileageFeeEarnings: 0 });
+  const [jobs, setJobs] = useState<JobRow[]>([]);
+  const [trips, setTrips] = useState<TripRow[]>([]);
+  const [breakdownOpen, setBreakdownOpen] = useState(false);
 
   const load = async () => {
     if (!user || !activeOrgId) return;
     const { data: s } = await supabase.from("earnings_settings").select("*").eq("user_id", user.id).maybeSingle();
-    const cfg: Settings = s ? {
+    setSettings(s ? {
       default_job_fee: Number(s.default_job_fee),
       default_mileage_fee: Number((s as any).default_mileage_fee ?? 0),
       mileage_rate: Number(s.mileage_rate),
-      estimated_tax_rate: Number(s.estimated_tax_rate),
-      federal_tax_rate: Number((s as any).federal_tax_rate ?? 0.15),
-      state_tax_rate: Number((s as any).state_tax_rate ?? 0.05),
-      self_employment_tax_rate: Number((s as any).self_employment_tax_rate ?? 0.153),
       state_code: (s as any).state_code ?? null,
-      filing_status: (s as any).filing_status ?? "single",
-    } : DEFAULTS;
-    setSettings(cfg);
+      filing_status: ((s as any).filing_status ?? "single") as FilingStatus,
+    } : DEFAULTS);
 
+    const yearStart = new Date(new Date().getFullYear(), 0, 1);
+    const [{ data: jobsData }, { data: tripsData }] = await Promise.all([
+      supabase.from("jobs")
+        .select("fee_override,mileage_fee,actual_end_time,customer_name")
+        .eq("organization_id", activeOrgId).eq("status", "completed")
+        .gte("actual_end_time", yearStart.toISOString()),
+      supabase.from("trips").select("trip_date,total_miles")
+        .eq("user_id", user.id).gte("trip_date", yearStart.toISOString().slice(0, 10)),
+    ]);
+    setJobs((jobsData ?? []) as JobRow[]);
+    setTrips((tripsData ?? []) as TripRow[]);
+  };
+  useEffect(() => { load(); /* eslint-disable-next-line */ }, [user, activeOrgId]);
+
+  const cfg = settings;
+  const incomeForJobs = (rows: JobRow[]): PeriodIncome => {
+    const gross = rows.reduce((sum, j) => sum + Number(j.fee_override ?? cfg.default_job_fee) + Number(j.mileage_fee ?? cfg.default_mileage_fee), 0);
+    return { gross, deductions: 0 };
+  };
+
+  const milesIn = (rows: TripRow[]) => rows.reduce((s, t) => s + Number(t.total_miles || 0), 0);
+
+  // Build period income (gross + mileage deduction)
+  const { current, currentLabel, currentMiles, currentJobCount } = useMemo(() => {
     const now = new Date();
     const weekAgo = new Date(); weekAgo.setDate(now.getDate() - 7);
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
     const yearStart = new Date(now.getFullYear(), 0, 1);
 
-    const { data: jobs } = await supabase.from("jobs")
-      .select("status,fee_override,mileage_fee,actual_end_time")
-      .eq("organization_id", activeOrgId).eq("status", "completed")
-      .gte("actual_end_time", yearStart.toISOString());
+    const range = period === "week" ? weekAgo : period === "month" ? monthStart : yearStart;
+    const label = period === "week" ? "Past 7 days" : period === "month" ? "Month-to-date" : "Year-to-date";
 
-    const { data: trips } = await supabase.from("trips")
-      .select("trip_date,total_miles").eq("user_id", user.id)
-      .gte("trip_date", yearStart.toISOString().slice(0,10));
+    const jr = jobs.filter((j) => j.actual_end_time && new Date(j.actual_end_time) >= range);
+    const tr = trips.filter((t) => new Date(t.trip_date) >= range);
+    const income = incomeForJobs(jr);
+    const miles = milesIn(tr);
+    income.deductions = miles * cfg.mileage_rate;
+    return { current: income, currentLabel: label, currentMiles: miles, currentJobCount: jr.length };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [jobs, trips, period, cfg.mileage_rate, cfg.default_job_fee, cfg.default_mileage_fee]);
 
-    const calc = (jobsList: any[], tripsList: any[]): PeriodStats => {
-      const miles = tripsList.reduce((sum, t) => sum + Number(t.total_miles || 0), 0);
-      const jobEarnings = jobsList.reduce((sum, j) => sum + Number(j.fee_override ?? cfg.default_job_fee), 0);
-      const mileageFeeEarnings = jobsList.reduce((sum, j) => sum + Number(j.mileage_fee ?? cfg.default_mileage_fee), 0);
-      return { jobs: jobsList.length, miles, jobEarnings, mileageFeeEarnings };
+  // Year fraction for the active period (used to annualize for bracket lookup)
+  const yearFraction = useMemo(() => {
+    const now = new Date();
+    const yearStart = new Date(now.getFullYear(), 0, 1);
+    const yearEnd = new Date(now.getFullYear() + 1, 0, 1);
+    const yearMs = yearEnd.getTime() - yearStart.getTime();
+    if (period === "week") return 7 * 86400000 / yearMs;
+    if (period === "month") return (now.getTime() - new Date(now.getFullYear(), now.getMonth(), 1).getTime()) / yearMs;
+    // ytd
+    return (now.getTime() - yearStart.getTime()) / yearMs;
+  }, [period]);
+
+  const breakdown = useMemo(
+    () => calculateTax(current, cfg.filing_status, cfg.state_code, Math.max(yearFraction, 0.001)),
+    [current, cfg.filing_status, cfg.state_code, yearFraction],
+  );
+
+  // Quarterly breakdown — bucket YTD jobs/trips by IRS quarter
+  const year = new Date().getFullYear();
+  const quarterly = useMemo(() => {
+    const perQ: Record<1 | 2 | 3 | 4, PeriodIncome> = {
+      1: { gross: 0, deductions: 0 },
+      2: { gross: 0, deductions: 0 },
+      3: { gross: 0, deductions: 0 },
+      4: { gross: 0, deductions: 0 },
     };
+    jobs.forEach((j) => {
+      if (!j.actual_end_time) return;
+      const d = new Date(j.actual_end_time);
+      if (d.getFullYear() !== year) return;
+      const q = quarterOf(d);
+      perQ[q].gross += Number(j.fee_override ?? cfg.default_job_fee) + Number(j.mileage_fee ?? cfg.default_mileage_fee);
+    });
+    trips.forEach((t) => {
+      const d = new Date(t.trip_date);
+      if (d.getFullYear() !== year) return;
+      const q = quarterOf(d);
+      perQ[q].deductions += Number(t.total_miles || 0) * cfg.mileage_rate;
+    });
+    return buildQuarterlyEstimates(year, perQ, cfg.filing_status, cfg.state_code);
+  }, [jobs, trips, year, cfg]);
 
-    const inRange = (d: string | null | undefined, from: Date) => d ? new Date(d) >= from : false;
+  const stateName = cfg.state_code ? STATE_TAX_2025[cfg.state_code]?.name : null;
+  const stateHasTax = cfg.state_code ? STATE_TAX_2025[cfg.state_code]?.type !== "none" : false;
 
-    setWeek(calc(
-      (jobs ?? []).filter((j: any) => inRange(j.actual_end_time, weekAgo)),
-      (trips ?? []).filter((t: any) => new Date(t.trip_date) >= weekAgo),
-    ));
-    setMonth(calc(
-      (jobs ?? []).filter((j: any) => inRange(j.actual_end_time, monthStart)),
-      (trips ?? []).filter((t: any) => new Date(t.trip_date) >= monthStart),
-    ));
-    setYtd(calc(jobs ?? [], trips ?? []));
+  // 1099-style export: per customer YTD totals
+  const handleExport1099 = () => {
+    const byCustomer = new Map<string, { jobs: number; gross: number }>();
+    jobs.forEach((j) => {
+      const name = (j.customer_name || "Unknown").trim();
+      const cur = byCustomer.get(name) ?? { jobs: 0, gross: 0 };
+      cur.jobs += 1;
+      cur.gross += Number(j.fee_override ?? cfg.default_job_fee) + Number(j.mileage_fee ?? cfg.default_mileage_fee);
+      byCustomer.set(name, cur);
+    });
+    const rows = Array.from(byCustomer.entries())
+      .sort((a, b) => b[1].gross - a[1].gross)
+      .map(([name, v]) => ({ customer: name, jobs: v.jobs, gross: v.gross.toFixed(2) }));
+    if (!rows.length) {
+      toast.info("No completed jobs to export this year.");
+      return;
+    }
+    downloadCsv(`1099-summary-${year}.csv`, rows, ["customer", "jobs", "gross"]);
+    toast.success(`Exported ${rows.length} customer rows`);
   };
-  useEffect(() => { load(); /* eslint-disable-next-line */ }, [user, activeOrgId]);
-
-  const current = period === "week" ? week : period === "month" ? month : ytd;
-  const periodLabel = period === "week" ? "Past 7 days" : period === "month" ? "Month-to-date" : "Year-to-date";
-
-  // Earnings breakdown
-  const grossJobs = current.jobEarnings;
-  const grossMileageFees = current.mileageFeeEarnings;
-  const gross = grossJobs + grossMileageFees;
-
-  // Mileage deduction (IRS standard mileage method) reduces taxable income
-  const mileageDeduction = current.miles * settings.mileage_rate;
-  const taxable = Math.max(gross - mileageDeduction, 0);
-
-  // Tax breakdown — use detailed rates if present, else fallback to combined estimate
-  const useDetailed = settings.federal_tax_rate > 0 || settings.state_tax_rate > 0 || settings.self_employment_tax_rate > 0;
-  const seTax = useDetailed ? taxable * settings.self_employment_tax_rate : 0;
-  const fedTax = useDetailed ? taxable * settings.federal_tax_rate : taxable * settings.estimated_tax_rate;
-  const stateTax = useDetailed ? taxable * settings.state_tax_rate : 0;
-  const totalTax = seTax + fedTax + stateTax;
-  const net = gross - totalTax;
 
   return (
     <DashboardLayout>
@@ -128,11 +181,11 @@ export default function InspectorTax() {
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">Tax &amp; Earnings</h1>
             <p className="text-sm text-muted-foreground mt-1">
-              Estimates based on completed jobs and logged miles
-              {settings.state_code && <> · State: <span className="font-medium text-foreground">{settings.state_code}</span></>}
+              {year} estimates using federal brackets &amp; SE tax
+              {stateName && <> · State: <span className="font-medium text-foreground">{stateName}</span>{!stateHasTax && " (no income tax)"}</>}
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <Tabs value={period} onValueChange={(v) => setPeriod(v as any)}>
               <TabsList>
                 <TabsTrigger value="week">Week</TabsTrigger>
@@ -140,6 +193,9 @@ export default function InspectorTax() {
                 <TabsTrigger value="ytd">YTD</TabsTrigger>
               </TabsList>
             </Tabs>
+            <Button variant="outline" size="sm" onClick={handleExport1099}>
+              <Download className="h-4 w-4 mr-1.5" />1099 export
+            </Button>
             <Button asChild variant="outline" size="sm">
               <Link to="/settings"><SettingsIcon className="h-4 w-4 mr-1.5" />Tax settings</Link>
             </Button>
@@ -148,69 +204,98 @@ export default function InspectorTax() {
 
         {/* Hero summary */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <Card className="md:col-span-1">
+          <Card>
             <CardContent className="p-5">
               <div className="flex items-center gap-2 mb-1 text-muted-foreground">
                 <TrendingUp className="h-4 w-4" />
                 <span className="text-xs uppercase tracking-wide">Gross earnings</span>
               </div>
-              <p className="text-3xl font-semibold tabular-nums">${gross.toFixed(0)}</p>
-              <p className="text-xs text-muted-foreground mt-1">{periodLabel} · {current.jobs} job{current.jobs !== 1 ? "s" : ""}</p>
+              <p className="text-3xl font-semibold tabular-nums">${breakdown.gross.toFixed(0)}</p>
+              <p className="text-xs text-muted-foreground mt-1">{currentLabel} · {currentJobCount} job{currentJobCount !== 1 ? "s" : ""}</p>
             </CardContent>
           </Card>
-          <Card className="md:col-span-1">
+          <Card>
             <CardContent className="p-5">
               <div className="flex items-center gap-2 mb-1 text-muted-foreground">
                 <Receipt className="h-4 w-4" />
                 <span className="text-xs uppercase tracking-wide">Estimated tax</span>
               </div>
-              <p className="text-3xl font-semibold tabular-nums text-muted-foreground">−${totalTax.toFixed(0)}</p>
-              <p className="text-xs text-muted-foreground mt-1">SE + Federal + State</p>
+              <p className="text-3xl font-semibold tabular-nums text-muted-foreground">−${breakdown.totalTax.toFixed(0)}</p>
+              <p className="text-xs text-muted-foreground mt-1">SE + Federal{stateHasTax ? " + State" : ""} · {(breakdown.effectiveRate * 100).toFixed(1)}% effective</p>
             </CardContent>
           </Card>
-          <Card className="md:col-span-1 border-primary/40 bg-primary/5">
+          <Card className="border-primary/40 bg-primary/5">
             <CardContent className="p-5">
               <div className="flex items-center gap-2 mb-1 text-primary">
                 <Calculator className="h-4 w-4" />
                 <span className="text-xs uppercase tracking-wide">Estimated net</span>
               </div>
-              <p className="text-3xl font-semibold tabular-nums">${net.toFixed(0)}</p>
+              <p className="text-3xl font-semibold tabular-nums">${breakdown.net.toFixed(0)}</p>
               <p className="text-xs text-muted-foreground mt-1">After estimated taxes</p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Breakdown */}
+        {/* Quarterly breakdown */}
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-base">Earnings breakdown</CardTitle>
+            <CardTitle className="text-base flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              Quarterly estimated tax · {year}
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <BreakdownRow label="Job fees" sub={`${current.jobs} jobs · base $${settings.default_job_fee.toFixed(0)} unless overridden`} value={grossJobs} />
-            <BreakdownRow label="Mileage fees billed" sub={`Flat mileage fee per job`} value={grossMileageFees} />
-            <Divider />
-            <BreakdownRow label="Gross earnings" value={gross} bold />
-            <BreakdownRow
-              label="Mileage deduction"
-              sub={<>{current.miles.toFixed(0)} mi × ${settings.mileage_rate.toFixed(2)}/mi <Badge variant="outline" className="ml-1 text-[10px]"><Car className="h-2.5 w-2.5 mr-1" />IRS standard</Badge></>}
-              value={-mileageDeduction}
-            />
-            <Divider />
-            <BreakdownRow label="Taxable estimate" value={taxable} bold muted />
-            {useDetailed && (
-              <>
-                <BreakdownRow label="Self-employment tax" sub={`${(settings.self_employment_tax_rate*100).toFixed(1)}%`} value={-seTax} />
-                <BreakdownRow label="Federal tax" sub={`${(settings.federal_tax_rate*100).toFixed(0)}% · ${settings.filing_status.replace("_"," ")}`} value={-fedTax} />
-                <BreakdownRow label={`State tax${settings.state_code ? ` (${settings.state_code})` : ""}`} sub={`${(settings.state_tax_rate*100).toFixed(0)}%`} value={-stateTax} />
-              </>
-            )}
-            {!useDetailed && (
-              <BreakdownRow label="Combined tax estimate" sub={`${(settings.estimated_tax_rate*100).toFixed(0)}%`} value={-totalTax} />
-            )}
-            <Divider />
-            <BreakdownRow label="Estimated tax owed" value={-totalTax} bold muted />
-            <BreakdownRow label="Estimated net" value={net} bold highlight />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {quarterly.map((q) => (
+                <QuarterCard key={q.q} quarter={q} />
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground mt-3 flex items-start gap-1.5">
+              <AlertCircle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+              Each quarter shows income earned, mileage deductions, and estimated tax to set aside. Federal due dates: Apr 15, Jun 15, Sep 15, Jan 15.
+            </p>
           </CardContent>
+        </Card>
+
+        {/* Expandable detailed breakdown */}
+        <Card>
+          <Collapsible open={breakdownOpen} onOpenChange={setBreakdownOpen}>
+            <CollapsibleTrigger asChild>
+              <button className="w-full text-left">
+                <CardHeader className="pb-3 flex-row items-center justify-between space-y-0">
+                  <CardTitle className="text-base">Tax breakdown · {currentLabel}</CardTitle>
+                  <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${breakdownOpen ? "rotate-180" : ""}`} />
+                </CardHeader>
+              </button>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent>
+                <BreakdownRow label="Gross earnings" sub={`${currentJobCount} jobs`} value={breakdown.gross} bold />
+                <BreakdownRow
+                  label="Mileage deduction"
+                  sub={<>{currentMiles.toFixed(0)} mi × ${cfg.mileage_rate.toFixed(2)}/mi <Badge variant="outline" className="ml-1 text-[10px]"><Car className="h-2.5 w-2.5 mr-1" />IRS standard</Badge></>}
+                  value={-breakdown.deductions}
+                />
+                <Divider />
+                <BreakdownRow label="Net self-employment income" value={breakdown.netSelfEmployment} bold muted />
+                <BreakdownRow label="Self-employment tax" sub="15.3% (SS + Medicare) on 92.35% of net SE" value={-breakdown.seTax} />
+                <BreakdownRow label="½ SE tax deduction" sub="Above-the-line adjustment" value={-breakdown.seDeduction} muted />
+                <BreakdownRow label="Standard deduction" sub={cfg.filing_status.replace("_", " ")} value={-breakdown.standardDeduction} muted />
+                <Divider />
+                <BreakdownRow label="Federal taxable income" value={breakdown.taxableFederal} muted />
+                <BreakdownRow label="Federal income tax" sub="2025 progressive brackets" value={-breakdown.federalTax} />
+                {stateHasTax && (
+                  <>
+                    <BreakdownRow label={`${stateName} taxable income`} value={breakdown.taxableState} muted />
+                    <BreakdownRow label={`${stateName} state tax`} sub="2025 state brackets" value={-breakdown.stateTax} />
+                  </>
+                )}
+                <Divider />
+                <BreakdownRow label="Total estimated tax" value={-breakdown.totalTax} bold muted />
+                <BreakdownRow label="Estimated net" value={breakdown.net} bold highlight />
+              </CardContent>
+            </CollapsibleContent>
+          </Collapsible>
         </Card>
 
         <Card>
@@ -218,14 +303,57 @@ export default function InspectorTax() {
             <CardTitle className="text-sm flex items-center gap-2"><Info className="h-4 w-4" />How this is calculated</CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-muted-foreground space-y-1">
-            <p><span className="text-foreground font-medium">Gross</span> = Job fees + mileage fees billed.</p>
-            <p><span className="text-foreground font-medium">Taxable</span> = Gross − mileage deduction (miles × IRS rate).</p>
-            <p><span className="text-foreground font-medium">Tax</span> = SE + federal + state, applied to taxable income.</p>
-            <p className="text-xs pt-2">Configure rates in <Link to="/settings" className="text-primary underline">Settings</Link>. First-pass estimator only — confirm with a tax professional.</p>
+            <p><span className="text-foreground font-medium">Gross</span> = job fees + mileage fees billed.</p>
+            <p><span className="text-foreground font-medium">Net SE</span> = Gross − mileage deduction (miles × IRS rate).</p>
+            <p><span className="text-foreground font-medium">SE tax</span> = 15.3% on 92.35% of net SE (capped SS portion at $176,100).</p>
+            <p><span className="text-foreground font-medium">Federal</span> = 2025 progressive brackets applied to (Net SE − ½ SE − standard deduction), annualized.</p>
+            {stateHasTax && <p><span className="text-foreground font-medium">State</span> = {stateName} 2025 brackets applied to (Net SE − ½ SE − state std deduction).</p>}
+            <p className="text-xs pt-2">Estimates only — confirm with a tax professional before filing or paying quarterly estimates.</p>
           </CardContent>
         </Card>
       </div>
     </DashboardLayout>
+  );
+}
+
+function QuarterCard({ quarter }: { quarter: ReturnType<typeof buildQuarterlyEstimates>[number] }) {
+  const dueLabel = quarter.dueDate.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  const net = quarter.income - quarter.deductions;
+  return (
+    <div
+      className={`rounded-md border p-3 ${
+        quarter.isNext
+          ? "border-primary/50 bg-primary/5"
+          : quarter.isPast
+          ? "bg-muted/30"
+          : ""
+      }`}
+    >
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-sm font-semibold">{quarter.label}</span>
+        {quarter.isNext && <Badge className="text-[10px] h-5 px-1.5">Next</Badge>}
+        {quarter.isPast && !quarter.isNext && <Badge variant="outline" className="text-[10px] h-5 px-1.5">Past</Badge>}
+      </div>
+      <div className="space-y-1 text-xs">
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">Income</span>
+          <span className="tabular-nums font-medium">${quarter.income.toFixed(0)}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">Deductions</span>
+          <span className="tabular-nums text-muted-foreground">−${quarter.deductions.toFixed(0)}</span>
+        </div>
+        <div className="flex justify-between border-t pt-1 mt-1">
+          <span className="text-muted-foreground">Net</span>
+          <span className="tabular-nums">${net.toFixed(0)}</span>
+        </div>
+        <div className="flex justify-between pt-1 mt-1 border-t border-primary/20">
+          <span className="font-medium">Set aside</span>
+          <span className="tabular-nums font-semibold text-primary">${quarter.estimatedTax.toFixed(0)}</span>
+        </div>
+      </div>
+      <p className="text-[10px] text-muted-foreground mt-2">Due {dueLabel}</p>
+    </div>
   );
 }
 
