@@ -36,8 +36,10 @@ function isApplePlatform() {
   return /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent || "");
 }
 
+import { isNative, loadNativePlugin } from "./native";
+
 function isCapacitor() {
-  return typeof (globalThis as any).Capacitor !== "undefined" && (globalThis as any).Capacitor?.isNativePlatform?.();
+  return isNative();
 }
 
 function buildQuery(t: MapTarget) {
@@ -88,21 +90,12 @@ export function open(t: MapTarget, override?: MapProvider): boolean {
   const url = buildMapsUrl(t, override);
   if (!url) return false;
   if (isCapacitor()) {
-    // Native: forward to system via Capacitor App plugin if present at runtime.
-    // We avoid a static import so the web build doesn't try to resolve
-    // "@capacitor/app" (it's only installed in the native shell).
-    try {
-      const moduleName = "@capacitor/app";
-      // eslint-disable-next-line @typescript-eslint/no-implied-eval
-      const dynamicImport = new Function("m", "return import(m)") as (m: string) => Promise<any>;
-      dynamicImport(moduleName)
-        .then((m) => m?.App?.openUrl?.({ url }))
-        .catch(() => window.open(url, "_blank", "noopener,noreferrer"));
-      return true;
-    } catch {
-      window.open(url, "_blank", "noopener,noreferrer");
-      return true;
-    }
+    // Native: hand off to system via Capacitor App plugin. Universal links
+    // (Apple Maps / Google Maps / Waze) route to the installed app automatically.
+    loadNativePlugin<any>("@capacitor/app")
+      .then((m) => m?.App?.openUrl?.({ url }))
+      .catch(() => window.open(url, "_blank", "noopener,noreferrer"));
+    return true;
   }
   window.open(url, "_blank", "noopener,noreferrer");
   return true;
