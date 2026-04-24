@@ -13,6 +13,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
 import { toast } from "sonner";
 import { OpenInMapsButton } from "@/components/maps/OpenInMapsButton";
+import { setJobStatus } from "@/lib/tripLifecycle";
 
 interface Job {
   id: string;
@@ -94,14 +95,10 @@ export default function InspectorSchedule() {
     load();
   };
 
-  const setStatus = async (j: Job, status: string) => {
-    const updates: any = { status };
-    if (status === "in_progress") updates.actual_start_time = new Date().toISOString();
-    if (status === "completed") updates.actual_end_time = new Date().toISOString();
-    const { error } = await supabase.from("jobs").update(updates).eq("id", j.id);
-    if (error) return toast.error(error.message);
-    toast.success(`Job ${status.replace("_"," ")}`);
-    load();
+  const setStatus = async (j: Job, status: "in_progress" | "completed" | "canceled") => {
+    // Route through centralized lifecycle helper for idempotency.
+    const ok = await setJobStatus({ id: j.id, status: j.status }, status);
+    if (ok) load();
   };
 
   const buildTripFromToday = async () => {
