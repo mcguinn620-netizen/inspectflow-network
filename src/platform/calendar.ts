@@ -1,7 +1,11 @@
 // Calendar platform layer.
 // Web: generates and downloads .ics files (RFC 5545) the OS opens directly into
 // Apple Calendar / Google Calendar / Outlook.
-// Future Capacitor: swap in @capacitor-community/calendar for two-way sync.
+// Native (Capacitor): @ebarooni/capacitor-calendar — true two-way device sync
+// (createEvent on iOS EventKit + Android CalendarContract). Falls back to .ics
+// download if the plugin isn't available at runtime.
+
+import { isNative, loadNativePlugin } from "./native";
 
 export interface CalendarEvent {
   uid: string;            // stable, e.g. job-<id>@inspector.app
