@@ -2,3 +2,6 @@ project_id = "aqtcgybbqdyjasgnuwlh"
 
 [functions.parse-inspection]
 verify_jwt = false
+
+[functions.calendar-feed]
+verify_jwt = false

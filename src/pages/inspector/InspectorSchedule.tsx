@@ -6,7 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Clock, MapPin, Route as RouteIcon, Play, CheckCircle2, X, CalendarClock } from "lucide-react";
+import {
+  Clock, MapPin, Route as RouteIcon, Play, CheckCircle2, X, CalendarClock,
+  CalendarPlus, ChevronLeft, ChevronRight, Download,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -14,17 +17,26 @@ import { useUserRoles } from "@/hooks/useUserRoles";
 import { toast } from "sonner";
 import { OpenInMapsButton } from "@/components/maps/OpenInMapsButton";
 import { setJobStatus } from "@/lib/tripLifecycle";
+import { platformCalendar } from "@/platform";
+import { ScheduleWeekGrid, type ScheduleJob } from "@/components/inspector/ScheduleWeekGrid";
 
-interface Job {
-  id: string;
-  title: string;
-  customer_name: string | null;
-  location: string | null;
-  scheduled_at: string | null;
-  status: string;
+interface Job extends ScheduleJob {
+  estimated_duration_minutes?: number | null;
+  notes?: string | null;
 }
 
 type FilterKey = "today" | "upcoming" | "completed" | "all";
+type ViewKey = "list" | "week";
+
+const ymd = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
+const startOfWeek = (d: Date) => {
+  const r = new Date(d);
+  r.setHours(0, 0, 0, 0);
+  r.setDate(r.getDate() - r.getDay());
+  return r;
+};
 
 export default function InspectorSchedule() {
   const { user } = useAuth();
@@ -33,14 +45,22 @@ export default function InspectorSchedule() {
   const [editing, setEditing] = useState<Job | null>(null);
   const [newTime, setNewTime] = useState("");
   const [filter, setFilter] = useState<FilterKey>("today");
+  const [view, setView] = useState<ViewKey>("list");
+  const [weekStart, setWeekStart] = useState<Date>(() => startOfWeek(new Date()));
   const [tripJobIds, setTripJobIds] = useState<Set<string>>(new Set());
   const [activeTripId, setActiveTripId] = useState<string | null>(null);
+  const [blockedDates, setBlockedDates] = useState<Set<string>>(new Set());
+  const [availability, setAvailability] = useState<
+    Record<number, { start_time: string; end_time: string; is_available: boolean }[]>
+  >({});
 
   const load = async () => {
     if (!activeOrgId || !user) return;
     const { data } = await supabase
-      .from("jobs").select("id,title,customer_name,location,scheduled_at,status")
-      .eq("organization_id", activeOrgId).is("deleted_at", null)
+      .from("jobs")
+      .select("id,title,customer_name,location,scheduled_at,status,estimated_duration_minutes,notes")
+      .eq("organization_id", activeOrgId)
+      .is("deleted_at", null)
       .order("scheduled_at", { ascending: true, nullsFirst: false });
     setJobs((data ?? []) as Job[]);
 
@@ -51,10 +71,33 @@ export default function InspectorSchedule() {
     if (liveTrip) {
       setActiveTripId(liveTrip.id);
       const { data: stops } = await supabase.from("trip_stops").select("job_id").eq("trip_id", liveTrip.id);
-      setTripJobIds(new Set((stops ?? []).map((s: any) => s.job_id).filter(Boolean)));
+      setTripJobIds(new Set((stops ?? []).map((s: { job_id: string | null }) => s.job_id).filter(Boolean) as string[]));
     } else {
       setActiveTripId(null);
       setTripJobIds(new Set());
+    }
+
+    // Linked inspector profile (if any) → blocked dates + availability.
+    const { data: insp } = await supabase
+      .from("inspectors").select("id").eq("user_id", user.id).limit(1).maybeSingle();
+    if (insp?.id) {
+      const { data: blocked } = await supabase
+        .from("inspector_blocked_dates").select("blocked_date").eq("inspector_id", insp.id);
+      setBlockedDates(new Set((blocked ?? []).map((b: { blocked_date: string }) => b.blocked_date)));
+      const { data: avail } = await supabase
+        .from("availability_schedules")
+        .select("day_of_week,start_time,end_time,is_available")
+        .eq("inspector_id", insp.id);
+      const byDay: Record<number, { start_time: string; end_time: string; is_available: boolean }[]> = {};
+      for (const a of avail ?? []) {
+        (byDay[a.day_of_week] ??= []).push({
+          start_time: a.start_time, end_time: a.end_time, is_available: a.is_available ?? true,
+        });
+      }
+      setAvailability(byDay);
+    } else {
+      setBlockedDates(new Set());
+      setAvailability({});
     }
   };
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [activeOrgId, user]);
@@ -86,6 +129,12 @@ export default function InspectorSchedule() {
 
   const saveTime = async () => {
     if (!editing) return;
+    if (newTime) {
+      const target = new Date(newTime);
+      if (blockedDates.has(ymd(target))) {
+        if (!confirm("That date is marked as blocked/off. Schedule anyway?")) return;
+      }
+    }
     const { error } = await supabase.from("jobs").update({
       scheduled_at: newTime ? new Date(newTime).toISOString() : null,
     }).eq("id", editing.id);
@@ -96,7 +145,6 @@ export default function InspectorSchedule() {
   };
 
   const setStatus = async (j: Job, status: "in_progress" | "completed" | "canceled") => {
-    // Route through centralized lifecycle helper for idempotency.
     const ok = await setJobStatus({ id: j.id, status: j.status }, status);
     if (ok) load();
   };
@@ -120,6 +168,53 @@ export default function InspectorSchedule() {
     load();
   };
 
+  const downloadJobIcs = (j: Job) => {
+    if (!j.scheduled_at) return toast.info("Job has no scheduled time");
+    platformCalendar.downloadIcs(
+      `job-${j.id.slice(0, 8)}`,
+      [{
+        uid: `job-${j.id}@inspector.lovable.app`,
+        title: j.title,
+        start: new Date(j.scheduled_at),
+        durationMinutes: j.estimated_duration_minutes ?? 60,
+        location: j.location,
+        description: [j.customer_name ? `Customer: ${j.customer_name}` : null, j.notes].filter(Boolean).join("\n"),
+      }],
+      j.title,
+    );
+    toast.success("Calendar event downloaded");
+  };
+
+  const downloadDayIcs = () => {
+    const todayJobs = jobs.filter(j => j.scheduled_at && new Date(j.scheduled_at) >= today && new Date(j.scheduled_at) < tomorrow);
+    if (todayJobs.length === 0) return toast.info("No jobs today");
+    platformCalendar.downloadIcs(
+      `inspector-day-${ymd(today)}`,
+      todayJobs.map(j => ({
+        uid: `job-${j.id}@inspector.lovable.app`,
+        title: j.title,
+        start: new Date(j.scheduled_at!),
+        durationMinutes: j.estimated_duration_minutes ?? 60,
+        location: j.location,
+        description: j.customer_name ? `Customer: ${j.customer_name}` : null,
+      })),
+      `Inspector — ${today.toLocaleDateString()}`,
+    );
+    toast.success("Day exported to calendar");
+  };
+
+  const shiftWeek = (delta: number) => {
+    const d = new Date(weekStart);
+    d.setDate(d.getDate() + delta * 7);
+    setWeekStart(d);
+  };
+
+  const weekEnd = useMemo(() => {
+    const d = new Date(weekStart);
+    d.setDate(d.getDate() + 6);
+    return d;
+  }, [weekStart]);
+
   return (
     <DashboardLayout>
       <div className="space-y-4">
@@ -131,6 +226,9 @@ export default function InspectorSchedule() {
             </p>
           </div>
           <div className="flex gap-2 flex-wrap">
+            <Button variant="outline" size="sm" onClick={downloadDayIcs}>
+              <Download className="h-4 w-4 mr-1.5" />Export day (.ics)
+            </Button>
             <Button variant="outline" size="sm" onClick={buildTripFromToday}>
               <RouteIcon className="h-4 w-4 mr-1.5" />Build trip from today
             </Button>
@@ -140,28 +238,71 @@ export default function InspectorSchedule() {
           </div>
         </div>
 
-        <Tabs value={filter} onValueChange={v => setFilter(v as FilterKey)}>
-          <TabsList>
-            <TabsTrigger value="today">Today</TabsTrigger>
-            <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
-            <TabsTrigger value="completed">Completed</TabsTrigger>
-            <TabsTrigger value="all">All</TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <div className="flex items-center justify-between gap-2 flex-wrap">
+          <Tabs value={view} onValueChange={v => setView(v as ViewKey)}>
+            <TabsList>
+              <TabsTrigger value="list">List</TabsTrigger>
+              <TabsTrigger value="week">Week</TabsTrigger>
+            </TabsList>
+          </Tabs>
 
-        {Object.keys(grouped).length === 0 && (
+          {view === "list" ? (
+            <Tabs value={filter} onValueChange={v => setFilter(v as FilterKey)}>
+              <TabsList>
+                <TabsTrigger value="today">Today</TabsTrigger>
+                <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
+                <TabsTrigger value="completed">Completed</TabsTrigger>
+                <TabsTrigger value="all">All</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          ) : (
+            <div className="flex items-center gap-1">
+              <Button size="icon" variant="ghost" onClick={() => shiftWeek(-1)}>
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <span className="text-sm font-medium px-2">
+                {weekStart.toLocaleDateString(undefined, { month: "short", day: "numeric" })} –{" "}
+                {weekEnd.toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+              </span>
+              <Button size="icon" variant="ghost" onClick={() => shiftWeek(1)}>
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+              <Button size="sm" variant="outline" onClick={() => setWeekStart(startOfWeek(new Date()))}>
+                Today
+              </Button>
+            </div>
+          )}
+        </div>
+
+        {view === "week" && (
+          <ScheduleWeekGrid
+            weekStart={weekStart}
+            jobs={jobs}
+            blockedDates={blockedDates}
+            availability={availability}
+            onJobClick={(j) => {
+              setEditing(j as Job);
+              setNewTime(j.scheduled_at ? j.scheduled_at.slice(0, 16) : "");
+            }}
+          />
+        )}
+
+        {view === "list" && Object.keys(grouped).length === 0 && (
           <Card><CardContent className="p-8 text-center text-sm text-muted-foreground">Nothing scheduled in this view.</CardContent></Card>
         )}
 
-        {Object.entries(grouped).map(([day, list]) => {
+        {view === "list" && Object.entries(grouped).map(([day, list]) => {
           const isToday = new Date(day).toDateString() === today.toDateString();
+          const dayDate = new Date(day);
+          const isBlocked = !isNaN(dayDate.getTime()) && blockedDates.has(ymd(dayDate));
           return (
             <div key={day} className="space-y-2">
-              <div className="flex items-baseline gap-2">
+              <div className="flex items-baseline gap-2 flex-wrap">
                 <h2 className={`text-sm font-semibold ${isToday ? "text-primary" : ""}`}>
                   {isToday ? "Today" : day}
                 </h2>
                 <span className="text-xs text-muted-foreground">{list.length} job{list.length !== 1 && "s"}</span>
+                {isBlocked && <Badge variant="outline" className="text-xs">Marked off</Badge>}
               </div>
               <div className="grid gap-2">
                 {list.map(j => {
@@ -188,6 +329,11 @@ export default function InspectorSchedule() {
                           </p>
                         </div>
                         <div className="flex items-center gap-1 flex-wrap">
+                          <Button size="sm" variant="ghost" title="Add to calendar"
+                            onClick={() => downloadJobIcs(j)}
+                            disabled={!j.scheduled_at}>
+                            <CalendarPlus className="h-3.5 w-3.5" />
+                          </Button>
                           <OpenInMapsButton target={{ address: j.location, label: j.title }} iconOnly />
                           {j.status === "scheduled" && (
                             <Button size="sm" variant="outline" onClick={() => setStatus(j, "in_progress")}>
@@ -221,7 +367,7 @@ export default function InspectorSchedule() {
 
         {activeTripId && (
           <p className="text-xs text-muted-foreground text-center pt-2">
-            Active trip detected — jobs marked “In trip” are part of it.{" "}
+            Active trip detected — jobs marked "In trip" are part of it.{" "}
             <Link to="/app/inspector/trips" className="text-primary underline">Open trip</Link>
           </p>
         )}
