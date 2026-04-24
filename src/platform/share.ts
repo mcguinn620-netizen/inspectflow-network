@@ -1,6 +1,8 @@
 // Share platform layer.
-// Web: navigator.share where supported, else copy-to-clipboard fallback.
-// Future Capacitor: @capacitor/share plugin.
+// Web: navigator.share + clipboard fallback.
+// Native (Capacitor): @capacitor/share — opens system share sheet.
+
+import { isNative, loadNativePlugin } from "./native";
 
 export interface ShareOptions {
   title?: string;
@@ -10,6 +12,22 @@ export interface ShareOptions {
 }
 
 export async function share(opts: ShareOptions): Promise<boolean> {
+  if (isNative()) {
+    const mod = await loadNativePlugin<any>("@capacitor/share");
+    if (mod?.Share?.share) {
+      try {
+        await mod.Share.share({
+          title: opts.title,
+          text: opts.text,
+          url: opts.url,
+          dialogTitle: opts.title ?? "Share",
+        });
+        return true;
+      } catch {
+        /* fall through */
+      }
+    }
+  }
   try {
     if (typeof navigator !== "undefined" && (navigator as any).share) {
       await (navigator as any).share(opts);
