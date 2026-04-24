@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Download, Save } from "lucide-react";
+import { Download, Save, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { toCsv, downloadCsv } from "@/lib/exportCsv";
@@ -112,7 +112,7 @@ export function TripDetailSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:max-w-lg overflow-y-auto">
+      <SheetContent side="right" className="w-full sm:max-w-lg">
         <SheetHeader>
           <SheetTitle>Trip · {new Date(trip.trip_date).toLocaleDateString()}</SheetTitle>
           <SheetDescription>Edit trip details, route, times and export for filings.</SheetDescription>
