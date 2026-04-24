@@ -196,7 +196,10 @@ export function TripDetailSheet({
           </div>
 
           <div className="flex flex-wrap gap-2 pt-2">
-            <Button onClick={save}><Save className="h-4 w-4 mr-1.5" />Save trip</Button>
+            <Button onClick={save} disabled={saving}>
+              {saving ? <Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> : <Save className="h-4 w-4 mr-1.5" />}
+              {saving ? "Saving…" : "Save trip"}
+            </Button>
             <Button variant="outline" onClick={exportCsv}><Download className="h-4 w-4 mr-1.5" />Export CSV</Button>
           </div>
         </div>
