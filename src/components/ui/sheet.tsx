@@ -53,20 +53,21 @@ interface SheetContentProps
 
 /**
  * Style chunk that constrains the sheet to the visible app area:
- * sits below the safe-area-aware top header and above the bottom tab bar,
- * and scrolls internally when the iOS keyboard shrinks the dynamic viewport.
+ * sits below the safe-area-aware top header and above the bottom tab bar (mobile only).
+ * On md+ screens the bottom tab bar is hidden, so we don't reserve space for it.
  */
-const sideStyle = (side: "top" | "bottom" | "left" | "right"): React.CSSProperties => {
-  const topInset = "calc(env(safe-area-inset-top) + 3.5rem)";
-  const bottomInset = "calc(env(safe-area-inset-bottom) + 4rem)";
+const sideClasses = (side: "top" | "bottom" | "left" | "right"): string => {
+  const topVar = "[--sheet-top:calc(env(safe-area-inset-top)+3.5rem)]";
+  const bottomVar =
+    "[--sheet-bottom:calc(env(safe-area-inset-bottom)+4rem)] md:[--sheet-bottom:env(safe-area-inset-bottom)]";
+  const vars = `${topVar} ${bottomVar}`;
   if (side === "left" || side === "right") {
-    return { top: topInset, bottom: bottomInset, height: "auto" };
+    return `${vars} top-[var(--sheet-top)] bottom-[var(--sheet-bottom)] h-auto`;
   }
   if (side === "top") {
-    return { top: topInset, maxHeight: `calc(100dvh - ${topInset} - ${bottomInset})` };
+    return `${vars} top-[var(--sheet-top)] max-h-[calc(100dvh-var(--sheet-top)-var(--sheet-bottom))]`;
   }
-  // bottom
-  return { bottom: bottomInset, maxHeight: `calc(100dvh - ${topInset} - ${bottomInset})` };
+  return `${vars} bottom-[var(--sheet-bottom)] max-h-[calc(100dvh-var(--sheet-top)-var(--sheet-bottom))]`;
 };
 
 const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Content>, SheetContentProps>(
@@ -75,8 +76,13 @@ const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Con
       <SheetOverlay />
       <SheetPrimitive.Content
         ref={ref}
-        style={{ ...sideStyle(side as "top" | "bottom" | "left" | "right"), ...style }}
-        className={cn(sheetVariants({ side }), side === "right" || side === "left" ? "w-3/4" : "", className)}
+        style={style}
+        className={cn(
+          sheetVariants({ side }),
+          sideClasses(side as "top" | "bottom" | "left" | "right"),
+          side === "right" || side === "left" ? "w-3/4" : "",
+          className,
+        )}
         {...props}
       >
         {children}

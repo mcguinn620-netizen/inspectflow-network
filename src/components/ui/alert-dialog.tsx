@@ -33,14 +33,12 @@ const AlertDialogContent = React.forwardRef<
     <AlertDialogOverlay />
     <AlertDialogPrimitive.Content
       ref={ref}
-      style={{
-        top: "calc(env(safe-area-inset-top) + 3.5rem + 0.5rem)",
-        bottom: "calc(env(safe-area-inset-bottom) + 4rem + 0.5rem)",
-        maxHeight: "calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 8rem)",
-        ...style,
-      }}
+      style={style}
       className={cn(
+        "[--ad-top:calc(env(safe-area-inset-top)+3.5rem+0.5rem)]",
+        "[--ad-bottom:calc(env(safe-area-inset-bottom)+4rem+0.5rem)] md:[--ad-bottom:calc(env(safe-area-inset-bottom)+0.5rem)]",
         "fixed left-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 overflow-y-auto overscroll-contain",
+        "top-[var(--ad-top)] bottom-[var(--ad-bottom)] max-h-[calc(100dvh-var(--ad-top)-var(--ad-bottom))]",
         "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
         "sm:rounded-lg sm:top-[50%] sm:bottom-auto sm:translate-y-[-50%] sm:max-h-[calc(100dvh-8rem)]",
         className,
