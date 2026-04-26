@@ -62,39 +62,6 @@ export function OpenInMapsButton({
     </Button>
   );
 
-  if (hideMenu || iconOnly) return main;
-
-  return (
-    <div className="inline-flex">
-      {main}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant={variant}
-            size="icon"
-            className="h-8 w-7 -ml-1"
-            onClick={(e) => e.stopPropagation()}
-            aria-label="Choose maps app"
-          >
-            <ChevronDown className="h-3 w-3" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel className="text-xs">Open with</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {PROVIDERS.map((p) => (
-            <DropdownMenuItem
-              key={p}
-              onClick={(e) => {
-                e.stopPropagation();
-                platformMaps.open(target, p);
-              }}
-            >
-              {PROVIDER_LABELS[p]}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
-  );
+  // Always defer to the device's default maps app — no provider chooser.
+  return main;
 }
