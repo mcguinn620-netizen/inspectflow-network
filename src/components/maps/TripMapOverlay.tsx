@@ -224,7 +224,15 @@ export function TripMapOverlay({ stops, selectedId, onSelect, className }: Props
             />
             <FitBounds points={points} />
             {points.length > 1 && (
-              <Polyline positions={points} pathOptions={{ color: "hsl(217, 91%, 60%)", weight: 3, opacity: 0.6 }} />
+              <Polyline
+                positions={routeGeometry ?? points}
+                pathOptions={{
+                  color: "hsl(217, 91%, 60%)",
+                  weight: 4,
+                  opacity: routeGeometry ? 0.75 : 0.45,
+                  dashArray: routeGeometry ? undefined : "6 6",
+                }}
+              />
             )}
             {resolvedStops.map((s) => {
               if (s.latitude == null || s.longitude == null) return null;
