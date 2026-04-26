@@ -15,7 +15,7 @@ interface Props {
   hideMenu?: boolean;
 }
 
-const PROVIDERS: MapProvider[] = ["auto", "apple", "google", "waze"];
+
 
 /**
  * Reusable map handoff button — single integration point for CarPlay /
