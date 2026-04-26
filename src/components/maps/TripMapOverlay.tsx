@@ -188,10 +188,25 @@ export function TripMapOverlay({ stops, selectedId, onSelect, className }: Props
     (s) => (s.latitude == null || s.longitude == null) && (s.address?.trim()?.length ?? 0) > 3 && !geocoded[s.id],
   );
 
+  // In-app navigation: follow user's GPS, recenter on update.
+  const [navigating, setNavigating] = useState(false);
+  const [userPos, setUserPos] = useState<Position | null>(null);
+  const mapInstanceRef = useRef<L.Map | null>(null);
+
+  useEffect(() => {
+    if (!navigating) return;
+    const stop = startTracking((p) => {
+      setUserPos(p);
+      const m = mapInstanceRef.current;
+      if (m) m.setView([p.latitude, p.longitude], Math.max(m.getZoom(), 15), { animate: true });
+    });
+    return stop;
+  }, [navigating]);
+
   if (points.length === 0) {
     return (
-      <Card className={className}>
-        <CardContent className="p-6 text-center min-h-[260px] flex flex-col items-center justify-center text-sm text-muted-foreground">
+      <Card className={cn(className, "w-full max-w-full overflow-hidden")}>
+        <CardContent className="p-6 text-center min-h-[200px] flex flex-col items-center justify-center text-sm text-muted-foreground">
           <MapPin className="h-6 w-6 mb-2" />
           {pendingGeocode ? (
             <>
@@ -210,21 +225,24 @@ export function TripMapOverlay({ stops, selectedId, onSelect, className }: Props
   }
 
   return (
-    <Card className={className} ref={containerRef as any}>
+    <Card className={cn(className, "w-full max-w-full overflow-hidden")} ref={containerRef as any}>
       <CardContent className="p-0 overflow-hidden rounded-lg">
-        {/* Explicit pixel height — Leaflet requires an absolute height to paint */}
-        <div className="relative w-full" style={{ height: 320 }}>
+        {/* Responsive height: smaller on mobile so the route card fits below */}
+        <div
+          className="relative w-full h-[220px] sm:h-[280px] lg:h-[320px]"
+        >
           <MapContainer
             center={points[0]}
             zoom={12}
             scrollWheelZoom={false}
             style={{ height: "100%", width: "100%", position: "absolute", inset: 0 }}
+            ref={(m) => { mapInstanceRef.current = m as unknown as L.Map; }}
           >
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <FitBounds points={points} />
+            <FitBounds points={navigating ? [] : points} />
             {points.length > 1 && (
               <Polyline
                 positions={routeGeometry ?? points}
@@ -255,7 +273,57 @@ export function TripMapOverlay({ stops, selectedId, onSelect, className }: Props
                 </Marker>
               );
             })}
+            {userPos && (
+              <CircleMarker
+                center={[userPos.latitude, userPos.longitude]}
+                radius={7}
+                pathOptions={{ color: "white", weight: 2, fillColor: "hsl(217, 91%, 60%)", fillOpacity: 1 }}
+              />
+            )}
           </MapContainer>
+
+          {/* In-app navigation control overlay */}
+          <div className="absolute top-2 right-2 z-[400] flex flex-col gap-1.5">
+            {!navigating ? (
+              <Button
+                size="sm"
+                variant="default"
+                className="h-8 shadow-md"
+                onClick={() => setNavigating(true)}
+              >
+                <Navigation className="h-3.5 w-3.5 mr-1" />
+                Navigate
+              </Button>
+            ) : (
+              <>
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  className="h-8 w-8 shadow-md"
+                  onClick={() => {
+                    if (userPos && mapInstanceRef.current) {
+                      mapInstanceRef.current.setView(
+                        [userPos.latitude, userPos.longitude],
+                        Math.max(mapInstanceRef.current.getZoom(), 15),
+                      );
+                    }
+                  }}
+                  aria-label="Recenter on me"
+                >
+                  <LocateFixed className="h-3.5 w-3.5" />
+                </Button>
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  className="h-8 w-8 shadow-md"
+                  onClick={() => setNavigating(false)}
+                  aria-label="Stop navigation"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </Button>
+              </>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>
