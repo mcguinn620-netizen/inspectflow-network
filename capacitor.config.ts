@@ -29,6 +29,13 @@ const config: CapacitorConfig = {
   ios: {
     contentInset: "always",
     limitsNavigationsToAppBoundDomains: false,
+    // Use Swift Package Manager (SPM) instead of CocoaPods for native deps.
+    // Mirrors ENABLE_SPM_SUPPORT=true in ios/debug.xcconfig and the
+    // CapApp-SPM package under ios/App/CapApp-SPM.
+    buildOptions: {
+      // @ts-expect-error - flag consumed by Capacitor SPM tooling
+      enableSPMSupport: true,
+    },
   },
   android: {
     allowMixedContent: false,
