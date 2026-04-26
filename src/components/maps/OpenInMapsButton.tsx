@@ -1,16 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Navigation, ChevronDown } from "lucide-react";
+import { Navigation } from "lucide-react";
 import { platformMaps } from "@/platform";
-import { PROVIDER_LABELS, type MapProvider, type MapTarget } from "@/platform/maps";
+import { type MapTarget } from "@/platform/maps";
 import { cn } from "@/lib/utils";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 interface Props {
   target: MapTarget;
