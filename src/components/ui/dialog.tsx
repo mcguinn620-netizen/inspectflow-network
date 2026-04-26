@@ -35,16 +35,12 @@ const DialogContent = React.forwardRef<
     <DialogOverlay />
     <DialogPrimitive.Content
       ref={ref}
-      style={{
-        // Constrain dialog within the visible app area: below the safe-area+header, above the tab-bar.
-        // Uses dynamic viewport units so iOS shrinks this when the keyboard opens.
-        top: "calc(env(safe-area-inset-top) + 3.5rem + 0.5rem)",
-        bottom: "calc(env(safe-area-inset-bottom) + 4rem + 0.5rem)",
-        maxHeight: "calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 8rem)",
-        ...style,
-      }}
+      style={style}
       className={cn(
+        "[--dialog-top:calc(env(safe-area-inset-top)+3.5rem+0.5rem)]",
+        "[--dialog-bottom:calc(env(safe-area-inset-bottom)+4rem+0.5rem)] md:[--dialog-bottom:calc(env(safe-area-inset-bottom)+0.5rem)]",
         "fixed left-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 overflow-y-auto overscroll-contain",
+        "top-[var(--dialog-top)] bottom-[var(--dialog-bottom)] max-h-[calc(100dvh-var(--dialog-top)-var(--dialog-bottom))]",
         "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
         "sm:rounded-lg sm:top-[50%] sm:bottom-auto sm:translate-y-[-50%] sm:max-h-[calc(100dvh-8rem)]",
         className,

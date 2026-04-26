@@ -5,6 +5,7 @@ import {
   AlertDialog,
   AlertDialogContent,
 } from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 /**
  * Visual-regression guard for Sheet & AlertDialog positioning.
@@ -93,6 +94,29 @@ describe("AlertDialog positioning (tablet/desktop regression)", () => {
     // CRITICAL: md+ removes tab-bar reservation.
     expect(cls).toContain("md:[--ad-bottom:calc(env(safe-area-inset-bottom)+0.5rem)]");
     // sm+ recenters dialog (so it's not stuck stretched).
+    expect(cls).toContain("sm:top-[50%]");
+    expect(cls).toContain("sm:bottom-auto");
+    expect(cls).toContain("sm:translate-y-[-50%]");
+  });
+});
+
+describe("Dialog positioning (tablet/desktop regression)", () => {
+  it("DialogContent keeps bounds out of inline styles and uses responsive classes", () => {
+    render(
+      <Dialog open>
+        <DialogContent data-testid="dialog">content</DialogContent>
+      </Dialog>,
+    );
+
+    const el = document.querySelector('[data-testid="dialog"]') as HTMLElement | null;
+    if (!el) throw new Error("Element not found: DialogContent");
+
+    const cls = el.className;
+
+    expect(el.style.top).toBe("");
+    expect(el.style.bottom).toBe("");
+    expect(cls).toContain("[--dialog-bottom:calc(env(safe-area-inset-bottom)+4rem+0.5rem)]");
+    expect(cls).toContain("md:[--dialog-bottom:calc(env(safe-area-inset-bottom)+0.5rem)]");
     expect(cls).toContain("sm:top-[50%]");
     expect(cls).toContain("sm:bottom-auto");
     expect(cls).toContain("sm:translate-y-[-50%]");
