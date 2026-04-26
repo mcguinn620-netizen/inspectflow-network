@@ -69,24 +69,112 @@ function FitBounds({ points }: { points: [number, number][] }) {
   return null;
 }
 
+// localStorage cache for geocoded addresses (Nominatim is rate-limited; never re-geocode the same string).
+const GEO_CACHE_KEY = "geo:addr-cache:v1";
+type GeoCache = Record<string, { lat: number; lon: number } | null>;
+function readGeoCache(): GeoCache {
+  if (typeof localStorage === "undefined") return {};
+  try { return JSON.parse(localStorage.getItem(GEO_CACHE_KEY) || "{}"); } catch { return {}; }
+}
+function writeGeoCache(c: GeoCache) {
+  if (typeof localStorage === "undefined") return;
+  try { localStorage.setItem(GEO_CACHE_KEY, JSON.stringify(c)); } catch { /* quota */ }
+}
+
 export function TripMapOverlay({ stops, selectedId, onSelect, className }: Props) {
+  // Geocode stops that have an address but no coords (cached forever in localStorage).
+  const [geocoded, setGeocoded] = useState<Record<string, { lat: number; lon: number }>>({});
+
+  useEffect(() => {
+    const needs = stops.filter(
+      (s) => (s.latitude == null || s.longitude == null) && (s.address?.trim()?.length ?? 0) > 3,
+    );
+    if (needs.length === 0) return;
+    const cache = readGeoCache();
+    let cancelled = false;
+
+    (async () => {
+      const next: Record<string, { lat: number; lon: number }> = {};
+      for (const s of needs) {
+        const key = (s.address || "").trim();
+        if (!key) continue;
+        // Cache hit (including negative cache → null)
+        if (key in cache) {
+          if (cache[key]) next[s.id] = cache[key]!;
+          continue;
+        }
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(key)}`,
+            { headers: { Accept: "application/json" } },
+          );
+          const json = await res.json();
+          const hit = Array.isArray(json) && json[0];
+          if (hit && hit.lat && hit.lon) {
+            const v = { lat: Number(hit.lat), lon: Number(hit.lon) };
+            cache[key] = v;
+            next[s.id] = v;
+          } else {
+            cache[key] = null;
+          }
+        } catch {
+          // network blip — leave uncached so we can retry next mount
+        }
+        // be polite: 1 req/sec to Nominatim
+        await new Promise((r) => setTimeout(r, 1100));
+        if (cancelled) return;
+      }
+      writeGeoCache(cache);
+      if (!cancelled && Object.keys(next).length) {
+        setGeocoded((prev) => ({ ...prev, ...next }));
+      }
+    })();
+
+    return () => { cancelled = true; };
+  }, [stops]);
+
+  // Merge live coords with geocoded fallbacks
+  const resolvedStops = useMemo(
+    () =>
+      stops.map((s) => {
+        if (s.latitude != null && s.longitude != null) return s;
+        const g = geocoded[s.id];
+        if (g) return { ...s, latitude: g.lat, longitude: g.lon };
+        return s;
+      }),
+    [stops, geocoded],
+  );
+
   const points = useMemo(
     () =>
-      stops
+      resolvedStops
         .filter((s) => s.latitude != null && s.longitude != null)
         .map((s) => [Number(s.latitude), Number(s.longitude)] as [number, number]),
-    [stops],
+    [resolvedStops],
   );
 
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const pendingGeocode = stops.some(
+    (s) => (s.latitude == null || s.longitude == null) && (s.address?.trim()?.length ?? 0) > 3 && !geocoded[s.id],
+  );
 
   if (points.length === 0) {
     return (
       <Card className={className}>
         <CardContent className="p-6 text-center min-h-[260px] flex flex-col items-center justify-center text-sm text-muted-foreground">
           <MapPin className="h-6 w-6 mb-2" />
-          <p>No mapped stops yet.</p>
-          <p className="text-xs mt-1">Add an address (with location lookup) to see stops on the map.</p>
+          {pendingGeocode ? (
+            <>
+              <p>Locating stops…</p>
+              <p className="text-xs mt-1">Looking up addresses on the map.</p>
+            </>
+          ) : (
+            <>
+              <p>No mapped stops yet.</p>
+              <p className="text-xs mt-1">Add an address (with location lookup) to see stops on the map.</p>
+            </>
+          )}
         </CardContent>
       </Card>
     );
