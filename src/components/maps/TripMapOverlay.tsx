@@ -155,6 +155,33 @@ export function TripMapOverlay({ stops, selectedId, onSelect, className }: Props
 
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Road-following route geometry from OSRM public demo. Falls back to
+  // straight-line connectors if the request fails or returns no route.
+  const [routeGeometry, setRouteGeometry] = useState<[number, number][] | null>(null);
+
+  useEffect(() => {
+    if (points.length < 2) { setRouteGeometry(null); return; }
+    let cancelled = false;
+    const coords = points.map(([lat, lon]) => `${lon},${lat}`).join(";");
+    const url = `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`;
+    (async () => {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(String(res.status));
+        const json = await res.json();
+        const line = json?.routes?.[0]?.geometry?.coordinates;
+        if (!cancelled && Array.isArray(line) && line.length) {
+          setRouteGeometry(line.map((c: [number, number]) => [c[1], c[0]]));
+        } else if (!cancelled) {
+          setRouteGeometry(null);
+        }
+      } catch {
+        if (!cancelled) setRouteGeometry(null);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [points]);
+
   const pendingGeocode = stops.some(
     (s) => (s.latitude == null || s.longitude == null) && (s.address?.trim()?.length ?? 0) > 3 && !geocoded[s.id],
   );
@@ -197,7 +224,15 @@ export function TripMapOverlay({ stops, selectedId, onSelect, className }: Props
             />
             <FitBounds points={points} />
             {points.length > 1 && (
-              <Polyline positions={points} pathOptions={{ color: "hsl(217, 91%, 60%)", weight: 3, opacity: 0.6 }} />
+              <Polyline
+                positions={routeGeometry ?? points}
+                pathOptions={{
+                  color: "hsl(217, 91%, 60%)",
+                  weight: 4,
+                  opacity: routeGeometry ? 0.75 : 0.45,
+                  dashArray: routeGeometry ? undefined : "6 6",
+                }}
+              />
             )}
             {resolvedStops.map((s) => {
               if (s.latitude == null || s.longitude == null) return null;
