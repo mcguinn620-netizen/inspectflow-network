@@ -248,13 +248,14 @@ export default function InspectorTrips() {
               </div>
             </div>
 
-            <div className="grid lg:grid-cols-2 gap-3">
+            <div className="grid lg:grid-cols-2 gap-3 min-w-0">
               <TripMapOverlay
                 stops={mapStops}
                 selectedId={selectedStopId}
                 onSelect={setSelectedStopId}
+                className="min-w-0"
               />
-              <Card>
+              <Card className="min-w-0 max-w-full overflow-hidden">
                 <CardContent className="p-3 space-y-2">
                   {activeStops.length === 0 && <p className="text-sm text-muted-foreground p-3">No stops yet. Add stops or build from schedule.</p>}
                   {(() => {
