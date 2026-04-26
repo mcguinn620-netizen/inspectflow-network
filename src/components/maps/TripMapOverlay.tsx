@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap, CircleMarker } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Card, CardContent } from "@/components/ui/card";
-import { MapPin } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { MapPin, Navigation, LocateFixed, X } from "lucide-react";
+import { startTracking, type Position } from "@/platform/location";
 
 // Fix default marker icon paths for Leaflet under Vite
 delete (L.Icon.Default.prototype as any)._getIconUrl;
