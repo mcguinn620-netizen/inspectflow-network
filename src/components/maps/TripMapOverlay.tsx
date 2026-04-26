@@ -199,7 +199,7 @@ export function TripMapOverlay({ stops, selectedId, onSelect, className }: Props
             {points.length > 1 && (
               <Polyline positions={points} pathOptions={{ color: "hsl(217, 91%, 60%)", weight: 3, opacity: 0.6 }} />
             )}
-            {stops.map((s) => {
+            {resolvedStops.map((s) => {
               if (s.latitude == null || s.longitude == null) return null;
               const isSelected = s.id === selectedId;
               return (
