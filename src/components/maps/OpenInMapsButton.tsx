@@ -1,16 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Navigation, ChevronDown } from "lucide-react";
+import { Navigation } from "lucide-react";
 import { platformMaps } from "@/platform";
-import { PROVIDER_LABELS, type MapProvider, type MapTarget } from "@/platform/maps";
+import { type MapTarget } from "@/platform/maps";
 import { cn } from "@/lib/utils";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 interface Props {
   target: MapTarget;
@@ -23,7 +15,7 @@ interface Props {
   hideMenu?: boolean;
 }
 
-const PROVIDERS: MapProvider[] = ["auto", "apple", "google", "waze"];
+
 
 /**
  * Reusable map handoff button — single integration point for CarPlay /
@@ -62,39 +54,6 @@ export function OpenInMapsButton({
     </Button>
   );
 
-  if (hideMenu || iconOnly) return main;
-
-  return (
-    <div className="inline-flex">
-      {main}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant={variant}
-            size="icon"
-            className="h-8 w-7 -ml-1"
-            onClick={(e) => e.stopPropagation()}
-            aria-label="Choose maps app"
-          >
-            <ChevronDown className="h-3 w-3" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel className="text-xs">Open with</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {PROVIDERS.map((p) => (
-            <DropdownMenuItem
-              key={p}
-              onClick={(e) => {
-                e.stopPropagation();
-                platformMaps.open(target, p);
-              }}
-            >
-              {PROVIDER_LABELS[p]}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
-  );
+  // Always defer to the device's default maps app — no provider chooser.
+  return main;
 }
