@@ -278,15 +278,15 @@ export default function InspectorTrips() {
                               : "hover:bg-muted/40"
                       }`}
                     >
-                      <div className="flex items-center justify-between gap-2 flex-wrap">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <span className={`text-xs tabular-nums ${isNext ? "text-primary font-semibold" : "text-muted-foreground"}`}>#{i+1}</span>
-                          <span className={`font-medium text-sm truncate ${isDone ? "line-through" : ""}`}>{s.label || s.address || "Stop"}</span>
-                          {isNext && <Badge variant="default" className="capitalize text-[10px] h-4">Next</Badge>}
-                          {!isNext && <Badge variant="outline" className="capitalize text-xs">{s.status}</Badge>}
-                          {s.job_id && <Badge variant="outline" className="text-xs"><Briefcase className="h-3 w-3 mr-1" />Job</Badge>}
+                      <div className="flex items-start justify-between gap-2 flex-wrap">
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          <span className={`text-xs tabular-nums shrink-0 ${isNext ? "text-primary font-semibold" : "text-muted-foreground"}`}>#{i+1}</span>
+                          <span className={`font-medium text-sm truncate min-w-0 ${isDone ? "line-through" : ""}`}>{s.label || s.address || "Stop"}</span>
+                          {isNext && <Badge variant="default" className="capitalize text-[10px] h-4 shrink-0">Next</Badge>}
+                          {!isNext && <Badge variant="outline" className="capitalize text-xs shrink-0">{s.status}</Badge>}
+                          {s.job_id && <Badge variant="outline" className="text-xs shrink-0"><Briefcase className="h-3 w-3 mr-1" />Job</Badge>}
                         </div>
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1 shrink-0">
                           <Button size="icon" variant="ghost" className="h-7 w-7" onClick={(e) => { e.stopPropagation(); moveStop(s, -1); }}><ArrowUp className="h-3.5 w-3.5" /></Button>
                           <Button size="icon" variant="ghost" className="h-7 w-7" onClick={(e) => { e.stopPropagation(); moveStop(s, 1); }}><ArrowDown className="h-3.5 w-3.5" /></Button>
                           <OpenInMapsButton target={{ address: s.address, latitude: s.latitude, longitude: s.longitude, label: s.label }} iconOnly />
