@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MapPin, Navigation, LocateFixed, X } from "lucide-react";
 import { startTracking, type Position } from "@/platform/location";
+import { cn } from "@/lib/utils";
 
 // Fix default marker icon paths for Leaflet under Vite
 delete (L.Icon.Default.prototype as any)._getIconUrl;
