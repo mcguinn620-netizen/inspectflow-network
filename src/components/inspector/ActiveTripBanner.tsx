@@ -102,6 +102,11 @@ export function ActiveTripBanner() {
                 {pending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Play className="h-3.5 w-3.5" />}
               </Button>
             )}
+            {nextStop && (
+              <Button size="sm" variant="default" asChild className="h-8">
+                <Link to="/app/inspector/drive"><Navigation className="h-3.5 w-3.5 mr-1" />Drive</Link>
+              </Button>
+            )}
             <Button size="sm" variant="outline" asChild className="h-8">
               <Link to="/app/inspector/trips"><RouteIcon className="h-3.5 w-3.5 mr-1" />Open</Link>
             </Button>
