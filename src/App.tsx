@@ -26,6 +26,7 @@ import InspectorDashboard from "./pages/inspector/InspectorDashboard";
 import InspectorSchedule from "./pages/inspector/InspectorSchedule";
 import InspectorJobs from "./pages/inspector/InspectorJobs";
 import InspectorTrips from "./pages/inspector/InspectorTrips";
+import InspectorDrive from "./pages/inspector/InspectorDrive";
 import InspectorTax from "./pages/inspector/InspectorTax";
 import MechanicDashboard from "./pages/mechanic/MechanicDashboard";
 import DispatchDashboard from "./pages/dispatch/DispatchDashboard";
@@ -56,6 +57,7 @@ const AppRoutes = () => (
     <Route path="/app/inspector/schedule" element={<ProtectedRoute><InspectorSchedule /></ProtectedRoute>} />
     <Route path="/app/inspector/jobs" element={<ProtectedRoute><InspectorJobs /></ProtectedRoute>} />
     <Route path="/app/inspector/trips" element={<ProtectedRoute><InspectorTrips /></ProtectedRoute>} />
+    <Route path="/app/inspector/drive" element={<ProtectedRoute><InspectorDrive /></ProtectedRoute>} />
     <Route path="/app/inspector/tax" element={<ProtectedRoute><InspectorTax /></ProtectedRoute>} />
 
     {/* Future role workspaces */}

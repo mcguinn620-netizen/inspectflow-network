@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Clock, MapPin, Route as RouteIcon, Play, CheckCircle2, X, CalendarClock,
-  CalendarPlus, ChevronLeft, ChevronRight, Download,
+  CalendarPlus, ChevronLeft, ChevronRight, Download, AlertTriangle,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,6 +19,7 @@ import { OpenInMapsButton } from "@/components/maps/OpenInMapsButton";
 import { setJobStatus } from "@/lib/tripLifecycle";
 import { platformCalendar } from "@/platform";
 import { ScheduleWeekGrid, type ScheduleJob } from "@/components/inspector/ScheduleWeekGrid";
+import { detectConflicts, summarizeConflicts } from "@/lib/scheduleConflicts";
 
 interface Job extends ScheduleJob {
   estimated_duration_minutes?: number | null;
@@ -126,6 +127,11 @@ export default function InspectorSchedule() {
   }, [filtered]);
 
   const todayCount = jobs.filter(j => j.scheduled_at && new Date(j.scheduled_at) >= today && new Date(j.scheduled_at) < tomorrow && j.status !== "completed" && j.status !== "canceled").length;
+
+  const conflictMap = useMemo(
+    () => detectConflicts({ jobs, blockedDates, availability }),
+    [jobs, blockedDates, availability],
+  );
 
   const saveTime = async () => {
     if (!editing) return;
@@ -320,6 +326,16 @@ export default function InspectorSchedule() {
                               {j.status.replace("_"," ")}
                             </Badge>
                             {inTrip && <Badge variant="outline" className="text-xs border-primary/40 text-primary">In trip</Badge>}
+                            {conflictMap.get(j.id)?.length ? (
+                              <Badge
+                                variant="destructive"
+                                className="text-xs gap-1"
+                                title={summarizeConflicts(conflictMap.get(j.id)!)}
+                              >
+                                <AlertTriangle className="h-3 w-3" />
+                                Conflict
+                              </Badge>
+                            ) : null}
                           </div>
                           <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1.5 flex-wrap">
                             <Clock className="h-3 w-3" />
