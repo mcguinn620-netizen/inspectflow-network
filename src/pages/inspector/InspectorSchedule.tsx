@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Clock, MapPin, Route as RouteIcon, Play, CheckCircle2, X, CalendarClock,
-  CalendarPlus, ChevronLeft, ChevronRight, Download,
+  CalendarPlus, ChevronLeft, ChevronRight, Download, AlertTriangle,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,6 +19,7 @@ import { OpenInMapsButton } from "@/components/maps/OpenInMapsButton";
 import { setJobStatus } from "@/lib/tripLifecycle";
 import { platformCalendar } from "@/platform";
 import { ScheduleWeekGrid, type ScheduleJob } from "@/components/inspector/ScheduleWeekGrid";
+import { detectConflicts, summarizeConflicts } from "@/lib/scheduleConflicts";
 
 interface Job extends ScheduleJob {
   estimated_duration_minutes?: number | null;
