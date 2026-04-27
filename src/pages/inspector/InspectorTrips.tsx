@@ -238,6 +238,9 @@ export default function InspectorTrips() {
                     {pendingId === `trip:${activeTrip.id}:paused` ? <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" /> : <Pause className="h-3.5 w-3.5 mr-1" />}Pause
                   </Button>
                 )}
+                <Button size="sm" variant="default" asChild>
+                  <Link to="/app/inspector/drive"><Flag className="h-3.5 w-3.5 mr-1" />Drive</Link>
+                </Button>
                 <Button size="sm" variant="outline" onClick={() => setEditingTrip(activeTrip)}><Pencil className="h-3.5 w-3.5 mr-1" />Edit</Button>
                 {canCompleteTrip(activeTrip.status) && (
                   <Button size="sm" variant="default" disabled={!!pendingId}
