@@ -326,6 +326,16 @@ export default function InspectorSchedule() {
                               {j.status.replace("_"," ")}
                             </Badge>
                             {inTrip && <Badge variant="outline" className="text-xs border-primary/40 text-primary">In trip</Badge>}
+                            {conflictMap.get(j.id)?.length ? (
+                              <Badge
+                                variant="destructive"
+                                className="text-xs gap-1"
+                                title={summarizeConflicts(conflictMap.get(j.id)!)}
+                              >
+                                <AlertTriangle className="h-3 w-3" />
+                                Conflict
+                              </Badge>
+                            ) : null}
                           </div>
                           <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1.5 flex-wrap">
                             <Clock className="h-3 w-3" />
