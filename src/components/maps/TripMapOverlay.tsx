@@ -43,6 +43,8 @@ interface Props {
   selectedId?: string | null;
   onSelect?: (id: string) => void;
   className?: string;
+  /** Fill parent height, drop Card chrome, auto-start GPS following. */
+  fullscreen?: boolean;
 }
 
 function FitBounds({ points }: { points: [number, number][] }) {
