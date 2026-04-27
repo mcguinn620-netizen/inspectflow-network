@@ -86,7 +86,7 @@ function writeGeoCache(c: GeoCache) {
   try { localStorage.setItem(GEO_CACHE_KEY, JSON.stringify(c)); } catch { /* quota */ }
 }
 
-export function TripMapOverlay({ stops, selectedId, onSelect, className }: Props) {
+export function TripMapOverlay({ stops, selectedId, onSelect, className, fullscreen = false }: Props) {
   // Geocode stops that have an address but no coords (cached forever in localStorage).
   const [geocoded, setGeocoded] = useState<Record<string, { lat: number; lon: number }>>({});
 
@@ -192,7 +192,7 @@ export function TripMapOverlay({ stops, selectedId, onSelect, className }: Props
   );
 
   // In-app navigation: follow user's GPS, recenter on update.
-  const [navigating, setNavigating] = useState(false);
+  const [navigating, setNavigating] = useState(fullscreen);
   const [userPos, setUserPos] = useState<Position | null>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
 
