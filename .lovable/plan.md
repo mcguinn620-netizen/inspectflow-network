@@ -1,121 +1,108 @@
 
+# Plan: Phase 7C Drive Mode + Schedule Conflict Surfacing
 
-# Inspector Workspace: Gap Assessment vs. Mobile-First / CarPlay-Ready Build
-
-## Honest scorecard (where you stand today)
-
-| Area | Status | Notes |
-|---|---|---|
-| Mobile-first shell | **Strong** | Bottom tab bar, PWA manifest, service worker, sticky active-trip banner, install prompt |
-| Trip lifecycle | **Strong** | Idempotent transitions, realtime active trip, next-stop card, progress |
-| Jobs ↔ Trips loop | **Strong** | Auto-link, in-trip badges, one-tap arrive/start/complete |
-| Scheduling | **Partial** | Internal scheduler only — list + reschedule. No device calendar sync, no day/week view, no recurring/blocked-time logic on the schedule page |
-| Tax estimator | **Partial** | Federal/state/SE rates + filing status + state code stored, but state rates are manually entered. No real state tax tables, no quarterly estimates, no 1099 export |
-| In-app navigation | **Weak** | Only handoff to Apple/Google Maps via `OpenInMapsButton`. Map overlay is read-only Leaflet — no turn-by-turn, no route order optimization, no in-app driving mode |
-| CarPlay / Android Auto | **Not started** | Web stack only. Requires Capacitor + native CarPlay/AA scenes (templated UI, not React) |
-| Platform abstraction | **Started** | `src/platform/` exists for maps/export/share/location — good foundation for Capacitor |
+Two scoped deliverables, both ship inside the existing PWA (no native code required).
 
 ---
 
-## What I'd add (phased, no redesign)
+## 1. Phase 7C Finish — Full-screen Drive Mode
 
-### Phase 7A — Scheduling: device calendar sync + week view
+### New route
+`/app/inspector/drive` — a dedicated, distraction-free driving screen for the active trip. Wired into `App.tsx` under `ProtectedRoute`.
 
-**Goal:** make the Schedule page a real calendar that flows into trips and out to the phone.
+### New file: `src/pages/inspector/InspectorDrive.tsx`
+Full-viewport (`h-[100dvh]`) layout consuming `useActiveTrip()`:
+- **Top bar (compact):** trip title, exit button (← back to `/app/inspector/trips`), progress chip (`completed / total`).
+- **Map (fills remaining space):** reuses `TripMapOverlay` in a new `fullscreen` mode (added prop) that:
+  - Drops the Card chrome and forces 100% height.
+  - Auto-starts `navigating = true` on mount (GPS following + recenter).
+  - Hides the "Navigate" button (always on); shows only Recenter and Exit.
+- **Bottom sheet (NextStopCard variant):**
+  - Big stop label + address.
+  - Distance-to-next (haversine from current GPS to next stop coords) and ETA placeholder (km / avg 50 km/h).
+  - Primary action: **Arrive** (marks stop completed via existing trip lifecycle helper, advances to next).
+  - Secondary: **Skip**, **Open in Maps** (existing `OpenInMapsButton`).
 
-1. **Week / day calendar view** on `InspectorSchedule.tsx`
-   - Add a `view` toggle: List (current) · Day · Week
-   - Day = vertical time-block list with drag-to-reschedule
-   - Week = 7-column grid; tap a slot to create a job pre-filled with date/time
-2. **Device calendar sync** via standards (works in PWA today, native later)
-   - **Per-job .ics download**: button on each job → generates `BEGIN:VEVENT` with title (job title), location (job.location), start (`scheduled_at`), duration (`estimated_duration_minutes`), notes, and a stable UID = `job-{id}@inspector.app`. iOS/Android open it in the system calendar.
-   - **Trip .ics export**: full day as a single `.ics` with one VEVENT per stop.
-   - **Subscribed feed (read-only mirror)**: edge function `calendar-feed/:userToken.ics` returns all upcoming jobs as a live calendar URL the user adds once to Apple/Google Calendar. Token stored on profile; revocable.
-   - All routed through `src/platform/calendar.ts` (new module) so Capacitor can later swap in `@capacitor-community/calendar` for true two-way sync.
-3. **Recurring + blocked time** surfaced on the schedule
-   - Use existing `availability_schedules` and `inspector_blocked_dates` tables (already in schema, unused on this page) to gray out unavailable slots and warn on conflicts.
+### Wake Lock
+New file `src/hooks/useWakeLock.ts`:
+- Calls `navigator.wakeLock?.request('screen')` on mount, releases on unmount.
+- Re-acquires on `visibilitychange` when page becomes visible (browsers drop the lock on hide).
+- Silent no-op when API is unavailable (Safari < 16.4, etc.).
 
-**Schema:** add `profiles.calendar_feed_token text` (nullable, unique).
+### Auto-arrive geofencing
+Inside Drive page:
+- Subscribe to `startTracking` from `@/platform/location`.
+- On each position, compute haversine distance to `nextStop` (using lat/lon already in `ActiveStop`).
+- When distance < **75 m** for 2 consecutive readings, fire a toast `"Arrived at <stop>"` and prompt: **Mark arrived?** (Sonner action button → calls existing trip-stop completion path).
+- Debounce so we don't re-prompt the same stop.
 
----
+### Voice cues (lightweight, web SpeechSynthesis)
+- New util `src/lib/voiceCue.ts` wrapping `window.speechSynthesis.speak(new SpeechSynthesisUtterance(text))`.
+- Toggle button in top bar (🔊 / 🔇), persisted to `localStorage` key `drive:voice`.
+- Cues fired:
+  - On stop advance: "Next stop, <label>".
+  - On geofence arrival: "Arriving at <label>".
+- Silent fallback when API missing.
 
-### Phase 7B — Tax estimator: real US state tables + quarterly + 1099
+### Entry point
+- Add a **Drive** button in `src/components/inspector/ActiveTripBanner.tsx` (when active trip exists) linking to `/app/inspector/drive`.
+- Add the same button on `InspectorTrips` next to the existing map overlay.
 
-**Goal:** turn the current flat-rate estimator into something an inspector can trust at quarterly-payment time.
-
-1. **State tax data**
-   - Add `src/data/stateTaxTables.ts` — JSON of 2025 brackets for all 50 states + DC (flat-rate states marked, no-income-tax states zeroed). Sourced from state revenue dept tables.
-   - Replace the manual `state_tax_rate` slider with **auto-computed effective rate** based on: state_code + filing_status + projected annual gross. Manual override remains.
-2. **Federal brackets + standard deduction**
-   - Add `src/data/federalTaxTables.ts` (2025 brackets, standard deduction by filing status).
-   - Compute effective federal rate the same way (project YTD → annual, apply brackets, derive effective %).
-3. **SE tax** — keep 15.3% on 92.35% of net SE income (the standard formula), already close.
-4. **Quarterly estimated payment card** on `InspectorTax.tsx`
-   - Show next quarter due date (Apr 15, Jun 15, Sep 15, Jan 15).
-   - "Set aside this quarter: $X" — based on YTD earnings extrapolated with the new tables.
-   - "Save for taxes" running balance suggestion.
-5. **1099-ready export** — CSV per organization, per year, with totals per client/customer (uses existing `customer_name` on jobs).
-
-**Schema:** no new tables. Optional: `earnings_settings.quarterly_safe_harbor_method text` ('110_percent_prior_year' | 'current_year_90').
-
----
-
-### Phase 7C — In-app navigation (driving mode, no CarPlay yet)
-
-**Goal:** an in-app "driving mode" that doesn't require leaving the app for the next stop. Real turn-by-turn requires native + paid SDKs, so this stays handoff-augmented.
-
-1. **Driving Mode screen** at `/app/inspector/drive`
-   - Full-screen, large-tap, glanceable: next stop name, ETA, distance remaining, big buttons (Arrived · Start Job · Skip).
-   - Auto-launches when a trip is `active` and user is on mobile (opt-in toggle).
-   - Wake-lock via `navigator.wakeLock` (Screen Wake Lock API) to keep screen on.
-   - Voice cue on arrival (Web Speech `speechSynthesis`): "Arriving at next stop."
-2. **Live route preview** in `TripMapOverlay`
-   - Add OSRM (free) or OpenRouteService (free tier) route polyline between stops — replaces the straight-line polyline. Cached per trip.
-   - Re-order suggestion: "Optimize stop order" button → calls OSRM `/trip` endpoint, previews new order, user accepts.
-3. **Geolocation + auto-arrive**
-   - Watch position via `src/platform/location.ts`; when within ~150m of next stop's lat/lng, prompt "Arrived?" — one-tap confirms (doesn't auto-fire to avoid false positives).
-4. **Platform module updates**
-   - `platform/location.ts`: implement web `geolocation.watchPosition`; native swap point ready for Capacitor `@capacitor/geolocation`.
-   - `platform/navigation.ts` (new): wraps OSRM calls behind a stable interface.
-
-**Schema:** no changes. Optional cache table `route_cache(trip_id, geometry, computed_at)` for offline access.
+### TripMapOverlay change
+Add `fullscreen?: boolean` prop. When true:
+- Returns the inner `<div>` (no Card wrapper), height `h-full`.
+- Sets `navigating` initial state to `true` and hides the Navigate button.
+- All other behavior (OSRM polyline, GPS marker, recenter button) unchanged.
 
 ---
 
-### Phase 7D — Capacitor + CarPlay / Android Auto (the real native step)
+## 2. Schedule Conflict Surface in `ScheduleWeekGrid`
 
-**Important reality:** CarPlay and Android Auto **do not run React/web UIs**. Apple and Google require apps to use their native templated UIs (CPListTemplate, CPMapTemplate / CarAppService templates). The Lovable web app cannot ship to a car directly. The path is:
+Surface availability/blocked-date conflicts already loaded in `InspectorSchedule.load()` but never rendered as warnings.
 
-1. **Wrap with Capacitor** (already documented in the project — `appId: app.lovable.c4a81c228a3d4381bec7340e222a48cb`).
-2. **Native plugin (custom)** in `ios/App/App/CarPlay/` and `android/app/src/main/java/.../car/` exposing a minimal CarPlay/AA surface backed by data the web app already produces:
-   - **List template:** today's stops (label, address, ETA).
-   - **Map template:** current trip route polyline + next stop pin.
-   - **Action buttons:** Arrived · Skip · Call customer.
-3. **Data bridge:** the native layer reads from the same Supabase tables (`trips`, `trip_stops`, `jobs`) using a stored session token, so the phone screen and the car screen are always in sync. State changes from CarPlay (e.g. "Arrived") write back to Supabase → web/PWA reflects them via realtime.
-4. **Voice & navigation:** CarPlay/AA route the user to Apple Maps / Google Maps via system intents — same handoff your `platformMaps.open()` does, just from native templates.
-5. **What stays in Lovable:** all data, scheduling, tax, settings. CarPlay/AA is a thin native projection of the active trip.
+### New prop on `ScheduleWeekGrid`
+`onConflict?: (job, reason) => void` (optional analytics hook). Conflict detection runs internally per cell.
 
-**Out of scope for Lovable's web sandbox:** the actual Xcode/Android Studio CarPlay project, Apple's CarPlay entitlement (requires Apple approval), and Google Cars App Library testing. Lovable will produce the Capacitor scaffolding and the JSON contract the native layer consumes; the native projects are built by you locally after `npx cap add ios/android`.
+### Conflict rules per day cell
+For each job in `dayJobs`:
+1. **Blocked-date conflict** — day is in `blockedDates`.
+2. **Outside availability window** — day-of-week has availability rows but job's time falls outside any `start_time → end_time` interval, OR `is_available === false` for that DOW.
+3. **Overlap** — two jobs whose `[scheduled_at, scheduled_at + estimated_duration_minutes)` intervals intersect (default 60 min when null).
+
+### Visual treatment
+- Conflict job buttons get a left border `border-l-2 border-destructive` and a small ⚠ icon (`AlertTriangle` from lucide).
+- Day cell shows a count badge `Badge variant="destructive"` like `2 conflicts` in the header when count > 0.
+- Tooltip (`title` attr) on the job button states the reason ("Outside hours", "Overlaps with X", "Day off").
+
+### Pass-through from `InspectorSchedule`
+Already provides `blockedDates` and `availability`. Need to extend `ScheduleJob` type to include `estimated_duration_minutes` for overlap math (already on the local `Job` interface in `InspectorSchedule`, so we add it to `ScheduleJob` and the SELECT already fetches it).
+
+### List view bonus (small)
+In the list-view rendering of `InspectorSchedule`, when a job is in conflict show the same ⚠ icon next to the title. Reuses the same conflict-detection helper, extracted to `src/lib/scheduleConflicts.ts`:
+```ts
+export function detectConflicts(jobs, availability, blockedDates): Map<jobId, Reason[]>
+```
 
 ---
 
-## Recommended order
+## Files to be created
+- `src/pages/inspector/InspectorDrive.tsx`
+- `src/hooks/useWakeLock.ts`
+- `src/lib/voiceCue.ts`
+- `src/lib/scheduleConflicts.ts`
 
-1. **7A Scheduling + calendar sync** — biggest day-to-day win, pure web, ships fast.
-2. **7B Tax tables + quarterly** — high trust value, pure data work.
-3. **7C Driving mode + wake-lock + auto-arrive** — makes the PWA feel in-car-ready.
-4. **7D Capacitor + CarPlay/AA scaffolding** — only after 7A–C land, since CarPlay surfaces *project* the data those phases produce.
+## Files to be edited
+- `src/App.tsx` — register `/app/inspector/drive` route.
+- `src/components/maps/TripMapOverlay.tsx` — add `fullscreen` prop.
+- `src/components/inspector/ScheduleWeekGrid.tsx` — render conflicts.
+- `src/components/inspector/ActiveTripBanner.tsx` — Drive entry button.
+- `src/pages/inspector/InspectorTrips.tsx` — Drive entry button.
+- `src/pages/inspector/InspectorSchedule.tsx` — conflict icon in list view, extend `ScheduleJob` import usage.
 
----
+## Out of scope (kept for follow-ups)
+- Route stop-order auto-optimization (item #4).
+- 1099 CSV export (item #3).
+- CarPlay endpoint (item #5).
+- Background-location tracking when app is backgrounded — requires native plugin.
 
-## Technical notes
-
-- **No redesign**, no new product areas. Reuses `DashboardLayout`, `Card`, `Tabs`, `Sheet`, bottom tab bar, `useActiveTrip`, `tripLifecycle.ts`, `OpenInMapsButton`, `TripMapOverlay`, `src/platform/*`.
-- **New files**: `src/platform/calendar.ts`, `src/platform/navigation.ts`, `src/data/stateTaxTables.ts`, `src/data/federalTaxTables.ts`, `src/pages/inspector/InspectorDrive.tsx`, `supabase/functions/calendar-feed/index.ts`, `supabase/functions/ics-export/index.ts`.
-- **Schema**: only `profiles.calendar_feed_token` is required. Everything else fits the current model.
-- **Capacitor readiness**: every new capability lands in `src/platform/` first so Phase 7D replaces implementations without touching UI.
-
-## Confirm before I build
-
-Tell me which phase to start with (7A is my recommendation), or approve the whole sequence and I'll implement 7A first.
-
+After approval I'll implement, type-check, and report back.
