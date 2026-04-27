@@ -128,6 +128,11 @@ export default function InspectorSchedule() {
 
   const todayCount = jobs.filter(j => j.scheduled_at && new Date(j.scheduled_at) >= today && new Date(j.scheduled_at) < tomorrow && j.status !== "completed" && j.status !== "canceled").length;
 
+  const conflictMap = useMemo(
+    () => detectConflicts({ jobs, blockedDates, availability }),
+    [jobs, blockedDates, availability],
+  );
+
   const saveTime = async () => {
     if (!editing) return;
     if (newTime) {
