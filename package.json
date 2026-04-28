@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json"
   },
   "dependencies": {
     "@capacitor/android": "^8.3.1",
@@ -51,6 +52,7 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "@supabase/supabase-js": "^2.104.1",
     "@tanstack/react-query": "^5.100.5",
+    "@transistorsoft/capacitor-background-geolocation": "^9.1.1",
     "@types/leaflet": "1.9.12",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

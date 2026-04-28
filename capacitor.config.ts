@@ -10,16 +10,6 @@ import type { CapacitorConfig } from "@capacitor/cli";
  *   4. Add platforms: `npx cap add ios` and/or `npx cap add android`.
  *   5. Sync: `npx cap sync`.
  *   6. Open in Xcode/Android Studio: `npx cap open ios` / `npx cap open android`.
- *
- * The bundled web build (`webDir: "dist"`) is shipped inside the native app —
- * no live-reload from the Lovable sandbox. Change to `server.url` if you want
- * device-side hot reload during native development.
- *
- * CarPlay / Android Auto:
- *   The native projects under `ios/App/App/CarPlay/` and
- *   `android/app/src/main/java/.../car/` contain stub Swift / Kotlin scenes that
- *   read trip + stop data from the same Supabase backend the web app uses.
- *   See `docs/native/CARPLAY_CONTRACT.md` for the JSON contract.
  */
 const config: CapacitorConfig = {
   appId: "app.lovable.c4a81c228a3d4381bec7340e222a48cb",
@@ -29,9 +19,6 @@ const config: CapacitorConfig = {
   ios: {
     contentInset: "always",
     limitsNavigationsToAppBoundDomains: false,
-    // Use Swift Package Manager (SPM) instead of CocoaPods for native deps.
-    // Mirrors ENABLE_SPM_SUPPORT=true in ios/debug.xcconfig and the
-    // CapApp-SPM package under ios/App/CapApp-SPM.
     buildOptions: {
       // @ts-expect-error - flag consumed by Capacitor SPM tooling
       enableSPMSupport: true,
@@ -42,7 +29,19 @@ const config: CapacitorConfig = {
   },
   plugins: {
     Geolocation: {
-      // iOS Info.plist requires NSLocationWhenInUseUsageDescription — set in Xcode.
+      // iOS Info.plist keys are checked into ios/App/App/Info.plist.
+    },
+    BackgroundGeolocation: {
+      desiredAccuracy: 10,
+      distanceFilter: 15,
+      stopOnTerminate: false,
+      startOnBoot: true,
+      debug: false,
+      locationAuthorizationRequest: "Always",
+      notification: {
+        title: "Drive Smooth mileage tracking active",
+        text: "Tracking location during active trips to calculate business mileage.",
+      },
     },
   },
 };

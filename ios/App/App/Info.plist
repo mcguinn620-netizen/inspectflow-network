@@ -47,5 +47,16 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Drive Smooth uses location during active trips to calculate accurate business mileage for tax records.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Drive Smooth uses location during active trips to calculate accurate business mileage for tax records.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Drive Smooth uses location during active trips to calculate accurate business mileage for tax records.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
 </dict>
 </plist>

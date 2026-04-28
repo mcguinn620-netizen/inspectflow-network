@@ -32,7 +32,7 @@ const REQUIRED_HITS = 2;
 
 export default function InspectorDrive() {
   const navigate = useNavigate();
-  const { trip, stops, nextStop, progress, refresh, loading } = useActiveTrip();
+  const { trip, stops, nextStop, routePoints, progress, refresh, loading } = useActiveTrip();
   const [voice, setVoice] = useState(isVoiceEnabled());
   const [pending, setPending] = useState(false);
   const [userPos, setUserPos] = useState<Position | null>(null);
@@ -180,6 +180,7 @@ export default function InspectorDrive() {
           selectedId={nextStop?.id ?? null}
           fullscreen
           className="absolute inset-0"
+          actualRoutePoints={routePoints.map((p) => ({ latitude: Number(p.latitude), longitude: Number(p.longitude) }))}
         />
       </div>
 
