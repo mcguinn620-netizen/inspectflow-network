@@ -259,8 +259,15 @@ export default function InspectorTrips() {
                 </h2>
                 {activeStops.length > 0 && <Progress value={pct} className="h-1.5 mt-1.5 w-40" />}
                 <div className="mt-1.5 flex flex-wrap gap-1">
-                  {trackingState?.tripId === activeTrip.id && trackingState.status === "live" && <Badge className="text-[10px]">Live tracking on</Badge>}
-                  {trackingState?.tripId === activeTrip.id && trackingState.status === "paused" && <Badge variant="outline" className="text-[10px]">Tracking paused</Badge>}
+                  {trackingState?.tripId === activeTrip.id && trackingState.status === "live" && (
+                    <Badge className="text-[10px]">{trackingState.trackingLabel ?? "Live tracking on"}</Badge>
+                  )}
+                  {trackingState?.tripId === activeTrip.id && trackingState.status === "paused" && (
+                    <Badge variant="outline" className="text-[10px]">Tracking paused</Badge>
+                  )}
+                  {trackingState?.tripId === activeTrip.id && trackingState.status === "live" && trackingState.warning && (
+                    <Badge variant="outline" className="text-[10px] text-amber-600 border-amber-300">{trackingState.warning}</Badge>
+                  )}
                   {activeRoutePoints.length > 1 && <Badge variant="secondary" className="text-[10px]">Actual route recorded</Badge>}
                   {activeRoutePoints.length <= 1 && activeStops.length > 1 && <Badge variant="outline" className="text-[10px]">Using planned route estimate</Badge>}
                 </div>

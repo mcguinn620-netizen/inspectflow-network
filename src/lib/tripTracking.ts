@@ -1,13 +1,36 @@
 import { supabase } from "@/integrations/supabase/client";
-import { startTripLocationWatch, type LocationSample } from "@/platform/location";
+import {
+  getTrackingCapability,
+  getTrackingModeLabel,
+  startTripLocationWatch,
+  stopTripLocationWatch,
+  type LocationSample,
+  type TrackingCapability,
+} from "@/platform/location";
 
 type TrackingStatus = "idle" | "live" | "paused";
+
+interface TripLocationPointInsert {
+  trip_id: string;
+  organization_id: string;
+  user_id: string;
+  latitude: number;
+  longitude: number;
+  accuracy: number | null;
+  speed: number | null;
+  heading: number | null;
+  distance_from_previous_miles: number;
+  recorded_at: string;
+}
 
 interface TrackingSnapshot {
   tripId: string;
   status: TrackingStatus;
   totalMiles: number;
   lastPointAt?: number;
+  capability?: TrackingCapability;
+  trackingLabel?: string;
+  warning?: string;
 }
 
 const STORAGE_KEY = "tripTracking:state:v1";
@@ -18,12 +41,11 @@ const MAX_GAP_MS = 1000 * 60 * 12;
 const FLUSH_BATCH_SIZE = 8;
 const FLUSH_INTERVAL_MS = 6000;
 
-let stopWatch: (() => void) | null = null;
 let flushTimer: number | null = null;
 let snapshot: TrackingSnapshot | null = null;
-let pointBuffer: any[] = [];
+let pointBuffer: TripLocationPointInsert[] = [];
 let lastWrittenPoint: LocationSample | null = null;
-let listeners = new Set<(s: TrackingSnapshot | null) => void>();
+const listeners = new Set<(s: TrackingSnapshot | null) => void>();
 
 function readState(): TrackingSnapshot | null {
   if (typeof localStorage === "undefined") return null;
@@ -159,13 +181,6 @@ async function onLocation(next: LocationSample) {
   await supabase.from("trips").update({ total_miles: snapshot.totalMiles }).eq("id", snapshot.tripId);
 }
 
-function stopWatcher() {
-  if (stopWatch) {
-    stopWatch();
-    stopWatch = null;
-  }
-}
-
 async function bootstrapLastPoint(tripId: string) {
   const { data } = await supabase
     .from("trip_location_points")
@@ -185,19 +200,39 @@ async function bootstrapLastPoint(tripId: string) {
   };
 }
 
+function applyCapability(capability: TrackingCapability) {
+  if (!snapshot) return;
+  snapshot.capability = capability;
+  snapshot.trackingLabel = getTrackingModeLabel(capability, snapshot.status);
+  snapshot.warning = capability.warning;
+}
+
 export async function startTripTracking(trip: { id: string }) {
   await stopTripTracking();
   const meta = await resolveTripMeta(trip.id);
   if (!meta) return;
+
   await bootstrapLastPoint(trip.id);
+
   snapshot = {
     tripId: trip.id,
     status: "live",
     totalMiles: Number(meta.total_miles ?? 0),
+    trackingLabel: "Live tracking on",
   };
-  stopWatch = startTripLocationWatch((p) => {
-    onLocation(p);
+
+  const capability = await startTripLocationWatch({
+    onUpdate: (p) => {
+      void onLocation(p);
+    },
+    onError: () => {
+      // Keep tracker alive even if native provider throws transient errors.
+    },
+    distanceFilterMeters: 15,
+    intervalMs: 10_000,
   });
+
+  applyCapability(capability);
   emit();
 }
 
@@ -209,13 +244,14 @@ export async function resumeTripTracking(trip: { id: string }) {
 export async function pauseTripTracking() {
   if (!snapshot) return;
   snapshot.status = "paused";
-  stopWatcher();
+  snapshot.trackingLabel = "Tracking paused";
+  await stopTripLocationWatch();
   await flushPoints();
   emit();
 }
 
 export async function stopTripTracking() {
-  stopWatcher();
+  await stopTripLocationWatch();
   if (flushTimer != null) {
     window.clearTimeout(flushTimer);
     flushTimer = null;
@@ -224,6 +260,13 @@ export async function stopTripTracking() {
   snapshot = null;
   pointBuffer = [];
   lastWrittenPoint = null;
+  emit();
+}
+
+export async function refreshTrackingCapability() {
+  if (!snapshot) return;
+  const capability = await getTrackingCapability();
+  applyCapability(capability);
   emit();
 }
 
