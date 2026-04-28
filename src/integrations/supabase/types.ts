@@ -1197,6 +1197,51 @@ export type Database = {
           },
         ]
       }
+      trip_location_points: {
+        Row: {
+          accuracy: number | null
+          created_at: string
+          distance_from_previous_miles: number | null
+          heading: number | null
+          id: string
+          latitude: number
+          longitude: number
+          organization_id: string
+          recorded_at: string
+          speed: number | null
+          trip_id: string
+          user_id: string
+        }
+        Insert: {
+          accuracy?: number | null
+          created_at?: string
+          distance_from_previous_miles?: number | null
+          heading?: number | null
+          id?: string
+          latitude: number
+          longitude: number
+          organization_id: string
+          recorded_at?: string
+          speed?: number | null
+          trip_id: string
+          user_id: string
+        }
+        Update: {
+          accuracy?: number | null
+          created_at?: string
+          distance_from_previous_miles?: number | null
+          heading?: number | null
+          id?: string
+          latitude?: number
+          longitude?: number
+          organization_id?: string
+          recorded_at?: string
+          speed?: number | null
+          trip_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       trip_stops: {
         Row: {
           address: string | null
