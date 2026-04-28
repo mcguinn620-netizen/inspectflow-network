@@ -31,3 +31,8 @@ comment block at the top of the Java file.
 
 See [`../docs/native/CARPLAY_CONTRACT.md`](../docs/native/CARPLAY_CONTRACT.md)
 for the JSON shape both shells consume from Supabase.
+
+
+## Background mileage tracking
+
+See [`../docs/native/BACKGROUND_LOCATION_SETUP.md`](../docs/native/BACKGROUND_LOCATION_SETUP.md) for iOS/Android permissions and post-sync setup required for locked-screen mileage tracking.
