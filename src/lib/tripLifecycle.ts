@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { pauseTripTracking, resumeTripTracking, startTripTracking, stopTripTracking } from "@/lib/tripTracking";
 
 /**
  * Phase 6 — idempotent trip + stop lifecycle helpers.
@@ -98,6 +99,13 @@ export async function setTripStatus(
     toast.info("This trip is already completed.");
     return false;
   }
+  if (status === "active") {
+    if (trip.status === "paused") await resumeTripTracking({ id: trip.id });
+    else await startTripTracking({ id: trip.id });
+  }
+  if (status === "paused") await pauseTripTracking();
+  if (status === "completed" || status === "canceled") await stopTripTracking();
+
   toast.success(`Trip ${status}`);
   return true;
 }

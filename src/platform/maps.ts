@@ -1,11 +1,8 @@
 // Maps platform layer.
-// Web: opens Apple/Google/Waze in a new tab using deep links the user prefers.
-// Capacitor (future): swap `open()` to `@capacitor/app` `App.openUrl()` so iOS
-// hands off to the installed Apple Maps / Google Maps / Waze app, and Android
-// uses the geo: intent. The interface here stays stable.
-//
-// User preference is read from localStorage key `mapProvider` and falls back
-// to platform default (Apple on Apple devices, Google elsewhere).
+// Web: opens Apple/Google/Waze in a new tab using deep links.
+// Native (Capacitor): uses App.openUrl so iOS/Android can hand off to device map apps.
+
+import { isNative, loadNativePlugin } from "./native";
 
 export type MapProvider = "auto" | "apple" | "google" | "waze";
 
@@ -36,10 +33,9 @@ function isApplePlatform() {
   return /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent || "");
 }
 
-import { isNative, loadNativePlugin } from "./native";
-
-function isCapacitor() {
-  return isNative();
+function isAndroidPlatform() {
+  if (typeof navigator === "undefined") return false;
+  return /Android/i.test(navigator.userAgent || "");
 }
 
 function buildQuery(t: MapTarget) {
@@ -53,22 +49,44 @@ function resolveProvider(): "apple" | "google" | "waze" {
   return isApplePlatform() ? "apple" : "google";
 }
 
-/**
- * Build a deep link URL for the chosen provider.
- * Returns null when the target has no address/coords.
- */
+function buildNativeMapsUrl(t: MapTarget, provider: "apple" | "google" | "waze") {
+  const q = buildQuery(t);
+  const hasCoords = t.latitude != null && t.longitude != null;
+
+  if (provider === "waze") {
+    return hasCoords
+      ? `waze://?ll=${t.latitude},${t.longitude}&navigate=yes`
+      : `https://waze.com/ul?q=${encodeURIComponent(q)}&navigate=yes`;
+  }
+
+  if (provider === "apple") {
+    return `maps://?q=${encodeURIComponent(q)}${hasCoords ? `&ll=${t.latitude},${t.longitude}` : ""}`;
+  }
+
+  if (isAndroidPlatform()) {
+    return hasCoords
+      ? `geo:${t.latitude},${t.longitude}?q=${t.latitude},${t.longitude}`
+      : `geo:0,0?q=${encodeURIComponent(q)}`;
+  }
+
+  return hasCoords
+    ? `comgooglemaps://?daddr=${t.latitude},${t.longitude}&directionsmode=driving`
+    : `comgooglemaps://?daddr=${encodeURIComponent(q)}&directionsmode=driving`;
+}
+
 export function buildMapsUrl(t: MapTarget, override?: MapProvider): string | null {
   const q = buildQuery(t);
   if (!q) return null;
   const provider = override && override !== "auto" ? override : resolveProvider();
   const hasCoords = t.latitude != null && t.longitude != null;
 
+  if (isNative()) return buildNativeMapsUrl(t, provider);
+
   switch (provider) {
     case "apple":
-      // Apple Maps universal link — works in browser + native iOS/macOS handoff
       return `https://maps.apple.com/?q=${encodeURIComponent(q)}${
         hasCoords ? `&ll=${t.latitude},${t.longitude}` : ""
-      }${t.label ? `&t=${encodeURIComponent(t.label)}` : ""}`;
+      }`;
     case "waze":
       return hasCoords
         ? `https://waze.com/ul?ll=${t.latitude}%2C${t.longitude}&navigate=yes`
@@ -81,17 +99,10 @@ export function buildMapsUrl(t: MapTarget, override?: MapProvider): string | nul
   }
 }
 
-/**
- * Open the chosen map provider with a navigation intent.
- * Web: window.open. Capacitor: hand off to native via App.openUrl()
- * (the universal links above will route to installed apps automatically).
- */
 export function open(t: MapTarget, override?: MapProvider): boolean {
   const url = buildMapsUrl(t, override);
   if (!url) return false;
-  if (isCapacitor()) {
-    // Native: hand off to system via Capacitor App plugin. Universal links
-    // (Apple Maps / Google Maps / Waze) route to the installed app automatically.
+  if (isNative()) {
     loadNativePlugin<any>("@capacitor/app")
       .then((m) => m?.App?.openUrl?.({ url }))
       .catch(() => window.open(url, "_blank", "noopener,noreferrer"));

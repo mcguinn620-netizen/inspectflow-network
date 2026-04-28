@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { getTripTrackingState, subscribeTripTrackingState } from "@/lib/tripTracking";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,7 @@ import { TripDetailSheet } from "@/components/trips/TripDetailSheet";
 import { NextStopCard } from "@/components/inspector/NextStopCard";
 import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
-import { Pencil, Download } from "lucide-react";
+import { Pencil } from "lucide-react";
 import {
   setTripStatus as setTripStatusSafe,
   setStopStatus as setStopStatusSafe,
@@ -59,6 +60,15 @@ interface Stop {
   longitude: number | null;
 }
 
+
+interface TripLocationPoint {
+  id: string;
+  trip_id: string;
+  latitude: number;
+  longitude: number;
+  recorded_at: string;
+}
+
 export default function InspectorTrips() {
   const { user } = useAuth();
   const { activeOrgId } = useUserRoles();
@@ -69,6 +79,8 @@ export default function InspectorTrips() {
   const [stopForm, setStopForm] = useState<Partial<Stop>>({});
   const [selectedStopId, setSelectedStopId] = useState<string | null>(null);
   const [vehicles, setVehicles] = useState<any[]>([]);
+  const [tripPoints, setTripPoints] = useState<Record<string, TripLocationPoint[]>>({});
+  const [trackingState, setTrackingState] = useState(getTripTrackingState());
   const [editingTrip, setEditingTrip] = useState<Trip | null>(null);
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [form, setForm] = useState<Partial<Trip>>({
@@ -84,17 +96,35 @@ export default function InspectorTrips() {
     const trips = (t ?? []) as Trip[];
     setTrips(trips);
     if (trips.length) {
+      const tripIds = trips.map((x) => x.id);
       const { data: s } = await supabase
-        .from("trip_stops").select("*").in("trip_id", trips.map(x => x.id)).order("sort_order");
+        .from("trip_stops").select("*").in("trip_id", tripIds).order("sort_order");
       const map: Record<string, Stop[]> = {};
       for (const stop of (s ?? []) as Stop[]) (map[stop.trip_id] ??= []).push(stop);
       setStops(map);
+
+      const { data: points } = await supabase
+        .from("trip_location_points")
+        .select("id,trip_id,latitude,longitude,recorded_at")
+        .in("trip_id", tripIds)
+        .order("recorded_at");
+      const pointMap: Record<string, TripLocationPoint[]> = {};
+      for (const point of (points ?? []) as TripLocationPoint[]) (pointMap[point.trip_id] ??= []).push(point);
+      setTripPoints(pointMap);
+    } else {
+      setStops({});
+      setTripPoints({});
     }
     const { data: v } = await supabase.from("inspector_vehicles" as any)
       .select("*").eq("user_id", user.id).eq("is_archived", false);
     setVehicles((v ?? []) as any[]);
   };
-  useEffect(() => { load(); /* eslint-disable-next-line */ }, [user, activeOrgId]);
+  useEffect(() => { void load(); /* eslint-disable-next-line */ }, [user, activeOrgId]);
+
+  useEffect(() => {
+    const unsub = subscribeTripTrackingState((next) => setTrackingState(next));
+    return unsub;
+  }, []);
 
   const today = new Date().toISOString().slice(0,10);
   const todayTrip = trips.find(t => t.trip_date === today);
@@ -104,6 +134,10 @@ export default function InspectorTrips() {
 
   const mapStops: MapStop[] = activeStops.map(s => ({
     id: s.id, label: s.label, address: s.address, latitude: s.latitude, longitude: s.longitude,
+  }));
+  const activeRoutePoints = (activeTrip ? (tripPoints[activeTrip.id] ?? []) : []).map((p) => ({
+    latitude: Number(p.latitude),
+    longitude: Number(p.longitude),
   }));
 
   const createTrip = async () => {
@@ -224,6 +258,12 @@ export default function InspectorTrips() {
                   )}
                 </h2>
                 {activeStops.length > 0 && <Progress value={pct} className="h-1.5 mt-1.5 w-40" />}
+                <div className="mt-1.5 flex flex-wrap gap-1">
+                  {trackingState?.tripId === activeTrip.id && trackingState.status === "live" && <Badge className="text-[10px]">Live tracking on</Badge>}
+                  {trackingState?.tripId === activeTrip.id && trackingState.status === "paused" && <Badge variant="outline" className="text-[10px]">Tracking paused</Badge>}
+                  {activeRoutePoints.length > 1 && <Badge variant="secondary" className="text-[10px]">Actual route recorded</Badge>}
+                  {activeRoutePoints.length <= 1 && activeStops.length > 1 && <Badge variant="outline" className="text-[10px]">Using planned route estimate</Badge>}
+                </div>
               </div>
               <div className="flex gap-2 flex-wrap">
                 {canStartTrip(activeTrip.status) && (
@@ -257,6 +297,7 @@ export default function InspectorTrips() {
                 selectedId={selectedStopId}
                 onSelect={setSelectedStopId}
                 className="min-w-0"
+                actualRoutePoints={activeRoutePoints}
               />
               <Card className="min-w-0 max-w-full overflow-hidden">
                 <CardContent className="p-3 space-y-2">
@@ -378,6 +419,7 @@ export default function InspectorTrips() {
       <TripDetailSheet
         trip={editingTrip as any}
         stops={(editingTrip ? stops[editingTrip.id] : []) as any}
+        routePoints={(editingTrip ? tripPoints[editingTrip.id] : []) as any}
         vehicles={vehicles as any}
         open={!!editingTrip}
         onOpenChange={(o) => !o && setEditingTrip(null)}

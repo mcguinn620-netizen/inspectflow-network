@@ -16,6 +16,7 @@ interface Stop {
   id: string; sort_order: number; label: string|null; address: string|null; status: string;
   miles_from_previous: number; arrived_at: string|null; departed_at: string|null; completed_at: string|null;
 }
+interface RoutePoint { latitude: number; longitude: number; recorded_at?: string|null; }
 interface Trip {
   id: string; title: string|null; trip_date: string; status: string;
   start_time: string|null; end_time: string|null;
@@ -27,9 +28,9 @@ interface Trip {
 const TRIP_STATUSES = ["draft","planned","active","paused","completed","canceled"];
 
 export function TripDetailSheet({
-  trip, stops, vehicles, open, onOpenChange, onSaved,
+  trip, stops, vehicles, routePoints = [], open, onOpenChange, onSaved,
 }: {
-  trip: Trip | null; stops: Stop[]; vehicles: Vehicle[];
+  trip: Trip | null; stops: Stop[]; vehicles: Vehicle[]; routePoints?: RoutePoint[];
   open: boolean; onOpenChange: (v: boolean) => void; onSaved: () => void;
 }) {
   const [form, setForm] = useState<Partial<Trip>>({});
@@ -94,7 +95,7 @@ export function TripDetailSheet({
       work_minutes: form.work_minutes ?? trip.work_minutes,
       vehicle: vLabel,
       license_plate: v?.license_plate ?? "",
-      notes: form.notes ?? trip.notes ?? "",
+      notes: `${form.notes ?? trip.notes ?? ""}${routePoints.length ? `\nActual breadcrumb points: ${routePoints.length}` : ""}`.trim(),
     };
     const stopRows = stops.map((s, i) => ({
       type: "stop", stop_number: i + 1, ...meta,
@@ -193,6 +194,13 @@ export function TripDetailSheet({
                 </div>
               ))}
             </div>
+          </div>
+
+
+          <div className="rounded-md border bg-muted/20 p-2 text-xs text-muted-foreground space-y-1">
+            <p><span className="font-medium text-foreground">Actual miles:</span> {Number(form.total_miles ?? trip.total_miles ?? 0).toFixed(2)} mi</p>
+            <p><span className="font-medium text-foreground">Recorded route points:</span> {routePoints.length}</p>
+            <p>Tax note: mileage is based on recorded GPS breadcrumbs, not planned route estimates.</p>
           </div>
 
           <div className="flex flex-wrap gap-2 pt-2">

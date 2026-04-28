@@ -8,7 +8,6 @@ import { MapPin, Navigation, LocateFixed, X } from "lucide-react";
 import { startTracking, type Position } from "@/platform/location";
 import { cn } from "@/lib/utils";
 
-// Fix default marker icon paths for Leaflet under Vite
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
@@ -43,15 +42,13 @@ interface Props {
   selectedId?: string | null;
   onSelect?: (id: string) => void;
   className?: string;
-  /** Fill parent height, drop Card chrome, auto-start GPS following. */
   fullscreen?: boolean;
+  actualRoutePoints?: Array<{ latitude: number; longitude: number }>;
 }
 
 function FitBounds({ points }: { points: [number, number][] }) {
   const map = useMap();
   useEffect(() => {
-    // Force layout recalculation — Leaflet often paints blank when mounted
-    // inside flex/grid containers whose height is determined after first paint.
     const ids: number[] = [];
     ids.push(window.setTimeout(() => map.invalidateSize(), 0));
     ids.push(window.setTimeout(() => map.invalidateSize(), 200));
@@ -63,7 +60,6 @@ function FitBounds({ points }: { points: [number, number][] }) {
     return () => ids.forEach((i) => window.clearTimeout(i));
   }, [points, map]);
 
-  // Re-invalidate on container resize (e.g. orientation change, sidebar toggle)
   useEffect(() => {
     const el = map.getContainer();
     const ro = new ResizeObserver(() => map.invalidateSize());
@@ -74,98 +70,34 @@ function FitBounds({ points }: { points: [number, number][] }) {
   return null;
 }
 
-// localStorage cache for geocoded addresses (Nominatim is rate-limited; never re-geocode the same string).
-const GEO_CACHE_KEY = "geo:addr-cache:v1";
-type GeoCache = Record<string, { lat: number; lon: number } | null>;
-function readGeoCache(): GeoCache {
-  if (typeof localStorage === "undefined") return {};
-  try { return JSON.parse(localStorage.getItem(GEO_CACHE_KEY) || "{}"); } catch { return {}; }
-}
-function writeGeoCache(c: GeoCache) {
-  if (typeof localStorage === "undefined") return;
-  try { localStorage.setItem(GEO_CACHE_KEY, JSON.stringify(c)); } catch { /* quota */ }
-}
-
-export function TripMapOverlay({ stops, selectedId, onSelect, className, fullscreen = false }: Props) {
-  // Geocode stops that have an address but no coords (cached forever in localStorage).
-  const [geocoded, setGeocoded] = useState<Record<string, { lat: number; lon: number }>>({});
-
-  useEffect(() => {
-    const needs = stops.filter(
-      (s) => (s.latitude == null || s.longitude == null) && (s.address?.trim()?.length ?? 0) > 3,
-    );
-    if (needs.length === 0) return;
-    const cache = readGeoCache();
-    let cancelled = false;
-
-    (async () => {
-      const next: Record<string, { lat: number; lon: number }> = {};
-      for (const s of needs) {
-        const key = (s.address || "").trim();
-        if (!key) continue;
-        // Cache hit (including negative cache → null)
-        if (key in cache) {
-          if (cache[key]) next[s.id] = cache[key]!;
-          continue;
-        }
-        try {
-          const res = await fetch(
-            `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(key)}`,
-            { headers: { Accept: "application/json" } },
-          );
-          const json = await res.json();
-          const hit = Array.isArray(json) && json[0];
-          if (hit && hit.lat && hit.lon) {
-            const v = { lat: Number(hit.lat), lon: Number(hit.lon) };
-            cache[key] = v;
-            next[s.id] = v;
-          } else {
-            cache[key] = null;
-          }
-        } catch {
-          // network blip — leave uncached so we can retry next mount
-        }
-        // be polite: 1 req/sec to Nominatim
-        await new Promise((r) => setTimeout(r, 1100));
-        if (cancelled) return;
-      }
-      writeGeoCache(cache);
-      if (!cancelled && Object.keys(next).length) {
-        setGeocoded((prev) => ({ ...prev, ...next }));
-      }
-    })();
-
-    return () => { cancelled = true; };
-  }, [stops]);
-
-  // Merge live coords with geocoded fallbacks
-  const resolvedStops = useMemo(
-    () =>
-      stops.map((s) => {
-        if (s.latitude != null && s.longitude != null) return s;
-        const g = geocoded[s.id];
-        if (g) return { ...s, latitude: g.lat, longitude: g.lon };
-        return s;
-      }),
-    [stops, geocoded],
-  );
-
+export function TripMapOverlay({
+  stops,
+  selectedId,
+  onSelect,
+  className,
+  fullscreen = false,
+  actualRoutePoints = [],
+}: Props) {
   const points = useMemo(
     () =>
-      resolvedStops
+      stops
         .filter((s) => s.latitude != null && s.longitude != null)
         .map((s) => [Number(s.latitude), Number(s.longitude)] as [number, number]),
-    [resolvedStops],
+    [stops],
   );
 
-  const containerRef = useRef<HTMLDivElement>(null);
+  const breadcrumbLine = useMemo(
+    () => actualRoutePoints.map((p) => [Number(p.latitude), Number(p.longitude)] as [number, number]),
+    [actualRoutePoints],
+  );
 
-  // Road-following route geometry from OSRM public demo. Falls back to
-  // straight-line connectors if the request fails or returns no route.
   const [routeGeometry, setRouteGeometry] = useState<[number, number][] | null>(null);
 
   useEffect(() => {
-    if (points.length < 2) { setRouteGeometry(null); return; }
+    if (points.length < 2 || breadcrumbLine.length > 1) {
+      setRouteGeometry(null);
+      return;
+    }
     let cancelled = false;
     const coords = points.map(([lat, lon]) => `${lon},${lat}`).join(";");
     const url = `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`;
@@ -184,14 +116,15 @@ export function TripMapOverlay({ stops, selectedId, onSelect, className, fullscr
         if (!cancelled) setRouteGeometry(null);
       }
     })();
-    return () => { cancelled = true; };
-  }, [points]);
+    return () => {
+      cancelled = true;
+    };
+  }, [points, breadcrumbLine.length]);
 
-  const pendingGeocode = stops.some(
-    (s) => (s.latitude == null || s.longitude == null) && (s.address?.trim()?.length ?? 0) > 3 && !geocoded[s.id],
-  );
+  const displayLine = breadcrumbLine.length > 1 ? breadcrumbLine : routeGeometry ?? points;
+  const isActualRoute = breadcrumbLine.length > 1;
+  const isPlannedRoute = !isActualRoute && !!routeGeometry?.length;
 
-  // In-app navigation: follow user's GPS, recenter on update.
   const [navigating, setNavigating] = useState(fullscreen);
   const [userPos, setUserPos] = useState<Position | null>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -206,66 +139,45 @@ export function TripMapOverlay({ stops, selectedId, onSelect, className, fullscr
     return stop;
   }, [navigating]);
 
-  if (points.length === 0) {
-    if (fullscreen) {
-      return (
-        <div className={cn(className, "w-full h-full flex flex-col items-center justify-center text-sm text-muted-foreground p-6 text-center")}>
-          <MapPin className="h-6 w-6 mb-2" />
-          <p>No mapped stops yet.</p>
-        </div>
-      );
-    }
+  if (points.length === 0 && breadcrumbLine.length === 0) {
     return (
       <Card className={cn(className, "w-full max-w-full overflow-hidden")}>
         <CardContent className="p-6 text-center min-h-[200px] flex flex-col items-center justify-center text-sm text-muted-foreground">
           <MapPin className="h-6 w-6 mb-2" />
-          {pendingGeocode ? (
-            <>
-              <p>Locating stops…</p>
-              <p className="text-xs mt-1">Looking up addresses on the map.</p>
-            </>
-          ) : (
-            <>
-              <p>No mapped stops yet.</p>
-              <p className="text-xs mt-1">Add an address (with location lookup) to see stops on the map.</p>
-            </>
-          )}
+          <p>No mapped stops yet.</p>
         </CardContent>
       </Card>
     );
   }
 
   const mapBlock = (
-    <div
-      className={cn(
-        "relative w-full",
-        fullscreen ? "h-full" : "h-[220px] sm:h-[280px] lg:h-[320px]",
-      )}
-    >
+    <div className={cn("relative w-full", fullscreen ? "h-full" : "h-[220px] sm:h-[280px] lg:h-[320px]")}>
       <MapContainer
-        center={points[0]}
+        center={displayLine[0] ?? points[0]}
         zoom={12}
         scrollWheelZoom={false}
         style={{ height: "100%", width: "100%", position: "absolute", inset: 0 }}
-        ref={(m) => { mapInstanceRef.current = m as unknown as L.Map; }}
+        ref={(m) => {
+          mapInstanceRef.current = m as unknown as L.Map;
+        }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <FitBounds points={navigating ? [] : points} />
-        {points.length > 1 && (
+        <FitBounds points={navigating ? [] : [...displayLine, ...points]} />
+        {displayLine.length > 1 && (
           <Polyline
-            positions={routeGeometry ?? points}
+            positions={displayLine}
             pathOptions={{
               color: "hsl(217, 91%, 60%)",
               weight: 4,
-              opacity: routeGeometry ? 0.75 : 0.45,
-              dashArray: routeGeometry ? undefined : "6 6",
+              opacity: isActualRoute ? 0.9 : isPlannedRoute ? 0.75 : 0.45,
+              dashArray: isActualRoute ? undefined : isPlannedRoute ? undefined : "6 6",
             }}
           />
         )}
-        {resolvedStops.map((s) => {
+        {stops.map((s) => {
           if (s.latitude == null || s.longitude == null) return null;
           const isSelected = s.id === selectedId;
           return (
@@ -293,15 +205,9 @@ export function TripMapOverlay({ stops, selectedId, onSelect, className, fullscr
         )}
       </MapContainer>
 
-      {/* In-app navigation control overlay */}
       <div className="absolute top-2 right-2 z-[400] flex flex-col gap-1.5">
         {!navigating && !fullscreen ? (
-          <Button
-            size="sm"
-            variant="default"
-            className="h-8 shadow-md"
-            onClick={() => setNavigating(true)}
-          >
+          <Button size="sm" variant="default" className="h-8 shadow-md" onClick={() => setNavigating(true)}>
             <Navigation className="h-3.5 w-3.5 mr-1" />
             Navigate
           </Button>
@@ -313,25 +219,15 @@ export function TripMapOverlay({ stops, selectedId, onSelect, className, fullscr
               className="h-8 w-8 shadow-md"
               onClick={() => {
                 if (userPos && mapInstanceRef.current) {
-                  mapInstanceRef.current.setView(
-                    [userPos.latitude, userPos.longitude],
-                    Math.max(mapInstanceRef.current.getZoom(), 15),
-                  );
+                  mapInstanceRef.current.setView([userPos.latitude, userPos.longitude], Math.max(mapInstanceRef.current.getZoom(), 15));
                 }
               }}
-              aria-label="Recenter on me"
             >
-              <LocateFixed className="h-3.5 w-3.5" />
+              <LocateFixed className="h-4 w-4" />
             </Button>
             {!fullscreen && (
-              <Button
-                size="icon"
-                variant="secondary"
-                className="h-8 w-8 shadow-md"
-                onClick={() => setNavigating(false)}
-                aria-label="Stop navigation"
-              >
-                <X className="h-3.5 w-3.5" />
+              <Button size="icon" variant="secondary" className="h-8 w-8 shadow-md" onClick={() => setNavigating(false)}>
+                <X className="h-4 w-4" />
               </Button>
             )}
           </>
@@ -340,15 +236,5 @@ export function TripMapOverlay({ stops, selectedId, onSelect, className, fullscr
     </div>
   );
 
-  if (fullscreen) {
-    return <div className={cn(className, "w-full h-full")} ref={containerRef}>{mapBlock}</div>;
-  }
-
-  return (
-    <Card className={cn(className, "w-full max-w-full overflow-hidden")} ref={containerRef as any}>
-      <CardContent className="p-0 overflow-hidden rounded-lg">
-        {mapBlock}
-      </CardContent>
-    </Card>
-  );
+  return fullscreen ? mapBlock : <Card className={cn(className, "overflow-hidden")}>{mapBlock}</Card>;
 }
