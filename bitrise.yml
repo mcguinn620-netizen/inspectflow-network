@@ -1,57 +1,125 @@
-format_version: '11'
+---
+format_version: '26'
 default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
-project_type: other
-
+project_type: ios
+workflows:
+  archive_and_export_app:
+    summary: Create an IPA file to install your app on a device or share it with
+      your team.
+    description: The workflow will first clone your Git repository, cache and
+      install your project's dependencies if any, export an IPA file from the
+      project and save it.
+    steps:
+    - git-clone@8: {}
+    - script@1:
+        title: npm ci
+        inputs:
+        - content: |-
+            #!/usr/bin/env bash
+            set -euxo pipefail
+            npm ci
+    - script@1:
+        title: npm run build
+        inputs:
+        - content: |-
+            #!/usr/bin/env bash
+            set -euxo pipefail
+            npm run build
+    - script@1:
+        title: Capacitor sync iOS
+        inputs:
+        - content: |-
+            #!/usr/bin/env bash
+            set -euxo pipefail
+            npx cap sync ios
+    - script@1:
+        title: Install CocoaPods dependencies
+        inputs:
+        - content: |-
+            #!/usr/bin/env bash
+            set -euxo pipefail
+            cd ios/App && pod install
+    - script@1:
+        title: List available iOS simulators
+        inputs:
+        - content: |-
+            #!/usr/bin/env bash
+            set -euxo pipefail
+            xcrun simctl list devices available
+    - xcode-archive@6:
+        inputs:
+        - project_path: "$BITRISE_PROJECT_PATH"
+        - scheme: "$BITRISE_SCHEME"
+        - distribution_method: "$BITRISE_DISTRIBUTION_METHOD"
+        - automatic_code_signing: api-key
+    - deploy-to-bitrise-io@2: {}
+  build:
+    summary: Build your Xcode project.
+    description: The workflow will first clone your Git repository, cache and
+      install your project's dependencies if any and build your project.
+    steps:
+    - git-clone@8: {}
+    - script@1:
+        title: npm ci
+        inputs:
+        - content: |-
+            #!/usr/bin/env bash
+            set -euxo pipefail
+            npm ci
+    - script@1:
+        title: npm run build
+        inputs:
+        - content: |-
+            #!/usr/bin/env bash
+            set -euxo pipefail
+            npm run build
+    - script@1:
+        title: Capacitor sync iOS
+        inputs:
+        - content: |-
+            #!/usr/bin/env bash
+            set -euxo pipefail
+            npx cap sync ios
+    - script@1:
+        title: Install CocoaPods dependencies
+        inputs:
+        - content: |-
+            #!/usr/bin/env bash
+            set -euxo pipefail
+            cd ios/App && pod install
+    - script@1:
+        title: List available iOS simulators
+        inputs:
+        - content: |-
+            #!/usr/bin/env bash
+            set -euxo pipefail
+            xcrun simctl list devices available
+    - restore-spm-cache@3: {}
+    - xcode-build-for-test@3:
+        inputs:
+        - project_path: "$BITRISE_PROJECT_PATH"
+        - scheme: "$BITRISE_SCHEME"
+        - destination: platform=iOS Simulator,name=Bitrise iOS default,OS=latest
+        - cache_level: none
+    - save-spm-cache@1: {}
+    - deploy-to-bitrise-io@2: {}
+    triggers:
+      push:
+      - branch: main
+      pull_request:
+      - source_branch: "*"
 meta:
   bitrise.io:
     stack: osx-xcode-26.4.x
-
-workflows:
-  build:
-    description: Build and test iOS Capacitor app on Bitrise.
-    steps:
-      - git-clone@8: {}
-      - restore-spm-cache@3: {}
-      - script@1:
-          title: npm ci
-          inputs:
-            - content: |-
-                #!/usr/bin/env bash
-                set -euxo pipefail
-                npm ci
-      - script@1:
-          title: npm run build
-          inputs:
-            - content: |-
-                #!/usr/bin/env bash
-                set -euxo pipefail
-                npm run build
-      - script@1:
-          title: Capacitor sync iOS
-          inputs:
-            - content: |-
-                #!/usr/bin/env bash
-                set -euxo pipefail
-                npx cap sync ios
-      - script@1:
-          title: Install CocoaPods dependencies
-          inputs:
-            - content: |-
-                #!/usr/bin/env bash
-                set -euxo pipefail
-                cd ios/App
-                pod install
-      - script@1:
-          title: List available iOS simulators
-          inputs:
-            - content: |-
-                #!/usr/bin/env bash
-                set -euxo pipefail
-                xcrun simctl list devices available
-      - xcode-build-for-test@3:
-          inputs:
-            - project_path: ios/App/App.xcworkspace
-            - scheme: App
-            - destination: platform=iOS Simulator,name=Bitrise iOS default,OS=latest
-      - save-spm-cache@1: {}
-      - deploy-to-bitrise-io@2: {}
+    machine_type_id: g2.mac.large
+app:
+  envs:
+  - BITRISE_PROJECT_PATH: ios/App/App.xcworkspace
+    opts:
+      is_expand: false
+  - BITRISE_SCHEME: App
+    opts:
+      is_expand: false
+  - BITRISE_DISTRIBUTION_METHOD: ad-hoc
+    opts:
+      is_expand: false
