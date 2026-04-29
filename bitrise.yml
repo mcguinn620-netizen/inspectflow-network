@@ -98,7 +98,6 @@ workflows:
   archive:
   triggers:
     push:
-      last_commit: true 
       - branch: main
       pull_request:
       - source_branch: "*"
