@@ -33,13 +33,6 @@ workflows:
             set -euxo pipefail
             npx cap sync ios
     - script@1:
-        title: Install CocoaPods dependencies
-        inputs:
-        - content: |-
-            #!/usr/bin/env bash
-            set -euxo pipefail
-            cd ios/App && pod install
-    - script@1:
         title: List available iOS simulators
         inputs:
         - content: |-
@@ -80,13 +73,6 @@ workflows:
             #!/usr/bin/env bash
             set -euxo pipefail
             npx cap sync ios
-    - script@1:
-        title: Install CocoaPods dependencies
-        inputs:
-        - content: |-
-            #!/usr/bin/env bash
-            set -euxo pipefail
-            cd ios/App && pod install
     - script@1:
         title: List available iOS simulators
         inputs:
