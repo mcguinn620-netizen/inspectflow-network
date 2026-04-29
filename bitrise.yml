@@ -46,6 +46,11 @@ workflows:
         - distribution_method: "$BITRISE_DISTRIBUTION_METHOD"
         - automatic_code_signing: api-key
     - deploy-to-bitrise-io@2: {}
+    - release-management-upload:
+        inputs:
+        - api_token: "$BITRISE_PERSONAL_ACCESS_TOKEN"
+        - app_slug: "$BITRISE_APP_SLUG"
+        - build_slug: "$BITRISE_BUILD_SLUG"
   build:
     summary: Build your Xcode project.
     description: The workflow will first clone your Git repository, cache and
