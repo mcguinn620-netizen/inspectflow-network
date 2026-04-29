@@ -1,0 +1,44 @@
+format_version: '11'
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+project_type: other
+
+workflows:
+  primary:
+    description: Build and test iOS Capacitor app on Bitrise.
+    steps:
+      - activate-ssh-key@4: {}
+      - git-clone@8: {}
+      - npm@1:
+          inputs:
+            - command: ci
+      - npm@1:
+          inputs:
+            - command: run build
+      - script@1:
+          title: Capacitor sync iOS
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                set -euxo pipefail
+                npx cap sync ios
+      - script@1:
+          title: Install CocoaPods dependencies
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                set -euxo pipefail
+                cd ios/App
+                pod install
+      - script@1:
+          title: List available iOS simulators
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                set -euxo pipefail
+                xcrun simctl list devices available
+      - xcode-test@4:
+          inputs:
+            - project_path: ios/App/App.xcworkspace
+            - scheme: App
+            - destination: platform=iOS Simulator,name=Bitrise iOS default,OS=latest
+            - generate_code_coverage_files: 'no'
