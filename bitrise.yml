@@ -2,18 +2,30 @@ format_version: '11'
 default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 project_type: other
 
+meta:
+  bitrise.io:
+    stack: osx-xcode-26.4.x
+
 workflows:
-  primary:
+  build:
     description: Build and test iOS Capacitor app on Bitrise.
     steps:
-      - activate-ssh-key@4: {}
       - git-clone@8: {}
-      - npm@1:
+      - restore-spm-cache@3: {}
+      - script@1:
+          title: npm ci
           inputs:
-            - command: ci
-      - npm@1:
+            - content: |-
+                #!/usr/bin/env bash
+                set -euxo pipefail
+                npm ci
+      - script@1:
+          title: npm run build
           inputs:
-            - command: run build
+            - content: |-
+                #!/usr/bin/env bash
+                set -euxo pipefail
+                npm run build
       - script@1:
           title: Capacitor sync iOS
           inputs:
@@ -36,9 +48,10 @@ workflows:
                 #!/usr/bin/env bash
                 set -euxo pipefail
                 xcrun simctl list devices available
-      - xcode-test@4:
+      - xcode-build-for-test@3:
           inputs:
             - project_path: ios/App/App.xcworkspace
             - scheme: App
             - destination: platform=iOS Simulator,name=Bitrise iOS default,OS=latest
-            - generate_code_coverage_files: 'no'
+      - save-spm-cache@1: {}
+      - deploy-to-bitrise-io@2: {}
