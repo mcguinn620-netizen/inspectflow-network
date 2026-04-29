@@ -44,8 +44,7 @@ workflows:
         inputs:
         - project_path: "$BITRISE_PROJECT_PATH"
         - scheme: "$BITRISE_SCHEME"
-        - distribution_method: "development"
-        - automatic_code_signing: api-key
+        - distribution_method: development
         - platform: iOS
     - deploy-to-bitrise-io@2: {}
     - release-management-upload:
@@ -96,8 +95,10 @@ workflows:
         - cache_level: none
     - save-spm-cache@1: {}
     - deploy-to-bitrise-io@2: {}
-    triggers:
-      push:
+  archive:
+  triggers:
+    push:
+      last_commit: true 
       - branch: main
       pull_request:
       - source_branch: "*"
@@ -116,4 +117,3 @@ app:
   - BITRISE_DISTRIBUTION_METHOD: ad-hoc
     opts:
       is_expand: false
-
