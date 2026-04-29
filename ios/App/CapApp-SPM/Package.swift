@@ -16,7 +16,8 @@ let package = Package(
         .package(name: "CapacitorGeolocation", path: "../../../node_modules/@capacitor/geolocation"),
         .package(name: "CapacitorPreferences", path: "../../../node_modules/@capacitor/preferences"),
         .package(name: "CapacitorShare", path: "../../../node_modules/@capacitor/share"),
-        .package(name: "EbarooniCapacitorCalendar", path: "../../../node_modules/@ebarooni/capacitor-calendar")
+        .package(name: "EbarooniCapacitorCalendar", path: "../../../node_modules/@ebarooni/capacitor-calendar"),
+        .package(name: "TransistorsoftCapacitorBackgroundGeolocation", path: "../../../node_modules/@transistorsoft/capacitor-background-geolocation")
     ],
     targets: [
         .target(
@@ -28,7 +29,8 @@ let package = Package(
                 .product(name: "CapacitorGeolocation", package: "CapacitorGeolocation"),
                 .product(name: "CapacitorPreferences", package: "CapacitorPreferences"),
                 .product(name: "CapacitorShare", package: "CapacitorShare"),
-                .product(name: "EbarooniCapacitorCalendar", package: "EbarooniCapacitorCalendar")
+                .product(name: "EbarooniCapacitorCalendar", package: "EbarooniCapacitorCalendar"),
+                .product(name: "TransistorsoftCapacitorBackgroundGeolocation", package: "TransistorsoftCapacitorBackgroundGeolocation")
             ]
         )
     ]
