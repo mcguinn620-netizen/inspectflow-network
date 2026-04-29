@@ -39,6 +39,7 @@ workflows:
             #!/usr/bin/env bash
             set -euxo pipefail
             xcrun simctl list devices available
+    - certificate-and-profile-installer@1: {}
     - xcode-archive@6:
         inputs:
         - project_path: "$BITRISE_PROJECT_PATH"
@@ -114,3 +115,4 @@ app:
   - BITRISE_DISTRIBUTION_METHOD: ad-hoc
     opts:
       is_expand: false
+
