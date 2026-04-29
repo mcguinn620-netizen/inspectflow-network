@@ -44,8 +44,9 @@ workflows:
         inputs:
         - project_path: "$BITRISE_PROJECT_PATH"
         - scheme: "$BITRISE_SCHEME"
-        - distribution_method: "$BITRISE_DISTRIBUTION_METHOD"
+        - distribution_method: "development"
         - automatic_code_signing: api-key
+        - platform: iOS
     - deploy-to-bitrise-io@2: {}
     - release-management-upload:
         inputs:
