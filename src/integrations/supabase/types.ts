@@ -1201,7 +1201,7 @@ export type Database = {
         Row: {
           accuracy: number | null
           created_at: string
-          distance_from_previous_miles: number
+          distance_from_previous_miles: number | null
           heading: number | null
           id: string
           latitude: number
@@ -1215,7 +1215,7 @@ export type Database = {
         Insert: {
           accuracy?: number | null
           created_at?: string
-          distance_from_previous_miles?: number
+          distance_from_previous_miles?: number | null
           heading?: number | null
           id?: string
           latitude: number
@@ -1229,7 +1229,7 @@ export type Database = {
         Update: {
           accuracy?: number | null
           created_at?: string
-          distance_from_previous_miles?: number
+          distance_from_previous_miles?: number | null
           heading?: number | null
           id?: string
           latitude?: number
@@ -1240,22 +1240,7 @@ export type Database = {
           trip_id?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "trip_location_points_organization_id_fkey"
-            columns: ["organization_id"]
-            isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "trip_location_points_trip_id_fkey"
-            columns: ["trip_id"]
-            isOneToOne: false
-            referencedRelation: "trips"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       trip_stops: {
         Row: {
