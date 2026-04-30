@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -9,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { useTheme } from "next-themes";
-import { Monitor, Moon, Sun, Plus, Trash2, Star, LogOut, Calendar, Copy, RefreshCw, Navigation } from "lucide-react";
+import { Monitor, Moon, Sun, Plus, Trash2, Star, LogOut, Calendar, Copy, RefreshCw, Navigation, ChevronDown } from "lucide-react";
 import { getProvider as getMapProvider, setProvider as setMapProvider, PROVIDER_LABELS, type MapProvider } from "@/platform/maps";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -198,32 +199,26 @@ export default function SettingsPage() {
         </div>
 
         {/* Appearance */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Appearance</CardTitle>
-            <CardDescription>Choose how the interface looks. Sync with your system or pick a fixed theme.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {mounted && (
-              <RadioGroup value={theme ?? "system"} onValueChange={setTheme}
-                className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <ThemeOption value="light" icon={<Sun className="h-5 w-5" />} label="Light" />
-                <ThemeOption value="dark" icon={<Moon className="h-5 w-5" />} label="Dark" />
-                <ThemeOption value="system" icon={<Monitor className="h-5 w-5" />} label="System" />
-              </RadioGroup>
-            )}
-          </CardContent>
-        </Card>
+        <CollapsibleCard
+          title="Appearance"
+          description="Choose how the interface looks. Sync with your system or pick a fixed theme."
+        >
+          {mounted && (
+            <RadioGroup value={theme ?? "system"} onValueChange={setTheme}
+              className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <ThemeOption value="light" icon={<Sun className="h-5 w-5" />} label="Light" />
+              <ThemeOption value="dark" icon={<Moon className="h-5 w-5" />} label="Dark" />
+              <ThemeOption value="system" icon={<Monitor className="h-5 w-5" />} label="System" />
+            </RadioGroup>
+          )}
+        </CollapsibleCard>
 
         {/* Earnings & Fees */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Earnings &amp; Fees</CardTitle>
-            <CardDescription>
-              Default fees used when creating new jobs. Each job can override these.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <CollapsibleCard
+          title="Earnings & Fees"
+          description="Default fees used when creating new jobs. Each job can override these."
+        >
+          <div className="space-y-4">
             <div className="grid md:grid-cols-3 gap-3">
               <div className="space-y-1.5">
                 <Label>Base inspection fee ($)</Label>
@@ -247,16 +242,15 @@ export default function SettingsPage() {
             <Button onClick={saveSettings} disabled={savingSettings}>
               {savingSettings ? "Saving..." : "Save earnings settings"}
             </Button>
-          </CardContent>
-        </Card>
+          </div>
+        </CollapsibleCard>
 
         {/* Tax Settings */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Tax Settings</CardTitle>
-            <CardDescription>Used by the Tax / Earnings estimator. First-pass estimate only — confirm with a tax professional.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <CollapsibleCard
+          title="Tax Settings"
+          description="Used by the Tax / Earnings estimator. First-pass estimate only — confirm with a tax professional."
+        >
+          <div className="space-y-4">
             <div className="grid md:grid-cols-3 gap-3">
               <div className="space-y-1.5">
                 <Label>State</Label>
@@ -308,21 +302,15 @@ export default function SettingsPage() {
             <Button onClick={saveSettings} disabled={savingSettings}>
               {savingSettings ? "Saving..." : "Save tax settings"}
             </Button>
-          </CardContent>
-        </Card>
+          </div>
+        </CollapsibleCard>
 
         {/* Calendar Sync */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Calendar className="h-5 w-5" />Calendar Sync
-            </CardTitle>
-            <CardDescription>
-              Subscribe to a live, read-only feed of your upcoming jobs in Apple Calendar, Google Calendar, or Outlook.
-              Updates automatically — no manual export needed.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
+        <CollapsibleCard
+          title={<span className="flex items-center gap-2"><Calendar className="h-5 w-5" />Calendar Sync</span>}
+          description="Subscribe to a live, read-only feed of your upcoming jobs in Apple Calendar, Google Calendar, or Outlook. Updates automatically — no manual export needed."
+        >
+          <div className="space-y-3">
             {!feedToken ? (
               <Button onClick={generateFeedToken} disabled={feedBusy}>
                 <Calendar className="h-4 w-4 mr-2" />
@@ -350,20 +338,15 @@ export default function SettingsPage() {
                 </div>
               </>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </CollapsibleCard>
 
         {/* Maps & Navigation provider preference (Phase 7C) */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Navigation className="h-5 w-5" />Maps & Navigation
-            </CardTitle>
-            <CardDescription>
-              Choose which maps app the "Navigate" button hands off to. On mobile, the device will open the installed app automatically.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2">
+        <CollapsibleCard
+          title={<span className="flex items-center gap-2"><Navigation className="h-5 w-5" />Maps & Navigation</span>}
+          description={`Choose which maps app the "Navigate" button hands off to. On mobile, the device will open the installed app automatically.`}
+        >
+          <div className="space-y-2">
             <Label>Preferred maps app</Label>
             <Select
               value={mapProvider}
@@ -379,18 +362,15 @@ export default function SettingsPage() {
             <p className="text-xs text-muted-foreground">
               Automatic uses Apple Maps on Apple devices and Google Maps elsewhere. You can also choose per-stop from the dropdown next to each "Navigate" button.
             </p>
-          </CardContent>
-        </Card>
+          </div>
+        </CollapsibleCard>
 
         {/* Inspector Vehicles */}
-        <Card>
-          <CardHeader>
-            <CardTitle>My Vehicles</CardTitle>
-            <CardDescription>
-              Personal/business vehicles you use for inspector work. Trips can be linked to a vehicle for filing records.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
+        <CollapsibleCard
+          title="My Vehicles"
+          description="Personal/business vehicles you use for inspector work. Trips can be linked to a vehicle for filing records."
+        >
+          <div className="space-y-3">
             <div className="space-y-2">
               {vehicles.length === 0 && (
                 <p className="text-sm text-muted-foreground">No vehicles yet. Add one below.</p>
@@ -432,8 +412,8 @@ export default function SettingsPage() {
               </div>
               <Button size="sm" onClick={addVehicle}><Plus className="h-4 w-4 mr-1" />Add vehicle</Button>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </CollapsibleCard>
 
         {/* Account */}
         <Card>
@@ -460,6 +440,46 @@ function ThemeOption({ value, icon, label }: { value: string; icon: React.ReactN
       <span className="text-muted-foreground">{icon}</span>
       <span className="font-medium">{label}</span>
     </Label>
+  );
+}
+
+function CollapsibleCard({
+  title,
+  description,
+  defaultOpen = false,
+  children,
+}: {
+  title: React.ReactNode;
+  description?: React.ReactNode;
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <Card>
+      <Collapsible open={open} onOpenChange={setOpen}>
+        <CollapsibleTrigger asChild>
+          <button
+            type="button"
+            className="w-full text-left"
+            aria-expanded={open}
+          >
+            <CardHeader className="flex-row items-start justify-between gap-3 space-y-0">
+              <div className="min-w-0">
+                <CardTitle>{title}</CardTitle>
+                {description && <CardDescription className="mt-1.5">{description}</CardDescription>}
+              </div>
+              <ChevronDown
+                className={`h-5 w-5 shrink-0 text-muted-foreground transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+              />
+            </CardHeader>
+          </button>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent>{children}</CardContent>
+        </CollapsibleContent>
+      </Collapsible>
+    </Card>
   );
 }
 
