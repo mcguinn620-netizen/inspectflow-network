@@ -97,6 +97,7 @@ workflows:
     - deploy-to-bitrise-io@2:
         inputs:
         - is_compress: false
+        - is_enable_public_page: true
     triggers:
       push:
       - branch: main
