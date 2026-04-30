@@ -94,11 +94,14 @@ workflows:
         - destination: platform=iOS Simulator,name=Bitrise iOS default,OS=latest
         - cache_level: none
         - output_dir: $BITRISE_DEPLOY_DIR
+        - automatic_code_signing: "off"
     - save-spm-cache@1: {}
     - deploy-to-bitrise-io@2:
         inputs:
         - is_compress: false
         - is_enable_public_page: true
+        - deploy_path: $BITRISE_DEPLOY_DIR
+        - notify_user_groups: Everyone
     triggers:
       push:
       - branch: main
