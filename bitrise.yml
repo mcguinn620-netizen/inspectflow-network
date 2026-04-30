@@ -39,19 +39,12 @@ workflows:
             #!/usr/bin/env bash
             set -euxo pipefail
             xcrun simctl list devices available
-    - certificate-and-profile-installer@1: {}
     - xcode-archive@6:
         inputs:
         - project_path: "$BITRISE_PROJECT_PATH"
         - scheme: "$BITRISE_SCHEME"
-        - distribution_method: development
-        - platform: iOS
+        - distribution_method: "$BITRISE_DISTRIBUTION_METHOD"
     - deploy-to-bitrise-io@2: {}
-    - release-management-upload:
-        inputs:
-        - api_token: "$BITRISE_PERSONAL_ACCESS_TOKEN"
-        - app_slug: "$BITRISE_APP_SLUG"
-        - build_slug: "$BITRISE_BUILD_SLUG"
   build:
     summary: Build your Xcode project.
     description: The workflow will first clone your Git repository, cache and
@@ -95,9 +88,10 @@ workflows:
         - cache_level: none
     - save-spm-cache@1: {}
     - deploy-to-bitrise-io@2: {}
-  archive:
-  triggers:
-    push:
+    triggers:
+      push:
+      - branch: main
+      pull_request:
       - source_branch: "*"
 meta:
   bitrise.io:
@@ -114,3 +108,4 @@ app:
   - BITRISE_DISTRIBUTION_METHOD: ad-hoc
     opts:
       is_expand: false
+
