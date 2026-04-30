@@ -94,7 +94,9 @@ workflows:
         - destination: platform=iOS Simulator,name=Bitrise iOS default,OS=latest
         - cache_level: none
     - save-spm-cache@1: {}
-    - deploy-to-bitrise-io@2: {}
+    - deploy-to-bitrise-io@2:
+        inputs:
+        - is_compress: false
     triggers:
       push:
       - branch: main
