@@ -44,6 +44,7 @@ workflows:
         - project_path: "$BITRISE_PROJECT_PATH"
         - scheme: "$BITRISE_SCHEME"
         - distribution_method: "$BITRISE_DISTRIBUTION_METHOD"
+        - automatic_code_signing: api-key
     - deploy-to-bitrise-io@2: {}
   build:
     summary: Build your Xcode project.
@@ -108,4 +109,3 @@ app:
   - BITRISE_DISTRIBUTION_METHOD: ad-hoc
     opts:
       is_expand: false
-
