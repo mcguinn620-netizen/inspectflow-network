@@ -47,6 +47,30 @@ workflows:
         - distribution_method: "$BITRISE_DISTRIBUTION_METHOD"
         - automatic_code_signing: apple-id
         - platform: iOS
+    - script@1:
+        title: Copy exported IPA to deploy dir
+        inputs:
+        - content: |-
+            #!/usr/bin/env bash
+            set -euo pipefail
+
+            echo "IPA path: ${BITRISE_IPA_PATH:-}"
+
+            if [ -z "${BITRISE_IPA_PATH:-}" ]; then
+              echo "BITRISE_IPA_PATH is not set. The Xcode Archive step may not have exported an IPA."
+              exit 1
+            fi
+
+            if [ ! -f "$BITRISE_IPA_PATH" ]; then
+              echo "IPA file not found at: $BITRISE_IPA_PATH"
+              exit 1
+            fi
+
+            mkdir -p "$BITRISE_DEPLOY_DIR"
+            cp "$BITRISE_IPA_PATH" "$BITRISE_DEPLOY_DIR/"
+
+            echo "Copied IPA to deploy dir:"
+            ls -lah "$BITRISE_DEPLOY_DIR"
     - deploy-to-bitrise-io@2: {}
     triggers:
       pull_request:
