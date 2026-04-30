@@ -93,6 +93,7 @@ workflows:
         - scheme: "$BITRISE_SCHEME"
         - destination: platform=iOS Simulator,name=Bitrise iOS default,OS=latest
         - cache_level: none
+        - output_dir: $BITRISE_DEPLOY_DIR
     - save-spm-cache@1: {}
     - deploy-to-bitrise-io@2:
         inputs:
