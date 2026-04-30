@@ -46,6 +46,10 @@ workflows:
         - distribution_method: "$BITRISE_DISTRIBUTION_METHOD"
         - automatic_code_signing: api-key
     - deploy-to-bitrise-io@2: {}
+    triggers:
+      pull_request:
+      - target_branch: Main
+        draft_enabled: false
   build:
     summary: Build your Xcode project.
     description: The workflow will first clone your Git repository, cache and
@@ -92,8 +96,10 @@ workflows:
     triggers:
       push:
       - branch: main
+        enabled: false
       pull_request:
       - source_branch: "*"
+        enabled: false
 meta:
   bitrise.io:
     stack: osx-xcode-26.4.x
