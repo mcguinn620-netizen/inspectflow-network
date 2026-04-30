@@ -103,9 +103,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </header>
           {/* Scroll container — sits below the fixed header, above the fixed tab bar */}
           <main
-            className="flex-1 overflow-y-auto p-4 md:p-6"
+            className="flex-1 overflow-y-auto px-4 md:px-6 md:pb-6"
             style={{
-              paddingTop: "calc(env(safe-area-inset-top) + 3.5rem + 1rem)",
+              paddingTop: "calc(env(safe-area-inset-top) + 3.5rem + 0.5rem)",
               paddingBottom: isInspectorPage
                 ? "calc(env(safe-area-inset-bottom) + 5rem)"
                 : "calc(env(safe-area-inset-bottom) + 1rem)",
