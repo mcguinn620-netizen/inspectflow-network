@@ -214,14 +214,11 @@ export default function SettingsPage() {
         </CollapsibleCard>
 
         {/* Earnings & Fees */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Earnings &amp; Fees</CardTitle>
-            <CardDescription>
-              Default fees used when creating new jobs. Each job can override these.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <CollapsibleCard
+          title="Earnings & Fees"
+          description="Default fees used when creating new jobs. Each job can override these."
+        >
+          <div className="space-y-4">
             <div className="grid md:grid-cols-3 gap-3">
               <div className="space-y-1.5">
                 <Label>Base inspection fee ($)</Label>
@@ -245,8 +242,8 @@ export default function SettingsPage() {
             <Button onClick={saveSettings} disabled={savingSettings}>
               {savingSettings ? "Saving..." : "Save earnings settings"}
             </Button>
-          </CardContent>
-        </Card>
+          </div>
+        </CollapsibleCard>
 
         {/* Tax Settings */}
         <Card>
