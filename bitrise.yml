@@ -117,14 +117,18 @@ workflows:
         - scheme: "$BITRISE_SCHEME"
         - destination: platform=iOS Simulator,name=Bitrise iOS default,OS=latest
         - cache_level: none
-        - output_dir: $BITRISE_DEPLOY_DIR
-        - automatic_code_signing: "off"
+        - output_dir: "$BITRISE_DEPLOY_DIR"
+        - automatic_code_signing: 'off'
     - save-spm-cache@1: {}
+    - appetize-deploy@0:
+        inputs:
+        - app_path: $BITRISE_DEPLOY_DIR
+        - appetize_token: $appetize_token
     - deploy-to-bitrise-io@2:
         inputs:
         - is_compress: false
         - is_enable_public_page: true
-        - deploy_path: $BITRISE_DEPLOY_DIR
+        - deploy_path: "$BITRISE_DEPLOY_DIR"
         - notify_user_groups: Everyone
     triggers:
       push:
