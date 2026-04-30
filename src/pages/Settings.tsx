@@ -443,6 +443,46 @@ function ThemeOption({ value, icon, label }: { value: string; icon: React.ReactN
   );
 }
 
+function CollapsibleCard({
+  title,
+  description,
+  defaultOpen = false,
+  children,
+}: {
+  title: React.ReactNode;
+  description?: React.ReactNode;
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <Card>
+      <Collapsible open={open} onOpenChange={setOpen}>
+        <CollapsibleTrigger asChild>
+          <button
+            type="button"
+            className="w-full text-left"
+            aria-expanded={open}
+          >
+            <CardHeader className="flex-row items-start justify-between gap-3 space-y-0">
+              <div className="min-w-0">
+                <CardTitle>{title}</CardTitle>
+                {description && <CardDescription className="mt-1.5">{description}</CardDescription>}
+              </div>
+              <ChevronDown
+                className={`h-5 w-5 shrink-0 text-muted-foreground transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+              />
+            </CardHeader>
+          </button>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent>{children}</CardContent>
+        </CollapsibleContent>
+      </Collapsible>
+    </Card>
+  );
+}
+
 // Suppress unused warning for Switch (kept for future toggles)
 const _keepSwitch = Switch;
 void _keepSwitch;
