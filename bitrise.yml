@@ -98,8 +98,6 @@ workflows:
   archive:
   triggers:
     push:
-      - branch: main
-      pull_request:
       - source_branch: "*"
 meta:
   bitrise.io:
