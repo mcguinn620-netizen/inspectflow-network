@@ -199,22 +199,19 @@ export default function SettingsPage() {
         </div>
 
         {/* Appearance */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Appearance</CardTitle>
-            <CardDescription>Choose how the interface looks. Sync with your system or pick a fixed theme.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {mounted && (
-              <RadioGroup value={theme ?? "system"} onValueChange={setTheme}
-                className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <ThemeOption value="light" icon={<Sun className="h-5 w-5" />} label="Light" />
-                <ThemeOption value="dark" icon={<Moon className="h-5 w-5" />} label="Dark" />
-                <ThemeOption value="system" icon={<Monitor className="h-5 w-5" />} label="System" />
-              </RadioGroup>
-            )}
-          </CardContent>
-        </Card>
+        <CollapsibleCard
+          title="Appearance"
+          description="Choose how the interface looks. Sync with your system or pick a fixed theme."
+        >
+          {mounted && (
+            <RadioGroup value={theme ?? "system"} onValueChange={setTheme}
+              className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <ThemeOption value="light" icon={<Sun className="h-5 w-5" />} label="Light" />
+              <ThemeOption value="dark" icon={<Moon className="h-5 w-5" />} label="Dark" />
+              <ThemeOption value="system" icon={<Monitor className="h-5 w-5" />} label="System" />
+            </RadioGroup>
+          )}
+        </CollapsibleCard>
 
         {/* Earnings & Fees */}
         <Card>
