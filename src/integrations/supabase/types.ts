@@ -906,6 +906,57 @@ export type Database = {
           },
         ]
       }
+      quarterly_tax_overrides: {
+        Row: {
+          created_at: string
+          deductions_override: number | null
+          estimated_tax_override: number | null
+          id: string
+          income_override: number | null
+          is_paid: boolean
+          notes: string | null
+          organization_id: string
+          paid_amount: number | null
+          paid_at: string | null
+          quarter: number
+          updated_at: string
+          user_id: string
+          year: number
+        }
+        Insert: {
+          created_at?: string
+          deductions_override?: number | null
+          estimated_tax_override?: number | null
+          id?: string
+          income_override?: number | null
+          is_paid?: boolean
+          notes?: string | null
+          organization_id: string
+          paid_amount?: number | null
+          paid_at?: string | null
+          quarter: number
+          updated_at?: string
+          user_id: string
+          year: number
+        }
+        Update: {
+          created_at?: string
+          deductions_override?: number | null
+          estimated_tax_override?: number | null
+          id?: string
+          income_override?: number | null
+          is_paid?: boolean
+          notes?: string | null
+          organization_id?: string
+          paid_amount?: number | null
+          paid_at?: string | null
+          quarter?: number
+          updated_at?: string
+          user_id?: string
+          year?: number
+        }
+        Relationships: []
+      }
       repair_estimates: {
         Row: {
           created_at: string | null
