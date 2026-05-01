@@ -418,6 +418,7 @@ export default function InspectorTrips() {
                     <Badge variant="outline" className="capitalize">{t.status}</Badge>
                     <span className="text-sm text-muted-foreground">{Number(t.total_miles).toFixed(1)} mi · {t.drive_minutes}m drive</span>
                     <Button size="sm" variant="ghost" onClick={() => setEditingTrip(t)}><Pencil className="h-3.5 w-3.5 mr-1" />Edit</Button>
+                    <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => setDeletingTrip(t)}><Trash2 className="h-3.5 w-3.5" /></Button>
                   </div>
                 </div>
               </CardHeader>
