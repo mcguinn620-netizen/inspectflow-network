@@ -195,6 +195,21 @@ export default function InspectorTrips() {
     load();
   };
 
+  const deleteTrip = async (trip: Trip) => {
+    // Delete dependent rows first (no FK cascade configured)
+    await supabase.from("trip_stops").delete().eq("trip_id", trip.id);
+    await supabase.from("trip_location_points").delete().eq("trip_id", trip.id);
+    const { error } = await supabase.from("trips").delete().eq("id", trip.id);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    await logAudit("trip", trip.id, "delete", { trip: { before: trip, after: null } });
+    toast.success("Trip deleted");
+    setDeletingTrip(null);
+    load();
+  };
+
   const moveStop = async (s: Stop, dir: -1 | 1) => {
     const list = stops[s.trip_id] ?? [];
     const idx = list.findIndex(x => x.id === s.id);
