@@ -16,6 +16,8 @@ import { OpenInMapsButton } from "@/components/maps/OpenInMapsButton";
 import { TripMapOverlay, type MapStop } from "@/components/maps/TripMapOverlay";
 import { LocationAutocomplete } from "@/components/maps/LocationAutocomplete";
 import { TripDetailSheet } from "@/components/trips/TripDetailSheet";
+import { ConfirmDeleteDialog } from "@/components/ConfirmDeleteDialog";
+import { logAudit } from "@/hooks/useAuditLog";
 import { NextStopCard } from "@/components/inspector/NextStopCard";
 import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
@@ -82,6 +84,7 @@ export default function InspectorTrips() {
   const [tripPoints, setTripPoints] = useState<Record<string, TripLocationPoint[]>>({});
   const [trackingState, setTrackingState] = useState(getTripTrackingState());
   const [editingTrip, setEditingTrip] = useState<Trip | null>(null);
+  const [deletingTrip, setDeletingTrip] = useState<Trip | null>(null);
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [form, setForm] = useState<Partial<Trip>>({
     trip_date: new Date().toISOString().slice(0,10),
@@ -192,6 +195,21 @@ export default function InspectorTrips() {
     load();
   };
 
+  const deleteTrip = async (trip: Trip) => {
+    // Delete dependent rows first (no FK cascade configured)
+    await supabase.from("trip_stops").delete().eq("trip_id", trip.id);
+    await supabase.from("trip_location_points").delete().eq("trip_id", trip.id);
+    const { error } = await supabase.from("trips").delete().eq("id", trip.id);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    await logAudit("trip", trip.id, "delete", { trip: { before: trip, after: null } });
+    toast.success("Trip deleted");
+    setDeletingTrip(null);
+    load();
+  };
+
   const moveStop = async (s: Stop, dir: -1 | 1) => {
     const list = stops[s.trip_id] ?? [];
     const idx = list.findIndex(x => x.id === s.id);
@@ -289,6 +307,7 @@ export default function InspectorTrips() {
                   <Link to="/app/inspector/drive"><Flag className="h-3.5 w-3.5 mr-1" />Drive</Link>
                 </Button>
                 <Button size="sm" variant="outline" onClick={() => setEditingTrip(activeTrip)}><Pencil className="h-3.5 w-3.5 mr-1" />Edit</Button>
+                <Button size="sm" variant="outline" className="text-destructive hover:text-destructive" onClick={() => setDeletingTrip(activeTrip)}><Trash2 className="h-3.5 w-3.5 mr-1" />Delete</Button>
                 {canCompleteTrip(activeTrip.status) && (
                   <Button size="sm" variant="default" disabled={!!pendingId}
                     onClick={() => setTripStatus(activeTrip, "completed")}>
@@ -399,6 +418,7 @@ export default function InspectorTrips() {
                     <Badge variant="outline" className="capitalize">{t.status}</Badge>
                     <span className="text-sm text-muted-foreground">{Number(t.total_miles).toFixed(1)} mi · {t.drive_minutes}m drive</span>
                     <Button size="sm" variant="ghost" onClick={() => setEditingTrip(t)}><Pencil className="h-3.5 w-3.5 mr-1" />Edit</Button>
+                    <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => setDeletingTrip(t)}><Trash2 className="h-3.5 w-3.5" /></Button>
                   </div>
                 </div>
               </CardHeader>
@@ -431,6 +451,15 @@ export default function InspectorTrips() {
         open={!!editingTrip}
         onOpenChange={(o) => !o && setEditingTrip(null)}
         onSaved={load}
+      />
+
+      <ConfirmDeleteDialog
+        open={!!deletingTrip}
+        onOpenChange={(o) => !o && setDeletingTrip(null)}
+        onConfirm={() => deletingTrip && deleteTrip(deletingTrip)}
+        title="Delete trip?"
+        description="This permanently deletes the trip, its stops, and recorded GPS points. Mileage and time will no longer count toward your tax estimates. This cannot be undone."
+        actionLabel="Delete trip"
       />
 
       <Dialog open={open} onOpenChange={setOpen}>
