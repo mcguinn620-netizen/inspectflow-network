@@ -453,6 +453,15 @@ export default function InspectorTrips() {
         onSaved={load}
       />
 
+      <ConfirmDeleteDialog
+        open={!!deletingTrip}
+        onOpenChange={(o) => !o && setDeletingTrip(null)}
+        onConfirm={() => deletingTrip && deleteTrip(deletingTrip)}
+        title="Delete trip?"
+        description="This permanently deletes the trip, its stops, and recorded GPS points. Mileage and time will no longer count toward your tax estimates. This cannot be undone."
+        actionLabel="Delete trip"
+      />
+
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-sm">
           <DialogHeader><DialogTitle>Log trip</DialogTitle></DialogHeader>
