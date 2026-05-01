@@ -307,6 +307,7 @@ export default function InspectorTrips() {
                   <Link to="/app/inspector/drive"><Flag className="h-3.5 w-3.5 mr-1" />Drive</Link>
                 </Button>
                 <Button size="sm" variant="outline" onClick={() => setEditingTrip(activeTrip)}><Pencil className="h-3.5 w-3.5 mr-1" />Edit</Button>
+                <Button size="sm" variant="outline" className="text-destructive hover:text-destructive" onClick={() => setDeletingTrip(activeTrip)}><Trash2 className="h-3.5 w-3.5 mr-1" />Delete</Button>
                 {canCompleteTrip(activeTrip.status) && (
                   <Button size="sm" variant="default" disabled={!!pendingId}
                     onClick={() => setTripStatus(activeTrip, "completed")}>
