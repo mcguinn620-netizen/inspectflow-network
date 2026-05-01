@@ -16,6 +16,8 @@ import { OpenInMapsButton } from "@/components/maps/OpenInMapsButton";
 import { TripMapOverlay, type MapStop } from "@/components/maps/TripMapOverlay";
 import { LocationAutocomplete } from "@/components/maps/LocationAutocomplete";
 import { TripDetailSheet } from "@/components/trips/TripDetailSheet";
+import { ConfirmDeleteDialog } from "@/components/ConfirmDeleteDialog";
+import { logAudit } from "@/hooks/useAuditLog";
 import { NextStopCard } from "@/components/inspector/NextStopCard";
 import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
