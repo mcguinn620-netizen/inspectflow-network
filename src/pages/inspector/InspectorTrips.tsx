@@ -84,6 +84,7 @@ export default function InspectorTrips() {
   const [tripPoints, setTripPoints] = useState<Record<string, TripLocationPoint[]>>({});
   const [trackingState, setTrackingState] = useState(getTripTrackingState());
   const [editingTrip, setEditingTrip] = useState<Trip | null>(null);
+  const [deletingTrip, setDeletingTrip] = useState<Trip | null>(null);
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [form, setForm] = useState<Partial<Trip>>({
     trip_date: new Date().toISOString().slice(0,10),
