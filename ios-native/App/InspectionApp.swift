@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct InspectionApp: App {
+struct InspectFlowNativeApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @StateObject private var appState = AppState()
     @StateObject private var syncEngine = SyncEngine()
