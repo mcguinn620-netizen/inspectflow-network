@@ -23,7 +23,8 @@ final class SupabaseService: SupabaseServicing {
     }
 
     func fetch<T: Decodable>(_ path: String, queryItems: [URLQueryItem] = []) async throws -> [T] {
-        var components = URLComponents(string: config.url.appending(path))
+        let endpoint = config.url.appendingPathComponent(path)
+        var components = URLComponents(url: endpoint, resolvingAgainstBaseURL: false)
         components?.queryItems = queryItems
         guard let url = components?.url else { throw SupabaseError.invalidURL }
 
@@ -39,7 +40,7 @@ final class SupabaseService: SupabaseServicing {
     }
 
     func upsert<T: Encodable>(_ path: String, payload: T) async throws {
-        guard let url = URL(string: config.url.appending(path)) else { throw SupabaseError.invalidURL }
+        let url = config.url.appendingPathComponent(path)
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -76,7 +77,6 @@ private extension JSONEncoder {
         return encoder
     }
 }
-
 
 extension SupabaseService {
     func fetchMyProfile(userId: UUID) async throws -> UserProfile {
