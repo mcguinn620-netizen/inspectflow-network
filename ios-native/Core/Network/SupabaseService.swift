@@ -26,7 +26,7 @@ final class SupabaseService: SupabaseServicing {
 
     func signIn(email: String, password: String) async throws -> SessionToken {
         guard config.anonKey != "DEV_PLACEHOLDER_KEY" else { throw SupabaseError.missingConfiguration }
-        let url = config.url.deletingLastPathComponent().appending(path: "auth/v1/token")
+        let url = config.url.appending(path: "auth/v1/token")
         var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
         components?.queryItems = [URLQueryItem(name: "grant_type", value: "password")]
         guard let requestURL = components?.url else { throw SupabaseError.invalidURL }
@@ -46,7 +46,7 @@ final class SupabaseService: SupabaseServicing {
     }
 
     func fetch<T: Decodable>(_ path: String, queryItems: [URLQueryItem] = []) async throws -> [T] {
-        let endpoint = config.url.appendingPathComponent(path)
+        let endpoint = config.url.appending(path: "rest/v1").appendingPathComponent(path)
         var components = URLComponents(url: endpoint, resolvingAgainstBaseURL: false)
         components?.queryItems = queryItems
         guard let url = components?.url else { throw SupabaseError.invalidURL }
@@ -63,7 +63,7 @@ final class SupabaseService: SupabaseServicing {
     }
 
     func upsert<T: Encodable>(_ path: String, payload: T) async throws {
-        let url = config.url.appendingPathComponent(path)
+        let url = config.url.appending(path: "rest/v1").appendingPathComponent(path)
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         applyHeaders(to: &request)
