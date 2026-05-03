@@ -1,6 +1,11 @@
 import Foundation
 
-enum SupabaseConfig {
-    static let baseURL = URL(string: "https://YOUR_PROJECT.supabase.co")!
-    static let anonKey = "YOUR_SUPABASE_PUBLISHABLE_KEY"
+struct SupabaseConfig {
+    let url: String
+    let anonKey: String
+
+    static let current = SupabaseConfig(
+        url: "https://YOUR_PROJECT.supabase.co/rest/v1/",
+        anonKey: "YOUR_SUPABASE_PUBLISHABLE_KEY"
+    )
 }
