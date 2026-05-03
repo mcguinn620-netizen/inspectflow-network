@@ -22,4 +22,16 @@ final class AppState: ObservableObject {
             authState = .signedOut
         }
     }
+
+    func signIn(email: String, password: String) async throws {
+        let session = try await SupabaseService.shared.signIn(email: email, password: password)
+        try KeychainStore.shared.save(session: session)
+        let profile = try await SupabaseService.shared.fetchMyProfile(userId: session.userID)
+        authState = .signedIn(profile)
+    }
+
+    func signOut() {
+        KeychainStore.shared.clearSession()
+        authState = .signedOut
+    }
 }
