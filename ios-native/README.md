@@ -18,7 +18,7 @@ This folder now contains a buildable native iOS foundation for **Xcode 14** and 
 ## Supabase configuration
 1. Copy `ios-native/Config/Secrets.xcconfig.example` to `ios-native/Config/Secrets.xcconfig`.
 2. Set:
-   - `SUPABASE_URL = https://<your-project>.supabase.co/rest/v1/`
+   - `SUPABASE_URL = https://<your-project>.supabase.co`
    - `SUPABASE_ANON_KEY = <your-anon-key>`
 3. Keep `Secrets.xcconfig` local/private; do not commit real secrets.
 

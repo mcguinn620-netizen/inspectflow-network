@@ -7,7 +7,7 @@ final class AuthViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var isLoading = false
 
-    func signIn() async {
+    func signIn(appState: AppState) async {
         guard !email.isEmpty, !password.isEmpty else {
             errorMessage = "Enter email and password."
             return
@@ -16,18 +16,16 @@ final class AuthViewModel: ObservableObject {
         isLoading = true
         defer { isLoading = false }
 
-        // TODO: Replace placeholder with Supabase auth sign in using Supabase Swift SDK.
-        // TODO: Persist auth session securely in KeychainStore after a successful sign-in.
         do {
-            try await Task.sleep(nanoseconds: 300_000_000)
-            errorMessage = "Placeholder sign-in only. Wire Supabase auth next."
+            try await appState.signIn(email: email, password: password)
         } catch {
-            errorMessage = "Sign-in cancelled."
+            errorMessage = "Sign-in failed: \(error.localizedDescription)"
         }
     }
 }
 
 struct AuthView: View {
+    @EnvironmentObject private var appState: AppState
     @StateObject var viewModel: AuthViewModel
 
     var body: some View {
@@ -41,7 +39,7 @@ struct AuthView: View {
                     Text(errorMessage).foregroundStyle(.red)
                 }
                 Button(viewModel.isLoading ? "Signing In..." : "Sign In") {
-                    Task { await viewModel.signIn() }
+                    Task { await viewModel.signIn(appState: appState) }
                 }
                 .disabled(viewModel.isLoading)
             }

@@ -41,4 +41,13 @@ final class KeychainStore {
         }
         return try JSONDecoder().decode(SessionToken.self, from: data)
     }
+
+    func clearSession() {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: service,
+            kSecAttrAccount as String: account
+        ]
+        SecItemDelete(query as CFDictionary)
+    }
 }
