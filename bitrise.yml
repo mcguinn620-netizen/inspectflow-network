@@ -133,10 +133,6 @@ workflows:
     triggers:
       push:
       - branch: main
-        enabled: false
-      pull_request:
-      - source_branch: "*"
-        enabled: false
 meta:
   bitrise.io:
     stack: osx-xcode-26.4.x
