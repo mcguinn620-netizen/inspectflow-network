@@ -1,7 +1,8 @@
 // Minimal app-shell service worker.
 // We only register this on production-deployed origins (NOT inside the Lovable
 // preview iframe) — see src/main.tsx for the registration guard.
-const CACHE = "inspector-shell-v1";
+// Bump CACHE version on every shell change so old clients fetch new files.
+const CACHE = "inspector-shell-v2";
 const SHELL = ["/", "/manifest.webmanifest"];
 
 self.addEventListener("install", (e) => {
