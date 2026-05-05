@@ -68,8 +68,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 </button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="flex items-center gap-2 rounded-md hover:bg-muted px-1.5 py-1 transition-colors">
-                      <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
+                    <button className="flex items-center gap-2 rounded-md hover:bg-muted px-1.5 py-1 min-h-[44px] transition-colors">
+                      <div className="h-9 w-9 rounded-full bg-primary flex items-center justify-center">
                         <span className="text-xs font-semibold text-primary-foreground">{initials}</span>
                       </div>
                       <div className="hidden sm:block text-left">
