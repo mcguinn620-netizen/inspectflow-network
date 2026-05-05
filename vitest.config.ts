@@ -2,6 +2,8 @@ import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import path from "path";
 
+const rootDir = __dirname;
+
 export default defineConfig({
   plugins: [react()],
   test: {
@@ -11,6 +13,11 @@ export default defineConfig({
     include: ["src/**/*.{test,spec}.{ts,tsx}"],
   },
   resolve: {
-    alias: { "@": path.resolve(__dirname, "./src") },
+    alias: {
+      "@": path.resolve(rootDir, "./src"),
+      react: path.resolve(rootDir, "./node_modules/react"),
+      "react-dom": path.resolve(rootDir, "./node_modules/react-dom"),
+    },
+    dedupe: ["react", "react-dom", "react/jsx-runtime"],
   },
 });
