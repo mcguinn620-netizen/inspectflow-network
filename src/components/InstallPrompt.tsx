@@ -63,8 +63,8 @@ export function InstallPrompt() {
   };
 
   return (
-    <div className="md:hidden fixed left-3 right-3 bottom-20 z-50 rounded-lg border bg-card shadow-lg p-3 flex items-center gap-2"
-      style={{ marginBottom: "env(safe-area-inset-bottom)" }}>
+    <div className="md:hidden fixed left-3 right-3 z-50 rounded-lg border bg-card shadow-lg p-3 flex items-center gap-2"
+      style={{ bottom: "calc(env(safe-area-inset-bottom) + 4.5rem)" }}>
       <div className="min-w-0 flex-1">
         <p className="text-sm font-medium">Install Inspector app</p>
         <p className="text-[11px] text-muted-foreground truncate">
