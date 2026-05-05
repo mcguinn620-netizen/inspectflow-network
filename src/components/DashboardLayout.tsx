@@ -51,25 +51,25 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           >
             <div className="h-14 flex items-center justify-between px-4">
               <div className="flex items-center gap-3">
-                <SidebarTrigger className="text-muted-foreground hover:text-foreground transition-colors duration-150" />
+                <SidebarTrigger className="h-11 w-11 text-muted-foreground hover:text-foreground transition-colors duration-150" />
                 <div className="hidden sm:flex items-center gap-2 rounded-md bg-muted px-3 py-1.5">
                   <Search className="h-4 w-4 text-muted-foreground" />
                   <input
                     type="text"
                     placeholder="Search inspections, vehicles, inspectors..."
-                    className="bg-transparent text-sm outline-none w-64 placeholder:text-muted-foreground"
+                    className="bg-transparent text-base sm:text-sm outline-none w-64 placeholder:text-muted-foreground"
                   />
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <button className="relative h-8 w-8 flex items-center justify-center rounded-md hover:bg-muted transition-colors duration-150">
-                  <Bell className="h-4 w-4 text-muted-foreground" />
-                  <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-destructive" />
+                <button className="relative h-11 w-11 flex items-center justify-center rounded-md hover:bg-muted transition-colors duration-150" aria-label="Notifications">
+                  <Bell className="h-5 w-5 text-muted-foreground" />
+                  <span className="absolute top-2.5 right-2.5 h-2 w-2 rounded-full bg-destructive" />
                 </button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="flex items-center gap-2 rounded-md hover:bg-muted px-1.5 py-1 transition-colors">
-                      <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
+                    <button className="flex items-center gap-2 rounded-md hover:bg-muted px-1.5 py-1 min-h-[44px] transition-colors">
+                      <div className="h-9 w-9 rounded-full bg-primary flex items-center justify-center">
                         <span className="text-xs font-semibold text-primary-foreground">{initials}</span>
                       </div>
                       <div className="hidden sm:block text-left">
