@@ -9,7 +9,7 @@ public struct InspectFlowConfig {
     public init(
         url: URL,
         anonKey: String,
-        keychainService: String = "com.inspectflow.connector",
+        keychainService: String = "com.autoinspectornetwork.connector",
         keychainAccount: String = "session"
     ) {
         self.url = url
