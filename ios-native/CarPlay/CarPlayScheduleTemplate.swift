@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import CarPlay
 
 final class CarPlayScheduleTemplate {
@@ -5,3 +6,4 @@ final class CarPlayScheduleTemplate {
         CarPlayStopListTemplate().make(stops: stops)
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import CarPlay
 
 final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
@@ -11,3 +12,4 @@ final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegat
         coordinator.connect(interfaceController: interfaceController)
     }
 }
+#endif

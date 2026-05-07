@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import CarPlay
 import MapKit
 
@@ -16,3 +17,4 @@ final class CarPlayNavigationCoordinator {
         MKMapItem(placemark: placemark).openInMaps()
     }
 }
+#endif

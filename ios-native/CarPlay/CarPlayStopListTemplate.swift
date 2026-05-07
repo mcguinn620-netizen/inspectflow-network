@@ -1,3 +1,4 @@
+#if canImport(CarPlay)
 import CarPlay
 
 final class CarPlayStopListTemplate {
@@ -9,3 +10,4 @@ final class CarPlayStopListTemplate {
         return CPListTemplate(title: "Stops", sections: [section])
     }
 }
+#endif
