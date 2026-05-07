@@ -1,6 +1,7 @@
 import Foundation
 
 protocol SupabaseServicing {
+    func database(from table: String) -> DatabaseQueryBuilder
     func fetch<T: Decodable>(_ path: String, queryItems: [URLQueryItem]) async throws -> [T]
     func upsert<T: Encodable>(_ path: String, payload: T) async throws
     func signIn(email: String, password: String) async throws -> SessionToken
@@ -22,6 +23,10 @@ final class SupabaseService: SupabaseServicing {
     init(session: URLSession = .shared, config: SupabaseConfig = .current) {
         self.session = session
         self.config = config
+    }
+
+    func database(from table: String) -> DatabaseQueryBuilder {
+        DatabaseQueryBuilder(table: table, config: config, session: session)
     }
 
     func signIn(email: String, password: String) async throws -> SessionToken {
@@ -57,7 +62,9 @@ final class SupabaseService: SupabaseServicing {
 
         let (data, response) = try await session.data(for: request)
         guard let httpResponse = response as? HTTPURLResponse else { throw SupabaseError.invalidResponse }
-        guard (200...299).contains(httpResponse.statusCode) else { throw SupabaseError.serverError(httpResponse.statusCode, "") }
+        guard (200...299).contains(httpResponse.statusCode) else {
+            throw SupabaseError.serverError(httpResponse.statusCode, String(data: data, encoding: .utf8) ?? "")
+        }
 
         return try JSONDecoder.supabase.decode([T].self, from: data)
     }
@@ -70,15 +77,18 @@ final class SupabaseService: SupabaseServicing {
         request.setValue("resolution=merge-duplicates", forHTTPHeaderField: "Prefer")
         request.httpBody = try JSONEncoder.supabase.encode(payload)
 
-        let (_, response) = try await session.data(for: request)
+        let (data, response) = try await session.data(for: request)
         guard let httpResponse = response as? HTTPURLResponse else { throw SupabaseError.invalidResponse }
-        guard (200...299).contains(httpResponse.statusCode) else { throw SupabaseError.serverError(httpResponse.statusCode, "") }
+        guard (200...299).contains(httpResponse.statusCode) else {
+            throw SupabaseError.serverError(httpResponse.statusCode, String(data: data, encoding: .utf8) ?? "")
+        }
     }
 
     private func applyHeaders(to request: inout URLRequest) {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(config.anonKey, forHTTPHeaderField: "apikey")
-        request.setValue("Bearer \(config.anonKey)", forHTTPHeaderField: "Authorization")
+        let accessToken = (try? KeychainStore.shared.readSession()?.accessToken) ?? config.anonKey
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
     }
 }
 
@@ -115,10 +125,12 @@ private extension JSONEncoder {
 
 extension SupabaseService {
     func fetchMyProfile(userId: UUID) async throws -> UserProfile {
-        let profiles: [UserProfile] = try await fetch("profiles", queryItems: [
-            URLQueryItem(name: "id", value: "eq.\(userId.uuidString)"),
-            URLQueryItem(name: "select", value: "id,full_name,email,role")
-        ])
+        let profiles: [UserProfile] = try await database(from: "profiles")
+            .select("id,full_name,email,role")
+            .eq("id", userId.uuidString)
+            .limit(1)
+            .execute()
+
         return profiles.first ?? UserProfile(id: userId, fullName: "Inspector", email: "", role: "inspector")
     }
 }

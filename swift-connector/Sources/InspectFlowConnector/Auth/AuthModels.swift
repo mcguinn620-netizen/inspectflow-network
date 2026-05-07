@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 public struct InspectFlowUser: Codable, Identifiable, Equatable {
     public let id: UUID
