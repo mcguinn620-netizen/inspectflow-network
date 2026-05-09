@@ -21,7 +21,7 @@ The app talks to **Lovable Cloud** through the local Swift package at `../swift-
 ## Setup (Xcode 14)
 
 1. Open or create an iOS App project (iOS 16+, SwiftUI lifecycle).
-2. **File ▸ Add Packages ▸ Add Local…** select the repo's `swift-connector/` folder.
+2. **File ▸ Add Packages…** — either paste `https://github.com/mcguinn620-netizen/inspectflow-network.git` (Up to Next Major from `0.1.0`), or use **Add Local…** and select the repo root. Tagging is documented in `RELEASING.md`.
 3. Add the contents of `ios-native/` to your app target (drag the `App`, `Core`, `Features`, `Shared`, `CarPlay` folders, "Create groups").
 4. Add a Core Data model file named `InspectionModel.xcdatamodeld` (entities can be added later).
 5. Capabilities: **Keychain Sharing**. Optional: Background Modes (Location, Background fetch).

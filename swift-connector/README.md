@@ -7,13 +7,23 @@ Pure-Swift, zero-dependency Supabase/Lovable Cloud client used by the Auto Inspe
 - Auth, REST (PostgREST), Realtime, Storage, Edge Functions
 - Session persisted in Keychain via `SessionStore`
 
+## Releases
+
+The canonical `Package.swift` lives at the **repo root**. Releases are SemVer Git tags on `main` (e.g. `v0.1.0`). See `RELEASING.md` at the repo root.
+
 ## Install (Xcode 14)
 
-File ▸ Add Packages ▸ **Add Local…** ▸ select the `swift-connector/` folder.
+File ▸ Add Packages ▸ paste `https://github.com/mcguinn620-netizen/inspectflow-network.git`, version "Up to Next Major" from `0.1.0`.
+
+Or, for local development: File ▸ Add Packages ▸ **Add Local…** ▸ select the repo root folder.
 
 ## Install (Swift Playgrounds on iPad)
 
-Project ▸ ⊕ ▸ **Swift Package** ▸ paste this repo's Git URL ▸ choose `InspectFlowConnector`.
+Project ▸ ⊕ ▸ **Swift Package**
+- URL: `https://github.com/mcguinn620-netizen/inspectflow-network.git`
+- Version rule: **Up to Next Major Version** from `0.1.0`
+
+> Playgrounds requires a SemVer tag — branches are not supported. If you see "no version tags," follow `RELEASING.md` to publish `v0.1.0`.
 
 ## Usage
 
