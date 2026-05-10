@@ -92,4 +92,90 @@ final class SupabaseService {
             .limit(limit)
             .execute()
     }
+
+    // MARK: - Templates
+
+    func fetchTemplate(templateId: UUID) async throws -> InspectionTemplate {
+        try await client.db.from("inspection_templates")
+            .select()
+            .eq("id", templateId.uuidString)
+            .single()
+            .execute()
+    }
+
+    func fetchTemplateSections(templateId: UUID) async throws -> [TemplateSection] {
+        try await client.db.from("template_sections")
+            .select()
+            .eq("template_id", templateId.uuidString)
+            .order("sort_order", ascending: true)
+            .execute()
+    }
+
+    func fetchTemplateItems(sectionIds: [UUID]) async throws -> [TemplateChecklistItem] {
+        guard !sectionIds.isEmpty else { return [] }
+        return try await client.db.from("template_checklist_items")
+            .select()
+            .in("section_id", sectionIds.map { $0.uuidString })
+            .order("sort_order", ascending: true)
+            .execute()
+    }
+
+    // MARK: - Inspection submission
+
+    func submitInspectionScore(requestId: UUID, score: InspectionScoreResult) async throws {
+        let row: [String: Any] = [
+            "inspection_request_id": requestId.uuidString,
+            "overall_score": score.overallScore,
+            "vehicle_condition_rating": score.conditionRating,
+            "section_scores": score.sectionScores,
+        ]
+        _ = try await client.db.from("inspection_scores").insert(row).execute()
+        _ = try await client.db.from("inspection_requests")
+            .update([
+                "status": "awaiting_review",
+                "overall_score": score.overallScore,
+                "vehicle_condition_rating": score.conditionRating,
+            ])
+            .eq("id", requestId.uuidString)
+            .execute()
+    }
+
+    // MARK: - Photo upload
+
+    func uploadInspectionPhoto(orgId: UUID, requestId: UUID, data: Data) async throws -> String {
+        let filename = "\(UUID().uuidString).jpg"
+        let path = "\(orgId.uuidString)/\(requestId.uuidString)/\(filename)"
+        try await client.storage.upload(
+            bucket: "inspection-photos",
+            path: path,
+            data: data,
+            contentType: "image/jpeg",
+            upsert: false
+        )
+        return path
+    }
+
+    // MARK: - Trip mutations
+
+    func createTrip(orgId: UUID, userId: UUID, title: String?) async throws -> Trip {
+        var row: [String: Any] = [
+            "organization_id": orgId.uuidString,
+            "user_id": userId.uuidString,
+            "status": "active",
+            "started_at": ISO8601DateFormatter().string(from: Date()),
+        ]
+        if let title { row["title"] = title }
+        let inserted: [Trip] = try await client.db.from("trips").insert(row).execute()
+        guard let trip = inserted.first else { throw InspectFlowError.invalidResponse }
+        return trip
+    }
+
+    func updateTripStatus(tripId: UUID, status: String, extras: [String: Any] = [:]) async throws {
+        var row: [String: Any] = ["status": status]
+        for (k, v) in extras { row[k] = v }
+        _ = try await client.db.from("trips")
+            .update(row)
+            .eq("id", tripId.uuidString)
+            .execute()
+    }
 }
