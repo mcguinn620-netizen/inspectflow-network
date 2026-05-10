@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "InspectFlowConnector",
-    platforms: [.iOS(.v16), .iPadOS(.v16), .macOS(.v12)],
+    platforms: [.iOS(.v16), .macOS(.v12)],
     products: [
         .library(name: "InspectFlowConnector", targets: ["InspectFlowConnector"])
     ],

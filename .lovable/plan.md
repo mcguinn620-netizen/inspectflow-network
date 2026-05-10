@@ -1,63 +1,34 @@
+## Fix Package.swift platform list
 
-# Fix: Swift Playgrounds "no version tags" for `InspectFlowConnector`
+**Root cause:** SwiftPM's `SupportedPlatform` enum has no `iPadOS` case. iPad is covered by `.iOS`. The bogus entry also breaks `.v16` resolution, which cascades into the "Mach-O couldn't be generated" manifest evaluation failure.
 
-## Why it's failing
+**Change (one file):**
 
-Swift Playgrounds' "Add Package" on iPad only resolves **SemVer tags** — it cannot pick a branch like Xcode 14 can. Your repo `inspectflow-network` has no tags yet, so the resolver returns "no version tags."
+`Package.swift` — replace the platforms line:
 
-Secondary issue: there are **two** `Package.swift` files — one at the repo root and one inside `swift-connector/`. SwiftPM uses the root one when you add the repo URL. Two manifests is fragile; we'll consolidate.
+```swift
+platforms: [.iOS(.v16), .macOS(.v12)],
+```
 
-## What I'll change in the codebase
+(drop `.iPadOS(.v16)`; iPad already inherits the iOS 16 minimum)
 
-1. **Delete** `swift-connector/Package.swift` (duplicate). Root `Package.swift` stays canonical.
-2. **Edit** `ios-native/PLAYGROUNDS.md` — rewrite the "Add Package" step to use the GitHub URL with version rule "Up to Next Major from 0.1.0", plus a troubleshooting note about tags. Keep the offline fallback.
-3. **Edit** `swift-connector/README.md` — same install instructions + Releases section.
-4. **Edit** `ios-native/README.md` — one-line pointer to tagged release.
-5. **Create** `RELEASING.md` at repo root — short checklist for future tag bumps.
+**Then re-tag:**
 
-## What you'll do on GitHub (copy/paste)
-
-I'll include this exact block in `RELEASING.md` and in the chat reply when I'm done. You run it locally against your clone of `inspectflow-network`:
+Since `v0.1.0` was cut against the broken manifest, after pushing the fix run:
 
 ```bash
-# 1. Make sure you're on the latest main
-git checkout main
-git pull origin main
-
-# 2. Create an annotated SemVer tag
-git tag -a v0.1.0 -m "InspectFlowConnector 0.1.0 — Tier 1 (Auth, REST, Realtime, Storage, Functions)"
-
-# 3. Push the tag
+git tag -d v0.1.0
+git push origin :refs/tags/v0.1.0
+git tag -a v0.1.0 -m "InspectFlowConnector 0.1.0 — Tier 1"
 git push origin v0.1.0
 ```
 
-Then on GitHub:
-- Open https://github.com/mcguinn620-netizen/inspectflow-network/releases/new?tag=v0.1.0
-- Title: `InspectFlowConnector 0.1.0`
-- Notes: "Initial tagged release. Swift 5.7 / iOS 16+. Auth, PostgREST, Realtime, Storage, Edge Functions."
-- Click **Publish release**.
+Or bump to `v0.1.1` instead (cleaner — no force-retag) and use "Up to Next Major from 0.1.1" in Playgrounds.
 
-Don't have `git` on your machine? Alternative — purely in the GitHub UI:
-- Open https://github.com/mcguinn620-netizen/inspectflow-network/releases/new
-- In the "Choose a tag" dropdown, type `v0.1.0` → click "Create new tag: v0.1.0 on publish"
-- Target: `main`
-- Title + notes as above → **Publish release**. (This both creates the tag and the release.)
+**Docs touch-up:** update `RELEASING.md` and `ios-native/PLAYGROUNDS.md` only if we go with `v0.1.1`.
 
-## After the tag exists
+**Out of scope:** no connector source changes. Still Swift 5.7 / iOS 16 / Xcode 14 compatible.
 
-In Swift Playgrounds:
-- Project ▸ ⊕ ▸ **Swift Package**
-- URL: `https://github.com/mcguinn620-netizen/inspectflow-network.git`
-- Version rule: **Up to Next Major Version** → `0.1.0`
-- Add → import `InspectFlowConnector`.
+**Credits:** ~1.
 
-## Out of scope
-
-- No connector code changes (already 5.7-compatible).
-- No change to Xcode 14 "Add Local" flow.
-
-## Credit estimate
-
-~2 credits (docs + one delete).
-
-Reply **"go"** to execute.
+Reply **"go with v0.1.1"** (recommended) or **"go and retag v0.1.0"**.
