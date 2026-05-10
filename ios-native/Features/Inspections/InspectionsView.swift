@@ -14,11 +14,19 @@ struct InspectionsView: View {
                     )
                 } else {
                     List(viewModel.requests) { r in
-                        HStack {
-                            Text(r.status.capitalized).font(.headline)
-                            Spacer()
-                            if let d = r.scheduledAt ?? r.createdAt {
-                                Text(d, style: .date).font(.caption).foregroundColor(.secondary)
+                        NavigationLink(value: r) {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(r.status.replacingOccurrences(of: "_", with: " ").capitalized)
+                                        .font(.headline)
+                                    if let d = r.scheduledAt ?? r.createdAt {
+                                        Text(d, style: .date)
+                                            .font(.caption).foregroundColor(.secondary)
+                                    }
+                                }
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .foregroundColor(.secondary)
                             }
                         }
                     }
@@ -26,6 +34,11 @@ struct InspectionsView: View {
             }
             .navigationTitle("Inspections")
             .toolbar { ToolbarItem(placement: .topBarTrailing) { SyncStatusView() } }
+            .navigationDestination(for: InspectionRequest.self) { req in
+                if let orgId = appState.activeOrganizationID {
+                    InspectionDetailView(request: req, orgId: orgId)
+                }
+            }
             .refreshable { await viewModel.load(orgId: appState.activeOrganizationID) }
             .task { await viewModel.load(orgId: appState.activeOrganizationID) }
         }
