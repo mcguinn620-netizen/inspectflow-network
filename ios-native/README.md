@@ -47,9 +47,14 @@ See `PLAYGROUNDS.md`.
 - Networking is `URLSession` + `async/await`.
 - All CarPlay code is wrapped in `#if canImport(CarPlay)` so the app builds on simulators and Swift Playgrounds without it.
 
-## Tier 1 scope (this build)
+## Tier 2 scope (this build)
 
-Read-only flows wired to live data: sign in/up, sign out, dashboard summary, jobs list, trips list, vehicles list, inspection requests list. Write flows, offline replay, CarPlay live trip, background location, and push are deferred to Tier 2.
+- **Trips:** start / pause / resume / complete with live `CLLocationManager` tracking. Filters and persistence mirror `src/lib/tripTracking.ts` (≤75m accuracy, ≥10m movement, dedupe, >110mph rejection). Active trip survives relaunch via Keychain-backed snapshot.
+- **Inspections:** template-driven checklist (pass / warn / fail + notes + photos). Photos upload to the `inspection-photos` bucket under `{org_id}/{request_id}/`. Submit computes a weighted condition score, writes `inspection_scores`, and transitions the request to `awaiting_review`.
+- **Offline core:** `Outbox` (JSON-on-disk FIFO) replaces the in-memory mutation queue. `SyncEngine` drains on network restore with exponential backoff. `CoreDataCache` mirrors lists for read-from-cache-then-refresh.
+- **Realtime:** per-feature subscriptions to `inspection_requests`, `jobs`, and `trips`.
+- **CarPlay:** live trip card sharing the phone's `TripTrackingController`, with `AVSpeechSynthesizer` voice cues.
+- **Push + background:** APNs registration writes to `device_tokens`. `BGAppRefreshTask` (`com.autoinspectornetwork.refresh`) drains the outbox hourly. Edge function `notify-inspector` is the dispatch hook.
 
 ## Cleanup
 
