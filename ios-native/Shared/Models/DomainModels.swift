@@ -86,14 +86,16 @@ struct Vehicle: Codable, Identifiable, Equatable {
 
 // MARK: - Inspection requests
 
-struct InspectionRequest: Codable, Identifiable, Equatable {
+struct InspectionRequest: Codable, Identifiable, Equatable, Hashable {
     let id: UUID
     let status: String
+    let templateID: UUID?
     let createdAt: Date?
     let scheduledAt: Date?
 
     enum CodingKeys: String, CodingKey {
         case id, status
+        case templateID = "template_id"
         case createdAt = "created_at"
         case scheduledAt = "scheduled_at"
     }
