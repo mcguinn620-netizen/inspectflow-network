@@ -7,7 +7,7 @@ The app builds inside Swift Playgrounds 4+ on iPad with no external dependencies
 1. **Swift Playgrounds → New App**.
 2. **Project ▸ ⊕ ▸ Swift Package**
    - URL: `https://github.com/mcguinn620-netizen/inspectflow-network.git`
-   - Version rule: **Up to Next Major Version** from `0.1.0`
+   - Version rule: **Up to Next Major Version** from `0.1.1`
    - Add → choose product **InspectFlowConnector**.
 3. Drag the contents of `ios-native/App`, `Core`, `Features`, and `Shared` into the Playground.
    - **Skip** `ios-native/CarPlay/` — Playgrounds doesn't support CarPlay scenes; the rest of the code still compiles thanks to `#if canImport(CarPlay)` guards.
