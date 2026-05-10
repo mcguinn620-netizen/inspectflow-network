@@ -73,13 +73,7 @@ struct InspectionDetailView: View {
             .ignoresSafeArea()
         }
         .task {
-            // Templates resolve via `inspection_requests.template_id` (string field on the row).
-            // If it's missing the view still renders an empty state.
-            if let req = viewModel.request as InspectionRequest?,
-               let templateIdValue = Mirror(reflecting: req).children.first(where: { $0.label == "templateID" })?.value,
-               let templateUUID = templateIdValue as? UUID {
-                await viewModel.load(templateId: templateUUID)
-            }
+            await viewModel.load(templateId: viewModel.request.templateID)
         }
     }
 }
