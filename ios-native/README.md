@@ -21,11 +21,18 @@ The app talks to **Lovable Cloud** through the local Swift package at `../swift-
 ## Setup (Xcode 14)
 
 1. Open or create an iOS App project (iOS 16+, SwiftUI lifecycle).
-2. **File ▸ Add Packages…** — either paste `https://github.com/mcguinn620-netizen/inspectflow-network.git` (Up to Next Major from `0.1.1`), or use **Add Local…** and select the repo root. Tagging is documented in `RELEASING.md`.
+2. **File ▸ Add Packages…** — either paste `https://github.com/mcguinn620-netizen/inspectflow-network.git` (Up to Next Major from `0.2.0`), or use **Add Local…** and select the repo root. Tagging is documented in `RELEASING.md`.
 3. Add the contents of `ios-native/` to your app target (drag the `App`, `Core`, `Features`, `Shared`, `CarPlay` folders, "Create groups").
 4. Add a Core Data model file named `InspectionModel.xcdatamodeld` (entities can be added later).
-5. Capabilities: **Keychain Sharing**. Optional: Background Modes (Location, Background fetch).
-6. Build & Run.
+5. Capabilities: **Keychain Sharing**, **Push Notifications**, **Background Modes** (Location updates, Background fetch, Background processing, Remote notifications).
+6. Info.plist keys required for Tier 2:
+   - `NSLocationWhenInUseUsageDescription` — "Auto Inspector Network uses your location to track active trips."
+   - `NSLocationAlwaysAndWhenInUseUsageDescription` — "Continues tracking your trip in the background and via CarPlay."
+   - `NSCameraUsageDescription` — "Attach photos to inspection items."
+   - `NSPhotoLibraryUsageDescription` — "Attach photos from your library to inspection items."
+   - `UIBackgroundModes` = `location`, `fetch`, `processing`, `remote-notification`
+   - `BGTaskSchedulerPermittedIdentifiers` = `["com.autoinspectornetwork.refresh"]`
+7. Build & Run.
 
 The publishable backend URL and anon key are baked into `Core/Network/SupabaseConfig.swift`.
 
