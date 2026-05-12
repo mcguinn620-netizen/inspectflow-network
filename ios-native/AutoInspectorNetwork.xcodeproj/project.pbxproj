@@ -53,12 +53,14 @@
 		47A5D4E5D08E65962F7E0954 /* InspectionTemplateModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A8D7405D4EEF6598B26AE8 /* InspectionTemplateModels.swift */; };
 		A815EF4C8EF422D1E650384F /* SyncStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF0D1A3575838CCF21C4C0A /* SyncStatusView.swift */; };
 		A9525E9882F5B2F733AF9579 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24D66C2E4EAFB44A5315E98C /* Assets.xcassets */; };
+		F9D7651D08E0F62880FCA950 /* InspectionModel.xcdatamodeld in Resources */ = {isa = PBXBuildFile; fileRef = D7A27A5F7DD012D94E8002F7 /* InspectionModel.xcdatamodeld */; };
 		23281EFF57164890EE76E5BE /* InspectFlowConnector in Frameworks */ = {isa = PBXBuildFile; productRef = A488E847573FE5A80E25C29C /* InspectFlowConnector */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		A612554AFBDBB78BBE69496E /* AutoInspectorNetwork.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutoInspectorNetwork.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		24D66C2E4EAFB44A5315E98C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Assets.xcassets"; sourceTree = "<group>"; };
+		D7A27A5F7DD012D94E8002F7 /* InspectionModel.xcdatamodeld */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "InspectionModel.xcdatamodeld"; sourceTree = "<group>"; };
 		B34B0507FE00BF36365A62E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info.plist"; sourceTree = "<group>"; };
 		7AFB22251DBA18891B1D9A84 /* AutoInspectorNetwork.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "AutoInspectorNetwork.entitlements"; sourceTree = "<group>"; };
 		B18367283123AA618DD18523 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDelegate.swift"; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 				5DC03ACB53DE45700BB4E9F0 /* Features */,
 				51B141E1E5C40FEE5FD5E5B6 /* Shared */,
 				24D66C2E4EAFB44A5315E98C /* Assets.xcassets */,
+				D7A27A5F7DD012D94E8002F7 /* InspectionModel.xcdatamodeld */,
 				B34B0507FE00BF36365A62E0 /* Info.plist */,
 				7AFB22251DBA18891B1D9A84 /* AutoInspectorNetwork.entitlements */,
 				C863DA5204F95EC573510473 /* Products */,
@@ -486,6 +489,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A9525E9882F5B2F733AF9579 /* Assets.xcassets in Resources */,
+				F9D7651D08E0F62880FCA950 /* InspectionModel.xcdatamodeld in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
