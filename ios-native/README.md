@@ -18,21 +18,48 @@ The app talks to **Lovable Cloud** through the local Swift package at `../swift-
 - DB: PostgREST (`profiles`, `organization_users`, `trips`, `jobs`, `vehicles`, `inspection_requests`)
 - Session is persisted in Keychain by `InspectFlowConnector.SessionStore`
 
-## Setup (Xcode 14)
+## Setup (Xcode 15+)
 
-1. Open or create an iOS App project (iOS 16+, SwiftUI lifecycle).
-2. **File ▸ Add Packages…** — either paste `https://github.com/mcguinn620-netizen/inspectflow-network.git` (Up to Next Major from `0.2.0`), or use **Add Local…** and select the repo root. Tagging is documented in `RELEASING.md`.
-3. Add the contents of `ios-native/` to your app target (drag the `App`, `Core`, `Features`, `Shared`, `CarPlay` folders, "Create groups").
-4. Add a Core Data model file named `InspectionModel.xcdatamodeld` (entities can be added later).
-5. Capabilities: **Keychain Sharing**, **Push Notifications**, **Background Modes** (Location updates, Background fetch, Background processing, Remote notifications).
-6. Info.plist keys required for Tier 2:
-   - `NSLocationWhenInUseUsageDescription` — "Auto Inspector Network uses your location to track active trips."
-   - `NSLocationAlwaysAndWhenInUseUsageDescription` — "Continues tracking your trip in the background and via CarPlay."
-   - `NSCameraUsageDescription` — "Attach photos to inspection items."
-   - `NSPhotoLibraryUsageDescription` — "Attach photos from your library to inspection items."
-   - `UIBackgroundModes` = `location`, `fetch`, `processing`, `remote-notification`
-   - `BGTaskSchedulerPermittedIdentifiers` = `["com.autoinspectornetwork.refresh"]`
-7. Build & Run.
+A ready-to-build Xcode project is checked in at
+`ios-native/AutoInspectorNetwork.xcodeproj`. It already references every
+source file under `ios-native/`, the local `InspectFlowConnector` Swift
+package at the repo root, the bundled `Info.plist`, `Assets.xcassets`,
+and `AutoInspectorNetwork.entitlements`.
+
+1. Open `ios-native/AutoInspectorNetwork.xcodeproj` in Xcode 15 or newer.
+2. Select the `AutoInspectorNetwork` target → **Signing & Capabilities** and
+   pick your team (the project ships with team `95VG5GW59K` — change it).
+3. Capabilities already declared via the entitlements/Info.plist:
+   - **Push Notifications** (`aps-environment = development`)
+   - **Background Modes**: Location updates, Background fetch,
+     Background processing, Remote notifications
+   - `BGTaskSchedulerPermittedIdentifiers = ["com.autoinspectornetwork.refresh"]`
+   - All required usage strings (Location, Camera, Photo Library)
+4. Build & Run on a device (background location and push require a real device).
+
+> CarPlay templates are included as source but the **CarPlay entitlement**
+> (`com.apple.developer.carplay-maps` / `carplay-driving-task`) requires
+> separate approval from Apple. The app builds and runs without it; CarPlay
+> functionality activates once Apple grants the entitlement and you add it
+> to `AutoInspectorNetwork.entitlements`.
+
+## Bitrise CI
+
+`bitrise.yml` at the repo root defines two workflows that target this project:
+
+- `build` — runs on every push to `main`. Resolves SPM, then
+  `xcode-build-for-test` for the iOS Simulator (no signing required).
+- `archive_and_export_app` — runs on PRs into `main`. Installs certs/profiles,
+  archives, and exports an IPA using automatic Apple ID signing.
+
+Both workflows use these envs (see `app.envs` in `bitrise.yml`):
+
+```
+BITRISE_PROJECT_PATH = ios-native/AutoInspectorNetwork.xcodeproj
+BITRISE_SCHEME       = AutoInspectorNetwork
+```
+
+No `npm`/Capacitor steps are involved — the web app is independent.
 
 The publishable backend URL and anon key are baked into `Core/Network/SupabaseConfig.swift`.
 

@@ -1,0 +1,7 @@
+# Xcode build artifacts (do not commit)
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+.swiftpm/
+Package.resolved
