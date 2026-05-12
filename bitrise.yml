@@ -3,113 +3,14 @@ format_version: '26'
 default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 project_type: ios
 workflows:
-  archive_and_export_app:
-    summary: Create an IPA file to install your app on a device or share it with
-      your team.
-    description: The workflow will first clone your Git repository, cache and
-      install your project's dependencies if any, export an IPA file from the
-      project and save it.
-    steps:
-    - git-clone@8: {}
-    - script@1:
-        title: npm ci
-        inputs:
-        - content: |-
-            #!/usr/bin/env bash
-            set -euxo pipefail
-            npm ci
-    - script@1:
-        title: npm run build
-        inputs:
-        - content: |-
-            #!/usr/bin/env bash
-            set -euxo pipefail
-            npm run build
-    - script@1:
-        title: Capacitor sync iOS
-        inputs:
-        - content: |-
-            #!/usr/bin/env bash
-            set -euxo pipefail
-            npx cap sync ios
-    - script@1:
-        title: List available iOS simulators
-        inputs:
-        - content: |-
-            #!/usr/bin/env bash
-            set -euxo pipefail
-            xcrun simctl list devices available
-    - certificate-and-profile-installer@1: {}
-    - xcode-archive@6:
-        inputs:
-        - project_path: "$BITRISE_PROJECT_PATH"
-        - scheme: "$BITRISE_SCHEME"
-        - distribution_method: "$BITRISE_DISTRIBUTION_METHOD"
-        - automatic_code_signing: apple-id
-        - platform: iOS
-    - script@1:
-        title: Copy exported IPA to deploy dir
-        inputs:
-        - content: |-
-            #!/usr/bin/env bash
-            set -euo pipefail
-
-            echo "IPA path: ${BITRISE_IPA_PATH:-}"
-
-            if [ -z "${BITRISE_IPA_PATH:-}" ]; then
-              echo "BITRISE_IPA_PATH is not set. The Xcode Archive step may not have exported an IPA."
-              exit 1
-            fi
-
-            if [ ! -f "$BITRISE_IPA_PATH" ]; then
-              echo "IPA file not found at: $BITRISE_IPA_PATH"
-              exit 1
-            fi
-
-            mkdir -p "$BITRISE_DEPLOY_DIR"
-            cp "$BITRISE_IPA_PATH" "$BITRISE_DEPLOY_DIR/"
-
-            echo "Copied IPA to deploy dir:"
-            ls -lah "$BITRISE_DEPLOY_DIR"
-    - deploy-to-bitrise-io@2: {}
-    triggers:
-      pull_request:
-      - target_branch: Main
-        draft_enabled: false
   build:
-    summary: Build your Xcode project.
-    description: The workflow will first clone your Git repository, cache and
-      install your project's dependencies if any and build your project.
+    summary: Compile the native SwiftUI app for the iOS Simulator (no signing).
+    description: |
+      Resolves the local InspectFlowConnector Swift Package and compiles the
+      AutoInspectorNetwork app for an iPhone simulator. Use this on every push
+      to catch source/connector regressions before archiving.
     steps:
     - git-clone@8: {}
-    - script@1:
-        title: npm ci
-        inputs:
-        - content: |-
-            #!/usr/bin/env bash
-            set -euxo pipefail
-            npm ci
-    - script@1:
-        title: npm run build
-        inputs:
-        - content: |-
-            #!/usr/bin/env bash
-            set -euxo pipefail
-            npm run build
-    - script@1:
-        title: Capacitor sync iOS
-        inputs:
-        - content: |-
-            #!/usr/bin/env bash
-            set -euxo pipefail
-            npx cap sync ios
-    - script@1:
-        title: List available iOS simulators
-        inputs:
-        - content: |-
-            #!/usr/bin/env bash
-            set -euxo pipefail
-            xcrun simctl list devices available
     - restore-spm-cache@3: {}
     - xcode-build-for-test@3:
         inputs:
@@ -120,10 +21,6 @@ workflows:
         - output_dir: "$BITRISE_DEPLOY_DIR"
         - automatic_code_signing: 'off'
     - save-spm-cache@1: {}
-    - appetize-deploy@0:
-        inputs:
-        - app_path: $BITRISE_DEPLOY_DIR
-        - appetize_token: $appetize_token
     - deploy-to-bitrise-io@2:
         inputs:
         - is_compress: false
@@ -133,16 +30,59 @@ workflows:
     triggers:
       push:
       - branch: main
+
+  archive_and_export_app:
+    summary: Archive AutoInspectorNetwork and export an IPA for distribution.
+    description: |
+      Resolves Swift Packages, archives the app with automatic code signing
+      using the configured Apple Developer team, and exports an IPA.
+    steps:
+    - git-clone@8: {}
+    - restore-spm-cache@3: {}
+    - certificate-and-profile-installer@1: {}
+    - xcode-archive@6:
+        inputs:
+        - project_path: "$BITRISE_PROJECT_PATH"
+        - scheme: "$BITRISE_SCHEME"
+        - distribution_method: "$BITRISE_DISTRIBUTION_METHOD"
+        - automatic_code_signing: apple-id
+        - platform: iOS
+    - save-spm-cache@1: {}
+    - script@1:
+        title: Copy exported IPA to deploy dir
+        inputs:
+        - content: |-
+            #!/usr/bin/env bash
+            set -euo pipefail
+            echo "IPA path: ${BITRISE_IPA_PATH:-}"
+            if [ -z "${BITRISE_IPA_PATH:-}" ]; then
+              echo "BITRISE_IPA_PATH is not set; the Xcode Archive step did not export an IPA."
+              exit 1
+            fi
+            if [ ! -f "$BITRISE_IPA_PATH" ]; then
+              echo "IPA file not found at: $BITRISE_IPA_PATH"
+              exit 1
+            fi
+            mkdir -p "$BITRISE_DEPLOY_DIR"
+            cp "$BITRISE_IPA_PATH" "$BITRISE_DEPLOY_DIR/"
+            ls -lah "$BITRISE_DEPLOY_DIR"
+    - deploy-to-bitrise-io@2: {}
+    triggers:
+      pull_request:
+      - target_branch: main
+        draft_enabled: false
+
 meta:
   bitrise.io:
     stack: osx-xcode-26.4.x
     machine_type_id: g2.mac.large
+
 app:
   envs:
-  - BITRISE_PROJECT_PATH: ios/App/App.xcworkspace
+  - BITRISE_PROJECT_PATH: ios-native/AutoInspectorNetwork.xcodeproj
     opts:
       is_expand: false
-  - BITRISE_SCHEME: App
+  - BITRISE_SCHEME: AutoInspectorNetwork
     opts:
       is_expand: false
   - BITRISE_DISTRIBUTION_METHOD: ad-hoc
