@@ -16,7 +16,7 @@ workflows:
             set -ex
             cd ios-native
             # Force resolution within the subfolder to prevent root search
-            xcodebuild -resolvePackageDependencies -project AutoInspectorNetwork.xcodeproj -scheme "$BITRISE_SCHEME"
+            xcodebuild -resolvePackageDependencies -workspace VehicleInspectorsApp.xcworkspace -scheme "$BITRISE_SCHEME"
     - xcode-build-for-test@3:
         inputs:
         - project_path: "$BITRISE_PROJECT_PATH"
@@ -29,7 +29,7 @@ workflows:
         - deploy_path: "$BITRISE_DEPLOY_DIR"
 
   archive_and_export_app:
-    summary: Archive AutoInspectorNetwork and export an IPA.
+    summary: Archive VehicleInspectorsApp and export an IPA.
     steps:
     - git-clone@8: {}
     - restore-spm-cache@3: {}
@@ -42,7 +42,7 @@ workflows:
             set -ex
             cd ios-native
             # This prevents xcodebuild from looking at the root /Users/vagrant/ folder
-            xcodebuild -resolvePackageDependencies -project AutoInspectorNetwork.xcodeproj -scheme "$BITRISE_SCHEME"
+            xcodebuild -resolvePackageDependencies -workspace VehicleInspectorsApp.xcworkspace -scheme "$BITRISE_SCHEME"
     - xcode-archive@6:
         inputs:
         # We point to the project from the root context
@@ -66,10 +66,10 @@ meta:
 
 app:
   envs:
-  - BITRISE_PROJECT_PATH: ios-native/AutoInspectorNetwork.xcodeproj
+  - BITRISE_PROJECT_PATH: ios-native/VehicleInspectorsApp.xcworkspace
     opts:
       is_expand: true
-  - BITRISE_SCHEME: AutoInspectorNetwork
+  - BITRISE_SCHEME: VehicleInspectorsApp
     opts:
       is_expand: true
   - BITRISE_DISTRIBUTION_METHOD: ad-hoc
