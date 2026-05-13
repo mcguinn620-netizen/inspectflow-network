@@ -18,15 +18,16 @@ The app talks to **Lovable Cloud** through the local Swift package at `../swift-
 - DB: PostgREST (`profiles`, `organization_users`, `trips`, `jobs`, `vehicles`, `inspection_requests`)
 - Session is persisted in Keychain by `InspectFlowConnector.SessionStore`
 
-## Setup (Xcode 15+)
+## Setup (Xcode 14+)
 
-A ready-to-build Xcode project is checked in at
-`ios-native/AutoInspectorNetwork.xcodeproj`. It already references every
-source file under `ios-native/`, the local `InspectFlowConnector` Swift
-package at the repo root, the bundled `Info.plist`, `Assets.xcassets`,
-and `AutoInspectorNetwork.entitlements`.
+A ready-to-build Xcode workspace is checked in at
+`ios-native/VehicleInspectorsApp.xcworkspace`. The workspace references
+`AutoInspectorNetwork.xcodeproj` via a relative path, and the project still
+references every source file under `ios-native/`, the local
+`InspectFlowConnector` Swift package at the repo root, the bundled
+`Info.plist`, `Assets.xcassets`, and `AutoInspectorNetwork.entitlements`.
 
-1. Open `ios-native/AutoInspectorNetwork.xcodeproj` in Xcode 15 or newer.
+1. Open `ios-native/VehicleInspectorsApp.xcworkspace` in Xcode 14 or newer.
 2. Select the `AutoInspectorNetwork` target → **Signing & Capabilities** and
    pick your team (the project ships with team `95VG5GW59K` — change it).
 3. Capabilities already declared via the entitlements/Info.plist:
@@ -55,11 +56,21 @@ and `AutoInspectorNetwork.entitlements`.
 Both workflows use these envs (see `app.envs` in `bitrise.yml`):
 
 ```
-BITRISE_PROJECT_PATH = ios-native/AutoInspectorNetwork.xcodeproj
-BITRISE_SCHEME       = AutoInspectorNetwork
+BITRISE_PROJECT_PATH = ios-native/VehicleInspectorsApp.xcworkspace
+BITRISE_SCHEME       = VehicleInspectorsApp
 ```
 
 No `npm`/Capacitor steps are involved — the web app is independent.
+
+### Command-line builds
+
+Use the workspace for all future command-line builds:
+
+```bash
+xcodebuild -workspace VehicleInspectorsApp.xcworkspace \
+  -scheme VehicleInspectorsApp
+```
+
 
 The publishable backend URL and anon key are baked into `Core/Network/SupabaseConfig.swift`.
 

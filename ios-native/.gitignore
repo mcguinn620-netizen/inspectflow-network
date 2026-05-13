@@ -2,5 +2,10 @@
 build/
 DerivedData/
 *.xcuserstate
+
+# Keep workspace/project shared data in git; ignore only user-specific state
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+
 .swiftpm/
 Package.resolved
