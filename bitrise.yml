@@ -36,7 +36,7 @@ workflows:
     triggers:
   push:
   - branch: main
-    enabled: false
+    
   archive_and_export_app:
     summary: Archive AutoInspectorNetwork and export an IPA for distribution.
     description: |
