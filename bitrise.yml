@@ -34,8 +34,8 @@ workflows:
         - deploy_path: "$BITRISE_DEPLOY_DIR"
         - notify_user_groups: Everyone
     triggers:
-  push:
-  - branch: main
+     push:
+     - branch: main
     
   archive_and_export_app:
     summary: Archive AutoInspectorNetwork and export an IPA for distribution.
