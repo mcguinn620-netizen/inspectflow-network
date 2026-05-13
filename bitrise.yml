@@ -49,7 +49,7 @@ workflows:
     - xcode-archive@6:
         inputs:
         - workdir: "./ios-native"
-        - project_path: "./ios-native/AutoInspectorNetwork.xcodeproj"
+        - project_path: "AutoInspectorNetwork.xcodeproj"
         - scheme: "$BITRISE_SCHEME"
         - distribution_method: "$BITRISE_DISTRIBUTION_METHOD"
         - automatic_code_signing: 'off'
