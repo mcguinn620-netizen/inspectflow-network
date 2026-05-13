@@ -686,7 +686,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		5C6E391C12FCAF86EE838222 /* XCLocalSwiftPackageReference "../.." */ = {
+		5C6E391C12FCAF86EE838222 /* XCLocalSwiftPackageReference ".." */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = "../..";
 		};
@@ -695,7 +695,7 @@
 /* Begin XCSwiftPackageProductDependency section */
 		A488E847573FE5A80E25C29C /* InspectFlowConnector */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5C6E391C12FCAF86EE838222 /* XCLocalSwiftPackageReference "../.." */;
+			package = 5C6E391C12FCAF86EE838222 /* XCLocalSwiftPackageReference ".." */;
 			productName = InspectFlowConnector;
 		};
 /* End XCSwiftPackageProductDependency section */
