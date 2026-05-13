@@ -4,11 +4,7 @@ project_type: ios
 
 workflows:
   build:
-    summary: Compile the native SwiftUI app for the iOS Simulator (no signing).
-    description: |
-      Resolves the local InspectFlowConnector Swift Package and compiles the
-      AutoInspectorNetwork app for an iPhone simulator. Use this on every push
-      to catch source/connector regressions before archiving.
+    summary: Compile the native SwiftUI app for the iOS Simulator.
     steps:
     - git-clone@8: {}
     - restore-spm-cache@3: {}
@@ -19,68 +15,49 @@ workflows:
             #!/bin/bash
             set -ex
             cd ios-native
+            # Force resolution within the subfolder to prevent root search
             xcodebuild -resolvePackageDependencies -project AutoInspectorNetwork.xcodeproj -scheme "$BITRISE_SCHEME"
     - xcode-build-for-test@3:
         inputs:
         - project_path: "$BITRISE_PROJECT_PATH"
         - scheme: "$BITRISE_SCHEME"
         - destination: platform=iOS Simulator,name=Bitrise iOS default,OS=latest
-        - cache_level: none
-        - output_dir: "$BITRISE_DEPLOY_DIR"
         - automatic_code_signing: 'off'
     - save-spm-cache@1: {}
     - deploy-to-bitrise-io@2:
         inputs:
-        - is_compress: false
-        - is_enable_public_page: true
         - deploy_path: "$BITRISE_DEPLOY_DIR"
-        - notify_user_groups: Everyone
-    triggers:
-      push:
-      - branch: main
-        enabled: false
 
   archive_and_export_app:
-    summary: Archive AutoInspectorNetwork and export an IPA for distribution.
-    description: |
-      Resolves Swift Packages, archives the app with automatic code signing
-      using the configured Apple Developer team, and exports an IPA.
+    summary: Archive AutoInspectorNetwork and export an IPA.
     steps:
     - git-clone@8: {}
     - restore-spm-cache@3: {}
     - certificate-and-profile-installer@1: {}
+    - script@1:
+        title: Fix Package Resolution
+        inputs:
+        - content: |-
+            #!/bin/bash
+            set -ex
+            cd ios-native
+            # This prevents xcodebuild from looking at the root /Users/vagrant/ folder
+            xcodebuild -resolvePackageDependencies -project AutoInspectorNetwork.xcodeproj -scheme "$BITRISE_SCHEME"
     - xcode-archive@6:
         inputs:
+        # We point to the project from the root context
         - project_path: "$BITRISE_PROJECT_PATH"
         - scheme: "$BITRISE_SCHEME"
         - distribution_method: "$BITRISE_DISTRIBUTION_METHOD"
         - automatic_code_signing: 'off'
         - platform: iOS
         - verbose_log: 'yes'
+        # DO NOT set workdir here; it conflicts with BITRISE_PROJECT_PATH
     - save-spm-cache@1: {}
-    - script@1:
-        title: Copy exported IPA to deploy dir
-        inputs:
-        - content: |-
-            #!/usr/bin/env bash
-            set -euo pipefail
-            echo "IPA path: ${BITRISE_IPA_PATH:-}"
-            if [ -z "${BITRISE_IPA_PATH:-}" ]; then
-              echo "BITRISE_IPA_PATH is not set; the Xcode Archive step did not export an IPA."
-              exit 1
-            fi
-            if [ ! -f "$BITRISE_IPA_PATH" ]; then
-              echo "IPA file not found at: $BITRISE_IPA_PATH"
-              exit 1
-            fi
-            mkdir -p "$BITRISE_DEPLOY_DIR"
-            cp "$BITRISE_IPA_PATH" "$BITRISE_DEPLOY_DIR/"
-            ls -lah "$BITRISE_DEPLOY_DIR"
     - deploy-to-bitrise-io@2: {}
     triggers:
       pull_request:
       - target_branch: main
-        draft_enabled: false
 
 meta:
   bitrise.io:
