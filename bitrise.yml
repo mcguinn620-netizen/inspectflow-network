@@ -45,6 +45,16 @@ workflows:
     - git-clone@8: {}
     - restore-spm-cache@3: {}
     - certificate-and-profile-installer@1: {}
+    - script@1:
+				title: Resolve Swift Package
+        inputs:
+        - content: >
+            - script@1:
+                title: Resolve Swift Packages
+                inputs:
+                - content: |-
+                    #!/bin/bash
+                    xcodebuild -resolvePackageDependencies -project "$BITRISE_PROJECT_PATH" -scheme "$BITRISE_SCHEME"
     - xcode-archive@6:
         inputs:
         - project_path: "$BITRISE_PROJECT_PATH"
