@@ -12,7 +12,7 @@ workflows:
     steps:
     - git-clone@8: {}
     - restore-spm-cache@3: {}
-    - script@1:
+    - script@1: {}
     title: Resolve Swift Packages
     inputs:
     - content: |-
@@ -34,9 +34,9 @@ workflows:
         - deploy_path: "$BITRISE_DEPLOY_DIR"
         - notify_user_groups: Everyone
     triggers:
-     push:
-     - branch: main
-    
+      push:
+      - branch: main
+        enabled: false
   archive_and_export_app:
     summary: Archive AutoInspectorNetwork and export an IPA for distribution.
     description: |
@@ -46,13 +46,6 @@ workflows:
     - git-clone@8: {}
     - restore-spm-cache@3: {}
     - certificate-and-profile-installer@1: {}
-    - script@1:
-        title: Resolve Swift Packages
-        inputs:
-        - content: |-
-            #!/bin/bash
-            xcodebuild -resolvePackageDependencies -project "$BITRISE_PROJECT_PATH" -scheme "$BITRISE_SCHEME"
-        - is_debug: "yes"
     - xcode-archive@6:
         inputs:
         - workdir: "./ios-native"
