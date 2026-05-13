@@ -1,7 +1,7 @@
----
 format_version: '26'
 default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 project_type: ios
+
 workflows:
   build:
     summary: Compile the native SwiftUI app for the iOS Simulator (no signing).
@@ -12,12 +12,14 @@ workflows:
     steps:
     - git-clone@8: {}
     - restore-spm-cache@3: {}
-    - script@1: {}
-    title: Resolve Swift Packages
-    inputs:
-    - content: |-
-        #!/bin/bash
-        xcodebuild -resolvePackageDependencies -project "$BITRISE_PROJECT_PATH" -scheme "$BITRISE_SCHEME"
+    - script@1:
+        title: Resolve Swift Packages
+        inputs:
+        - content: |-
+            #!/bin/bash
+            set -ex
+            cd ios-native
+            xcodebuild -resolvePackageDependencies -project AutoInspectorNetwork.xcodeproj -scheme "$BITRISE_SCHEME"
     - xcode-build-for-test@3:
         inputs:
         - project_path: "$BITRISE_PROJECT_PATH"
@@ -37,6 +39,7 @@ workflows:
       push:
       - branch: main
         enabled: false
+
   archive_and_export_app:
     summary: Archive AutoInspectorNetwork and export an IPA for distribution.
     description: |
@@ -48,13 +51,12 @@ workflows:
     - certificate-and-profile-installer@1: {}
     - xcode-archive@6:
         inputs:
-        - workdir: "./ios-native"
-        - project_path: "AutoInspectorNetwork.xcodeproj"
+        - project_path: "$BITRISE_PROJECT_PATH"
         - scheme: "$BITRISE_SCHEME"
         - distribution_method: "$BITRISE_DISTRIBUTION_METHOD"
         - automatic_code_signing: 'off'
         - platform: iOS
-        - verbose_log: "yes"
+        - verbose_log: 'yes'
     - save-spm-cache@1: {}
     - script@1:
         title: Copy exported IPA to deploy dir
@@ -79,10 +81,12 @@ workflows:
       pull_request:
       - target_branch: main
         draft_enabled: false
+
 meta:
   bitrise.io:
     stack: osx-xcode-26.4.x
     machine_type_id: g2.mac.large
+
 app:
   envs:
   - BITRISE_PROJECT_PATH: ios-native/AutoInspectorNetwork.xcodeproj
