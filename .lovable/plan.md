@@ -1,55 +1,45 @@
-# Fix Bitrise: missing root `Package.swift`
+## Goal
 
-## Root cause
+Produce static PNG mockups (iPhone 15 Pro frame, 393×852 @ 2x) showing every tier-2 surface in the native iOS app, saved to `/mnt/documents/` and embedded as artifacts in chat. No iOS simulator is available in this sandbox, so these are HTML/CSS renders of the actual SwiftUI layouts — pixel-faithful to the Swift source, not photographs of a running app.
 
-The Xcode project references a local Swift package via `XCLocalSwiftPackageReference` with `relativePath = "../.."` (relative to `ios-native/AutoInspectorNetwork.xcodeproj`, this points at the repo root). Bitrise resolves that to `/Users/[REDACTED]/git/Package.swift` and fails because **no `Package.swift` exists at the repo root**.
+## What "tier 2" covers (from the codebase)
 
-The connector sources are present (`swift-connector/Sources/InspectFlowConnector/...`) and `RELEASING.md` documents the manifest as living at the repo root, but the file itself is missing from the codebase. The error reproduces locally too — `find . -name Package.swift` only returns the legacy Capacitor one under `ios/App/CapApp-SPM/`.
+Based on `ios-native/Features/...` and `ios-native/CarPlay/...`:
 
-## Fix
+**Inspections**
+1. `InspectionsView` — list of inspection requests with status + scheduled date, sync chip in nav bar
+2. `InspectionDetailView` — sectioned checklist, Pass/Warn/Fail pills (emerald/amber/rose), notes field, camera button, Submit toolbar
+3. `PhotoCapture` sheet — camera capture state
 
-1. **Create `Package.swift` at the repo root** declaring the `InspectFlowConnector` package, with the target pointing at the existing sources:
-   - `swift-tools-version:5.7`
-   - Platforms: iOS 16, macOS 12
-   - One library product `InspectFlowConnector`
-   - Target path: `swift-connector/Sources/InspectFlowConnector`
-   - Test target path: `swift-connector/Tests/InspectFlowConnectorTests`
-   - No external dependencies (matches the "pure-Swift, zero-dependency" promise in `swift-connector/README.md`).
+**Trips**
+4. `TripsView` — empty state + populated list (date, status, miles, start time)
+5. `TripsView` with `ActiveTripBar` — live trip chip, total miles monospaced, Pause/End buttons
+6. `TripsView` paused state — Resume/End
 
-2. **Verify the Xcode project reference is consistent.** `relativePath = "../.."` from `ios-native/AutoInspectorNetwork.xcodeproj` correctly resolves to the repo root, so no pbxproj changes are needed once the manifest exists.
+**CarPlay (rendered in CarPlay-style template, not iPhone frame)**
+7. `CarPlayStopListTemplate` — today's stops, "Mark arrived" / "Skip" actions
 
-3. **No `bitrise.yml` change needed.** The `xcodebuild -resolvePackageDependencies` step will succeed once the manifest is in place.
+**Sync / Outbox**
+8. `SyncStatusView` — all four states side-by-side (Synced/Syncing/Offline/Sync Failed) on a sample screen
 
-## Technical details
+## How
 
-`Package.swift` (repo root):
-
-```swift
-// swift-tools-version:5.7
-import PackageDescription
-
-let package = Package(
-    name: "InspectFlowConnector",
-    platforms: [.iOS(.v16), .macOS(.v12)],
-    products: [
-        .library(name: "InspectFlowConnector", targets: ["InspectFlowConnector"]),
-    ],
-    targets: [
-        .target(
-            name: "InspectFlowConnector",
-            path: "swift-connector/Sources/InspectFlowConnector"
-        ),
-        .testTarget(
-            name: "InspectFlowConnectorTests",
-            dependencies: ["InspectFlowConnector"],
-            path: "swift-connector/Tests/InspectFlowConnectorTests"
-        ),
-    ]
-)
-```
+1. Build a single HTML file per screen using Tailwind-equivalent inline styles, matching:
+   - `AINBrand.accent` for tint, SF Pro system font stack, iOS-native list/inset-grouped styling
+   - Pass=emerald, Warn=amber, Fail=rose (per project memory)
+   - Inter for body, system mono for miles/IDs
+   - iPhone 15 Pro chrome (Dynamic Island, rounded corners, home indicator)
+2. Render each via headless Chrome at 2x DPR → PNG
+3. Save to `/mnt/documents/ios-tier2-{screen}.png`
+4. QA every PNG by re-opening it (zoom into chips, pills, nav bar) before delivering
+5. Reply with one `<presentation-artifact>` tag per PNG
 
 ## Out of scope
 
-- Re-tagging `v0.2.0` on GitHub (the local package reference doesn't need a tag).
-- Changes to the legacy `ios/App/CapApp-SPM/Package.swift` (Capacitor app, untouched).
-- Any source changes under `swift-connector/`.
+- No changes to any Swift file, project source, or repo state
+- Not running xcodebuild / simulator
+- Not building a runnable web prototype — these are static visual mockups only
+
+## Deliverable
+
+~8 PNG files in `/mnt/documents/`, each shown inline as an artifact, plus a one-line summary mapping each PNG to its SwiftUI view.
