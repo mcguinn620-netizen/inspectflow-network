@@ -54,6 +54,7 @@ workflows:
         - distribution_method: "$BITRISE_DISTRIBUTION_METHOD"
         - automatic_code_signing: 'off'
         - platform: iOS
+        - verbose_log: "yes"
     - save-spm-cache@1: {}
     - script@1:
         title: Copy exported IPA to deploy dir
@@ -84,7 +85,7 @@ meta:
     machine_type_id: g2.mac.large
 app:
   envs:
-  - BITRISE_PROJECT_PATH: AutoInspectorNetwork.xcodeproj
+  - BITRISE_PROJECT_PATH: ios-native/AutoInspectorNetwork.xcodeproj
     opts:
       is_expand: true
   - BITRISE_SCHEME: AutoInspectorNetwork
