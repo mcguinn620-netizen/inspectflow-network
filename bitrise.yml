@@ -53,6 +53,7 @@ workflows:
                     xcodebuild -resolvePackageDependencies -project "$BITRISE_PROJECT_PATH" -scheme "$BITRISE_SCHEME"
     - xcode-archive@6:
         inputs:
+        - workdir: ./ios-native
         - project_path: "$BITRISE_PROJECT_PATH"
         - scheme: "$BITRISE_SCHEME"
         - distribution_method: "$BITRISE_DISTRIBUTION_METHOD"
@@ -88,7 +89,7 @@ meta:
     machine_type_id: g2.mac.large
 app:
   envs:
-  - BITRISE_PROJECT_PATH: ios-native/AutoInspectorNetwork.xcodeproj
+  - BITRISE_PROJECT_PATH: AutoInspectorNetwork.xcodeproj
     opts:
       is_expand: true
   - BITRISE_SCHEME: AutoInspectorNetwork
