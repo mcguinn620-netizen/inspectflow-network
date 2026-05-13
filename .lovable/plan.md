@@ -1,75 +1,55 @@
-# Tier 2 — Native iOS app (delivered)
+# Fix Bitrise: missing root `Package.swift`
 
-All six workstreams from the approved plan landed in this loop. No web/React code was touched.
+## Root cause
 
-## Database
+The Xcode project references a local Swift package via `XCLocalSwiftPackageReference` with `relativePath = "../.."` (relative to `ios-native/AutoInspectorNetwork.xcodeproj`, this points at the repo root). Bitrise resolves that to `/Users/[REDACTED]/git/Package.swift` and fails because **no `Package.swift` exists at the repo root**.
 
-- `device_tokens` table created (RLS: users see/manage only their own tokens).
-- Private storage bucket `inspection-photos` created with RLS scoped to org members under `{organization_id}/{request_id}/...`.
+The connector sources are present (`swift-connector/Sources/InspectFlowConnector/...`) and `RELEASING.md` documents the manifest as living at the repo root, but the file itself is missing from the codebase. The error reproduces locally too — `find . -name Package.swift` only returns the legacy Capacitor one under `ios/App/CapApp-SPM/`.
 
-## Edge function
+## Fix
 
-- `supabase/functions/notify-inspector/index.ts` — deployed. Reads `device_tokens` for the target user and logs the dispatch payload. APNs delivery itself is a stub awaiting provider/key configuration.
+1. **Create `Package.swift` at the repo root** declaring the `InspectFlowConnector` package, with the target pointing at the existing sources:
+   - `swift-tools-version:5.7`
+   - Platforms: iOS 16, macOS 12
+   - One library product `InspectFlowConnector`
+   - Target path: `swift-connector/Sources/InspectFlowConnector`
+   - Test target path: `swift-connector/Tests/InspectFlowConnectorTests`
+   - No external dependencies (matches the "pure-Swift, zero-dependency" promise in `swift-connector/README.md`).
 
-## iOS — new files
+2. **Verify the Xcode project reference is consistent.** `relativePath = "../.."` from `ios-native/AutoInspectorNetwork.xcodeproj` correctly resolves to the repo root, so no pbxproj changes are needed once the manifest exists.
 
-- `Core/Sync/Outbox.swift` — JSON-on-disk FIFO outbox with insert/update/upsert/delete entries.
-- `Core/Sync/SyncEngine.swift` — drains outbox on network restore via `NWPathMonitor`, exponential backoff, surfaces state through existing `SyncStatusView`.
-- `Core/Sync/CoreDataCache.swift` — typed read-from-cache-then-refresh layer for `jobs`, `trips`, `vehicles`, `inspection_requests`.
-- `Core/Audit/AuditLogger.swift` — writes `audit_log` rows through the outbox.
-- `Core/Location/LocationTracker.swift` — `CLLocationManager` wrapper with always-auth, background updates, significant-change.
-- `Core/Trips/TripTrackingController.swift` — mirrors web `tripTracking.ts` filters (≤75m accuracy, ≥10m movement, dedupe, >110mph rejection); persists snapshot to disk; emits `trip_location_points` via outbox.
-- `Core/Realtime/RealtimeSubscriptions.swift` — `inspection_requests`, `jobs`, `trips` subscriptions.
-- `Core/Notifications/PushRegistrar.swift` — APNs registration → `device_tokens` upsert.
-- `Features/Inspections/InspectionDetailView.swift` + `PhotoCapture.swift` — template-driven checklist (pass/warn/fail + notes + photos), camera/library picker, score submission.
-- `Features/Trips/TripDetailView.swift` — shipped as `ActiveTripBar` inside the rewritten `TripsView`.
-- `Shared/Models/InspectionTemplateModels.swift` — template + checklist + scoring (`InspectionScoring.compute`).
+3. **No `bitrise.yml` change needed.** The `xcodebuild -resolvePackageDependencies` step will succeed once the manifest is in place.
 
-## iOS — rewritten
+## Technical details
 
-- `App/AppDelegate.swift` — push registration, `BGAppRefreshTask` (`com.autoinspectornetwork.refresh`), trip restoration on launch.
-- `Features/Trips/TripsViewModel.swift` + `TripsView.swift` — start/pause/resume/complete with live mileage + status pill.
-- `Features/Inspections/InspectionsViewModel.swift` + `InspectionsView.swift` — list now navigates into `InspectionDetailView`; realtime + cache.
-- `CarPlay/CarPlayTripService.swift` — real live-trip flow shared with phone, voice cues via `AVSpeechSynthesizer`.
-- `Core/Network/SupabaseService.swift` — extended with template fetch, photo upload, and trip mutations.
-- `Shared/Models/DomainModels.swift` — `InspectionRequest` gains `templateID` and `Hashable`.
+`Package.swift` (repo root):
 
-## Removed
+```swift
+// swift-tools-version:5.7
+import PackageDescription
 
-- `Core/Sync/MutationQueue.swift` (superseded by `Outbox`).
-
-## Connector (`v0.2.0`)
-
-The connector source (`swift-connector/Sources/InspectFlowConnector/...`) already exposes the surface Tier 2 needs:
-
-- `StorageClient.upload` (used by photo capture).
-- `RealtimeChannel.onPostgresChange` (used by `RealtimeSubscriptions`).
-- `FunctionsClient.invoke` (used by future push hooks).
-
-Cut tag `v0.2.0` per `RELEASING.md` and bump the Playgrounds rule to **Up to Next Major from 0.2.0**. Docs updated:
-- `RELEASING.md`
-- `ios-native/README.md`
-- `ios-native/PLAYGROUNDS.md`
-
-## Required Info.plist keys (host project)
-
-```text
-NSLocationWhenInUseUsageDescription
-NSLocationAlwaysAndWhenInUseUsageDescription
-NSCameraUsageDescription
-NSPhotoLibraryUsageDescription
-UIBackgroundModes = location, fetch, processing, remote-notification
-BGTaskSchedulerPermittedIdentifiers = ["com.autoinspectornetwork.refresh"]
+let package = Package(
+    name: "InspectFlowConnector",
+    platforms: [.iOS(.v16), .macOS(.v12)],
+    products: [
+        .library(name: "InspectFlowConnector", targets: ["InspectFlowConnector"]),
+    ],
+    targets: [
+        .target(
+            name: "InspectFlowConnector",
+            path: "swift-connector/Sources/InspectFlowConnector"
+        ),
+        .testTarget(
+            name: "InspectFlowConnectorTests",
+            dependencies: ["InspectFlowConnector"],
+            path: "swift-connector/Tests/InspectFlowConnectorTests"
+        ),
+    ]
+)
 ```
 
-## How to test
+## Out of scope
 
-1. Pull the latest on your iOS host project, bump the connector to `v0.2.0`, add the Info.plist keys + capabilities (Push Notifications, Background Modes, Keychain Sharing).
-2. Sign in → **Trips** tab shows a `+` button. Tap it to start a trip; live mileage ticks while moving (or via simulator GPX). Pause/Resume/End all round-trip via outbox.
-3. **Inspections** tab → tap a request with a `template_id` → run the checklist with pass/warn/fail + photos → Submit. Verify a row in `inspection_scores` and the request status flipping to `awaiting_review`.
-4. Toggle airplane mode mid-flow: writes queue locally and drain when online.
-5. Send a test invocation to the `notify-inspector` edge function with the signed-in user's id and watch the function logs.
-
-## Out of scope (Tier 3)
-
-Apple Sign In / Google OAuth in native shell, Stripe billing UI, AI intake / template marketplace screens, Tax + Drive feature parity, Widgets, Live Activities, Apple Watch.
+- Re-tagging `v0.2.0` on GitHub (the local package reference doesn't need a tag).
+- Changes to the legacy `ios/App/CapApp-SPM/Package.swift` (Capacitor app, untouched).
+- Any source changes under `swift-connector/`.
