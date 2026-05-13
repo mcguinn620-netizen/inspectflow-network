@@ -1,3 +1,4 @@
+-----
 format_version: '26'
 default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 project_type: ios
@@ -9,13 +10,27 @@ workflows:
     - git-clone@8: {}
     - restore-spm-cache@3: {}
     - script@1:
+        title: Path and Package Validation
+        inputs:
+        - content: |-
+            #!/bin/bash
+            set -ex
+            echo "Checking for Package.swift in root..."
+            if [ -f "Package.swift" ]; then
+              echo "✅ Package.swift found in root."
+            else
+              echo "❌ Package.swift NOT found in root. Check repository structure."
+              ls -R
+              exit 1
+            fi
+    - script@1:
         title: Resolve Swift Packages
         inputs:
         - content: |-
             #!/bin/bash
             set -ex
             cd ios-native
-            # Force resolution within the subfolder to prevent root search
+            # Force resolution using the Workspace context
             xcodebuild -resolvePackageDependencies -workspace VehicleInspectorsApp.xcworkspace -scheme "$BITRISE_SCHEME"
     - xcode-build-for-test@3:
         inputs:
@@ -41,7 +56,7 @@ workflows:
             #!/bin/bash
             set -ex
             cd ios-native
-            # This ensures xcodebuild finds the Package Graph inside the workspace context
+            # Manually resolve before archiving to prevent 'vagrant' naming issues
             xcodebuild -resolvePackageDependencies -workspace VehicleInspectorsApp.xcworkspace -scheme "$BITRISE_SCHEME"
     - xcode-archive@6:
         inputs:
