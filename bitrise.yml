@@ -23,7 +23,7 @@ workflows:
     - certificate-and-profile-installer@1: {}
     - set-ios-product-bundle-identifier@1:
         inputs:
-        - project_path: "$BITRISE_PROJECT_PATH"
+        - project_path: "ios-native/AutoInspectorNetwork.xcodeproj"
         - new_bundle_identifier: KADM.AutoInspectorNetwork
     - xcode-archive@6:
         inputs:
