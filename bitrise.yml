@@ -43,7 +43,7 @@ meta:
     machine_type_id: g2.mac.large
 app:
   envs:
-  - BITRISE_PROJECT_PATH: ios-native/AutoInspectorNetworkApp.xcworkspace
+  - BITRISE_PROJECT_PATH: ios-native/AutoInspectorNetwork.xcworkspace
     opts:
       is_expand: true
   - BITRISE_SCHEME: AutoInspectorNetworkApp
