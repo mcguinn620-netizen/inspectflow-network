@@ -12,11 +12,14 @@ Pure-SwiftUI iOS app for the **Auto Inspector Network** (AIN) platform. Targets 
 
 ## Backend
 
-The app talks to **Lovable Cloud** through the local Swift package at `../swift-connector/` (`InspectFlowConnector`). No third-party SDKs.
+The app talks to **Lovable Cloud** through the vendored `InspectFlowConnector`
+sources at `ios-native/Core/InspectFlowConnector/`. These files compile as
+part of the app target — no Swift Package Manager dependency, no `Package.swift`
+resolution needed by Xcode or Bitrise.
 
 - Auth: email/password sign-in & sign-up
 - DB: PostgREST (`profiles`, `organization_users`, `trips`, `jobs`, `vehicles`, `inspection_requests`)
-- Session is persisted in Keychain by `InspectFlowConnector.SessionStore`
+- Session is persisted in Keychain by `SessionStore`
 
 ## Setup (Xcode 14+)
 

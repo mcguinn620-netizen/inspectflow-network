@@ -1,6 +1,5 @@
 import Foundation
 import Network
-import InspectFlowConnector
 
 @MainActor
 final class SyncEngine: ObservableObject {
