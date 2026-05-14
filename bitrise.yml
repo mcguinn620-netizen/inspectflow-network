@@ -27,10 +27,10 @@ workflows:
         inputs:
         - content: |-
             #!/bin/bash
-            set -ex
-            cd ios-native
-            # Force resolution using the Workspace context
-            xcodebuild -resolvePackageDependencies -workspace VehicleInspectorsApp.xcworkspace -scheme "$BITRISE_SCHEME"
+            # No 'cd' command here
+            xcodebuild -resolvePackageDependencies \
+               -workspace ios-native/VehicleInspectorsApp.xcworkspace \
+               -scheme VehicleInspectorsApp
     - xcode-build-for-test@3:
         inputs:
         - project_path: "$BITRISE_PROJECT_PATH"
