@@ -46,7 +46,7 @@ app:
   - BITRISE_PROJECT_PATH: ios-native/AutoInspectorNetwork.xcworkspace
     opts:
       is_expand: true
-  - BITRISE_SCHEME: AutoInspectorNetworkApp
+  - BITRISE_SCHEME: AutoInspectorNetwork
     opts:
       is_expand: true
   - BITRISE_DISTRIBUTION_METHOD: development
