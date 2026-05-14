@@ -1,7 +1,7 @@
+---
 format_version: '26'
 default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 project_type: ios
-
 workflows:
   build:
     summary: Compile the native SwiftUI app for the iOS Simulator.
@@ -16,7 +16,6 @@ workflows:
     - deploy-to-bitrise-io@2:
         inputs:
         - deploy_path: "$BITRISE_DEPLOY_DIR"
-
   archive_and_export_app:
     summary: Archive VehicleInspectorsApp and export an IPA.
     steps:
@@ -30,16 +29,15 @@ workflows:
         - automatic_code_signing: 'off'
         - platform: iOS
         - verbose_log: 'yes'
+        - xcodebuild_options: PRODUCT_BUNDLE_IDENTIFIER="KADM.AutoInspectorNetwork.ios”
     - deploy-to-bitrise-io@2: {}
     triggers:
       pull_request:
       - target_branch: main
-
 meta:
   bitrise.io:
     stack: osx-xcode-26.4.x
     machine_type_id: g2.mac.large
-
 app:
   envs:
   - BITRISE_PROJECT_PATH: ios-native/VehicleInspectorsApp.xcworkspace
