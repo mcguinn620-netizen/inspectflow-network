@@ -7,37 +7,12 @@ workflows:
     summary: Compile the native SwiftUI app for the iOS Simulator.
     steps:
     - git-clone@8: {}
-    - restore-spm-cache@3: {}
-    - script@1:
-        title: Path and Package Validation
-        inputs:
-        - content: |-
-            #!/bin/bash
-            set -ex
-            echo "Checking for Package.swift in root..."
-            if [ -f "Package.swift" ]; then
-              echo "✅ Package.swift found in root."
-            else
-              echo "❌ Package.swift NOT found in root. Check repository structure."
-              ls -R
-              exit 1
-            fi
-    - script@1:
-        title: Resolve Swift Packages
-        inputs:
-        - content: |-
-            #!/bin/bash
-            # No 'cd' command here
-            xcodebuild -resolvePackageDependencies \
-               -workspace ios-native/VehicleInspectorsApp.xcworkspace \
-               -scheme VehicleInspectorsApp
     - xcode-build-for-test@3:
         inputs:
         - project_path: "$BITRISE_PROJECT_PATH"
         - scheme: "$BITRISE_SCHEME"
         - destination: platform=iOS Simulator,name=Bitrise iOS default,OS=latest
         - automatic_code_signing: 'off'
-    - save-spm-cache@1: {}
     - deploy-to-bitrise-io@2:
         inputs:
         - deploy_path: "$BITRISE_DEPLOY_DIR"
@@ -46,17 +21,7 @@ workflows:
     summary: Archive VehicleInspectorsApp and export an IPA.
     steps:
     - git-clone@8: {}
-    - restore-spm-cache@3: {}
     - certificate-and-profile-installer@1: {}
-    - script@1:
-        title: Fix Package Resolution
-        inputs:
-        - content: |-
-            #!/bin/bash
-            set -ex
-            cd ios-native
-            # Manually resolve before archiving to prevent 'vagrant' naming issues
-            xcodebuild -resolvePackageDependencies -workspace VehicleInspectorsApp.xcworkspace -scheme "$BITRISE_SCHEME"
     - xcode-archive@6:
         inputs:
         - project_path: "$BITRISE_PROJECT_PATH"
@@ -65,7 +30,6 @@ workflows:
         - automatic_code_signing: 'off'
         - platform: iOS
         - verbose_log: 'yes'
-    - save-spm-cache@1: {}
     - deploy-to-bitrise-io@2: {}
     triggers:
       pull_request:
