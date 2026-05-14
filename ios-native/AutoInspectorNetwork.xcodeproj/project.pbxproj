@@ -54,7 +54,16 @@
 		A815EF4C8EF422D1E650384F /* SyncStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF0D1A3575838CCF21C4C0A /* SyncStatusView.swift */; };
 		A9525E9882F5B2F733AF9579 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24D66C2E4EAFB44A5315E98C /* Assets.xcassets */; };
 		F9D7651D08E0F62880FCA950 /* InspectionModel.xcdatamodeld in Resources */ = {isa = PBXBuildFile; fileRef = D7A27A5F7DD012D94E8002F7 /* InspectionModel.xcdatamodeld */; };
-		23281EFF57164890EE76E5BE /* InspectFlowConnector in Frameworks */ = {isa = PBXBuildFile; productRef = A488E847573FE5A80E25C29C /* InspectFlowConnector */; };
+		AAAA000000000000000B0001 /* AuthClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A0001 /* AuthClient.swift */; };
+		AAAA000000000000000B0002 /* AuthModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A0002 /* AuthModels.swift */; };
+		AAAA000000000000000B0003 /* SessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A0003 /* SessionStore.swift */; };
+		AAAA000000000000000B0004 /* QueryBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A0004 /* QueryBuilder.swift */; };
+		AAAA000000000000000B0005 /* RestClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A0005 /* RestClient.swift */; };
+		AAAA000000000000000B0006 /* FunctionsClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A0006 /* FunctionsClient.swift */; };
+		AAAA000000000000000B0007 /* RealtimeChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A0007 /* RealtimeChannel.swift */; };
+		AAAA000000000000000B0008 /* StorageClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A0008 /* StorageClient.swift */; };
+		AAAA000000000000000B0009 /* InspectFlowClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A0009 /* InspectFlowClient.swift */; };
+		AAAA000000000000000B000A /* InspectFlowConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A000A /* InspectFlowConfig.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -109,6 +118,16 @@
 		0F91FE72E2545B9592848B66 /* DomainModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DomainModels.swift"; sourceTree = "<group>"; };
 		77A8D7405D4EEF6598B26AE8 /* InspectionTemplateModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InspectionTemplateModels.swift"; sourceTree = "<group>"; };
 		2CF0D1A3575838CCF21C4C0A /* SyncStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SyncStatusView.swift"; sourceTree = "<group>"; };
+		AAAA000000000000000A0001 /* AuthClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthClient.swift"; sourceTree = "<group>"; };
+		AAAA000000000000000A0002 /* AuthModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthModels.swift"; sourceTree = "<group>"; };
+		AAAA000000000000000A0003 /* SessionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SessionStore.swift"; sourceTree = "<group>"; };
+		AAAA000000000000000A0004 /* QueryBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "QueryBuilder.swift"; sourceTree = "<group>"; };
+		AAAA000000000000000A0005 /* RestClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RestClient.swift"; sourceTree = "<group>"; };
+		AAAA000000000000000A0006 /* FunctionsClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FunctionsClient.swift"; sourceTree = "<group>"; };
+		AAAA000000000000000A0007 /* RealtimeChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RealtimeChannel.swift"; sourceTree = "<group>"; };
+		AAAA000000000000000A0008 /* StorageClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageClient.swift"; sourceTree = "<group>"; };
+		AAAA000000000000000A0009 /* InspectFlowClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InspectFlowClient.swift"; sourceTree = "<group>"; };
+		AAAA000000000000000A000A /* InspectFlowConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InspectFlowConfig.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,7 +135,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				23281EFF57164890EE76E5BE /* InspectFlowConnector in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
