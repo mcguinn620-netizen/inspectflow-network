@@ -188,6 +188,7 @@
 			children = (
 				71B8F5FD007318DA05FBD9C6 /* Audit */,
 				E75A17A1D8C22BC327FFE28F /* Auth */,
+				AAAA000000000000000C0000 /* InspectFlowConnector */,
 				3F3BA5C895DEF081A2E3B57D /* Location */,
 				B4894F917AC9DD25B277FD92 /* Network */,
 				73CBEDE3898B3FE3BA1FDF5F /* Notifications */,
@@ -286,7 +287,69 @@
 			path = "Trips";
 			sourceTree = "<group>";
 		};
-		5DC03ACB53DE45700BB4E9F0 /* Features */ = {
+		AAAA000000000000000C0000 /* InspectFlowConnector */ = {
+			isa = PBXGroup;
+			children = (
+				AAAA000000000000000C0001 /* Auth */,
+				AAAA000000000000000C0002 /* Database */,
+				AAAA000000000000000C0003 /* Functions */,
+				AAAA000000000000000C0004 /* Realtime */,
+				AAAA000000000000000C0005 /* Storage */,
+				AAAA000000000000000A0009 /* InspectFlowClient.swift */,
+				AAAA000000000000000A000A /* InspectFlowConfig.swift */,
+			);
+			name = "InspectFlowConnector";
+			path = "InspectFlowConnector";
+			sourceTree = "<group>";
+		};
+		AAAA000000000000000C0001 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				AAAA000000000000000A0001 /* AuthClient.swift */,
+				AAAA000000000000000A0002 /* AuthModels.swift */,
+				AAAA000000000000000A0003 /* SessionStore.swift */,
+			);
+			name = "Auth";
+			path = "Auth";
+			sourceTree = "<group>";
+		};
+		AAAA000000000000000C0002 /* Database */ = {
+			isa = PBXGroup;
+			children = (
+				AAAA000000000000000A0004 /* QueryBuilder.swift */,
+				AAAA000000000000000A0005 /* RestClient.swift */,
+			);
+			name = "Database";
+			path = "Database";
+			sourceTree = "<group>";
+		};
+		AAAA000000000000000C0003 /* Functions */ = {
+			isa = PBXGroup;
+			children = (
+				AAAA000000000000000A0006 /* FunctionsClient.swift */,
+			);
+			name = "Functions";
+			path = "Functions";
+			sourceTree = "<group>";
+		};
+		AAAA000000000000000C0004 /* Realtime */ = {
+			isa = PBXGroup;
+			children = (
+				AAAA000000000000000A0007 /* RealtimeChannel.swift */,
+			);
+			name = "Realtime";
+			path = "Realtime";
+			sourceTree = "<group>";
+		};
+		AAAA000000000000000C0005 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				AAAA000000000000000A0008 /* StorageClient.swift */,
+			);
+			name = "Storage";
+			path = "Storage";
+			sourceTree = "<group>";
+		};
 			isa = PBXGroup;
 			children = (
 				688FC010AF6E48FEBFF20F41 /* Auth */,
