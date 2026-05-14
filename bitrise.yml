@@ -17,13 +17,13 @@ workflows:
         inputs:
         - deploy_path: "$BITRISE_DEPLOY_DIR"
   archive_and_export_app:
-    summary: Archive VehicleInspectorsApp and export an IPA.
+    summary: Archive AutoInspectorNetworkApp and export an IPA.
     steps:
     - git-clone@8: {}
     - certificate-and-profile-installer@1: {}
     - set-ios-product-bundle-identifier@1:
         inputs:
-        - project_path: $BITRISE_PROJECT_PATH
+        - project_path: "$BITRISE_PROJECT_PATH"
         - new_bundle_identifier: KADM.AutoInspectorNetwork
     - xcode-archive@6:
         inputs:
@@ -33,7 +33,6 @@ workflows:
         - automatic_code_signing: 'off'
         - platform: iOS
         - verbose_log: 'yes'
-        - xcodebuild_options: PRODUCT_BUNDLE_IDENTIFIER="KADM.AutoInspectorNetwork.ios”
     - deploy-to-bitrise-io@2: {}
     triggers:
       pull_request:
@@ -44,10 +43,10 @@ meta:
     machine_type_id: g2.mac.large
 app:
   envs:
-  - BITRISE_PROJECT_PATH: ios-native/VehicleInspectorsApp.xcworkspace
+  - BITRISE_PROJECT_PATH: ios-native/AutoInspectorNetworkApp.xcworkspace
     opts:
       is_expand: true
-  - BITRISE_SCHEME: VehicleInspectorsApp
+  - BITRISE_SCHEME: AutoInspectorNetworkApp
     opts:
       is_expand: true
   - BITRISE_DISTRIBUTION_METHOD: development
