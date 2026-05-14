@@ -1,5 +1,4 @@
 import Foundation
-import InspectFlowConnector
 
 /// Mirrors `src/lib/tripTracking.ts` filters and persistence behavior.
 @MainActor

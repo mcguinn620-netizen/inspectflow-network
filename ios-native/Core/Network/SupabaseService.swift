@@ -1,5 +1,4 @@
 import Foundation
-import InspectFlowConnector
 
 /// Thin app-facing facade over `InspectFlowClient`.
 final class SupabaseService {

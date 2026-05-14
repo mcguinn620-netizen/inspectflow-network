@@ -1,5 +1,4 @@
 import Foundation
-import InspectFlowConnector
 
 /// Helper to attach typed realtime listeners to feature view-models.
 /// Each subscription is bound to a topic and torn down on `cancel()`.

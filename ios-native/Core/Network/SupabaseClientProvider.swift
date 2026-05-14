@@ -1,5 +1,4 @@
 import Foundation
-import InspectFlowConnector
 
 /// Single shared `InspectFlowClient` for the app. Configured at first access.
 enum SupabaseClientProvider {
