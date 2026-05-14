@@ -48,6 +48,6 @@ app:
   - BITRISE_SCHEME: VehicleInspectorsApp
     opts:
       is_expand: true
-  - BITRISE_DISTRIBUTION_METHOD: ad-hoc
+  - BITRISE_DISTRIBUTION_METHOD: development
     opts:
       is_expand: true
