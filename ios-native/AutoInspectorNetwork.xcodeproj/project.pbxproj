@@ -527,9 +527,6 @@
 			buildRules = ();
 			dependencies = ();
 			name = AutoInspectorNetwork;
-			packageProductDependencies = (
-				A488E847573FE5A80E25C29C /* InspectFlowConnector */,
-			);
 			productName = AutoInspectorNetwork;
 			productReference = A612554AFBDBB78BBE69496E /* AutoInspectorNetwork.app */;
 			productType = "com.apple.product-type.application";
@@ -553,9 +550,6 @@
 			hasScannedForEncodings = 0;
 			knownRegions = ( en, Base, );
 			mainGroup = 8A23CA811AD5DE2F3F9275D1;
-			packageReferences = (
-				5C6E391C12FCAF86EE838222 /* XCLocalSwiftPackageReference "../.." */,
-			);
 			productRefGroup = C863DA5204F95EC573510473 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -628,6 +622,16 @@
 				58B774BAB548F3CDEEFE984F /* DomainModels.swift in Sources */,
 				47A5D4E5D08E65962F7E0954 /* InspectionTemplateModels.swift in Sources */,
 				A815EF4C8EF422D1E650384F /* SyncStatusView.swift in Sources */,
+				AAAA000000000000000B0001 /* AuthClient.swift in Sources */,
+				AAAA000000000000000B0002 /* AuthModels.swift in Sources */,
+				AAAA000000000000000B0003 /* SessionStore.swift in Sources */,
+				AAAA000000000000000B0004 /* QueryBuilder.swift in Sources */,
+				AAAA000000000000000B0005 /* RestClient.swift in Sources */,
+				AAAA000000000000000B0006 /* FunctionsClient.swift in Sources */,
+				AAAA000000000000000B0007 /* RealtimeChannel.swift in Sources */,
+				AAAA000000000000000B0008 /* StorageClient.swift in Sources */,
+				AAAA000000000000000B0009 /* InspectFlowClient.swift in Sources */,
+				AAAA000000000000000B000A /* InspectFlowConfig.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -766,21 +770,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCLocalSwiftPackageReference section */
-		5C6E391C12FCAF86EE838222 /* XCLocalSwiftPackageReference ".." */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = "../..";
-		};
-/* End XCLocalSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		A488E847573FE5A80E25C29C /* InspectFlowConnector */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5C6E391C12FCAF86EE838222 /* XCLocalSwiftPackageReference ".." */;
-			productName = InspectFlowConnector;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = BDDA1F48097C0373FD15D0DD /* Project object */;
 }
