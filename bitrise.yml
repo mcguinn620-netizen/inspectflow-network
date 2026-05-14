@@ -17,7 +17,7 @@ workflows:
         inputs:
         - deploy_path: "$BITRISE_DEPLOY_DIR"
   archive_and_export_app:
-    summary: Archive AutoInspectorNetworkApp and export an IPA.
+    summary: Archive AutoInspectorNetwork and export an IPA.
     steps:
     - git-clone@8: {}
     - certificate-and-profile-installer@1: {}
