@@ -1,3 +1,4 @@
+
 ---
 format_version: '26'
 default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
@@ -13,8 +14,8 @@ workflows:
         - scheme: "$BITRISE_SCHEME"
         - destination: platform=iOS Simulator,name=Bitrise iOS default,OS=latest
         - automatic_code_signing: 'off'
-        - test_device_list_path: ""
-        - verbose_log: "yes"
+        - test_device_list_path: ''
+        - verbose_log: 'yes'
     - deploy-to-bitrise-io@2:
         inputs:
         - deploy_path: "$BITRISE_DEPLOY_DIR"
@@ -31,6 +32,55 @@ workflows:
         - automatic_code_signing: 'off'
         - platform: iOS
         - verbose_log: 'yes'
+    - deploy-to-bitrise-io@2: {}
+    triggers:
+      pull_request:
+      - target_branch: main
+  Manual_Build_Provision:
+    summary: Archive AutoInspectorNetwork and export an IPA.
+    steps:
+    - git-clone@8: {}
+    - certificate-and-profile-installer@1: {}
+    - script@1:
+        inputs:
+        - content: >
+            
+            #!/bin/bash
+
+            set -ex
+
+
+            # 1. Build for Profiling (Release mode, but uses Development
+            Signing)
+
+            # This bypasses the "Team not enrolled" error by not using the
+            'archive' command.
+
+            xcodebuild build \
+              -workspace "$BITRISE_PROJECT_PATH" \
+              -scheme "$BITRISE_SCHEME" \
+              -configuration Release \
+              -sdk iphoneos \
+              -destination 'generic/platform=iOS' \
+              CONFIGURATION_BUILD_DIR="$BITRISE_SOURCE_DIR/build_output" \
+              CODE_SIGN_IDENTITY="Apple Development" \
+              CODE_SIGN_STYLE="Manual"
+
+            # 2. Manually Create the .ipa
+
+            cd "$BITRISE_SOURCE_DIR/build_output"
+
+            mkdir Payload
+
+            cp -r *.app Payload/
+
+            zip -r "${BITRISE_APP_TITLE}.ipa" Payload
+
+
+            # Move to the Deploy directory so Bitrise can find it
+
+            mv "${BITRISE_APP_TITLE}.ipa" "$BITRISE_DEPLOY_DIR/"
+        - is_debug: "yes"
     - deploy-to-bitrise-io@2: {}
     triggers:
       pull_request:
