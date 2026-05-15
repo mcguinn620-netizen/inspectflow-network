@@ -114,6 +114,7 @@
 		AAAA000000000000000A0008 /* StorageClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageClient.swift; sourceTree = "<group>"; };
 		AAAA000000000000000A0009 /* InspectFlowClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectFlowClient.swift; sourceTree = "<group>"; };
 		AAAA000000000000000A000A /* InspectFlowConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectFlowConfig.swift; sourceTree = "<group>"; };
+		AAAA000000000000000A000B /* JSONDecoder+Supabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSONDecoder+Supabase.swift"; sourceTree = "<group>"; };
 		ACD6A5B54D49B7EF0DF06F20 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		B18367283123AA618DD18523 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B34B0507FE00BF36365A62E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
