@@ -33,7 +33,7 @@ struct JobsView: View {
                 }
             }
             .navigationTitle("Jobs")
-            .toolbar { ToolbarItem(placement: .topBarTrailing) { SyncStatusView() } }
+            .toolbar { ToolbarItem(placement: .navigationBarTrailing) { SyncStatusView() } }
             .refreshable { await viewModel.load(orgId: appState.activeOrganizationID) }
             .task { await viewModel.load(orgId: appState.activeOrganizationID) }
         }

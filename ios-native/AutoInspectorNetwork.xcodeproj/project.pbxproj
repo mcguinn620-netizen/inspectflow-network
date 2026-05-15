@@ -1,59 +1,44 @@
 // !$*UTF8*$!
 {
 	archiveVersion = 1;
-	classes = {};
+	classes = {
+	};
 	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A5D470A05ACB94A37FE2DE69 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18367283123AA618DD18523 /* AppDelegate.swift */; };
-		C9AC8F291A3142999D91651E /* AutoInspectorNetworkApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB3449D752F3F7896AB664C /* AutoInspectorNetworkApp.swift */; };
-		8DFD36F2D698E4DA3E8E6FCF /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4159112EA36531898205E02D /* MainTabView.swift */; };
-		C47E34669D7152EEEA3B6474 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D040F47EF88117C120244A /* RootView.swift */; };
+		22827134EA78326A414A5A53 /* SupabaseClientProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D379B752680E42F56D50324E /* SupabaseClientProvider.swift */; };
+		2BD64856D6C7F609C82F8A0D /* JobsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FB918863C258C1718BAB06 /* JobsViewModel.swift */; };
+		2D15AA7686667954E9D77C53 /* TripTrackingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F45FC55D363DE54E7B5111 /* TripTrackingController.swift */; };
+		3307BCEC33859C72D7A594E6 /* JobsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B7DFF288D646A9E38F2592 /* JobsView.swift */; };
 		3579C33A591EAFE68671A1CA /* CarPlayNavigationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B24CC01A1F4CC9A27D01698 /* CarPlayNavigationCoordinator.swift */; };
-		BC6E1F6F22B1D01720809510 /* CarPlaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6229C0BDE5ACBE60B1FD1FC /* CarPlaySceneDelegate.swift */; };
-		A496019E294407100B85C98C /* CarPlayScheduleTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71F1C6C6FFBEE562BF3481F /* CarPlayScheduleTemplate.swift */; };
-		C6BC94DB3CC4B641AB7031A0 /* CarPlayStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20F1056F3F7E0AB102710E0 /* CarPlayStop.swift */; };
-		CAA12E02BBA8BC2163FE5268 /* CarPlayStopListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878503DB7BEF2B4C9F0F7957 /* CarPlayStopListTemplate.swift */; };
-		72955F44AD4AF12B327EC2C2 /* CarPlayTripService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF0E58EA873CE3AE0EF92CE /* CarPlayTripService.swift */; };
+		39270173AF3B4D15A33D0B78 /* LocationTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2849F2339674CA7D8F26CAE0 /* LocationTracker.swift */; };
+		3C7D73605588A031CCC0FA24 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD6A5B54D49B7EF0DF06F20 /* AuthView.swift */; };
+		419B09558A44F6C45CC12153 /* InspectionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22E204106824B601217B467 /* InspectionDetailView.swift */; };
+		46A81275311533F311417167 /* Outbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC04F5696CBBA4141DF64D6C /* Outbox.swift */; };
+		47A5D4E5D08E65962F7E0954 /* InspectionTemplateModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A8D7405D4EEF6598B26AE8 /* InspectionTemplateModels.swift */; };
+		490E2B9B0C8CDE7165A3E43B /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EDFEBD7F96A35AD771B0C2 /* AuthViewModel.swift */; };
+		4C14FB0B4CDF4D41148656D7 /* SupabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69C22645F8000E43CE2967B0 /* SupabaseService.swift */; };
 		4FF47DA50B05C0821B454724 /* AuditLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA88B2A2DB1B069BA0AC5D6 /* AuditLogger.swift */; };
 		54946F1D72DD87A440D6E2E0 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C4D2C3F50073D1A27B62CA /* AppState.swift */; };
-		C040957DA38E45083148EC20 /* KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2504F9F81A353305112816D9 /* KeychainStore.swift */; };
-		39270173AF3B4D15A33D0B78 /* LocationTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2849F2339674CA7D8F26CAE0 /* LocationTracker.swift */; };
-		22827134EA78326A414A5A53 /* SupabaseClientProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D379B752680E42F56D50324E /* SupabaseClientProvider.swift */; };
-		D3E926D8BDC9849D0CCA295B /* SupabaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1AF4106A07592985CE2D9A /* SupabaseConfig.swift */; };
-		4C14FB0B4CDF4D41148656D7 /* SupabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69C22645F8000E43CE2967B0 /* SupabaseService.swift */; };
-		E95E5C80C7268CE08A42ECA5 /* PushRegistrar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63153CED0A0A2D000BBDCC14 /* PushRegistrar.swift */; };
-		CF060EDA55214F8807267183 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795A386ABB1A4064D751A091 /* PersistenceController.swift */; };
-		B9053B5C8CD2F2766361789A /* RealtimeSubscriptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04ABF7475DA3AC1CBC0886FA /* RealtimeSubscriptions.swift */; };
-		F283A55FE693D3192FB736F1 /* CoreDataCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F145748823881A6F0D9F26 /* CoreDataCache.swift */; };
-		46A81275311533F311417167 /* Outbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC04F5696CBBA4141DF64D6C /* Outbox.swift */; };
-		7BA8B6EC04DAF2495730F04A /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A921A601454A87FA26CDC59 /* SyncEngine.swift */; };
-		2D15AA7686667954E9D77C53 /* TripTrackingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F45FC55D363DE54E7B5111 /* TripTrackingController.swift */; };
-		3C7D73605588A031CCC0FA24 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD6A5B54D49B7EF0DF06F20 /* AuthView.swift */; };
-		490E2B9B0C8CDE7165A3E43B /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EDFEBD7F96A35AD771B0C2 /* AuthViewModel.swift */; };
-		A9C954DDCC11B8D0AE0AA87D /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 823495D87B860D162FF96622 /* DashboardView.swift */; };
-		D7A5DDBD1FF712EC25F3B0BF /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC30D8C9079EF31A07BF1339 /* DashboardViewModel.swift */; };
-		B003E44E4DD8247B34FB95AA /* DriveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE220E882E0F0F3349EE2545 /* DriveView.swift */; };
-		419B09558A44F6C45CC12153 /* InspectionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22E204106824B601217B467 /* InspectionDetailView.swift */; };
-		86584AA382BB4B920EF9C81A /* InspectionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA42E905663D907DBE8E637E /* InspectionsView.swift */; };
-		B42784F4704E3FA9EDDBF680 /* InspectionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A230A8C60F3599C93D16788 /* InspectionsViewModel.swift */; };
-		E486E6D797D3220DCE47E681 /* PhotoCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11615170D089568C51DDF2CE /* PhotoCapture.swift */; };
-		3307BCEC33859C72D7A594E6 /* JobsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B7DFF288D646A9E38F2592 /* JobsView.swift */; };
-		2BD64856D6C7F609C82F8A0D /* JobsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FB918863C258C1718BAB06 /* JobsViewModel.swift */; };
-		A15510A0A196721D42ACBEB0 /* ScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 851A9FED51A53A0EAF5F18A4 /* ScheduleView.swift */; };
-		5F3D72571A5C23B0BEE82D59 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B26AAB9CAAB4FDC8CBA42 /* SettingsView.swift */; };
-		75C517EAF8EF3B30B0F0C29D /* TaxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E24EB72291667DA6828601AF /* TaxView.swift */; };
-		69DC0955514B0B8A66814FD1 /* TripsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0D42E0A074E62DCB16F8C7 /* TripsView.swift */; };
-		9780EC721A1FBC5DCE8F829D /* TripsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DBED7EA0A946692B34D6F27 /* TripsViewModel.swift */; };
-		6AEDBA679D3FA0B61C54ADD1 /* VehiclesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D286DB64C0A8A338F090EB8 /* VehiclesView.swift */; };
-		77868B6AA543DF62CBA6C5BC /* VehiclesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1CE19420EC964FB37B70F8E /* VehiclesViewModel.swift */; };
-		944162CDC4D04FE05C1FE4A4 /* AINBrand.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A29FD49E34D2824F0728CF /* AINBrand.swift */; };
 		58B774BAB548F3CDEEFE984F /* DomainModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F91FE72E2545B9592848B66 /* DomainModels.swift */; };
-		47A5D4E5D08E65962F7E0954 /* InspectionTemplateModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A8D7405D4EEF6598B26AE8 /* InspectionTemplateModels.swift */; };
+		5F3D72571A5C23B0BEE82D59 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B26AAB9CAAB4FDC8CBA42 /* SettingsView.swift */; };
+		69DC0955514B0B8A66814FD1 /* TripsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0D42E0A074E62DCB16F8C7 /* TripsView.swift */; };
+		6AEDBA679D3FA0B61C54ADD1 /* VehiclesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D286DB64C0A8A338F090EB8 /* VehiclesView.swift */; };
+		72955F44AD4AF12B327EC2C2 /* CarPlayTripService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF0E58EA873CE3AE0EF92CE /* CarPlayTripService.swift */; };
+		75C517EAF8EF3B30B0F0C29D /* TaxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E24EB72291667DA6828601AF /* TaxView.swift */; };
+		77868B6AA543DF62CBA6C5BC /* VehiclesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1CE19420EC964FB37B70F8E /* VehiclesViewModel.swift */; };
+		7BA8B6EC04DAF2495730F04A /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A921A601454A87FA26CDC59 /* SyncEngine.swift */; };
+		86584AA382BB4B920EF9C81A /* InspectionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA42E905663D907DBE8E637E /* InspectionsView.swift */; };
+		8DFD36F2D698E4DA3E8E6FCF /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4159112EA36531898205E02D /* MainTabView.swift */; };
+		944162CDC4D04FE05C1FE4A4 /* AINBrand.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A29FD49E34D2824F0728CF /* AINBrand.swift */; };
+		9780EC721A1FBC5DCE8F829D /* TripsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DBED7EA0A946692B34D6F27 /* TripsViewModel.swift */; };
+		A15510A0A196721D42ACBEB0 /* ScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 851A9FED51A53A0EAF5F18A4 /* ScheduleView.swift */; };
+		A496019E294407100B85C98C /* CarPlayScheduleTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71F1C6C6FFBEE562BF3481F /* CarPlayScheduleTemplate.swift */; };
+		A5D470A05ACB94A37FE2DE69 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18367283123AA618DD18523 /* AppDelegate.swift */; };
 		A815EF4C8EF422D1E650384F /* SyncStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF0D1A3575838CCF21C4C0A /* SyncStatusView.swift */; };
 		A9525E9882F5B2F733AF9579 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24D66C2E4EAFB44A5315E98C /* Assets.xcassets */; };
-		F9D7651D08E0F62880FCA950 /* InspectionModel.xcdatamodeld in Resources */ = {isa = PBXBuildFile; fileRef = D7A27A5F7DD012D94E8002F7 /* InspectionModel.xcdatamodeld */; };
+		A9C954DDCC11B8D0AE0AA87D /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 823495D87B860D162FF96622 /* DashboardView.swift */; };
 		AAAA000000000000000B0001 /* AuthClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A0001 /* AuthClient.swift */; };
 		AAAA000000000000000B0002 /* AuthModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A0002 /* AuthModels.swift */; };
 		AAAA000000000000000B0003 /* SessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A0003 /* SessionStore.swift */; };
@@ -64,70 +49,86 @@
 		AAAA000000000000000B0008 /* StorageClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A0008 /* StorageClient.swift */; };
 		AAAA000000000000000B0009 /* InspectFlowClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A0009 /* InspectFlowClient.swift */; };
 		AAAA000000000000000B000A /* InspectFlowConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A000A /* InspectFlowConfig.swift */; };
+		B003E44E4DD8247B34FB95AA /* DriveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE220E882E0F0F3349EE2545 /* DriveView.swift */; };
+		B42784F4704E3FA9EDDBF680 /* InspectionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A230A8C60F3599C93D16788 /* InspectionsViewModel.swift */; };
+		B9053B5C8CD2F2766361789A /* RealtimeSubscriptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04ABF7475DA3AC1CBC0886FA /* RealtimeSubscriptions.swift */; };
+		BC6E1F6F22B1D01720809510 /* CarPlaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6229C0BDE5ACBE60B1FD1FC /* CarPlaySceneDelegate.swift */; };
+		C040957DA38E45083148EC20 /* KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2504F9F81A353305112816D9 /* KeychainStore.swift */; };
+		C47E34669D7152EEEA3B6474 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D040F47EF88117C120244A /* RootView.swift */; };
+		C6BC94DB3CC4B641AB7031A0 /* CarPlayStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20F1056F3F7E0AB102710E0 /* CarPlayStop.swift */; };
+		C9AC8F291A3142999D91651E /* AutoInspectorNetworkApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB3449D752F3F7896AB664C /* AutoInspectorNetworkApp.swift */; };
+		CAA12E02BBA8BC2163FE5268 /* CarPlayStopListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878503DB7BEF2B4C9F0F7957 /* CarPlayStopListTemplate.swift */; };
+		CF060EDA55214F8807267183 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795A386ABB1A4064D751A091 /* PersistenceController.swift */; };
+		D3E926D8BDC9849D0CCA295B /* SupabaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1AF4106A07592985CE2D9A /* SupabaseConfig.swift */; };
+		D7A5DDBD1FF712EC25F3B0BF /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC30D8C9079EF31A07BF1339 /* DashboardViewModel.swift */; };
+		E486E6D797D3220DCE47E681 /* PhotoCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11615170D089568C51DDF2CE /* PhotoCapture.swift */; };
+		E95E5C80C7268CE08A42ECA5 /* PushRegistrar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63153CED0A0A2D000BBDCC14 /* PushRegistrar.swift */; };
+		F283A55FE693D3192FB736F1 /* CoreDataCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F145748823881A6F0D9F26 /* CoreDataCache.swift */; };
+		F9D7651D08E0F62880FCA950 /* InspectionModel.xcdatamodeld in Resources */ = {isa = PBXBuildFile; fileRef = D7A27A5F7DD012D94E8002F7 /* InspectionModel.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		04ABF7475DA3AC1CBC0886FA /* RealtimeSubscriptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealtimeSubscriptions.swift; sourceTree = "<group>"; };
+		0F91FE72E2545B9592848B66 /* DomainModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainModels.swift; sourceTree = "<group>"; };
+		11615170D089568C51DDF2CE /* PhotoCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCapture.swift; sourceTree = "<group>"; };
+		1A230A8C60F3599C93D16788 /* InspectionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectionsViewModel.swift; sourceTree = "<group>"; };
+		1B24CC01A1F4CC9A27D01698 /* CarPlayNavigationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayNavigationCoordinator.swift; sourceTree = "<group>"; };
+		20F45FC55D363DE54E7B5111 /* TripTrackingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripTrackingController.swift; sourceTree = "<group>"; };
+		22B7DFF288D646A9E38F2592 /* JobsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobsView.swift; sourceTree = "<group>"; };
+		24D66C2E4EAFB44A5315E98C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2504F9F81A353305112816D9 /* KeychainStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainStore.swift; sourceTree = "<group>"; };
+		2849F2339674CA7D8F26CAE0 /* LocationTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationTracker.swift; sourceTree = "<group>"; };
+		2CF0D1A3575838CCF21C4C0A /* SyncStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncStatusView.swift; sourceTree = "<group>"; };
+		36EDFEBD7F96A35AD771B0C2 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
+		3AA88B2A2DB1B069BA0AC5D6 /* AuditLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuditLogger.swift; sourceTree = "<group>"; };
+		4159112EA36531898205E02D /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		4D286DB64C0A8A338F090EB8 /* VehiclesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehiclesView.swift; sourceTree = "<group>"; };
+		51D040F47EF88117C120244A /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		55F145748823881A6F0D9F26 /* CoreDataCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataCache.swift; sourceTree = "<group>"; };
+		63153CED0A0A2D000BBDCC14 /* PushRegistrar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushRegistrar.swift; sourceTree = "<group>"; };
+		69C22645F8000E43CE2967B0 /* SupabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseService.swift; sourceTree = "<group>"; };
+		6CB3449D752F3F7896AB664C /* AutoInspectorNetworkApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInspectorNetworkApp.swift; sourceTree = "<group>"; };
+		6D9B26AAB9CAAB4FDC8CBA42 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		77A8D7405D4EEF6598B26AE8 /* InspectionTemplateModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectionTemplateModels.swift; sourceTree = "<group>"; };
+		795A386ABB1A4064D751A091 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
+		7AFB22251DBA18891B1D9A84 /* AutoInspectorNetwork.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AutoInspectorNetwork.entitlements; sourceTree = "<group>"; };
+		7C0D42E0A074E62DCB16F8C7 /* TripsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripsView.swift; sourceTree = "<group>"; };
+		823495D87B860D162FF96622 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		851A9FED51A53A0EAF5F18A4 /* ScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleView.swift; sourceTree = "<group>"; };
+		878503DB7BEF2B4C9F0F7957 /* CarPlayStopListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayStopListTemplate.swift; sourceTree = "<group>"; };
+		8A921A601454A87FA26CDC59 /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
+		8DBED7EA0A946692B34D6F27 /* TripsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripsViewModel.swift; sourceTree = "<group>"; };
+		8DF0E58EA873CE3AE0EF92CE /* CarPlayTripService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayTripService.swift; sourceTree = "<group>"; };
+		A1A29FD49E34D2824F0728CF /* AINBrand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINBrand.swift; sourceTree = "<group>"; };
 		A612554AFBDBB78BBE69496E /* AutoInspectorNetwork.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutoInspectorNetwork.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		24D66C2E4EAFB44A5315E98C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Assets.xcassets"; sourceTree = "<group>"; };
-		D7A27A5F7DD012D94E8002F7 /* InspectionModel.xcdatamodeld */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "InspectionModel.xcdatamodeld"; sourceTree = "<group>"; };
-		B34B0507FE00BF36365A62E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info.plist"; sourceTree = "<group>"; };
-		7AFB22251DBA18891B1D9A84 /* AutoInspectorNetwork.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "AutoInspectorNetwork.entitlements"; sourceTree = "<group>"; };
-		B18367283123AA618DD18523 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDelegate.swift"; sourceTree = "<group>"; };
-		6CB3449D752F3F7896AB664C /* AutoInspectorNetworkApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AutoInspectorNetworkApp.swift"; sourceTree = "<group>"; };
-		4159112EA36531898205E02D /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainTabView.swift"; sourceTree = "<group>"; };
-		51D040F47EF88117C120244A /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RootView.swift"; sourceTree = "<group>"; };
-		1B24CC01A1F4CC9A27D01698 /* CarPlayNavigationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayNavigationCoordinator.swift"; sourceTree = "<group>"; };
-		A6229C0BDE5ACBE60B1FD1FC /* CarPlaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlaySceneDelegate.swift"; sourceTree = "<group>"; };
-		F71F1C6C6FFBEE562BF3481F /* CarPlayScheduleTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayScheduleTemplate.swift"; sourceTree = "<group>"; };
-		E20F1056F3F7E0AB102710E0 /* CarPlayStop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayStop.swift"; sourceTree = "<group>"; };
-		878503DB7BEF2B4C9F0F7957 /* CarPlayStopListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayStopListTemplate.swift"; sourceTree = "<group>"; };
-		8DF0E58EA873CE3AE0EF92CE /* CarPlayTripService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlayTripService.swift"; sourceTree = "<group>"; };
-		3AA88B2A2DB1B069BA0AC5D6 /* AuditLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuditLogger.swift"; sourceTree = "<group>"; };
-		F3C4D2C3F50073D1A27B62CA /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppState.swift"; sourceTree = "<group>"; };
-		2504F9F81A353305112816D9 /* KeychainStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeychainStore.swift"; sourceTree = "<group>"; };
-		2849F2339674CA7D8F26CAE0 /* LocationTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocationTracker.swift"; sourceTree = "<group>"; };
-		D379B752680E42F56D50324E /* SupabaseClientProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SupabaseClientProvider.swift"; sourceTree = "<group>"; };
-		DB1AF4106A07592985CE2D9A /* SupabaseConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SupabaseConfig.swift"; sourceTree = "<group>"; };
-		69C22645F8000E43CE2967B0 /* SupabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SupabaseService.swift"; sourceTree = "<group>"; };
-		63153CED0A0A2D000BBDCC14 /* PushRegistrar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PushRegistrar.swift"; sourceTree = "<group>"; };
-		795A386ABB1A4064D751A091 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PersistenceController.swift"; sourceTree = "<group>"; };
-		04ABF7475DA3AC1CBC0886FA /* RealtimeSubscriptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RealtimeSubscriptions.swift"; sourceTree = "<group>"; };
-		55F145748823881A6F0D9F26 /* CoreDataCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataCache.swift"; sourceTree = "<group>"; };
-		EC04F5696CBBA4141DF64D6C /* Outbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Outbox.swift"; sourceTree = "<group>"; };
-		8A921A601454A87FA26CDC59 /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SyncEngine.swift"; sourceTree = "<group>"; };
-		20F45FC55D363DE54E7B5111 /* TripTrackingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TripTrackingController.swift"; sourceTree = "<group>"; };
-		ACD6A5B54D49B7EF0DF06F20 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthView.swift"; sourceTree = "<group>"; };
-		36EDFEBD7F96A35AD771B0C2 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthViewModel.swift"; sourceTree = "<group>"; };
-		823495D87B860D162FF96622 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DashboardView.swift"; sourceTree = "<group>"; };
-		DC30D8C9079EF31A07BF1339 /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DashboardViewModel.swift"; sourceTree = "<group>"; };
-		FE220E882E0F0F3349EE2545 /* DriveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DriveView.swift"; sourceTree = "<group>"; };
-		C22E204106824B601217B467 /* InspectionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InspectionDetailView.swift"; sourceTree = "<group>"; };
-		AA42E905663D907DBE8E637E /* InspectionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InspectionsView.swift"; sourceTree = "<group>"; };
-		1A230A8C60F3599C93D16788 /* InspectionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InspectionsViewModel.swift"; sourceTree = "<group>"; };
-		11615170D089568C51DDF2CE /* PhotoCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhotoCapture.swift"; sourceTree = "<group>"; };
-		22B7DFF288D646A9E38F2592 /* JobsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JobsView.swift"; sourceTree = "<group>"; };
-		E4FB918863C258C1718BAB06 /* JobsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JobsViewModel.swift"; sourceTree = "<group>"; };
-		851A9FED51A53A0EAF5F18A4 /* ScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScheduleView.swift"; sourceTree = "<group>"; };
-		6D9B26AAB9CAAB4FDC8CBA42 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsView.swift"; sourceTree = "<group>"; };
-		E24EB72291667DA6828601AF /* TaxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxView.swift"; sourceTree = "<group>"; };
-		7C0D42E0A074E62DCB16F8C7 /* TripsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TripsView.swift"; sourceTree = "<group>"; };
-		8DBED7EA0A946692B34D6F27 /* TripsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TripsViewModel.swift"; sourceTree = "<group>"; };
-		4D286DB64C0A8A338F090EB8 /* VehiclesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VehiclesView.swift"; sourceTree = "<group>"; };
-		F1CE19420EC964FB37B70F8E /* VehiclesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VehiclesViewModel.swift"; sourceTree = "<group>"; };
-		A1A29FD49E34D2824F0728CF /* AINBrand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AINBrand.swift"; sourceTree = "<group>"; };
-		0F91FE72E2545B9592848B66 /* DomainModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DomainModels.swift"; sourceTree = "<group>"; };
-		77A8D7405D4EEF6598B26AE8 /* InspectionTemplateModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InspectionTemplateModels.swift"; sourceTree = "<group>"; };
-		2CF0D1A3575838CCF21C4C0A /* SyncStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SyncStatusView.swift"; sourceTree = "<group>"; };
-		AAAA000000000000000A0001 /* AuthClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthClient.swift"; sourceTree = "<group>"; };
-		AAAA000000000000000A0002 /* AuthModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthModels.swift"; sourceTree = "<group>"; };
-		AAAA000000000000000A0003 /* SessionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SessionStore.swift"; sourceTree = "<group>"; };
-		AAAA000000000000000A0004 /* QueryBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "QueryBuilder.swift"; sourceTree = "<group>"; };
-		AAAA000000000000000A0005 /* RestClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RestClient.swift"; sourceTree = "<group>"; };
-		AAAA000000000000000A0006 /* FunctionsClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FunctionsClient.swift"; sourceTree = "<group>"; };
-		AAAA000000000000000A0007 /* RealtimeChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RealtimeChannel.swift"; sourceTree = "<group>"; };
-		AAAA000000000000000A0008 /* StorageClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageClient.swift"; sourceTree = "<group>"; };
-		AAAA000000000000000A0009 /* InspectFlowClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InspectFlowClient.swift"; sourceTree = "<group>"; };
-		AAAA000000000000000A000A /* InspectFlowConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InspectFlowConfig.swift"; sourceTree = "<group>"; };
+		A6229C0BDE5ACBE60B1FD1FC /* CarPlaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlaySceneDelegate.swift; sourceTree = "<group>"; };
+		AA42E905663D907DBE8E637E /* InspectionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectionsView.swift; sourceTree = "<group>"; };
+		AAAA000000000000000A0001 /* AuthClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthClient.swift; sourceTree = "<group>"; };
+		AAAA000000000000000A0002 /* AuthModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModels.swift; sourceTree = "<group>"; };
+		AAAA000000000000000A0003 /* SessionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStore.swift; sourceTree = "<group>"; };
+		AAAA000000000000000A0004 /* QueryBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryBuilder.swift; sourceTree = "<group>"; };
+		AAAA000000000000000A0005 /* RestClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestClient.swift; sourceTree = "<group>"; };
+		AAAA000000000000000A0006 /* FunctionsClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionsClient.swift; sourceTree = "<group>"; };
+		AAAA000000000000000A0007 /* RealtimeChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealtimeChannel.swift; sourceTree = "<group>"; };
+		AAAA000000000000000A0008 /* StorageClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageClient.swift; sourceTree = "<group>"; };
+		AAAA000000000000000A0009 /* InspectFlowClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectFlowClient.swift; sourceTree = "<group>"; };
+		AAAA000000000000000A000A /* InspectFlowConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectFlowConfig.swift; sourceTree = "<group>"; };
+		ACD6A5B54D49B7EF0DF06F20 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
+		B18367283123AA618DD18523 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		B34B0507FE00BF36365A62E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C22E204106824B601217B467 /* InspectionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectionDetailView.swift; sourceTree = "<group>"; };
+		D379B752680E42F56D50324E /* SupabaseClientProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClientProvider.swift; sourceTree = "<group>"; };
+		D7A27A5F7DD012D94E8002F7 /* InspectionModel.xcdatamodeld */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = InspectionModel.xcdatamodeld; sourceTree = "<group>"; };
+		DB1AF4106A07592985CE2D9A /* SupabaseConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseConfig.swift; sourceTree = "<group>"; };
+		DC30D8C9079EF31A07BF1339 /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModel.swift; sourceTree = "<group>"; };
+		E20F1056F3F7E0AB102710E0 /* CarPlayStop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayStop.swift; sourceTree = "<group>"; };
+		E24EB72291667DA6828601AF /* TaxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxView.swift; sourceTree = "<group>"; };
+		E4FB918863C258C1718BAB06 /* JobsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobsViewModel.swift; sourceTree = "<group>"; };
+		EC04F5696CBBA4141DF64D6C /* Outbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Outbox.swift; sourceTree = "<group>"; };
+		F1CE19420EC964FB37B70F8E /* VehiclesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehiclesViewModel.swift; sourceTree = "<group>"; };
+		F3C4D2C3F50073D1A27B62CA /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		F71F1C6C6FFBEE562BF3481F /* CarPlayScheduleTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayScheduleTemplate.swift; sourceTree = "<group>"; };
+		FE220E882E0F0F3349EE2545 /* DriveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,48 +142,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		8A23CA811AD5DE2F3F9275D1 /* AutoInspectorNetwork */ = {
-			isa = PBXGroup;
-			children = (
-				AC6545EDE5A39074A15E6244 /* App */,
-				7CAA5416668FD2D94ED7089D /* CarPlay */,
-				0ADB5386121963586531221C /* Core */,
-				5DC03ACB53DE45700BB4E9F0 /* Features */,
-				51B141E1E5C40FEE5FD5E5B6 /* Shared */,
-				24D66C2E4EAFB44A5315E98C /* Assets.xcassets */,
-				D7A27A5F7DD012D94E8002F7 /* InspectionModel.xcdatamodeld */,
-				B34B0507FE00BF36365A62E0 /* Info.plist */,
-				7AFB22251DBA18891B1D9A84 /* AutoInspectorNetwork.entitlements */,
-				C863DA5204F95EC573510473 /* Products */,
-			);
-			sourceTree = "<group>";
-		};
-		AC6545EDE5A39074A15E6244 /* App */ = {
-			isa = PBXGroup;
-			children = (
-				B18367283123AA618DD18523 /* AppDelegate.swift */,
-				6CB3449D752F3F7896AB664C /* AutoInspectorNetworkApp.swift */,
-				4159112EA36531898205E02D /* MainTabView.swift */,
-				51D040F47EF88117C120244A /* RootView.swift */,
-			);
-			name = "App";
-			path = "App";
-			sourceTree = "<group>";
-		};
-		7CAA5416668FD2D94ED7089D /* CarPlay */ = {
-			isa = PBXGroup;
-			children = (
-				1B24CC01A1F4CC9A27D01698 /* CarPlayNavigationCoordinator.swift */,
-				A6229C0BDE5ACBE60B1FD1FC /* CarPlaySceneDelegate.swift */,
-				F71F1C6C6FFBEE562BF3481F /* CarPlayScheduleTemplate.swift */,
-				E20F1056F3F7E0AB102710E0 /* CarPlayStop.swift */,
-				878503DB7BEF2B4C9F0F7957 /* CarPlayStopListTemplate.swift */,
-				8DF0E58EA873CE3AE0EF92CE /* CarPlayTripService.swift */,
-			);
-			name = "CarPlay";
-			path = "CarPlay";
-			sourceTree = "<group>";
-		};
 		0ADB5386121963586531221C /* Core */ = {
 			isa = PBXGroup;
 			children = (
@@ -197,56 +156,15 @@
 				A565CDEE83AD7E6A49E8D5FE /* Sync */,
 				FD44EC599816899F4F81FD11 /* Trips */,
 			);
-			name = "Core";
-			path = "Core";
+			path = Core;
 			sourceTree = "<group>";
 		};
-		71B8F5FD007318DA05FBD9C6 /* Audit */ = {
+		0FBA977372182A1DA1E0DAD5 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				3AA88B2A2DB1B069BA0AC5D6 /* AuditLogger.swift */,
+				2CF0D1A3575838CCF21C4C0A /* SyncStatusView.swift */,
 			);
-			name = "Audit";
-			path = "Audit";
-			sourceTree = "<group>";
-		};
-		E75A17A1D8C22BC327FFE28F /* Auth */ = {
-			isa = PBXGroup;
-			children = (
-				F3C4D2C3F50073D1A27B62CA /* AppState.swift */,
-				2504F9F81A353305112816D9 /* KeychainStore.swift */,
-			);
-			name = "Auth";
-			path = "Auth";
-			sourceTree = "<group>";
-		};
-		3F3BA5C895DEF081A2E3B57D /* Location */ = {
-			isa = PBXGroup;
-			children = (
-				2849F2339674CA7D8F26CAE0 /* LocationTracker.swift */,
-			);
-			name = "Location";
-			path = "Location";
-			sourceTree = "<group>";
-		};
-		B4894F917AC9DD25B277FD92 /* Network */ = {
-			isa = PBXGroup;
-			children = (
-				D379B752680E42F56D50324E /* SupabaseClientProvider.swift */,
-				DB1AF4106A07592985CE2D9A /* SupabaseConfig.swift */,
-				69C22645F8000E43CE2967B0 /* SupabaseService.swift */,
-			);
-			name = "Network";
-			path = "Network";
-			sourceTree = "<group>";
-		};
-		73CBEDE3898B3FE3BA1FDF5F /* Notifications */ = {
-			isa = PBXGroup;
-			children = (
-				63153CED0A0A2D000BBDCC14 /* PushRegistrar.swift */,
-			);
-			name = "Notifications";
-			path = "Notifications";
+			path = UI;
 			sourceTree = "<group>";
 		};
 		33E133EA208F4EDFB1CF92E6 /* Persistence */ = {
@@ -254,100 +172,42 @@
 			children = (
 				795A386ABB1A4064D751A091 /* PersistenceController.swift */,
 			);
-			name = "Persistence";
-			path = "Persistence";
+			path = Persistence;
 			sourceTree = "<group>";
 		};
-		93DDF341FC5AE0F58E91E038 /* Realtime */ = {
+		38C362A50C6B6123747B41D4 /* Schedule */ = {
 			isa = PBXGroup;
 			children = (
-				04ABF7475DA3AC1CBC0886FA /* RealtimeSubscriptions.swift */,
+				851A9FED51A53A0EAF5F18A4 /* ScheduleView.swift */,
 			);
-			name = "Realtime";
-			path = "Realtime";
+			path = Schedule;
 			sourceTree = "<group>";
 		};
-		A565CDEE83AD7E6A49E8D5FE /* Sync */ = {
+		3F3BA5C895DEF081A2E3B57D /* Location */ = {
 			isa = PBXGroup;
 			children = (
-				55F145748823881A6F0D9F26 /* CoreDataCache.swift */,
-				EC04F5696CBBA4141DF64D6C /* Outbox.swift */,
-				8A921A601454A87FA26CDC59 /* SyncEngine.swift */,
+				2849F2339674CA7D8F26CAE0 /* LocationTracker.swift */,
 			);
-			name = "Sync";
-			path = "Sync";
+			path = Location;
 			sourceTree = "<group>";
 		};
-		FD44EC599816899F4F81FD11 /* Trips */ = {
+		468321D63C36F2A0B05D79CA /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
-				20F45FC55D363DE54E7B5111 /* TripTrackingController.swift */,
+				823495D87B860D162FF96622 /* DashboardView.swift */,
+				DC30D8C9079EF31A07BF1339 /* DashboardViewModel.swift */,
 			);
-			name = "Trips";
-			path = "Trips";
+			path = Dashboard;
 			sourceTree = "<group>";
 		};
-		AAAA000000000000000C0000 /* InspectFlowConnector */ = {
+		51B141E1E5C40FEE5FD5E5B6 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				AAAA000000000000000C0001 /* Auth */,
-				AAAA000000000000000C0002 /* Database */,
-				AAAA000000000000000C0003 /* Functions */,
-				AAAA000000000000000C0004 /* Realtime */,
-				AAAA000000000000000C0005 /* Storage */,
-				AAAA000000000000000A0009 /* InspectFlowClient.swift */,
-				AAAA000000000000000A000A /* InspectFlowConfig.swift */,
+				FA8DC440A7B38C4B3B50CA0F /* Brand */,
+				E2887F3FBA14E4C8B792B526 /* Models */,
+				0FBA977372182A1DA1E0DAD5 /* UI */,
 			);
-			name = "InspectFlowConnector";
-			path = "InspectFlowConnector";
-			sourceTree = "<group>";
-		};
-		AAAA000000000000000C0001 /* Auth */ = {
-			isa = PBXGroup;
-			children = (
-				AAAA000000000000000A0001 /* AuthClient.swift */,
-				AAAA000000000000000A0002 /* AuthModels.swift */,
-				AAAA000000000000000A0003 /* SessionStore.swift */,
-			);
-			name = "Auth";
-			path = "Auth";
-			sourceTree = "<group>";
-		};
-		AAAA000000000000000C0002 /* Database */ = {
-			isa = PBXGroup;
-			children = (
-				AAAA000000000000000A0004 /* QueryBuilder.swift */,
-				AAAA000000000000000A0005 /* RestClient.swift */,
-			);
-			name = "Database";
-			path = "Database";
-			sourceTree = "<group>";
-		};
-		AAAA000000000000000C0003 /* Functions */ = {
-			isa = PBXGroup;
-			children = (
-				AAAA000000000000000A0006 /* FunctionsClient.swift */,
-			);
-			name = "Functions";
-			path = "Functions";
-			sourceTree = "<group>";
-		};
-		AAAA000000000000000C0004 /* Realtime */ = {
-			isa = PBXGroup;
-			children = (
-				AAAA000000000000000A0007 /* RealtimeChannel.swift */,
-			);
-			name = "Realtime";
-			path = "Realtime";
-			sourceTree = "<group>";
-		};
-		AAAA000000000000000C0005 /* Storage */ = {
-			isa = PBXGroup;
-			children = (
-				AAAA000000000000000A0008 /* StorageClient.swift */,
-			);
-			name = "Storage";
-			path = "Storage";
+			path = Shared;
 			sourceTree = "<group>";
 		};
 		5DC03ACB53DE45700BB4E9F0 /* Features */ = {
@@ -364,8 +224,15 @@
 				EDEEA5A7C65C0A765BD9B511 /* Trips */,
 				8F42C359E013EAE547848580 /* Vehicles */,
 			);
-			name = "Features";
-			path = "Features";
+			path = Features;
+			sourceTree = "<group>";
+		};
+		67F5D723AFFBBF37A6D10CF5 /* Drive */ = {
+			isa = PBXGroup;
+			children = (
+				FE220E882E0F0F3349EE2545 /* DriveView.swift */,
+			);
+			path = Drive;
 			sourceTree = "<group>";
 		};
 		688FC010AF6E48FEBFF20F41 /* Auth */ = {
@@ -374,27 +241,88 @@
 				ACD6A5B54D49B7EF0DF06F20 /* AuthView.swift */,
 				36EDFEBD7F96A35AD771B0C2 /* AuthViewModel.swift */,
 			);
-			name = "Auth";
-			path = "Auth";
+			path = Auth;
 			sourceTree = "<group>";
 		};
-		468321D63C36F2A0B05D79CA /* Dashboard */ = {
+		71B8F5FD007318DA05FBD9C6 /* Audit */ = {
 			isa = PBXGroup;
 			children = (
-				823495D87B860D162FF96622 /* DashboardView.swift */,
-				DC30D8C9079EF31A07BF1339 /* DashboardViewModel.swift */,
+				3AA88B2A2DB1B069BA0AC5D6 /* AuditLogger.swift */,
 			);
-			name = "Dashboard";
-			path = "Dashboard";
+			path = Audit;
 			sourceTree = "<group>";
 		};
-		67F5D723AFFBBF37A6D10CF5 /* Drive */ = {
+		73CBEDE3898B3FE3BA1FDF5F /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
-				FE220E882E0F0F3349EE2545 /* DriveView.swift */,
+				63153CED0A0A2D000BBDCC14 /* PushRegistrar.swift */,
 			);
-			name = "Drive";
-			path = "Drive";
+			path = Notifications;
+			sourceTree = "<group>";
+		};
+		7CAA5416668FD2D94ED7089D /* CarPlay */ = {
+			isa = PBXGroup;
+			children = (
+				1B24CC01A1F4CC9A27D01698 /* CarPlayNavigationCoordinator.swift */,
+				A6229C0BDE5ACBE60B1FD1FC /* CarPlaySceneDelegate.swift */,
+				F71F1C6C6FFBEE562BF3481F /* CarPlayScheduleTemplate.swift */,
+				E20F1056F3F7E0AB102710E0 /* CarPlayStop.swift */,
+				878503DB7BEF2B4C9F0F7957 /* CarPlayStopListTemplate.swift */,
+				8DF0E58EA873CE3AE0EF92CE /* CarPlayTripService.swift */,
+			);
+			path = CarPlay;
+			sourceTree = "<group>";
+		};
+		8A23CA811AD5DE2F3F9275D1 = {
+			isa = PBXGroup;
+			children = (
+				AC6545EDE5A39074A15E6244 /* App */,
+				7CAA5416668FD2D94ED7089D /* CarPlay */,
+				0ADB5386121963586531221C /* Core */,
+				5DC03ACB53DE45700BB4E9F0 /* Features */,
+				51B141E1E5C40FEE5FD5E5B6 /* Shared */,
+				24D66C2E4EAFB44A5315E98C /* Assets.xcassets */,
+				D7A27A5F7DD012D94E8002F7 /* InspectionModel.xcdatamodeld */,
+				B34B0507FE00BF36365A62E0 /* Info.plist */,
+				7AFB22251DBA18891B1D9A84 /* AutoInspectorNetwork.entitlements */,
+				C863DA5204F95EC573510473 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8F42C359E013EAE547848580 /* Vehicles */ = {
+			isa = PBXGroup;
+			children = (
+				4D286DB64C0A8A338F090EB8 /* VehiclesView.swift */,
+				F1CE19420EC964FB37B70F8E /* VehiclesViewModel.swift */,
+			);
+			path = Vehicles;
+			sourceTree = "<group>";
+		};
+		93DDF341FC5AE0F58E91E038 /* Realtime */ = {
+			isa = PBXGroup;
+			children = (
+				04ABF7475DA3AC1CBC0886FA /* RealtimeSubscriptions.swift */,
+			);
+			path = Realtime;
+			sourceTree = "<group>";
+		};
+		9D8FB123A1621A97F2E6B02F /* Jobs */ = {
+			isa = PBXGroup;
+			children = (
+				22B7DFF288D646A9E38F2592 /* JobsView.swift */,
+				E4FB918863C258C1718BAB06 /* JobsViewModel.swift */,
+			);
+			path = Jobs;
+			sourceTree = "<group>";
+		};
+		A565CDEE83AD7E6A49E8D5FE /* Sync */ = {
+			isa = PBXGroup;
+			children = (
+				55F145748823881A6F0D9F26 /* CoreDataCache.swift */,
+				EC04F5696CBBA4141DF64D6C /* Outbox.swift */,
+				8A921A601454A87FA26CDC59 /* SyncEngine.swift */,
+			);
+			path = Sync;
 			sourceTree = "<group>";
 		};
 		A56F8C2844653A5EF957E175 /* Inspections */ = {
@@ -405,36 +333,64 @@
 				1A230A8C60F3599C93D16788 /* InspectionsViewModel.swift */,
 				11615170D089568C51DDF2CE /* PhotoCapture.swift */,
 			);
-			name = "Inspections";
-			path = "Inspections";
+			path = Inspections;
 			sourceTree = "<group>";
 		};
-		9D8FB123A1621A97F2E6B02F /* Jobs */ = {
+		AAAA000000000000000C0000 /* InspectFlowConnector */ = {
 			isa = PBXGroup;
 			children = (
-				22B7DFF288D646A9E38F2592 /* JobsView.swift */,
-				E4FB918863C258C1718BAB06 /* JobsViewModel.swift */,
+				AAAA000000000000000C0001 /* Auth */,
+				AAAA000000000000000C0002 /* Database */,
+				AAAA000000000000000C0003 /* Functions */,
+				AAAA000000000000000C0004 /* Realtime */,
+				AAAA000000000000000C0005 /* Storage */,
+				AAAA000000000000000A0009 /* InspectFlowClient.swift */,
+				AAAA000000000000000A000A /* InspectFlowConfig.swift */,
 			);
-			name = "Jobs";
-			path = "Jobs";
+			path = InspectFlowConnector;
 			sourceTree = "<group>";
 		};
-		38C362A50C6B6123747B41D4 /* Schedule */ = {
+		AAAA000000000000000C0001 /* Auth */ = {
 			isa = PBXGroup;
 			children = (
-				851A9FED51A53A0EAF5F18A4 /* ScheduleView.swift */,
+				AAAA000000000000000A0001 /* AuthClient.swift */,
+				AAAA000000000000000A0002 /* AuthModels.swift */,
+				AAAA000000000000000A0003 /* SessionStore.swift */,
 			);
-			name = "Schedule";
-			path = "Schedule";
+			path = Auth;
 			sourceTree = "<group>";
 		};
-		AF2799AFA0CD32C828177CE8 /* Settings */ = {
+		AAAA000000000000000C0002 /* Database */ = {
 			isa = PBXGroup;
 			children = (
-				6D9B26AAB9CAAB4FDC8CBA42 /* SettingsView.swift */,
+				AAAA000000000000000A0004 /* QueryBuilder.swift */,
+				AAAA000000000000000A0005 /* RestClient.swift */,
 			);
-			name = "Settings";
-			path = "Settings";
+			path = Database;
+			sourceTree = "<group>";
+		};
+		AAAA000000000000000C0003 /* Functions */ = {
+			isa = PBXGroup;
+			children = (
+				AAAA000000000000000A0006 /* FunctionsClient.swift */,
+			);
+			path = Functions;
+			sourceTree = "<group>";
+		};
+		AAAA000000000000000C0004 /* Realtime */ = {
+			isa = PBXGroup;
+			children = (
+				AAAA000000000000000A0007 /* RealtimeChannel.swift */,
+			);
+			path = Realtime;
+			sourceTree = "<group>";
+		};
+		AAAA000000000000000C0005 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				AAAA000000000000000A0008 /* StorageClient.swift */,
+			);
+			path = Storage;
 			sourceTree = "<group>";
 		};
 		AAC4ADE8B8A2C6227A883AF1 /* Tax */ = {
@@ -442,67 +398,36 @@
 			children = (
 				E24EB72291667DA6828601AF /* TaxView.swift */,
 			);
-			name = "Tax";
-			path = "Tax";
+			path = Tax;
 			sourceTree = "<group>";
 		};
-		EDEEA5A7C65C0A765BD9B511 /* Trips */ = {
+		AC6545EDE5A39074A15E6244 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				7C0D42E0A074E62DCB16F8C7 /* TripsView.swift */,
-				8DBED7EA0A946692B34D6F27 /* TripsViewModel.swift */,
+				B18367283123AA618DD18523 /* AppDelegate.swift */,
+				6CB3449D752F3F7896AB664C /* AutoInspectorNetworkApp.swift */,
+				4159112EA36531898205E02D /* MainTabView.swift */,
+				51D040F47EF88117C120244A /* RootView.swift */,
 			);
-			name = "Trips";
-			path = "Trips";
+			path = App;
 			sourceTree = "<group>";
 		};
-		8F42C359E013EAE547848580 /* Vehicles */ = {
+		AF2799AFA0CD32C828177CE8 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				4D286DB64C0A8A338F090EB8 /* VehiclesView.swift */,
-				F1CE19420EC964FB37B70F8E /* VehiclesViewModel.swift */,
+				6D9B26AAB9CAAB4FDC8CBA42 /* SettingsView.swift */,
 			);
-			name = "Vehicles";
-			path = "Vehicles";
+			path = Settings;
 			sourceTree = "<group>";
 		};
-		51B141E1E5C40FEE5FD5E5B6 /* Shared */ = {
+		B4894F917AC9DD25B277FD92 /* Network */ = {
 			isa = PBXGroup;
 			children = (
-				FA8DC440A7B38C4B3B50CA0F /* Brand */,
-				E2887F3FBA14E4C8B792B526 /* Models */,
-				0FBA977372182A1DA1E0DAD5 /* UI */,
+				D379B752680E42F56D50324E /* SupabaseClientProvider.swift */,
+				DB1AF4106A07592985CE2D9A /* SupabaseConfig.swift */,
+				69C22645F8000E43CE2967B0 /* SupabaseService.swift */,
 			);
-			name = "Shared";
-			path = "Shared";
-			sourceTree = "<group>";
-		};
-		FA8DC440A7B38C4B3B50CA0F /* Brand */ = {
-			isa = PBXGroup;
-			children = (
-				A1A29FD49E34D2824F0728CF /* AINBrand.swift */,
-			);
-			name = "Brand";
-			path = "Brand";
-			sourceTree = "<group>";
-		};
-		E2887F3FBA14E4C8B792B526 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				0F91FE72E2545B9592848B66 /* DomainModels.swift */,
-				77A8D7405D4EEF6598B26AE8 /* InspectionTemplateModels.swift */,
-			);
-			name = "Models";
-			path = "Models";
-			sourceTree = "<group>";
-		};
-		0FBA977372182A1DA1E0DAD5 /* UI */ = {
-			isa = PBXGroup;
-			children = (
-				2CF0D1A3575838CCF21C4C0A /* SyncStatusView.swift */,
-			);
-			name = "UI";
-			path = "UI";
+			path = Network;
 			sourceTree = "<group>";
 		};
 		C863DA5204F95EC573510473 /* Products */ = {
@@ -511,6 +436,49 @@
 				A612554AFBDBB78BBE69496E /* AutoInspectorNetwork.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		E2887F3FBA14E4C8B792B526 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				0F91FE72E2545B9592848B66 /* DomainModels.swift */,
+				77A8D7405D4EEF6598B26AE8 /* InspectionTemplateModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		E75A17A1D8C22BC327FFE28F /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				F3C4D2C3F50073D1A27B62CA /* AppState.swift */,
+				2504F9F81A353305112816D9 /* KeychainStore.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		EDEEA5A7C65C0A765BD9B511 /* Trips */ = {
+			isa = PBXGroup;
+			children = (
+				7C0D42E0A074E62DCB16F8C7 /* TripsView.swift */,
+				8DBED7EA0A946692B34D6F27 /* TripsViewModel.swift */,
+			);
+			path = Trips;
+			sourceTree = "<group>";
+		};
+		FA8DC440A7B38C4B3B50CA0F /* Brand */ = {
+			isa = PBXGroup;
+			children = (
+				A1A29FD49E34D2824F0728CF /* AINBrand.swift */,
+			);
+			path = Brand;
+			sourceTree = "<group>";
+		};
+		FD44EC599816899F4F81FD11 /* Trips */ = {
+			isa = PBXGroup;
+			children = (
+				20F45FC55D363DE54E7B5111 /* TripTrackingController.swift */,
+			);
+			path = Trips;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -524,8 +492,10 @@
 				349B578E88FC623128D2018B /* Frameworks */,
 				41B260B1D2A5E0B273280C8E /* Resources */,
 			);
-			buildRules = ();
-			dependencies = ();
+			buildRules = (
+			);
+			dependencies = (
+			);
 			name = AutoInspectorNetwork;
 			productName = AutoInspectorNetwork;
 			productReference = A612554AFBDBB78BBE69496E /* AutoInspectorNetwork.app */;
@@ -541,14 +511,19 @@
 				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
-					1EAF6B1C573B98DE03975706 = { CreatedOnToolsVersion = 15.0; };
+					1EAF6B1C573B98DE03975706 = {
+						CreatedOnToolsVersion = 15.0;
+					};
 				};
 			};
 			buildConfigurationList = 938CBF74E81D18A798197C2C /* Build configuration list for PBXProject "AutoInspectorNetwork" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
-			knownRegions = ( en, Base, );
+			knownRegions = (
+				en,
+				Base,
+			);
 			mainGroup = 8A23CA811AD5DE2F3F9275D1;
 			productRefGroup = C863DA5204F95EC573510473 /* Products */;
 			projectDirPath = "";
@@ -641,7 +616,6 @@
 		2D7C126B1DD510A133F9BB7F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -652,120 +626,128 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				SDKROOT = iphoneos;
-				SWIFT_VERSION = 5.7;
-				TARGETED_DEVICE_FAMILY = "1,2";
-
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_TESTABILITY = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = ( "DEBUG=1", "$(inherited)", );
 				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			};
-			name = Debug;
-		};
-		662701B99CF3F77385B7CDB7 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.7;
 				TARGETED_DEVICE_FAMILY = "1,2";
-
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				VALIDATE_PRODUCT = YES;
 			};
-			name = Release;
+			name = Debug;
 		};
 		4ECAA958A3DFDDA2302A923A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = "AutoInspectorNetwork.entitlements";
+				CODE_SIGN_ENTITLEMENTS = AutoInspectorNetwork.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 95VG5GW59K;
+				DEVELOPMENT_TEAM = 264U37X2A5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = "Info.plist";
+				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				LD_RUNPATH_SEARCH_PATHS = ( "$(inherited)", "@executable_path/Frameworks", );
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 0.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.autoinspectornetwork.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.7;
 				TARGETED_DEVICE_FAMILY = "1,2";
-
 			};
 			name = Debug;
 		};
 		607452B9685AD870712F396D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = "AutoInspectorNetwork.entitlements";
+				CODE_SIGN_ENTITLEMENTS = AutoInspectorNetwork.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 95VG5GW59K;
+				DEVELOPMENT_TEAM = 264U37X2A5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = "Info.plist";
+				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				LD_RUNPATH_SEARCH_PATHS = ( "$(inherited)", "@executable_path/Frameworks", );
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 0.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.autoinspectornetwork.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.7;
 				TARGETED_DEVICE_FAMILY = "1,2";
-
+			};
+			name = Release;
+		};
+		662701B99CF3F77385B7CDB7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.7;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		938CBF74E81D18A798197C2C /* Build configuration list for PBXProject "AutoInspectorNetwork" */ = {
+		009BCBF0C85A9D3AD30F8EB7 /* Build configuration list for PBXNativeTarget "AutoInspectorNetwork" */ = {
 			isa = XCConfigurationList;
-			buildConfigurations = ( 2D7C126B1DD510A133F9BB7F /* Debug */, 662701B99CF3F77385B7CDB7 /* Release */, );
+			buildConfigurations = (
+				4ECAA958A3DFDDA2302A923A /* Debug */,
+				607452B9685AD870712F396D /* Release */,
+			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		009BCBF0C85A9D3AD30F8EB7 /* Build configuration list for PBXNativeTarget "AutoInspectorNetwork" */ = {
+		938CBF74E81D18A798197C2C /* Build configuration list for PBXProject "AutoInspectorNetwork" */ = {
 			isa = XCConfigurationList;
-			buildConfigurations = ( 4ECAA958A3DFDDA2302A923A /* Debug */, 607452B9685AD870712F396D /* Release */, );
+			buildConfigurations = (
+				2D7C126B1DD510A133F9BB7F /* Debug */,
+				662701B99CF3F77385B7CDB7 /* Release */,
+			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};

@@ -47,7 +47,7 @@ struct InspectionDetailView: View {
         .navigationTitle("Inspection")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
                     Task {
                         await viewModel.submit()
@@ -106,7 +106,7 @@ private struct ChecklistRow: View {
             TextField("Notes", text: $notesDraft, axis: .vertical)
                 .font(.caption)
                 .textFieldStyle(.roundedBorder)
-                .onChange(of: notesDraft) { _, new in onNotes(new) }
+                .onChange(of: notesDraft) { new in onNotes(new) }
                 .onAppear { notesDraft = entry.notes }
         }
         .padding(.vertical, 4)

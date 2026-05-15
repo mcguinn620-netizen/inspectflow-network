@@ -26,7 +26,7 @@ struct VehiclesView: View {
                 }
             }
             .navigationTitle("Vehicles")
-            .toolbar { ToolbarItem(placement: .topBarTrailing) { SyncStatusView() } }
+            .toolbar { ToolbarItem(placement: .navigationBarTrailing) { SyncStatusView() } }
             .refreshable { await viewModel.load(orgId: appState.activeOrganizationID) }
             .task { await viewModel.load(orgId: appState.activeOrganizationID) }
         }

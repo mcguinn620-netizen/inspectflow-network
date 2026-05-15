@@ -8,7 +8,7 @@ struct DriveView: View {
                     Text("Placeholder for native Drive feature.")
                 }
             }
-            .toolbar { ToolbarItem(placement: .topBarTrailing) { SyncStatusView() } }
+            .toolbar { ToolbarItem(placement: .navigationBarTrailing) { SyncStatusView() } }
             .navigationTitle("Drive")
         }
     }

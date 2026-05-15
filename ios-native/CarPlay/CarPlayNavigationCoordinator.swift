@@ -2,6 +2,7 @@
 import CarPlay
 import MapKit
 
+@MainActor
 final class CarPlayNavigationCoordinator {
     private var interfaceController: CPInterfaceController?
     private let tripService = CarPlayTripService()

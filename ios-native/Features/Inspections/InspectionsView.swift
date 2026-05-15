@@ -33,7 +33,7 @@ struct InspectionsView: View {
                 }
             }
             .navigationTitle("Inspections")
-            .toolbar { ToolbarItem(placement: .topBarTrailing) { SyncStatusView() } }
+            .toolbar { ToolbarItem(placement: .navigationBarTrailing) { SyncStatusView() } }
             .navigationDestination(for: InspectionRequest.self) { req in
                 if let orgId = appState.activeOrganizationID {
                     InspectionDetailView(request: req, orgId: orgId)

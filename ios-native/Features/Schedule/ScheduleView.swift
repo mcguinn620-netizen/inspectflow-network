@@ -8,7 +8,7 @@ struct ScheduleView: View {
                     Text("Placeholder for native Schedule feature.")
                 }
             }
-            .toolbar { ToolbarItem(placement: .topBarTrailing) { SyncStatusView() } }
+            .toolbar { ToolbarItem(placement: .navigationBarTrailing) { SyncStatusView() } }
             .navigationTitle("Schedule")
         }
     }

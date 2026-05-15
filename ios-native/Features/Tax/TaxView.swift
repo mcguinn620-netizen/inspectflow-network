@@ -8,7 +8,7 @@ struct TaxView: View {
                     Text("Placeholder for native Tax feature.")
                 }
             }
-            .toolbar { ToolbarItem(placement: .topBarTrailing) { SyncStatusView() } }
+            .toolbar { ToolbarItem(placement: .navigationBarTrailing) { SyncStatusView() } }
             .navigationTitle("Tax")
         }
     }

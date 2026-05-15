@@ -26,7 +26,7 @@ final class CoreDataCache {
     func load<T: Decodable>(_ type: T.Type, for key: String) -> T? {
         guard let data = try? Data(contentsOf: url(for: key)) else { return nil }
         let decoder = JSONDecoder()
-        decoder.dateEncodingStrategy = .iso8601
+        decoder.dateDecodingStrategy = .iso8601
         return try? decoder.decode(T.self, from: data)
     }
 

@@ -21,7 +21,7 @@ struct DashboardView: View {
                 }
             }
             .navigationTitle("Dashboard")
-            .toolbar { ToolbarItem(placement: .topBarTrailing) { SyncStatusView() } }
+            .toolbar { ToolbarItem(placement: .navigationBarTrailing) { SyncStatusView() } }
             .refreshable { await reload() }
             .task { await reload() }
         }

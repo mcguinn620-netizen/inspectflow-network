@@ -22,7 +22,7 @@ struct SettingsView: View {
                     }
                 }
             }
-            .toolbar { ToolbarItem(placement: .topBarTrailing) { SyncStatusView() } }
+            .toolbar { ToolbarItem(placement: .navigationBarTrailing) { SyncStatusView() } }
             .navigationTitle("Settings")
         }
     }

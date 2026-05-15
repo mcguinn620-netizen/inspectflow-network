@@ -31,12 +31,18 @@ struct TripsView: View {
             }
             .navigationTitle("Trips")
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) { SyncStatusView() }
-                ToolbarItem(placement: .topBarLeading) {
-                    if tracker.snapshot == nil, let orgId = appState.activeOrganizationID {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    SyncStatusView()
+                }
+                
+                // Move the logic here
+                if tracker.snapshot == nil, let orgId = appState.activeOrganizationID {
+                    ToolbarItem(placement: .navigationBarLeading) {
                         Button {
                             Task { await viewModel.startTrip(orgId: orgId) }
-                        } label: { Image(systemName: "plus.circle.fill") }
+                        } label: {
+                            Image(systemName: "plus.circle.fill")
+                        }
                     }
                 }
             }
