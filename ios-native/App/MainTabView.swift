@@ -1,14 +1,33 @@
 import SwiftUI
 
 struct MainTabView: View {
+    init() {
+        // Themed tab bar appearance.
+        let appearance = UITabBarAppearance()
+        appearance.configureWithDefaultBackground()
+        appearance.backgroundColor = UIColor(AINTheme.Color.surface)
+        UITabBar.appearance().standardAppearance = appearance
+        UITabBar.appearance().scrollEdgeAppearance = appearance
+        UITabBar.appearance().tintColor = UIColor(AINTheme.Color.accent)
+
+        let nav = UINavigationBarAppearance()
+        nav.configureWithDefaultBackground()
+        nav.backgroundColor = UIColor(AINTheme.Color.background)
+        nav.titleTextAttributes = [.foregroundColor: UIColor(AINTheme.Color.textPrimary)]
+        nav.largeTitleTextAttributes = [.foregroundColor: UIColor(AINTheme.Color.textPrimary)]
+        UINavigationBar.appearance().standardAppearance = nav
+        UINavigationBar.appearance().scrollEdgeAppearance = nav
+    }
+
     var body: some View {
         TabView {
-            DashboardView().tabItem { Label("Dashboard", systemImage: "house") }
+            DashboardView().tabItem { Label("Dashboard", systemImage: "house.fill") }
             ScheduleView().tabItem { Label("Schedule", systemImage: "calendar") }
-            JobsView().tabItem { Label("Jobs", systemImage: "briefcase") }
-            TripsView().tabItem { Label("Trips", systemImage: "map") }
-            MoreView().tabItem { Label("More", systemImage: "ellipsis.circle") }
+            JobsView().tabItem { Label("Jobs", systemImage: "briefcase.fill") }
+            TripsView().tabItem { Label("Trips", systemImage: "map.fill") }
+            MoreView().tabItem { Label("More", systemImage: "ellipsis.circle.fill") }
         }
+        .tint(AINTheme.Color.accent)
     }
 }
 

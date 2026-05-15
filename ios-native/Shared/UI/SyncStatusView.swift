@@ -4,23 +4,24 @@ struct SyncStatusView: View {
     @EnvironmentObject private var syncEngine: SyncEngine
 
     var body: some View {
-        HStack(spacing: 8) {
-            Circle().fill(color).frame(width: 8, height: 8)
-            Text(label)
-                .font(.caption)
-                .foregroundColor(.secondary)
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 6)
-        .background(.thinMaterial, in: Capsule())
+        AINStatusPill(label: label, tone: tone, icon: icon)
     }
 
-    private var color: Color {
+    private var tone: AINStatusTone {
         switch syncEngine.state {
-        case .idle: return .green
-        case .syncing: return .blue
-        case .offline: return .orange
-        case .failed: return .red
+        case .idle:    return .pass
+        case .syncing: return .info
+        case .offline: return .warn
+        case .failed:  return .fail
+        }
+    }
+
+    private var icon: String {
+        switch syncEngine.state {
+        case .idle:    return "checkmark.circle.fill"
+        case .syncing: return "arrow.triangle.2.circlepath"
+        case .offline: return "wifi.slash"
+        case .failed:  return "exclamationmark.triangle.fill"
         }
     }
 
