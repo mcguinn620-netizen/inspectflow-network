@@ -48,6 +48,13 @@
 		AAAA000000000000000B0007 /* RealtimeChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A0007 /* RealtimeChannel.swift */; };
 		AAAA000000000000000B0008 /* StorageClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A0008 /* StorageClient.swift */; };
 		AAAA000000000000000B0009 /* InspectFlowClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A0009 /* InspectFlowClient.swift */; };
+		AAAA000000000000000D0001 /* AINTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000C0001 /* AINTheme.swift */; };
+		AAAA000000000000000D0002 /* AINCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000C0002 /* AINCard.swift */; };
+		AAAA000000000000000D0003 /* AINStatusPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000C0003 /* AINStatusPill.swift */; };
+		AAAA000000000000000D0004 /* AINStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000C0004 /* AINStates.swift */; };
+		AAAA000000000000000D0005 /* AINButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000C0005 /* AINButtons.swift */; };
+		AAAA000000000000000D0006 /* AINInputs.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000C0006 /* AINInputs.swift */; };
+		AAAA000000000000000D0007 /* AINOverlays.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000C0007 /* AINOverlays.swift */; };
 		AAAA000000000000000B000A /* InspectFlowConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A000A /* InspectFlowConfig.swift */; };
 		AAAA000000000000000B000B /* JSONDecoder+Supabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A000B /* JSONDecoder+Supabase.swift */; };
 		B003E44E4DD8247B34FB95AA /* DriveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE220E882E0F0F3349EE2545 /* DriveView.swift */; };
