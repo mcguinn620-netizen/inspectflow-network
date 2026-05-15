@@ -13,6 +13,8 @@ workflows:
         - scheme: "$BITRISE_SCHEME"
         - destination: platform=iOS Simulator,name=Bitrise iOS default,OS=latest
         - automatic_code_signing: 'off'
+        - test_device_list_path: ""
+        - verbose_log: "yes"
     - deploy-to-bitrise-io@2:
         inputs:
         - deploy_path: "$BITRISE_DEPLOY_DIR"
