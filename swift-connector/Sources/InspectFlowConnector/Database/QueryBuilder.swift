@@ -109,8 +109,7 @@ public final class QueryBuilder {
 
     public func execute<T: Decodable>(decoding: T.Type = T.self) async throws -> T {
         let (data, _) = try await raw()
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
+        let decoder = JSONDecoder.supabase()
         do { return try decoder.decode(T.self, from: data) }
         catch { throw InspectFlowError.decoding(error) }
     }
