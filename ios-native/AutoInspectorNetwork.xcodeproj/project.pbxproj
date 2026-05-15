@@ -348,6 +348,7 @@
 				AAAA000000000000000C0005 /* Storage */,
 				AAAA000000000000000A0009 /* InspectFlowClient.swift */,
 				AAAA000000000000000A000A /* InspectFlowConfig.swift */,
+				AAAA000000000000000A000B /* JSONDecoder+Supabase.swift */,
 			);
 			path = InspectFlowConnector;
 			sourceTree = "<group>";
