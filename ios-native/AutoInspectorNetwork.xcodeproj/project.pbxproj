@@ -49,6 +49,7 @@
 		AAAA000000000000000B0008 /* StorageClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A0008 /* StorageClient.swift */; };
 		AAAA000000000000000B0009 /* InspectFlowClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A0009 /* InspectFlowClient.swift */; };
 		AAAA000000000000000B000A /* InspectFlowConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A000A /* InspectFlowConfig.swift */; };
+		AAAA000000000000000B000B /* JSONDecoder+Supabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A000B /* JSONDecoder+Supabase.swift */; };
 		B003E44E4DD8247B34FB95AA /* DriveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE220E882E0F0F3349EE2545 /* DriveView.swift */; };
 		B42784F4704E3FA9EDDBF680 /* InspectionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A230A8C60F3599C93D16788 /* InspectionsViewModel.swift */; };
 		B9053B5C8CD2F2766361789A /* RealtimeSubscriptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04ABF7475DA3AC1CBC0886FA /* RealtimeSubscriptions.swift */; };
