@@ -610,6 +610,7 @@
 				AAAA000000000000000B0008 /* StorageClient.swift in Sources */,
 				AAAA000000000000000B0009 /* InspectFlowClient.swift in Sources */,
 				AAAA000000000000000B000A /* InspectFlowConfig.swift in Sources */,
+				AAAA000000000000000B000B /* JSONDecoder+Supabase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
