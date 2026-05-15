@@ -1,37 +1,49 @@
-## Plan: integrate `InspectFlowConnector` directly into the iOS native app
+# Fix ISO8601 date decoding error in iOS app
 
-### Goal
-Remove the Swift Package Manager dependency path problem entirely by compiling the connector source files as part of the `AutoInspectorNetwork` iOS app target.
+## Problem
 
-### Changes
-1. **Vendor connector sources into `ios-native`**
-   - Copy `swift-connector/Sources/InspectFlowConnector/**` into a native-app folder such as `ios-native/Core/InspectFlowConnector/`.
-   - Keep the existing connector code intact, but make it local app source instead of an SPM package product.
+Simulator decoding fails on `created_at` with:
+> "Expected date string to be ISO8601-formatted."
 
-2. **Remove package imports from app code**
-   - Remove `import InspectFlowConnector` from native app files that currently depend on it.
-   - Because the connector will compile in the same app module, its public/internal types will be directly available.
+Postgres/Supabase returns timestamps with **fractional seconds** and a `+00:00` offset, e.g. `2026-05-15T01:40:55.123456+00:00`. Swift's default `.iso8601` `JSONDecoder` strategy uses `ISO8601DateFormatter` with no options, which **rejects fractional seconds**, so the first row's `created_at` fails to decode.
 
-3. **Update `AutoInspectorNetwork.xcodeproj`**
-   - Add all vendored connector `.swift` files to the app target’s Sources build phase.
-   - Remove the `InspectFlowConnector` package product from:
-     - target `packageProductDependencies`
-     - Frameworks build phase
-     - project `packageReferences`
-     - `XCLocalSwiftPackageReference` / `XCSwiftPackageProductDependency` sections
-   - This prevents Xcode/Bitrise from looking for `Package.swift` at repo root or `ios-native`.
+Affected decoders (both vendored into the app):
+- `ios-native/Core/InspectFlowConnector/Database/QueryBuilder.swift` (`execute<T>`)
+- `ios-native/Core/InspectFlowConnector/Functions/FunctionsClient.swift` (`invoke<T>`)
 
-4. **Update Bitrise config**
-   - Remove the `Package.swift` validation step.
-   - Remove explicit `xcodebuild -resolvePackageDependencies` steps.
-   - Keep the workflows pointed at:
-     - `ios-native/VehicleInspectorsApp.xcworkspace`
-     - scheme `VehicleInspectorsApp`
-   - `xcode-build-for-test` and `xcode-archive` should then build without SPM resolution.
+## Fix
 
-5. **Update native docs**
-   - Adjust `ios-native/README.md` to say the connector is vendored into the native target and no `Package.swift` is required for Bitrise.
-   - Keep the standalone `swift-connector` package in the repo for reuse/release, but it will no longer be required by the native iOS build.
+Replace `decoder.dateDecodingStrategy = .iso8601` with a **custom strategy** that accepts both formats (with and without fractional seconds), plus a graceful fallback. Centralize in a shared helper so both decoders stay in sync.
 
-### Expected result
-Bitrise no longer runs Swift package dependency resolution for the iOS app, so it cannot fail with `Package.swift doesn't exist` due to local package path differences.
+### Plan
+
+1. Add `ios-native/Core/InspectFlowConnector/JSONDecoder+Supabase.swift`:
+   - Static `JSONDecoder.supabase` factory
+   - `dateDecodingStrategy = .custom { ... }` that tries:
+     - `ISO8601DateFormatter` with `[.withInternetDateTime, .withFractionalSeconds]`
+     - `ISO8601DateFormatter` with `[.withInternetDateTime]`
+     - throws `DecodingError.dataCorrupted` with the original context if neither matches
+2. Update `QueryBuilder.execute<T>` to use `JSONDecoder.supabase()`.
+3. Update `FunctionsClient.invoke<T>` to use `JSONDecoder.supabase()`.
+4. Mirror the same change in `swift-connector/Sources/InspectFlowConnector/...` so the standalone package stays in parity (even though the app uses the vendored copy).
+
+No schema, no API surface, no Bitrise changes. Pure decoder fix.
+
+## Technical detail
+
+```swift
+extension JSONDecoder {
+    static func supabase() -> JSONDecoder {
+        let d = JSONDecoder()
+        let withFrac = ISO8601DateFormatter(); withFrac.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        let plain = ISO8601DateFormatter(); plain.formatOptions = [.withInternetDateTime]
+        d.dateDecodingStrategy = .custom { decoder in
+            let s = try decoder.singleValueContainer().decode(String.self)
+            if let date = withFrac.date(from: s) ?? plain.date(from: s) { return date }
+            throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath,
+                debugDescription: "Unrecognized ISO8601 date: \(s)"))
+        }
+        return d
+    }
+}
+```
