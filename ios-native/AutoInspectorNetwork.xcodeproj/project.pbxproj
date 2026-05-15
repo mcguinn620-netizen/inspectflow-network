@@ -179,6 +179,12 @@
 			isa = PBXGroup;
 			children = (
 				2CF0D1A3575838CCF21C4C0A /* SyncStatusView.swift */,
+				AAAA000000000000000C0002 /* AINCard.swift */,
+				AAAA000000000000000C0003 /* AINStatusPill.swift */,
+				AAAA000000000000000C0004 /* AINStates.swift */,
+				AAAA000000000000000C0005 /* AINButtons.swift */,
+				AAAA000000000000000C0006 /* AINInputs.swift */,
+				AAAA000000000000000C0007 /* AINOverlays.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -486,6 +492,7 @@
 			isa = PBXGroup;
 			children = (
 				A1A29FD49E34D2824F0728CF /* AINBrand.swift */,
+				AAAA000000000000000C0001 /* AINTheme.swift */,
 			);
 			path = Brand;
 			sourceTree = "<group>";
@@ -625,6 +632,13 @@
 				AAAA000000000000000B0009 /* InspectFlowClient.swift in Sources */,
 				AAAA000000000000000B000A /* InspectFlowConfig.swift in Sources */,
 				AAAA000000000000000B000B /* JSONDecoder+Supabase.swift in Sources */,
+				AAAA000000000000000D0001 /* AINTheme.swift in Sources */,
+				AAAA000000000000000D0002 /* AINCard.swift in Sources */,
+				AAAA000000000000000D0003 /* AINStatusPill.swift in Sources */,
+				AAAA000000000000000D0004 /* AINStates.swift in Sources */,
+				AAAA000000000000000D0005 /* AINButtons.swift in Sources */,
+				AAAA000000000000000D0006 /* AINInputs.swift in Sources */,
+				AAAA000000000000000D0007 /* AINOverlays.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
