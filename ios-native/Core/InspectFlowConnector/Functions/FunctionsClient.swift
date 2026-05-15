@@ -13,8 +13,7 @@ public final class FunctionsClient {
 
     public func invoke<T: Decodable>(_ name: String, body: [String: Any]? = nil, decoding: T.Type = T.self) async throws -> T {
         let data = try await invokeRaw(name, body: body)
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
+        let decoder = JSONDecoder.supabase()
         do { return try decoder.decode(T.self, from: data) }
         catch { throw InspectFlowError.decoding(error) }
     }
