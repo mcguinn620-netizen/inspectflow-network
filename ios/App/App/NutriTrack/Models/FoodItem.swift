@@ -1,2 +1,0 @@
-import Foundation
-struct FoodItem: Codable, Identifiable, Hashable { let id: UUID; let stationID: UUID; let categoryID: UUID?; let name: String; let servingSize: String?; let allergens: [String]; let dietaryFlags: [String]; let calories: Int?; let protein: Double?; let carbs: Double?; let fat: Double?; let nutrients: [String: Double]; enum CodingKeys:String,CodingKey{case id,name,allergens,calories,protein,carbs,fat,nutrients;case stationID="station_id",categoryID="category_id",servingSize="serving_size",dietaryFlags="dietary_flags"}}

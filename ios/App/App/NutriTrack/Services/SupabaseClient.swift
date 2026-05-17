@@ -1,4 +1,0 @@
-import Foundation
-struct SupabaseConfig { static let baseURL = URL(string: "https://YOUR_PROJECT.supabase.co/rest/v1")!; static let anonKey = "YOUR_SUPABASE_ANON_KEY" }
-final class SupabaseClient { private let session=URLSession.shared; private let decoder:JSONDecoder={ let d=JSONDecoder(); d.dateDecodingStrategy=.iso8601; return d }()
-func fetch<T:Decodable>(_ table:String, query:[URLQueryItem]) async throws -> [T] { var c=URLComponents(url: SupabaseConfig.baseURL.appendingPathComponent(table), resolvingAgainstBaseURL:false)!; c.queryItems=query; var req=URLRequest(url:c.url!); req.addValue(SupabaseConfig.anonKey, forHTTPHeaderField:"apikey"); req.addValue("Bearer \(SupabaseConfig.anonKey)", forHTTPHeaderField:"Authorization"); let (data,res)=try await session.data(for:req); guard let http=res as? HTTPURLResponse, (200...299).contains(http.statusCode) else { throw URLError(.badServerResponse)}; return try decoder.decode([T].self, from:data)} }
