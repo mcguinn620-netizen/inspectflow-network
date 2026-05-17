@@ -1,4 +1,3 @@
-
 ---
 format_version: '26'
 default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
@@ -28,10 +27,11 @@ workflows:
         inputs:
         - project_path: "$BITRISE_PROJECT_PATH"
         - scheme: "$BITRISE_SCHEME"
-        - distribution_method: "$BITRISE_DISTRIBUTION_METHOD"
+        - distribution_method: "development"
         - automatic_code_signing: 'off'
         - platform: iOS
         - verbose_log: 'yes'
+        - configuration: release
     - deploy-to-bitrise-io@2: {}
     triggers:
       pull_request:
@@ -43,19 +43,13 @@ workflows:
     - certificate-and-profile-installer@1: {}
     - script@1:
         inputs:
-        - content: >
+        - content: |
             
             #!/bin/bash
-
             set -ex
 
-
-            # 1. Build for Profiling (Release mode, but uses Development
-            Signing)
-
-            # This bypasses the "Team not enrolled" error by not using the
-            'archive' command.
-
+            # 1. Build for Profiling (Release mode, but uses Development Signing)
+            # This bypasses the "Team not enrolled" error by not using the 'archive' command.
             xcodebuild build \
               -workspace "$BITRISE_PROJECT_PATH" \
               -scheme "$BITRISE_SCHEME" \
@@ -67,20 +61,14 @@ workflows:
               CODE_SIGN_STYLE="Manual"
 
             # 2. Manually Create the .ipa
-
             cd "$BITRISE_SOURCE_DIR/build_output"
-
             mkdir Payload
-
             cp -r *.app Payload/
-
             zip -r "${BITRISE_APP_TITLE}.ipa" Payload
 
-
             # Move to the Deploy directory so Bitrise can find it
-
             mv "${BITRISE_APP_TITLE}.ipa" "$BITRISE_DEPLOY_DIR/"
-        - is_debug: "yes"
+        - is_debug: 'yes'
     - deploy-to-bitrise-io@2: {}
     triggers:
       pull_request:
