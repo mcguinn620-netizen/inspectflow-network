@@ -1,19 +1,20 @@
 import SwiftUI
 
-struct AINBottomSheet<Content: View>: ViewModifier {
+// MARK: - Bottom Sheet
+
+struct AINBottomSheet<SheetContent: View>: ViewModifier {
     @Binding var isPresented: Bool
     let detents: Set<PresentationDetent>
-    let sheetContent: () -> Content
+    @ViewBuilder let sheetContent: () -> SheetContent
 
-    func body(content: Content2) -> some View {
+    // 'Content' here now correctly resolves to SwiftUI's internal ViewModifier.Content
+    func body(content: Content) -> some View {
         content.sheet(isPresented: $isPresented) {
             sheetContent()
                 .presentationDetents(detents)
                 .presentationDragIndicator(.visible)
         }
     }
-
-    typealias Content2 = Content
 }
 
 extension View {
@@ -22,13 +23,12 @@ extension View {
         detents: Set<PresentationDetent> = [.medium, .large],
         @ViewBuilder content: @escaping () -> C
     ) -> some View {
-        self.sheet(isPresented: isPresented) {
-            content()
-                .presentationDetents(detents)
-                .presentationDragIndicator(.visible)
-        }
+        // Correctly applies the custom modifier defined above
+        self.modifier(AINBottomSheet(isPresented: isPresented, detents: detents, sheetContent: content))
     }
 }
+
+// MARK: - Confirmation Dialog
 
 struct AINConfirmDialog: ViewModifier {
     @Binding var isPresented: Bool
@@ -59,13 +59,16 @@ extension View {
     ) -> some View {
         modifier(AINConfirmDialog(
             isPresented: isPresented,
-            title: title, message: message,
+            title: title,
+            message: message,
             confirmLabel: confirmLabel,
             isDestructive: isDestructive,
             onConfirm: onConfirm
         ))
     }
 }
+
+// MARK: - Toast Banner
 
 /// Lightweight toast banner. Surface from any view via `.ainToast(...)`.
 struct AINToast: Equatable {
