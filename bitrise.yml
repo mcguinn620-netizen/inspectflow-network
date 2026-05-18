@@ -31,7 +31,7 @@ workflows:
         - automatic_code_signing: 'off'
         - platform: iOS
         - verbose_log: 'yes'
-        - configuration: release
+        - configuration: Release
     - deploy-to-bitrise-io@2: {}
     triggers:
       pull_request:
