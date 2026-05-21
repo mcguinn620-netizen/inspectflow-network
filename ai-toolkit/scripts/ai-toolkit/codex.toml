@@ -1,0 +1,18 @@
+[toolkit]
+name = "swift-ai-toolkit"
+agents_dir = "./agents"
+skills_dir = "./skills"
+
+[aliases]
+swiftui-pro = "Use skill skills/swiftui/SKILL.md"
+coredata = "Use skill skills/core-data/SKILL.md"
+ios-debugging = "Use skill skills/ios-debugging/SKILL.md"
+xcode14 = "Use skill skills/xcode14-compatibility/SKILL.md"
+bitrise-ios = "Use skill skills/bitrise/SKILL.md"
+supabase-ios = "Use skill skills/supabase/SKILL.md"
+
+[workflows.feature]
+steps = ["ios-architect", "swiftui-engineer", "testing-engineer"]
+
+[workflows.hotfix]
+steps = ["debugging-specialist", "xcode14-compatibility-specialist", "testing-engineer"]

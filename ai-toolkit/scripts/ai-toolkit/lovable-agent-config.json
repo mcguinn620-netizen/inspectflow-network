@@ -1,0 +1,20 @@
+{
+  "version": "1.0",
+  "defaultAgent": "ios-architect",
+  "agentsPath": "./agents",
+  "skillsPath": "./skills",
+  "routing": {
+    "ui": "swiftui-engineer",
+    "backend": "backend-integrator",
+    "debugging": "debugging-specialist",
+    "testing": "testing-engineer",
+    "deployment": "app-store-reviewer",
+    "playgrounds": "swift-playgrounds-specialist",
+    "compatibility": "xcode14-compatibility-specialist"
+  },
+  "pipelines": {
+    "feature": ["ios-architect", "swiftui-engineer", "testing-engineer"],
+    "debugging": ["debugging-specialist", "testing-engineer"],
+    "deployment": ["app-store-reviewer", "backend-integrator"]
+  }
+}
