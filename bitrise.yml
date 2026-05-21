@@ -18,6 +18,8 @@ workflows:
     - deploy-to-bitrise-io@2:
         inputs:
         - deploy_path: "$BITRISE_DEPLOY_DIR"
+    triggers:
+      enabled: false
   archive_and_export_app:
     summary: Archive AutoInspectorNetwork and export an IPA.
     steps:
@@ -27,7 +29,7 @@ workflows:
         inputs:
         - project_path: "$BITRISE_PROJECT_PATH"
         - scheme: "$BITRISE_SCHEME"
-        - distribution_method: "development"
+        - distribution_method: development
         - automatic_code_signing: 'off'
         - platform: iOS
         - verbose_log: 'yes'
@@ -36,6 +38,7 @@ workflows:
     triggers:
       pull_request:
       - target_branch: main
+      enabled: false
   Manual_Build_Provision:
     summary: Archive AutoInspectorNetwork and export an IPA.
     steps:
@@ -73,6 +76,7 @@ workflows:
     triggers:
       pull_request:
       - target_branch: main
+        enabled: false
 meta:
   bitrise.io:
     stack: osx-xcode-26.4.x
