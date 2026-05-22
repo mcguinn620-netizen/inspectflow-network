@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject private var appState: AppState
+    @AppStorage("inspector.voice_cues_enabled") private var voiceCuesEnabled = true
 
     var body: some View {
         NavigationStack {
@@ -15,6 +16,9 @@ struct SettingsView: View {
                 Section("App") {
                     LabeledContent("Version", value: appVersion)
                     LabeledContent("Brand", value: AINBrand.displayName)
+                }
+                Section("Driving") {
+                    Toggle("Voice cues while driving", isOn: $voiceCuesEnabled)
                 }
                 Section {
                     Button("Sign Out", role: .destructive) {
