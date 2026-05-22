@@ -14,7 +14,8 @@
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
     "check:ios-coredata-phases": "python3 ios-native/scripts/validate_coredata_build_phases.py",
     "check:ios-package": "cd ios-native && swift package dump-package >/dev/null",
-    "check:ios-step-3-2": "npm run check:ios-package && npm run check:ios-coredata-phases"
+    "check:ios-step-3-2": "npm run check:ios-package && npm run check:ios-coredata-phases",
+    "check:ios-step-3-3": "npm run check:ios-package && npm run check:ios-coredata-phases && python3 ios-native/scripts/validate_step_3_3_jobs.py"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
