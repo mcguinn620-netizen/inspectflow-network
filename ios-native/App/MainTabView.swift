@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct MainTabView: View {
+    @EnvironmentObject private var appState: AppState
     init() {
         // Themed tab bar appearance.
         let appearance = UITabBarAppearance()
@@ -21,7 +22,11 @@ struct MainTabView: View {
 
     var body: some View {
         TabView {
-            DashboardView().tabItem { Label("Dashboard", systemImage: "house.fill") }
+            if appState.effectiveRole == "inspector" { // role-aware home tab
+                InspectorDashboardHomeView().tabItem { Label("Dashboard", systemImage: "house.fill") }
+            } else {
+                DashboardView().tabItem { Label("Dashboard", systemImage: "house.fill") }
+            }
             ScheduleView().tabItem { Label("Schedule", systemImage: "calendar") }
             JobsView().tabItem { Label("Jobs", systemImage: "briefcase.fill") }
             TripsView().tabItem { Label("Trips", systemImage: "map.fill") }

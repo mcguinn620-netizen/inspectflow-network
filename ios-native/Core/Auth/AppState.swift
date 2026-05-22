@@ -10,6 +10,7 @@ final class AppState: ObservableObject {
 
     @Published var authState: AuthState = .loading
     @Published var activeOrganizationID: UUID?
+    @Published var effectiveRole: String = "inspector"
 
     func bootstrap() async {
         let service = SupabaseService.shared
@@ -21,6 +22,7 @@ final class AppState: ObservableObject {
             let profile = try await service.fetchMyProfile(userId: userID)
             if let membership = try? await service.fetchDefaultOrganization(userId: userID) {
                 activeOrganizationID = membership.organizationID
+                effectiveRole = membership.role
             }
             authState = .signedIn(profile)
         } catch {
@@ -35,6 +37,7 @@ final class AppState: ObservableObject {
     func signOut() async {
         try? await SupabaseService.shared.signOut()
         activeOrganizationID = nil
+        effectiveRole = "inspector"
         authState = .signedOut
     }
 }
