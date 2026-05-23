@@ -37,6 +37,7 @@
 		A496019E294407100B85C98C /* CarPlayScheduleTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71F1C6C6FFBEE562BF3481F /* CarPlayScheduleTemplate.swift */; };
 		A5D470A05ACB94A37FE2DE69 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18367283123AA618DD18523 /* AppDelegate.swift */; };
 		A815EF4C8EF422D1E650384F /* SyncStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF0D1A3575838CCF21C4C0A /* SyncStatusView.swift */; };
+		A8A0000000000000000B0001 /* InspectorDashboardHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8A0000000000000000A0001 /* InspectorDashboardHomeView.swift */; };
 		A9525E9882F5B2F733AF9579 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24D66C2E4EAFB44A5315E98C /* Assets.xcassets */; };
 		A9C954DDCC11B8D0AE0AA87D /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 823495D87B860D162FF96622 /* DashboardView.swift */; };
 		AAAA000000000000000B0009 /* InspectFlowClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A0009 /* InspectFlowClient.swift */; };
@@ -108,6 +109,7 @@
 		8DBED7EA0A946692B34D6F27 /* TripsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripsViewModel.swift; sourceTree = "<group>"; };
 		8DF0E58EA873CE3AE0EF92CE /* CarPlayTripService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayTripService.swift; sourceTree = "<group>"; };
 		A1A29FD49E34D2824F0728CF /* AINBrand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINBrand.swift; sourceTree = "<group>"; };
+		A8A0000000000000000A0001 /* InspectorDashboardHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorDashboardHomeView.swift; sourceTree = "<group>"; };
 		A612554AFBDBB78BBE69496E /* AutoInspectorNetwork.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutoInspectorNetwork.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6229C0BDE5ACBE60B1FD1FC /* CarPlaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlaySceneDelegate.swift; sourceTree = "<group>"; };
 		AA42E905663D907DBE8E637E /* InspectionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectionsView.swift; sourceTree = "<group>"; };
@@ -218,6 +220,7 @@
 			children = (
 				823495D87B860D162FF96622 /* DashboardView.swift */,
 				DC30D8C9079EF31A07BF1339 /* DashboardViewModel.swift */,
+				A8A0000000000000000A0001 /* InspectorDashboardHomeView.swift */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";
@@ -606,6 +609,7 @@
 				490E2B9B0C8CDE7165A3E43B /* AuthViewModel.swift in Sources */,
 				A9C954DDCC11B8D0AE0AA87D /* DashboardView.swift in Sources */,
 				D7A5DDBD1FF712EC25F3B0BF /* DashboardViewModel.swift in Sources */,
+				A8A0000000000000000B0001 /* InspectorDashboardHomeView.swift in Sources */,
 				B003E44E4DD8247B34FB95AA /* DriveView.swift in Sources */,
 				419B09558A44F6C45CC12153 /* InspectionDetailView.swift in Sources */,
 				86584AA382BB4B920EF9C81A /* InspectionsView.swift in Sources */,
