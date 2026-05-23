@@ -59,6 +59,12 @@
 		B14C6A602FBBB8C7006C431B /* AINStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A5C2FBBB8C7006C431B /* AINStates.swift */; };
 		B14C6A622FBBBA42006C431B /* RealtimeChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A612FBBBA42006C431B /* RealtimeChannel.swift */; };
 		B14C6A652FBBBA64006C431B /* StorageClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A642FBBBA64006C431B /* StorageClient.swift */; };
+		B1D25DCB2FC1F5AC00E9EDD8 /* NextStopCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D25DC82FC1F5AC00E9EDD8 /* NextStopCard.swift */; };
+		B1D25DCC2FC1F5AC00E9EDD8 /* StartMyDayCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D25DC92FC1F5AC00E9EDD8 /* StartMyDayCard.swift */; };
+		B1D25DCD2FC1F5AC00E9EDD8 /* ActiveTripBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D25DCA2FC1F5AC00E9EDD8 /* ActiveTripBanner.swift */; };
+		B1D25DD02FC1F5EC00E9EDD8 /* JobEditSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D25DCE2FC1F5EC00E9EDD8 /* JobEditSheet.swift */; };
+		B1D25DD12FC1F5EC00E9EDD8 /* JobDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D25DCF2FC1F5EC00E9EDD8 /* JobDetailView.swift */; };
+		B1D25DD32FC1F5EC00E9EDD8 /* OpenInMapsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D25DD22FC1F5EC00E9EDD8 /* OpenInMapsButton.swift */; };
 		B42784F4704E3FA9EDDBF680 /* InspectionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A230A8C60F3599C93D16788 /* InspectionsViewModel.swift */; };
 		B9053B5C8CD2F2766361789A /* RealtimeSubscriptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04ABF7475DA3AC1CBC0886FA /* RealtimeSubscriptions.swift */; };
 		BC6E1F6F22B1D01720809510 /* CarPlaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6229C0BDE5ACBE60B1FD1FC /* CarPlaySceneDelegate.swift */; };
@@ -109,9 +115,9 @@
 		8DBED7EA0A946692B34D6F27 /* TripsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripsViewModel.swift; sourceTree = "<group>"; };
 		8DF0E58EA873CE3AE0EF92CE /* CarPlayTripService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayTripService.swift; sourceTree = "<group>"; };
 		A1A29FD49E34D2824F0728CF /* AINBrand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINBrand.swift; sourceTree = "<group>"; };
-		A8A0000000000000000A0001 /* InspectorDashboardHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorDashboardHomeView.swift; sourceTree = "<group>"; };
 		A612554AFBDBB78BBE69496E /* AutoInspectorNetwork.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutoInspectorNetwork.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6229C0BDE5ACBE60B1FD1FC /* CarPlaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlaySceneDelegate.swift; sourceTree = "<group>"; };
+		A8A0000000000000000A0001 /* InspectorDashboardHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorDashboardHomeView.swift; sourceTree = "<group>"; };
 		AA42E905663D907DBE8E637E /* InspectionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectionsView.swift; sourceTree = "<group>"; };
 		AAAA000000000000000A0009 /* InspectFlowClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectFlowClient.swift; sourceTree = "<group>"; };
 		AAAA000000000000000A000A /* InspectFlowConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectFlowConfig.swift; sourceTree = "<group>"; };
@@ -133,6 +139,12 @@
 		B14C6A612FBBBA42006C431B /* RealtimeChannel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RealtimeChannel.swift; path = "../../../swift-connector/Sources/InspectFlowConnector/Realtime/RealtimeChannel.swift"; sourceTree = "<group>"; };
 		B14C6A642FBBBA64006C431B /* StorageClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageClient.swift; sourceTree = "<group>"; };
 		B18367283123AA618DD18523 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		B1D25DC82FC1F5AC00E9EDD8 /* NextStopCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NextStopCard.swift; sourceTree = "<group>"; };
+		B1D25DC92FC1F5AC00E9EDD8 /* StartMyDayCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartMyDayCard.swift; sourceTree = "<group>"; };
+		B1D25DCA2FC1F5AC00E9EDD8 /* ActiveTripBanner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActiveTripBanner.swift; sourceTree = "<group>"; };
+		B1D25DCE2FC1F5EC00E9EDD8 /* JobEditSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JobEditSheet.swift; sourceTree = "<group>"; };
+		B1D25DCF2FC1F5EC00E9EDD8 /* JobDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JobDetailView.swift; sourceTree = "<group>"; };
+		B1D25DD22FC1F5EC00E9EDD8 /* OpenInMapsButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInMapsButton.swift; sourceTree = "<group>"; };
 		B34B0507FE00BF36365A62E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C22E204106824B601217B467 /* InspectionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectionDetailView.swift; sourceTree = "<group>"; };
 		D379B752680E42F56D50324E /* SupabaseClientProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClientProvider.swift; sourceTree = "<group>"; };
@@ -187,6 +199,7 @@
 				2CF0D1A3575838CCF21C4C0A /* SyncStatusView.swift */,
 				AAAA000000000000000C0006 /* AINInputs.swift */,
 				AAAA000000000000000C0007 /* AINOverlays.swift */,
+				B1D25DD22FC1F5EC00E9EDD8 /* OpenInMapsButton.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -218,6 +231,7 @@
 		468321D63C36F2A0B05D79CA /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				B1D25DC72FC1F5AC00E9EDD8 /* Components */,
 				823495D87B860D162FF96622 /* DashboardView.swift */,
 				DC30D8C9079EF31A07BF1339 /* DashboardViewModel.swift */,
 				A8A0000000000000000A0001 /* InspectorDashboardHomeView.swift */,
@@ -335,6 +349,8 @@
 		9D8FB123A1621A97F2E6B02F /* Jobs */ = {
 			isa = PBXGroup;
 			children = (
+				B1D25DCF2FC1F5EC00E9EDD8 /* JobDetailView.swift */,
+				B1D25DCE2FC1F5EC00E9EDD8 /* JobEditSheet.swift */,
 				22B7DFF288D646A9E38F2592 /* JobsView.swift */,
 				E4FB918863C258C1718BAB06 /* JobsViewModel.swift */,
 			);
@@ -437,6 +453,16 @@
 			);
 			name = Storage;
 			path = "../../../swift-connector/Sources/InspectFlowConnector/Storage";
+			sourceTree = "<group>";
+		};
+		B1D25DC72FC1F5AC00E9EDD8 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				B1D25DC82FC1F5AC00E9EDD8 /* NextStopCard.swift */,
+				B1D25DC92FC1F5AC00E9EDD8 /* StartMyDayCard.swift */,
+				B1D25DCA2FC1F5AC00E9EDD8 /* ActiveTripBanner.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 		B4894F917AC9DD25B277FD92 /* Network */ = {
@@ -581,8 +607,10 @@
 				BC6E1F6F22B1D01720809510 /* CarPlaySceneDelegate.swift in Sources */,
 				A496019E294407100B85C98C /* CarPlayScheduleTemplate.swift in Sources */,
 				C6BC94DB3CC4B641AB7031A0 /* CarPlayStop.swift in Sources */,
+				B1D25DCD2FC1F5AC00E9EDD8 /* ActiveTripBanner.swift in Sources */,
 				CAA12E02BBA8BC2163FE5268 /* CarPlayStopListTemplate.swift in Sources */,
 				72955F44AD4AF12B327EC2C2 /* CarPlayTripService.swift in Sources */,
+				B1D25DCC2FC1F5AC00E9EDD8 /* StartMyDayCard.swift in Sources */,
 				4FF47DA50B05C0821B454724 /* AuditLogger.swift in Sources */,
 				B14C6A582FBBB854006C431B /* AuthModels.swift in Sources */,
 				54946F1D72DD87A440D6E2E0 /* AppState.swift in Sources */,
@@ -612,6 +640,7 @@
 				A8A0000000000000000B0001 /* InspectorDashboardHomeView.swift in Sources */,
 				B003E44E4DD8247B34FB95AA /* DriveView.swift in Sources */,
 				419B09558A44F6C45CC12153 /* InspectionDetailView.swift in Sources */,
+				B1D25DD12FC1F5EC00E9EDD8 /* JobDetailView.swift in Sources */,
 				86584AA382BB4B920EF9C81A /* InspectionsView.swift in Sources */,
 				B42784F4704E3FA9EDDBF680 /* InspectionsViewModel.swift in Sources */,
 				B14C6A492FBBB7A1006C431B /* AINTheme.swift in Sources */,
@@ -623,6 +652,7 @@
 				75C517EAF8EF3B30B0F0C29D /* TaxView.swift in Sources */,
 				69DC0955514B0B8A66814FD1 /* TripsView.swift in Sources */,
 				9780EC721A1FBC5DCE8F829D /* TripsViewModel.swift in Sources */,
+				B1D25DCB2FC1F5AC00E9EDD8 /* NextStopCard.swift in Sources */,
 				B14C6A542FBBB854006C431B /* QueryBuilder.swift in Sources */,
 				6AEDBA679D3FA0B61C54ADD1 /* VehiclesView.swift in Sources */,
 				77868B6AA543DF62CBA6C5BC /* VehiclesViewModel.swift in Sources */,
@@ -636,6 +666,8 @@
 				AAAA000000000000000B000B /* JSONDecoder+Supabase.swift in Sources */,
 				AAAA000000000000000D0006 /* AINInputs.swift in Sources */,
 				AAAA000000000000000D0007 /* AINOverlays.swift in Sources */,
+				B1D25DD32FC1F5EC00E9EDD8 /* OpenInMapsButton.swift in Sources */,
+				B1D25DD02FC1F5EC00E9EDD8 /* JobEditSheet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
