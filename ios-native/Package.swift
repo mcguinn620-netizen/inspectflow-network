@@ -10,12 +10,7 @@ let package = Package(
     targets: [
         .target(
             name: "InspectFlowConnector",
-            path: "swift-connector/Sources/InspectFlowConnector"
-        ),
-        .testTarget(
-            name: "InspectFlowConnectorTests",
-            dependencies: ["InspectFlowConnector"],
-            path: "swift-connector/Tests/InspectFlowConnectorTests"
+            path: "Core/InspectFlowConnector"
         ),
     ]
 )

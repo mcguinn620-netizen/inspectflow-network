@@ -111,9 +111,9 @@ struct ScheduleView: View {
     }
 
     private func moveDraggedJob(to day: Date) {
-        guard let draggingJobID else { return }
-        draggingJobID = nil
-        guard let index = viewModel.jobs.firstIndex(where: { $0.id == draggingJobID }) else { return }
+        guard let draggedJobID = draggingJobID else { return }
+        self.draggingJobID = nil
+        guard let index = viewModel.jobs.firstIndex(where: { $0.id == draggedJobID }) else { return }
         let source = viewModel.jobs[index]
         let mergedDate = Calendar.current.date(bySettingHour: 9, minute: 0, second: 0, of: day)
         viewModel.jobs[index] = Job(
