@@ -34,6 +34,7 @@
 		944162CDC4D04FE05C1FE4A4 /* AINBrand.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A29FD49E34D2824F0728CF /* AINBrand.swift */; };
 		9780EC721A1FBC5DCE8F829D /* TripsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DBED7EA0A946692B34D6F27 /* TripsViewModel.swift */; };
 		A15510A0A196721D42ACBEB0 /* ScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 851A9FED51A53A0EAF5F18A4 /* ScheduleView.swift */; };
+		B1C2D3E4F5A60718293A4B5C /* CalendarSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3F4A5B60718293A4B5C /* CalendarSyncService.swift */; };
 		A496019E294407100B85C98C /* CarPlayScheduleTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71F1C6C6FFBEE562BF3481F /* CarPlayScheduleTemplate.swift */; };
 		A5D470A05ACB94A37FE2DE69 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18367283123AA618DD18523 /* AppDelegate.swift */; };
 		A815EF4C8EF422D1E650384F /* SyncStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF0D1A3575838CCF21C4C0A /* SyncStatusView.swift */; };
@@ -110,6 +111,7 @@
 		7C0D42E0A074E62DCB16F8C7 /* TripsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripsView.swift; sourceTree = "<group>"; };
 		823495D87B860D162FF96622 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		851A9FED51A53A0EAF5F18A4 /* ScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleView.swift; sourceTree = "<group>"; };
+		C1D2E3F4A5B60718293A4B5C /* CalendarSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Calendar/CalendarSyncService.swift; sourceTree = "<group>"; };
 		878503DB7BEF2B4C9F0F7957 /* CarPlayStopListTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayStopListTemplate.swift; sourceTree = "<group>"; };
 		8A921A601454A87FA26CDC59 /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
 		8DBED7EA0A946692B34D6F27 /* TripsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripsViewModel.swift; sourceTree = "<group>"; };
@@ -648,6 +650,7 @@
 				3307BCEC33859C72D7A594E6 /* JobsView.swift in Sources */,
 				2BD64856D6C7F609C82F8A0D /* JobsViewModel.swift in Sources */,
 				A15510A0A196721D42ACBEB0 /* ScheduleView.swift in Sources */,
+				B1C2D3E4F5A60718293A4B5C /* CalendarSyncService.swift in Sources */,
 				5F3D72571A5C23B0BEE82D59 /* SettingsView.swift in Sources */,
 				75C517EAF8EF3B30B0F0C29D /* TaxView.swift in Sources */,
 				69DC0955514B0B8A66814FD1 /* TripsView.swift in Sources */,
