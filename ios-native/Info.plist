@@ -65,6 +65,11 @@
 	<string>Auto Inspector uses your location to track inspection trips and route you to vehicles.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Auto Inspector tracks trips in the background so mileage continues to log when the screen is off.</string>
+
+	<key>NSCalendarsUsageDescription</key>
+	<string>Auto Inspector syncs scheduled jobs to your device calendar.</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>Auto Inspector syncs scheduled jobs to your device calendar.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Capture inspection photos of vehicles, damage, and required documentation.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
