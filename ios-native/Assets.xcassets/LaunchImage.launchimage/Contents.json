@@ -74,7 +74,7 @@
     },
     {
       "extent" : "full-screen",
-      "filename" : "InspecIcon.PNG",
+      "filename" : "InspecIcon.png",
       "idiom" : "ipad",
       "minimum-system-version" : "10.0",
       "orientation" : "landscape",
