@@ -35,7 +35,7 @@ final class CalendarSyncService {
         let notes = [
             "Job ID: \(job.id.uuidString)",
             "Status: \(job.status)",
-            "Customer: \(job.customerName ?? \"\")"
+            "Customer: \(job.customerName ?? "")"
         ].joined(separator: "\n")
 
         let event = existingEvent(for: job.id) ?? EKEvent(eventStore: store)
