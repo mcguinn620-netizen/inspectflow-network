@@ -7,6 +7,7 @@ struct ScheduleView: View {
     @State private var selectedJobID: UUID?
     @State private var draggingJobID: UUID?
     @State private var dispatchTargetJob: Job?
+    @State private var bannerMessage: String?
 
     private var dayColumns: [Date] {
         (0..<7).compactMap { Calendar.current.date(byAdding: .day, value: $0, to: selectedWeekStart) }
@@ -58,6 +59,11 @@ struct ScheduleView: View {
             .sheet(item: $dispatchTargetJob) { job in
                 DispatcherAssignSheet(job: job)
             }
+            .alert("Schedule", isPresented: Binding(get: { bannerMessage != nil }, set: { if !$0 { bannerMessage = nil } })) {
+                Button("OK") { bannerMessage = nil }
+            } message: {
+                Text(bannerMessage ?? "")
+            }
             .refreshable { await viewModel.load(orgId: appState.activeOrganizationID) }
             .task { await viewModel.load(orgId: appState.activeOrganizationID) }
         }
@@ -83,6 +89,17 @@ struct ScheduleView: View {
                 ScheduleJobPill(job: job, isDragging: draggingJobID == job.id)
                     .onTapGesture { selectedJobID = job.id }
                     .onLongPressGesture { draggingJobID = job.id }
+                    .contextMenu {
+                        Button("Sync to device calendar") {
+                            Task {
+                                let synced = await CalendarSyncService.shared.sync(job: job)
+                                bannerMessage = synced ? "Synced to Calendar" : "Unable to sync with Calendar"
+                            }
+                        }
+                        Button("Open with Apple Maps") {
+                            MapsLookupService.shared.open(job: job)
+                        }
+                    }
             }
             Spacer(minLength: 36)
         }
