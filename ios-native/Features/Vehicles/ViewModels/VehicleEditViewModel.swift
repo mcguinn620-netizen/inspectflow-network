@@ -10,9 +10,13 @@ final class VehicleEditViewModel: ObservableObject {
     private let repository: VehicleRepository
     private let actorUserID: UUID
 
-    init(form: VehicleFormState, repository: VehicleRepository = OutboxVehicleRepository(), actorUserID: UUID) {
+    init(
+        form: VehicleFormState,
+        repository: VehicleRepository? = nil,
+        actorUserID: UUID
+    ) {
         self.form = form
-        self.repository = repository
+        self.repository = repository ?? OutboxVehicleRepository()
         self.actorUserID = actorUserID
     }
 

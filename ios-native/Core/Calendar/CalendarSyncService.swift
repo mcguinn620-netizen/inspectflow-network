@@ -12,14 +12,6 @@ final class CalendarSyncService {
     private init() {}
 
     func ensureAccess() async -> Bool {
-        if #available(iOS 17.0, *) {
-            do {
-                return try await store.requestFullAccessToEvents()
-            } catch {
-                return false
-            }
-        }
-
         return await withCheckedContinuation { continuation in
             store.requestAccess(to: .event) { granted, _ in
                 continuation.resume(returning: granted)

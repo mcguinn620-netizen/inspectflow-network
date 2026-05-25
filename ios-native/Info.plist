@@ -2,10 +2,25 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.autoinspectornetwork.refresh</string>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>Auto Inspector</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>MKDirectionsRequest</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.apple.maps.directionsrequest</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -22,15 +37,25 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>UILaunchScreen</key>
-	<dict>
-		<key>UIColorName</key>
-		<string></string>
-		<key>UIImageName</key>
-		<string>LaunchImage</string>
-		<key>UIImageRespectsSafeAreaInsets</key>
-		<string>YES</string>
-	</dict>
+	<key>MKDirectionsApplicationSupportedModes</key>
+	<array>
+		<string>MKDirectionsModeCar</string>
+		<string>MKDirectionsModePedestrian</string>
+	</array>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>Auto Inspector syncs scheduled jobs to your device calendar.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Auto Inspector syncs scheduled jobs to your device calendar.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Capture inspection photos of vehicles, damage, and required documentation.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Auto Inspector tracks trips in the background so mileage continues to log when the screen is off.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Auto Inspector uses your location to track inspection trips and route you to vehicles.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Save inspection photos back to your photo library.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Attach existing photos from your library to an inspection.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -52,30 +77,21 @@
 	</dict>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>bluetooth-central</string>
 		<string>fetch</string>
 		<string>location</string>
 		<string>processing</string>
 		<string>remote-notification</string>
 	</array>
-	<key>BGTaskSchedulerPermittedIdentifiers</key>
-	<array>
-		<string>com.autoinspectornetwork.refresh</string>
-	</array>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Auto Inspector uses your location to track inspection trips and route you to vehicles.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Auto Inspector tracks trips in the background so mileage continues to log when the screen is off.</string>
-
-	<key>NSCalendarsUsageDescription</key>
-	<string>Auto Inspector syncs scheduled jobs to your device calendar.</string>
-	<key>NSCalendarsFullAccessUsageDescription</key>
-	<string>Auto Inspector syncs scheduled jobs to your device calendar.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Capture inspection photos of vehicles, damage, and required documentation.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Attach existing photos from your library to an inspection.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Save inspection photos back to your photo library.</string>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string></string>
+		<key>UIImageName</key>
+		<string>LaunchImage</string>
+		<key>UIImageRespectsSafeAreaInsets</key>
+		<string>YES</string>
+	</dict>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
