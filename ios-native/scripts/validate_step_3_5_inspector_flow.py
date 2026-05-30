@@ -110,6 +110,10 @@ assert_contains(
         "func updateTripStatus(tripId: UUID, status: String, extras: [String: Any] = [:]) async throws",
         "func fetchTripStops(tripId: UUID, limit: Int = 50) async throws -> [TripStop]",
         "func updateTripStopStatus(stopId: UUID, status: String, extras: [String: Any] = [:]) async throws",
+        "func fetchLatestCurrentTrip(userId: UUID? = nil) async throws -> Trip?",
+        "func fetchTripLocationPoints(tripId: UUID, limit: Int = 500) async throws -> [TripLocationPoint]",
+        "func setTripStatus(_ trip: Trip, status: String) async throws -> Bool",
+        "func setStopStatus(_ stop: TripStop, status: String, startJob: Bool = false, completeJob: Bool = false) async throws -> Bool",
         'client.db.from("trips")',
         'client.db.from("trip_stops")',
         ".insert(row)",
@@ -128,11 +132,11 @@ assert_contains(
         "try await SupabaseService.shared.createTrip",
         "TripTrackingController.shared.start",
         "func pauseActiveTrip(orgId: UUID?, userId: UUID?) async",
-        "try await SupabaseService.shared.updateTripStatus",
+        "try await SupabaseService.shared.setTripStatus",
         "func resumeActiveTrip(orgId: UUID?, userId: UUID?) async",
         "func completeActiveStop(orgId: UUID?, userId: UUID?) async",
-        "try await SupabaseService.shared.updateTripStopStatus",
-        "try await SupabaseService.shared.updateJobStatus",
+        "try await SupabaseService.shared.setStopStatus",
+        "completeJob: true",
     ],
 )
 
@@ -159,7 +163,7 @@ assert_contains(
     next_stop,
     [
         "struct NextStopCard",
-        "let nextTripStop: TripStop?",
+        "let nextStopData: NextStopData?",
         "let nextJob: Job?",
         "let onNavigate: () -> Void",
         "let onCompleteStop: () -> Void",
@@ -186,4 +190,24 @@ assert_contains("Features/Settings/SettingsView.swift", settings, ["Voice cues w
 main_tab = read("App/MainTabView.swift")
 assert_contains("App/MainTabView.swift", main_tab, ["InspectorDashboardHomeView", "role"])
 
-print("OK: Step 3.5 inspector daily flow performs concrete write actions and contains no known no-op placeholders.")
+drive = read("Features/Drive/DriveView.swift")
+assert_contains(
+    "Features/Drive/DriveView.swift",
+    drive,
+    [
+        "final class DriveViewModel",
+        "fetchLatestCurrentTrip",
+        "fetchTripLocationPoints",
+        "LocationTracker.shared",
+        "@AppStorage(\"inspector.voice_cues_enabled\")",
+        "Open Maps",
+        "Arrived",
+        "Complete",
+        "Skip stop",
+        "Pause trip",
+        "Resume trip",
+        "End trip",
+    ],
+)
+
+print("OK: Step 3.5 inspector daily/drive flow performs concrete guarded write actions and contains no known no-op placeholders.")

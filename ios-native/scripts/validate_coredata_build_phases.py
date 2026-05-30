@@ -3,7 +3,8 @@ import pathlib
 import re
 import sys
 
-pbxproj = pathlib.Path('ios-native/AutoInspectorNetwork.xcodeproj/project.pbxproj')
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+pbxproj = ROOT / 'AutoInspectorNetwork.xcodeproj' / 'project.pbxproj'
 text = pbxproj.read_text()
 lines = text.splitlines()
 
