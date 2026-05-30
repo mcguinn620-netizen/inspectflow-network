@@ -8,8 +8,14 @@ struct InspectorDashboardHomeView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: AINTheme.Spacing.lg) {
-                    ActiveTripBanner(activeTrip: viewModel.activeTrip)
-                    NextStopCard(activeTrip: viewModel.activeTrip)
+                    ActiveTripBanner(activeTrip: viewModel.activeTrip) {
+                        Task { await pauseTrip() }
+                    }
+                    NextStopCard(
+                        activeTrip: viewModel.activeTrip,
+                        onNavigate: openActiveTrip,
+                        onCompleteStop: { Task { await completeStop() } }
+                    )
                     StartMyDayCard(
                         hasJobsToday: viewModel.todayJobCount > 0,
                         todayJobCount: viewModel.todayJobCount,
@@ -33,6 +39,25 @@ struct InspectorDashboardHomeView: View {
     }
 
     private func startTrip() {
-        // Step 3.5 scaffold: trip start action wires to Trips in next iteration.
+        Task {
+            if viewModel.activeTrip?.status == "paused" {
+                await viewModel.resumeActiveTrip(orgId: appState.activeOrganizationID, userId: SupabaseService.shared.currentUserID)
+            } else {
+                await viewModel.startTodayTrip(orgId: appState.activeOrganizationID, userId: SupabaseService.shared.currentUserID)
+            }
+        }
+    }
+
+    private func pauseTrip() async {
+        await viewModel.pauseActiveTrip(orgId: appState.activeOrganizationID, userId: SupabaseService.shared.currentUserID)
+    }
+
+    private func completeStop() async {
+        await viewModel.completeActiveStop(orgId: appState.activeOrganizationID, userId: SupabaseService.shared.currentUserID)
+    }
+
+    private func openActiveTrip() {
+        guard viewModel.activeTrip != nil else { return }
+        // Navigation details are displayed in the Trips tab while the active trip remains tracked.
     }
 }

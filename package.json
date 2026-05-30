@@ -17,7 +17,9 @@
     "check:ios-step-3-2": "npm run check:ios-package && npm run check:ios-coredata-phases",
     "check:ios-step-3-3": "npm run check:ios-package && npm run check:ios-coredata-phases && python3 ios-native/scripts/validate_step_3_3_jobs.py",
     "check:ios-step-3-4": "npm run check:ios-package && npm run check:ios-coredata-phases && python3 ios-native/scripts/validate_step_3_4_schedule.py",
-    "check:ios-step-3-5": "npm run check:ios-package && npm run check:ios-coredata-phases && python3 ios-native/scripts/validate_step_3_5_inspector_flow.py"
+    "check:ios-step-3-5": "npm run check:ios-package && npm run check:ios-coredata-phases && python3 ios-native/scripts/validate_step_3_3_jobs.py && python3 ios-native/scripts/validate_step_3_4_schedule.py && python3 ios-native/scripts/validate_step_3_5_inspector_flow.py",
+    "check:ios-xcode": "cd ios-native && xcodebuild -workspace AutoInspectorNetwork.xcworkspace -scheme AutoInspectorNetwork -configuration Debug -destination \"generic/platform=iOS Simulator\" CODE_SIGNING_ALLOWED=NO build",
+    "check:ios": "npm run check:ios-package && npm run check:ios-coredata-phases && python3 ios-native/scripts/validate_step_3_3_jobs.py && python3 ios-native/scripts/validate_step_3_4_schedule.py && python3 ios-native/scripts/validate_step_3_5_inspector_flow.py && npm run check:ios-xcode"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

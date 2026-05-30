@@ -2,6 +2,7 @@ import SwiftUI
 
 struct JobEditSheet: View {
     let job: Job
+    var onSave: ((Date, String) -> Void)? = nil
 
     @Environment(\.dismiss) private var dismiss
     @State private var scheduledAt = Date()
@@ -23,7 +24,10 @@ struct JobEditSheet: View {
                     Button("Cancel") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") { dismiss() }
+                    Button("Save") {
+                        onSave?(scheduledAt, assignee.trimmingCharacters(in: .whitespacesAndNewlines))
+                        dismiss()
+                    }
                 }
             }
             .onAppear {

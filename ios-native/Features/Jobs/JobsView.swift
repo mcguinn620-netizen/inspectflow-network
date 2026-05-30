@@ -17,7 +17,15 @@ struct JobsView: View {
                 } else {
                     List(viewModel.jobs) { job in
                         NavigationLink {
-                            JobDetailView(job: job)
+                            JobDetailView(
+                                job: job,
+                                onMarkComplete: { selectedJob in
+                                    Task { await viewModel.markComplete(job: selectedJob, orgId: appState.activeOrganizationID) }
+                                },
+                                onReschedule: { selectedJob, scheduledAt in
+                                    Task { await viewModel.reschedule(job: selectedJob, scheduledAt: scheduledAt, orgId: appState.activeOrganizationID) }
+                                }
+                            )
                         } label: {
                             JobRow(job: job)
                         }

@@ -2,8 +2,11 @@ import SwiftUI
 
 struct JobDetailView: View {
     let job: Job
+    let onMarkComplete: (Job) -> Void
+    let onReschedule: (Job, Date) -> Void
 
     @State private var showEditSheet = false
+    @State private var actionMessage: String?
 
     var body: some View {
         List {
@@ -35,10 +38,18 @@ struct JobDetailView: View {
             }
 
             Section("Quick Actions") {
-                Button("Start Inspection") {}
-                Button("Navigate") {}
-                Button("Call") {}
-                Button("Mark Complete") {}
+                Button("Start Inspection") {
+                    actionMessage = "Open this job from Inspections to start the checklist."
+                }
+                Button("Navigate") {
+                    MapsLookupService.shared.open(job: job)
+                }
+                Button("Call") {
+                    actionMessage = "Customer phone is not attached to this job yet."
+                }
+                Button("Mark Complete") {
+                    onMarkComplete(job)
+                }
             }
         }
         .navigationTitle("Job Details")
@@ -50,7 +61,14 @@ struct JobDetailView: View {
             }
         }
         .sheet(isPresented: $showEditSheet) {
-            JobEditSheet(job: job)
+            JobEditSheet(job: job) { scheduledAt, _ in
+                onReschedule(job, scheduledAt)
+            }
+        }
+        .alert("Job action", isPresented: Binding(get: { actionMessage != nil }, set: { if !$0 { actionMessage = nil } })) {
+            Button("OK") { actionMessage = nil }
+        } message: {
+            Text(actionMessage ?? "")
         }
     }
 }

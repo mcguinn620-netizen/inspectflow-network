@@ -57,7 +57,9 @@ struct ScheduleView: View {
                 }
             }
             .sheet(item: $dispatchTargetJob) { job in
-                DispatcherAssignSheet(job: job)
+                DispatcherAssignSheet(job: job) { inspectorId in
+                    Task { await viewModel.assign(job: job, inspectorId: inspectorId, orgId: appState.activeOrganizationID) }
+                }
             }
             .alert("Schedule", isPresented: Binding(get: { bannerMessage != nil }, set: { if !$0 { bannerMessage = nil } })) {
                 Button("OK") { bannerMessage = nil }
@@ -117,7 +119,9 @@ struct ScheduleView: View {
                 }
             }
             if draggingJobID != nil {
-                Button("Move first job here") { moveDraggedJob(to: day) }
+                Button("Move first job here") {
+                    Task { await moveDraggedJob(to: day) }
+                }
             }
         }
     }
@@ -127,20 +131,15 @@ struct ScheduleView: View {
         return true
     }
 
-    private func moveDraggedJob(to day: Date) {
+    private func moveDraggedJob(to day: Date) async {
         guard let draggedJobID = draggingJobID else { return }
         self.draggingJobID = nil
         guard let index = viewModel.jobs.firstIndex(where: { $0.id == draggedJobID }) else { return }
         let source = viewModel.jobs[index]
         let mergedDate = Calendar.current.date(bySettingHour: 9, minute: 0, second: 0, of: day)
-        viewModel.jobs[index] = Job(
-            id: source.id,
-            title: source.title,
-            customerName: source.customerName,
-            location: source.location,
-            scheduledAt: mergedDate,
-            status: source.status
-        )
+        if let mergedDate {
+            await viewModel.reschedule(job: source, scheduledAt: mergedDate, orgId: appState.activeOrganizationID)
+        }
     }
 }
 
@@ -181,13 +180,21 @@ private struct ScheduleJobPill: View {
 
 private struct DispatcherAssignSheet: View {
     let job: Job
+    let onAssign: (UUID) -> Void
+    @State private var inspectorIDText = ""
 
     var body: some View {
         NavigationStack {
             List {
                 Section("Dispatch") {
-                    Text("Assign \(job.title) using dispatcher edge function.")
-                    Button("Run intelligent dispatch") { }
+                    Text("Assign \(job.title) by entering an inspector UUID from the dispatcher roster.")
+                    TextField("Inspector UUID", text: $inspectorIDText)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                    Button("Assign inspector") {
+                        guard let inspectorId = UUID(uuidString: inspectorIDText.trimmingCharacters(in: .whitespacesAndNewlines)) else { return }
+                        onAssign(inspectorId)
+                    }
                 }
             }
             .navigationTitle("Assign Inspector")
