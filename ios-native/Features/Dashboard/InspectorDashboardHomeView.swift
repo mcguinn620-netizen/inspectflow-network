@@ -13,7 +13,9 @@ struct InspectorDashboardHomeView: View {
                     }
                     NextStopCard(
                         activeTrip: viewModel.activeTrip,
-                        onNavigate: openActiveTrip,
+                        nextTripStop: viewModel.nextTripStop,
+                        nextJob: viewModel.nextJob,
+                        onNavigate: openNextStop,
                         onCompleteStop: { Task { await completeStop() } }
                     )
                     StartMyDayCard(
@@ -56,8 +58,11 @@ struct InspectorDashboardHomeView: View {
         await viewModel.completeActiveStop(orgId: appState.activeOrganizationID, userId: SupabaseService.shared.currentUserID)
     }
 
-    private func openActiveTrip() {
-        guard viewModel.activeTrip != nil else { return }
-        // Navigation details are displayed in the Trips tab while the active trip remains tracked.
+    private func openNextStop() {
+        if let stop = viewModel.nextTripStop {
+            MapsLookupService.shared.open(stop: stop)
+        } else if let job = viewModel.nextJob {
+            MapsLookupService.shared.open(job: job)
+        }
     }
 }

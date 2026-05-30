@@ -201,4 +201,22 @@ final class SupabaseService {
             .eq("id", tripId.uuidString)
             .execute()
     }
+
+    func fetchTripStops(tripId: UUID, limit: Int = 50) async throws -> [TripStop] {
+        try await client.db.from("trip_stops")
+            .select()
+            .eq("trip_id", tripId.uuidString)
+            .order("sort_order", ascending: true)
+            .limit(limit)
+            .execute()
+    }
+
+    func updateTripStopStatus(stopId: UUID, status: String, extras: [String: Any] = [:]) async throws {
+        var row: [String: Any] = ["status": status]
+        for (k, v) in extras { row[k] = v }
+        _ = try await client.db.from("trip_stops")
+            .update(row)
+            .eq("id", stopId.uuidString)
+            .execute()
+    }
 }
