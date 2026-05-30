@@ -40,7 +40,7 @@ struct InspectorDashboardHomeView: View {
 
     private func startTrip() {
         Task {
-            if viewModel.activeTrip?.status == "paused" {
+            if viewModel.activeTrip != nil {
                 await viewModel.resumeActiveTrip(orgId: appState.activeOrganizationID, userId: SupabaseService.shared.currentUserID)
             } else {
                 await viewModel.startTodayTrip(orgId: appState.activeOrganizationID, userId: SupabaseService.shared.currentUserID)
