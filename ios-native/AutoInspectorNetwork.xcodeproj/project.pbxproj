@@ -7,7 +7,87 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		22827134EA78326A414A5A53 /* SupabaseClientProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D379B752680E42F56D50324E /* SupabaseClientProvider.swift */; };
+		2BD64856D6C7F609C82F8A0D /* JobsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FB918863C258C1718BAB06 /* JobsViewModel.swift */; };
+		2D15AA7686667954E9D77C53 /* TripTrackingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F45FC55D363DE54E7B5111 /* TripTrackingController.swift */; };
+		3307BCEC33859C72D7A594E6 /* JobsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B7DFF288D646A9E38F2592 /* JobsView.swift */; };
+		3579C33A591EAFE68671A1CA /* CarPlayNavigationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B24CC01A1F4CC9A27D01698 /* CarPlayNavigationCoordinator.swift */; };
+		39270173AF3B4D15A33D0B78 /* LocationTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2849F2339674CA7D8F26CAE0 /* LocationTracker.swift */; };
+		3C7D73605588A031CCC0FA24 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD6A5B54D49B7EF0DF06F20 /* AuthView.swift */; };
+		419B09558A44F6C45CC12153 /* InspectionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22E204106824B601217B467 /* InspectionDetailView.swift */; };
+		46A81275311533F311417167 /* Outbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC04F5696CBBA4141DF64D6C /* Outbox.swift */; };
+		47A5D4E5D08E65962F7E0954 /* InspectionTemplateModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A8D7405D4EEF6598B26AE8 /* InspectionTemplateModels.swift */; };
+		490E2B9B0C8CDE7165A3E43B /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EDFEBD7F96A35AD771B0C2 /* AuthViewModel.swift */; };
+		4C14FB0B4CDF4D41148656D7 /* SupabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69C22645F8000E43CE2967B0 /* SupabaseService.swift */; };
+		4FF47DA50B05C0821B454724 /* AuditLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA88B2A2DB1B069BA0AC5D6 /* AuditLogger.swift */; };
+		54946F1D72DD87A440D6E2E0 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C4D2C3F50073D1A27B62CA /* AppState.swift */; };
+		58B774BAB548F3CDEEFE984F /* DomainModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F91FE72E2545B9592848B66 /* DomainModels.swift */; };
+		5F3D72571A5C23B0BEE82D59 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B26AAB9CAAB4FDC8CBA42 /* SettingsView.swift */; };
+		69DC0955514B0B8A66814FD1 /* TripsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0D42E0A074E62DCB16F8C7 /* TripsView.swift */; };
+		6AEDBA679D3FA0B61C54ADD1 /* VehiclesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D286DB64C0A8A338F090EB8 /* VehiclesView.swift */; };
+		72955F44AD4AF12B327EC2C2 /* CarPlayTripService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF0E58EA873CE3AE0EF92CE /* CarPlayTripService.swift */; };
+		75C517EAF8EF3B30B0F0C29D /* TaxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E24EB72291667DA6828601AF /* TaxView.swift */; };
+		77868B6AA543DF62CBA6C5BC /* VehiclesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1CE19420EC964FB37B70F8E /* VehiclesViewModel.swift */; };
+		7BA8B6EC04DAF2495730F04A /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A921A601454A87FA26CDC59 /* SyncEngine.swift */; };
+		86584AA382BB4B920EF9C81A /* InspectionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA42E905663D907DBE8E637E /* InspectionsView.swift */; };
+		8DFD36F2D698E4DA3E8E6FCF /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4159112EA36531898205E02D /* MainTabView.swift */; };
+		944162CDC4D04FE05C1FE4A4 /* AINBrand.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A29FD49E34D2824F0728CF /* AINBrand.swift */; };
+		9780EC721A1FBC5DCE8F829D /* TripsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DBED7EA0A946692B34D6F27 /* TripsViewModel.swift */; };
+		A15510A0A196721D42ACBEB0 /* ScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 851A9FED51A53A0EAF5F18A4 /* ScheduleView.swift */; };
+		A496019E294407100B85C98C /* CarPlayScheduleTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71F1C6C6FFBEE562BF3481F /* CarPlayScheduleTemplate.swift */; };
+		A5D470A05ACB94A37FE2DE69 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18367283123AA618DD18523 /* AppDelegate.swift */; };
+		A815EF4C8EF422D1E650384F /* SyncStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF0D1A3575838CCF21C4C0A /* SyncStatusView.swift */; };
+		A8A0000000000000000B0001 /* InspectorDashboardHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8A0000000000000000A0001 /* InspectorDashboardHomeView.swift */; };
 		A9525E9882F5B2F733AF9579 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24D66C2E4EAFB44A5315E98C /* Assets.xcassets */; };
+		A9C954DDCC11B8D0AE0AA87D /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 823495D87B860D162FF96622 /* DashboardView.swift */; };
+		AAAA000000000000000B0009 /* InspectFlowClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A0009 /* InspectFlowClient.swift */; };
+		AAAA000000000000000B000A /* InspectFlowConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A000A /* InspectFlowConfig.swift */; };
+		AAAA000000000000000B000B /* JSONDecoder+Supabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A000B /* JSONDecoder+Supabase.swift */; };
+		AAAA000000000000000D0006 /* AINInputs.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000C0006 /* AINInputs.swift */; };
+		AAAA000000000000000D0007 /* AINOverlays.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000C0007 /* AINOverlays.swift */; };
+		B003E44E4DD8247B34FB95AA /* DriveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE220E882E0F0F3349EE2545 /* DriveView.swift */; };
+		B14C6A492FBBB7A1006C431B /* AINTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A482FBBB7A1006C431B /* AINTheme.swift */; };
+		B14C6A532FBBB854006C431B /* RestClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A4B2FBBB854006C431B /* RestClient.swift */; };
+		B14C6A542FBBB854006C431B /* QueryBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A4C2FBBB854006C431B /* QueryBuilder.swift */; };
+		B14C6A552FBBB854006C431B /* FunctionsClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A4E2FBBB854006C431B /* FunctionsClient.swift */; };
+		B14C6A562FBBB854006C431B /* SessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A502FBBB854006C431B /* SessionStore.swift */; };
+		B14C6A572FBBB854006C431B /* AuthClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A512FBBB854006C431B /* AuthClient.swift */; };
+		B14C6A582FBBB854006C431B /* AuthModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A522FBBB854006C431B /* AuthModels.swift */; };
+		B14C6A5D2FBBB8C7006C431B /* AINButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A592FBBB8C7006C431B /* AINButtons.swift */; };
+		B14C6A5E2FBBB8C7006C431B /* AINCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A5A2FBBB8C7006C431B /* AINCard.swift */; };
+		B14C6A5F2FBBB8C7006C431B /* AINStatusPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A5B2FBBB8C7006C431B /* AINStatusPill.swift */; };
+		B14C6A602FBBB8C7006C431B /* AINStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A5C2FBBB8C7006C431B /* AINStates.swift */; };
+		B14C6A622FBBBA42006C431B /* RealtimeChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A612FBBBA42006C431B /* RealtimeChannel.swift */; };
+		B14C6A652FBBBA64006C431B /* StorageClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A642FBBBA64006C431B /* StorageClient.swift */; };
+		B19AF1592FC4754600D65428 /* MapsLookupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19AF1582FC4754600D65428 /* MapsLookupService.swift */; };
+		B19AF1642FC4756C00D65428 /* VehicleEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19AF15B2FC4756B00D65428 /* VehicleEditViewModel.swift */; };
+		B19AF1652FC4756C00D65428 /* VehicleDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19AF15C2FC4756B00D65428 /* VehicleDetailViewModel.swift */; };
+		B19AF1662FC4756C00D65428 /* VehicleEditSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19AF15E2FC4756B00D65428 /* VehicleEditSheet.swift */; };
+		B19AF1672FC4756C00D65428 /* VehicleDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19AF15F2FC4756B00D65428 /* VehicleDetailView.swift */; };
+		B19AF1682FC4756C00D65428 /* VehicleWriteModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19AF1612FC4756B00D65428 /* VehicleWriteModels.swift */; };
+		B19AF1692FC4756C00D65428 /* VehicleFormState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19AF1632FC4756C00D65428 /* VehicleFormState.swift */; };
+		B19AF16C2FC475B500D65428 /* CalendarSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19AF16B2FC475B500D65428 /* CalendarSyncService.swift */; };
+		B1C2D3E4F5A60718293A4B5C /* Core/Calendar/CalendarSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3F4A5B60718293A4B5C /* Core/Calendar/CalendarSyncService.swift */; };
+		B1D25DCB2FC1F5AC00E9EDD8 /* NextStopCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D25DC82FC1F5AC00E9EDD8 /* NextStopCard.swift */; };
+		B1D25DCC2FC1F5AC00E9EDD8 /* StartMyDayCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D25DC92FC1F5AC00E9EDD8 /* StartMyDayCard.swift */; };
+		B1D25DCD2FC1F5AC00E9EDD8 /* ActiveTripBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D25DCA2FC1F5AC00E9EDD8 /* ActiveTripBanner.swift */; };
+		B1D25DD02FC1F5EC00E9EDD8 /* JobEditSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D25DCE2FC1F5EC00E9EDD8 /* JobEditSheet.swift */; };
+		B1D25DD12FC1F5EC00E9EDD8 /* JobDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D25DCF2FC1F5EC00E9EDD8 /* JobDetailView.swift */; };
+		B1D25DD32FC1F5EC00E9EDD8 /* OpenInMapsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D25DD22FC1F5EC00E9EDD8 /* OpenInMapsButton.swift */; };
+		B42784F4704E3FA9EDDBF680 /* InspectionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A230A8C60F3599C93D16788 /* InspectionsViewModel.swift */; };
+		B9053B5C8CD2F2766361789A /* RealtimeSubscriptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04ABF7475DA3AC1CBC0886FA /* RealtimeSubscriptions.swift */; };
+		BC6E1F6F22B1D01720809510 /* CarPlaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6229C0BDE5ACBE60B1FD1FC /* CarPlaySceneDelegate.swift */; };
+		C040957DA38E45083148EC20 /* KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2504F9F81A353305112816D9 /* KeychainStore.swift */; };
+		C47E34669D7152EEEA3B6474 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D040F47EF88117C120244A /* RootView.swift */; };
+		C6BC94DB3CC4B641AB7031A0 /* CarPlayStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20F1056F3F7E0AB102710E0 /* CarPlayStop.swift */; };
+		C9AC8F291A3142999D91651E /* AutoInspectorNetworkApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB3449D752F3F7896AB664C /* AutoInspectorNetworkApp.swift */; };
+		CAA12E02BBA8BC2163FE5268 /* CarPlayStopListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878503DB7BEF2B4C9F0F7957 /* CarPlayStopListTemplate.swift */; };
+		CF060EDA55214F8807267183 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795A386ABB1A4064D751A091 /* PersistenceController.swift */; };
+		D3E926D8BDC9849D0CCA295B /* SupabaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1AF4106A07592985CE2D9A /* SupabaseConfig.swift */; };
+		D7A5DDBD1FF712EC25F3B0BF /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC30D8C9079EF31A07BF1339 /* DashboardViewModel.swift */; };
+		E486E6D797D3220DCE47E681 /* PhotoCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11615170D089568C51DDF2CE /* PhotoCapture.swift */; };
+		E95E5C80C7268CE08A42ECA5 /* PushRegistrar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63153CED0A0A2D000BBDCC14 /* PushRegistrar.swift */; };
+		F283A55FE693D3192FB736F1 /* CoreDataCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F145748823881A6F0D9F26 /* CoreDataCache.swift */; };
 		F9D7651D08E0F62880FCA950 /* InspectionModel.xcdatamodeld in Resources */ = {isa = PBXBuildFile; fileRef = D7A27A5F7DD012D94E8002F7 /* InspectionModel.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
@@ -538,6 +618,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 009BCBF0C85A9D3AD30F8EB7 /* Build configuration list for PBXNativeTarget "AutoInspectorNetwork" */;
 			buildPhases = (
+				F3F3D267CF0FD5307403D537 /* Sources */,
 				349B578E88FC623128D2018B /* Frameworks */,
 				41B260B1D2A5E0B273280C8E /* Resources */,
 			);
@@ -594,6 +675,96 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F3F3D267CF0FD5307403D537 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B14C6A622FBBBA42006C431B /* RealtimeChannel.swift in Sources */,
+				A5D470A05ACB94A37FE2DE69 /* AppDelegate.swift in Sources */,
+				B19AF1682FC4756C00D65428 /* VehicleWriteModels.swift in Sources */,
+				C9AC8F291A3142999D91651E /* AutoInspectorNetworkApp.swift in Sources */,
+				8DFD36F2D698E4DA3E8E6FCF /* MainTabView.swift in Sources */,
+				B14C6A5F2FBBB8C7006C431B /* AINStatusPill.swift in Sources */,
+				C47E34669D7152EEEA3B6474 /* RootView.swift in Sources */,
+				3579C33A591EAFE68671A1CA /* CarPlayNavigationCoordinator.swift in Sources */,
+				BC6E1F6F22B1D01720809510 /* CarPlaySceneDelegate.swift in Sources */,
+				A496019E294407100B85C98C /* CarPlayScheduleTemplate.swift in Sources */,
+				C6BC94DB3CC4B641AB7031A0 /* CarPlayStop.swift in Sources */,
+				B1D25DCD2FC1F5AC00E9EDD8 /* ActiveTripBanner.swift in Sources */,
+				CAA12E02BBA8BC2163FE5268 /* CarPlayStopListTemplate.swift in Sources */,
+				72955F44AD4AF12B327EC2C2 /* CarPlayTripService.swift in Sources */,
+				B1D25DCC2FC1F5AC00E9EDD8 /* StartMyDayCard.swift in Sources */,
+				4FF47DA50B05C0821B454724 /* AuditLogger.swift in Sources */,
+				B14C6A582FBBB854006C431B /* AuthModels.swift in Sources */,
+				54946F1D72DD87A440D6E2E0 /* AppState.swift in Sources */,
+				B19AF1642FC4756C00D65428 /* VehicleEditViewModel.swift in Sources */,
+				B14C6A532FBBB854006C431B /* RestClient.swift in Sources */,
+				C040957DA38E45083148EC20 /* KeychainStore.swift in Sources */,
+				39270173AF3B4D15A33D0B78 /* LocationTracker.swift in Sources */,
+				22827134EA78326A414A5A53 /* SupabaseClientProvider.swift in Sources */,
+				B14C6A602FBBB8C7006C431B /* AINStates.swift in Sources */,
+				D3E926D8BDC9849D0CCA295B /* SupabaseConfig.swift in Sources */,
+				4C14FB0B4CDF4D41148656D7 /* SupabaseService.swift in Sources */,
+				E95E5C80C7268CE08A42ECA5 /* PushRegistrar.swift in Sources */,
+				B14C6A552FBBB854006C431B /* FunctionsClient.swift in Sources */,
+				B19AF16C2FC475B500D65428 /* CalendarSyncService.swift in Sources */,
+				CF060EDA55214F8807267183 /* PersistenceController.swift in Sources */,
+				B19AF1662FC4756C00D65428 /* VehicleEditSheet.swift in Sources */,
+				B14C6A5E2FBBB8C7006C431B /* AINCard.swift in Sources */,
+				B9053B5C8CD2F2766361789A /* RealtimeSubscriptions.swift in Sources */,
+				B14C6A562FBBB854006C431B /* SessionStore.swift in Sources */,
+				F283A55FE693D3192FB736F1 /* CoreDataCache.swift in Sources */,
+				46A81275311533F311417167 /* Outbox.swift in Sources */,
+				7BA8B6EC04DAF2495730F04A /* SyncEngine.swift in Sources */,
+				B14C6A5D2FBBB8C7006C431B /* AINButtons.swift in Sources */,
+				2D15AA7686667954E9D77C53 /* TripTrackingController.swift in Sources */,
+				3C7D73605588A031CCC0FA24 /* AuthView.swift in Sources */,
+				B14C6A652FBBBA64006C431B /* StorageClient.swift in Sources */,
+				490E2B9B0C8CDE7165A3E43B /* AuthViewModel.swift in Sources */,
+				A9C954DDCC11B8D0AE0AA87D /* DashboardView.swift in Sources */,
+				D7A5DDBD1FF712EC25F3B0BF /* DashboardViewModel.swift in Sources */,
+				A8A0000000000000000B0001 /* InspectorDashboardHomeView.swift in Sources */,
+				B003E44E4DD8247B34FB95AA /* DriveView.swift in Sources */,
+				419B09558A44F6C45CC12153 /* InspectionDetailView.swift in Sources */,
+				B1D25DD12FC1F5EC00E9EDD8 /* JobDetailView.swift in Sources */,
+				86584AA382BB4B920EF9C81A /* InspectionsView.swift in Sources */,
+				B42784F4704E3FA9EDDBF680 /* InspectionsViewModel.swift in Sources */,
+				B14C6A492FBBB7A1006C431B /* AINTheme.swift in Sources */,
+				E486E6D797D3220DCE47E681 /* PhotoCapture.swift in Sources */,
+				3307BCEC33859C72D7A594E6 /* JobsView.swift in Sources */,
+				2BD64856D6C7F609C82F8A0D /* JobsViewModel.swift in Sources */,
+				A15510A0A196721D42ACBEB0 /* ScheduleView.swift in Sources */,
+				B1C2D3E4F5A60718293A4B5C /* Core/Calendar/CalendarSyncService.swift in Sources */,
+				B19AF1652FC4756C00D65428 /* VehicleDetailViewModel.swift in Sources */,
+				5F3D72571A5C23B0BEE82D59 /* SettingsView.swift in Sources */,
+				75C517EAF8EF3B30B0F0C29D /* TaxView.swift in Sources */,
+				69DC0955514B0B8A66814FD1 /* TripsView.swift in Sources */,
+				9780EC721A1FBC5DCE8F829D /* TripsViewModel.swift in Sources */,
+				B19AF1692FC4756C00D65428 /* VehicleFormState.swift in Sources */,
+				B1D25DCB2FC1F5AC00E9EDD8 /* NextStopCard.swift in Sources */,
+				B14C6A542FBBB854006C431B /* QueryBuilder.swift in Sources */,
+				6AEDBA679D3FA0B61C54ADD1 /* VehiclesView.swift in Sources */,
+				77868B6AA543DF62CBA6C5BC /* VehiclesViewModel.swift in Sources */,
+				944162CDC4D04FE05C1FE4A4 /* AINBrand.swift in Sources */,
+				58B774BAB548F3CDEEFE984F /* DomainModels.swift in Sources */,
+				B14C6A572FBBB854006C431B /* AuthClient.swift in Sources */,
+				47A5D4E5D08E65962F7E0954 /* InspectionTemplateModels.swift in Sources */,
+				A815EF4C8EF422D1E650384F /* SyncStatusView.swift in Sources */,
+				AAAA000000000000000B0009 /* InspectFlowClient.swift in Sources */,
+				B19AF1672FC4756C00D65428 /* VehicleDetailView.swift in Sources */,
+				AAAA000000000000000B000A /* InspectFlowConfig.swift in Sources */,
+				AAAA000000000000000B000B /* JSONDecoder+Supabase.swift in Sources */,
+				B19AF1592FC4754600D65428 /* MapsLookupService.swift in Sources */,
+				AAAA000000000000000D0006 /* AINInputs.swift in Sources */,
+				AAAA000000000000000D0007 /* AINOverlays.swift in Sources */,
+				B1D25DD32FC1F5EC00E9EDD8 /* OpenInMapsButton.swift in Sources */,
+				B1D25DD02FC1F5EC00E9EDD8 /* JobEditSheet.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
 		2D7C126B1DD510A133F9BB7F /* Debug */ = {
