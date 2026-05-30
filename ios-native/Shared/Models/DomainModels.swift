@@ -56,6 +56,32 @@ struct Trip: Codable, Identifiable, Equatable {
     }
 }
 
+struct TripStop: Codable, Identifiable, Equatable {
+    let id: UUID
+    let tripID: UUID
+    let jobID: UUID?
+    let sortOrder: Int
+    let label: String?
+    let address: String?
+    let latitude: Double?
+    let longitude: Double?
+    let status: String?
+    let arrivedAt: Date?
+    let completedAt: Date?
+    let createdAt: Date?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case tripID = "trip_id"
+        case jobID = "job_id"
+        case sortOrder = "sort_order"
+        case label, address, latitude, longitude, status
+        case arrivedAt = "arrived_at"
+        case completedAt = "completed_at"
+        case createdAt = "created_at"
+    }
+}
+
 // MARK: - Jobs
 
 struct Job: Codable, Identifiable, Equatable {

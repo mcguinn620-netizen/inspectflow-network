@@ -9,27 +9,48 @@ final class MapsLookupService {
     private init() {}
 
     func open(job: Job) {
+        open(query: job.location ?? job.title, fallbackTitle: job.title)
+    }
+
+    func open(stop: TripStop) {
+        if let latitude = stop.latitude, let longitude = stop.longitude {
+            let placemark = MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
+            let item = MKMapItem(placemark: placemark)
+            item.name = stop.label ?? stop.address
+            item.openInMaps(launchOptions: [
+                MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving,
+            ])
+            return
+        }
+
+        guard let address = stop.address, !address.isEmpty else { return }
+        open(query: address, fallbackTitle: stop.label)
+    }
+
+    func open(address: String, title: String? = nil) {
+        open(query: address, fallbackTitle: title)
+    }
+
+    private func open(query: String, fallbackTitle: String?) {
         let request = MKLocalSearch.Request()
-        request.naturalLanguageQuery = job.location ?? job.title
+        request.naturalLanguageQuery = query
 
         Task {
             let search = MKLocalSearch(request: request)
-            
-            // Perform the search
+
             if let response = try? await search.start(),
                let item = response.mapItems.first {
-                
-                // Use openInMaps with launch options if you need custom behavior
                 item.openInMaps(launchOptions: [
-                    MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
+                    MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving,
                 ])
                 return
             }
 
-            // Fallback: Use URL encoding to open maps with a custom query
-            // This is where you can pass the job title as the query
-            let query = (job.title + " " + (job.location ?? "")).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-            if let fallbackURL = URL(string: "http://maps.apple.com/?q=\(query)") {
+            let fallbackQuery = [fallbackTitle, query]
+                .compactMap { $0 }
+                .joined(separator: " ")
+                .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+            if let fallbackURL = URL(string: "http://maps.apple.com/?q=\(fallbackQuery)") {
                 await UIApplication.shared.open(fallbackURL)
             }
         }
