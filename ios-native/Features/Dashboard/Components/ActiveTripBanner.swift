@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ActiveTripBanner: View {
     let activeTrip: Trip?
+    let onPauseTrip: () -> Void
 
     var body: some View {
         if let activeTrip {
@@ -16,7 +17,7 @@ struct ActiveTripBanner: View {
                             .foregroundColor(AINTheme.Color.textPrimary)
                     }
                     Spacer()
-                    AINSecondaryButton("Pause", systemImage: "pause.fill") {}
+                    AINSecondaryButton("Pause", systemImage: "pause.fill", action: onPauseTrip)
                     NavigationLink("Open trips", destination: TripsView())
                 }
             }

@@ -71,6 +71,30 @@ final class SupabaseService {
             .execute()
     }
 
+
+    // MARK: - Job mutations
+
+    func updateJobSchedule(jobId: UUID, scheduledAt: Date) async throws {
+        _ = try await client.db.from("jobs")
+            .update(["scheduled_at": ISO8601DateFormatter().string(from: scheduledAt)])
+            .eq("id", jobId.uuidString)
+            .execute()
+    }
+
+    func updateJobStatus(jobId: UUID, status: String) async throws {
+        _ = try await client.db.from("jobs")
+            .update(["status": status])
+            .eq("id", jobId.uuidString)
+            .execute()
+    }
+
+    func assignJob(jobId: UUID, inspectorId: UUID) async throws {
+        _ = try await client.db.from("jobs")
+            .update(["assigned_inspector_id": inspectorId.uuidString])
+            .eq("id", jobId.uuidString)
+            .execute()
+    }
+
     // MARK: - Vehicles
 
     func fetchVehicles(orgId: UUID, limit: Int = 100) async throws -> [Vehicle] {

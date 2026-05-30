@@ -5,7 +5,7 @@ struct DriveView: View {
         NavigationStack {
             List {
                 Section("Drive") {
-                    Text("Placeholder for native Drive feature.")
+                    Text("Use Trips to start route tracking and capture drive activity.")
                 }
             }
             .toolbar { ToolbarItem(placement: .navigationBarTrailing) { SyncStatusView() } }

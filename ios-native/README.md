@@ -24,13 +24,13 @@ resolution needed by Xcode or Bitrise.
 ## Setup (Xcode 14+)
 
 A ready-to-build Xcode workspace is checked in at
-`ios-native/VehicleInspectorsApp.xcworkspace`. The workspace references
+`ios-native/AutoInspectorNetwork.xcworkspace`. The workspace references
 `AutoInspectorNetwork.xcodeproj` via a relative path, and the project still
 references every source file under `ios-native/`, the local
 `InspectFlowConnector` Swift package at the repo root, the bundled
 `Info.plist`, `Assets.xcassets`, and `AutoInspectorNetwork.entitlements`.
 
-1. Open `ios-native/VehicleInspectorsApp.xcworkspace` in Xcode 14 or newer.
+1. Open `ios-native/AutoInspectorNetwork.xcworkspace` in Xcode 14 or newer.
 2. Select the `AutoInspectorNetwork` target → **Signing & Capabilities** and
    pick your team (the project ships with team `95VG5GW59K` — change it).
 3. Capabilities already declared via the entitlements/Info.plist:
@@ -59,8 +59,8 @@ references every source file under `ios-native/`, the local
 Both workflows use these envs (see `app.envs` in `bitrise.yml`):
 
 ```
-BITRISE_PROJECT_PATH = ios-native/VehicleInspectorsApp.xcworkspace
-BITRISE_SCHEME       = VehicleInspectorsApp
+BITRISE_PROJECT_PATH = ios-native/AutoInspectorNetwork.xcworkspace
+BITRISE_SCHEME       = AutoInspectorNetwork
 ```
 
 No `npm`/Capacitor steps are involved — the web app is independent.
@@ -70,9 +70,21 @@ No `npm`/Capacitor steps are involved — the web app is independent.
 Use the workspace for all future command-line builds:
 
 ```bash
-xcodebuild -workspace VehicleInspectorsApp.xcworkspace \
-  -scheme VehicleInspectorsApp
+xcodebuild -workspace AutoInspectorNetwork.xcworkspace \
+  -scheme AutoInspectorNetwork
 ```
+
+
+From the repository root, run the aggregate iOS tooling check before opening a PR:
+
+```bash
+npm run check:ios
+```
+
+That command validates the Swift package manifest, Core Data build phases, the
+Step 3.3–3.5 semantic flow validators, and then compiles the shared
+`AutoInspectorNetwork` scheme with `xcodebuild` against
+`ios-native/AutoInspectorNetwork.xcworkspace`.
 
 
 The publishable backend URL and anon key are baked into `Core/Network/SupabaseConfig.swift`.

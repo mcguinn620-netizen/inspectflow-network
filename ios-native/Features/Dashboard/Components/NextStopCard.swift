@@ -2,6 +2,8 @@ import SwiftUI
 
 struct NextStopCard: View {
     let activeTrip: Trip?
+    let onNavigate: () -> Void
+    let onCompleteStop: () -> Void
 
     var body: some View {
         AINCard {
@@ -13,8 +15,8 @@ struct NextStopCard: View {
                         .foregroundColor(AINTheme.Color.textSecondary)
                 } else {
                     HStack {
-                        AINSecondaryButton("Navigate", systemImage: "location.fill") {}
-                        AINSecondaryButton("Complete stop", systemImage: "checkmark.circle.fill") {}
+                        AINSecondaryButton("Navigate", systemImage: "location.fill", action: onNavigate)
+                        AINSecondaryButton("Complete stop", systemImage: "checkmark.circle.fill", action: onCompleteStop)
                     }
                 }
             }

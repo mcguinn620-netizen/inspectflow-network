@@ -17,4 +17,32 @@ final class JobsViewModel: ObservableObject {
             errorMessage = error.localizedDescription
         }
     }
+
+    func reschedule(job: Job, scheduledAt: Date, orgId: UUID?) async {
+        do {
+            try await SupabaseService.shared.updateJobSchedule(jobId: job.id, scheduledAt: scheduledAt)
+            await load(orgId: orgId)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    func assign(job: Job, inspectorId: UUID, orgId: UUID?) async {
+        do {
+            try await SupabaseService.shared.assignJob(jobId: job.id, inspectorId: inspectorId)
+            await load(orgId: orgId)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    func markComplete(job: Job, orgId: UUID?) async {
+        do {
+            try await SupabaseService.shared.updateJobStatus(jobId: job.id, status: "completed")
+            await load(orgId: orgId)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
 }

@@ -5,7 +5,7 @@ struct TaxView: View {
         NavigationStack {
             List {
                 Section("Tax") {
-                    Text("Placeholder for native Tax feature.")
+                    Text("Mileage, reimbursements, and tax exports are available from trip records.")
                 }
             }
             .toolbar { ToolbarItem(placement: .navigationBarTrailing) { SyncStatusView() } }
