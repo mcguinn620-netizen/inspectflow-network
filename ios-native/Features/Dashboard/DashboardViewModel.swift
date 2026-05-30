@@ -6,6 +6,7 @@ final class DashboardViewModel: ObservableObject {
     @Published var activeTrip: Trip?
     @Published var nextTripStop: TripStop?
     @Published var nextJob: Job?
+    @Published var nextStopData: NextStopData?
     @Published var isLoading = false
     @Published var errorMessage: String?
 
@@ -23,6 +24,7 @@ final class DashboardViewModel: ObservableObject {
             activeTrip = currentTrip
             nextTripStop = nil
             nextJob = nil
+            nextStopData = nil
 
             if let orgId {
                 let jobs = try await SupabaseService.shared.fetchJobs(orgId: orgId, limit: 50)
@@ -37,7 +39,8 @@ final class DashboardViewModel: ObservableObject {
 
             if let tripId = currentTrip?.id {
                 let stops = try await SupabaseService.shared.fetchTripStops(tripId: tripId)
-                nextTripStop = stops.first { incompleteStopStatuses.contains($0.status ?? "pending") }
+                nextStopData = NextStopData.resolve(trip: currentTrip, stops: stops)
+                nextTripStop = nextStopData?.stop
             }
             errorMessage = nil
         } catch {
@@ -67,15 +70,11 @@ final class DashboardViewModel: ObservableObject {
     }
 
     func pauseActiveTrip(orgId: UUID?, userId: UUID?) async {
-        guard let tripId = activeTrip?.id else { return }
+        guard let trip = activeTrip else { return }
         TripTrackingController.shared.pause()
         do {
-            try await SupabaseService.shared.updateTripStatus(
-                tripId: tripId,
-                status: "paused",
-                extras: ["paused_at": ISO8601DateFormatter().string(from: Date())]
-            )
-            AuditLogger.log(action: "update", entityType: "trip", entityId: tripId, changes: ["status": "paused"])
+            _ = try await SupabaseService.shared.setTripStatus(trip, status: "paused")
+            AuditLogger.log(action: "update", entityType: "trip", entityId: trip.id, changes: ["status": "paused"])
             await load(orgId: orgId, userId: userId)
         } catch {
             errorMessage = error.localizedDescription
@@ -95,11 +94,7 @@ final class DashboardViewModel: ObservableObject {
                     totalMiles: trip.totalMiles ?? 0
                 )
             }
-            try await SupabaseService.shared.updateTripStatus(
-                tripId: trip.id,
-                status: "active",
-                extras: ["started_at": ISO8601DateFormatter().string(from: trip.startedAt ?? Date())]
-            )
+            _ = try await SupabaseService.shared.setTripStatus(trip, status: "active")
             AuditLogger.log(action: "update", entityType: "trip", entityId: trip.id, changes: ["status": "active"])
             await load(orgId: orgId, userId: userId)
         } catch {
@@ -110,11 +105,7 @@ final class DashboardViewModel: ObservableObject {
     func completeActiveStop(orgId: UUID?, userId: UUID?) async {
         do {
             if let stop = nextTripStop {
-                try await SupabaseService.shared.updateTripStopStatus(
-                    stopId: stop.id,
-                    status: "completed",
-                    extras: ["completed_at": ISO8601DateFormatter().string(from: Date())]
-                )
+                _ = try await SupabaseService.shared.setStopStatus(stop, status: "completed", completeJob: true)
                 AuditLogger.log(action: "update", entityType: "trip_stop", entityId: stop.id, changes: ["status": "completed"])
             } else if let job = nextJob {
                 try await SupabaseService.shared.updateJobStatus(jobId: job.id, status: "completed")

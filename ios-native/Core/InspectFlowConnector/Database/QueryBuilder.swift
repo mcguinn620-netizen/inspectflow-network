@@ -74,6 +74,17 @@ public final class QueryBuilder {
         return self
     }
 
+    @discardableResult public func notIn(_ column: String, _ values: [Any]) -> Self {
+        let joined = values.map { "\($0)" }.joined(separator: ",")
+        query.append(URLQueryItem(name: column, value: "not.in.(\(joined))"))
+        return self
+    }
+
+    @discardableResult public func not(_ column: String, _ op: String, _ value: Any) -> Self {
+        query.append(URLQueryItem(name: column, value: "not.\(op).\(value)"))
+        return self
+    }
+
     private func filter(_ column: String, _ op: String, _ value: Any) -> Self {
         query.append(URLQueryItem(name: column, value: "\(op).\(value)"))
         return self

@@ -42,12 +42,17 @@ def parse_pbxproj(path):
 
 def main():
     ap=argparse.ArgumentParser()
-    ap.add_argument('--repo',default='.')
-    ap.add_argument('--pbxproj',default='ios-native/AutoInspectorNetwork.xcodeproj/project.pbxproj')
+    script_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    repo_default = os.path.abspath(os.path.join(script_root, '..'))
+    ap.add_argument('--repo', default=repo_default)
+    ap.add_argument('--pbxproj', default='ios-native/AutoInspectorNetwork.xcodeproj/project.pbxproj')
     ap.add_argument('--json',action='store_true')
     args=ap.parse_args()
     repo=os.path.abspath(args.repo)
-    refs=parse_pbxproj(os.path.join(args.repo,args.pbxproj))
+    pbxproj_path = os.path.join(args.repo, args.pbxproj)
+    if not os.path.exists(pbxproj_path) and os.path.basename(args.repo) == 'ios-native':
+        pbxproj_path = os.path.join(args.repo, 'AutoInspectorNetwork.xcodeproj/project.pbxproj')
+    refs=parse_pbxproj(pbxproj_path)
     tracked=set(subprocess.check_output(['git','-C',args.repo,'ls-files'],text=True).splitlines())
     all_sw=[p for p in subprocess.check_output(['bash','-lc',f'cd {args.repo} && find ios-native -name "*.swift" -type f'],text=True).splitlines() if p]
 

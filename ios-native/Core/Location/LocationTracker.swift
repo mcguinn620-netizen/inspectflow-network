@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import CoreLocation
 
 /// Single-source live location tracker. Mirrors web `tripTracking.ts` accuracy and
@@ -21,14 +22,15 @@ public struct LocationSample: Equatable {
     }
 }
 
-public final class LocationTracker: NSObject, CLLocationManagerDelegate {
+public final class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
     public static let shared = LocationTracker()
 
     public typealias Update = (LocationSample) -> Void
 
     private let manager = CLLocationManager()
     private var onUpdate: Update?
-    private(set) public var isTracking = false
+    @Published public private(set) var latestSample: LocationSample?
+    @Published public private(set) var isTracking = false
 
     private override init() {
         super.init()
@@ -81,6 +83,7 @@ public final class LocationTracker: NSObject, CLLocationManagerDelegate {
                 heading: loc.course >= 0 ? loc.course : nil,
                 timestamp: loc.timestamp
             )
+            latestSample = sample
             onUpdate?(sample)
         }
     }

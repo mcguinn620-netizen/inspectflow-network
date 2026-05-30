@@ -2,7 +2,7 @@ import SwiftUI
 
 struct NextStopCard: View {
     let activeTrip: Trip?
-    let nextTripStop: TripStop?
+    let nextStopData: NextStopData?
     let nextJob: Job?
     let onNavigate: () -> Void
     let onCompleteStop: () -> Void
@@ -40,10 +40,10 @@ struct NextStopCard: View {
     }
 
     private var stopTitle: String? {
-        nextTripStop?.label ?? nextJob?.title
+        nextStopData?.title ?? nextJob?.title
     }
 
     private var stopSubtitle: String? {
-        nextTripStop?.address ?? nextJob?.location
+        nextStopData?.subtitle ?? nextJob?.location
     }
 }

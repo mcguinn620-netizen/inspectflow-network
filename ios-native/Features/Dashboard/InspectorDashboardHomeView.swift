@@ -13,7 +13,7 @@ struct InspectorDashboardHomeView: View {
                     }
                     NextStopCard(
                         activeTrip: viewModel.activeTrip,
-                        nextTripStop: viewModel.nextTripStop,
+                        nextStopData: viewModel.nextStopData,
                         nextJob: viewModel.nextJob,
                         onNavigate: openNextStop,
                         onCompleteStop: { Task { await completeStop() } }
@@ -59,7 +59,7 @@ struct InspectorDashboardHomeView: View {
     }
 
     private func openNextStop() {
-        if let stop = viewModel.nextTripStop {
+        if let stop = viewModel.nextStopData?.stop {
             MapsLookupService.shared.open(stop: stop)
         } else if let job = viewModel.nextJob {
             MapsLookupService.shared.open(job: job)

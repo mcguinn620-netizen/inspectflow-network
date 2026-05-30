@@ -7,6 +7,31 @@ final class SupabaseService {
 
     private var client: InspectFlowClient { SupabaseClientProvider.shared }
 
+    private struct MutationID: Decodable { let id: UUID }
+
+    enum TripLifecycleError: LocalizedError {
+        case missingCurrentUser
+        case terminalTrip
+        case invalidTripTransition
+        case terminalStop
+        case invalidStopTransition
+
+        var errorDescription: String? {
+            switch self {
+            case .missingCurrentUser: return "No signed-in user is available."
+            case .terminalTrip: return "This trip is already completed or canceled."
+            case .invalidTripTransition: return "This trip cannot move to the requested status."
+            case .terminalStop: return "This stop is already completed or skipped."
+            case .invalidStopTransition: return "This stop cannot move to the requested status."
+            }
+        }
+    }
+
+    private let activeTripStatuses = ["active", "planned", "draft", "paused"]
+    private let terminalTripStatuses = ["completed", "canceled"]
+    private let terminalStopStatuses = ["completed", "skipped"]
+    private let terminalJobStatuses = ["completed", "canceled"]
+
     // MARK: - Auth
 
     var currentUserID: UUID? { client.auth.currentUser?.id }
@@ -57,6 +82,22 @@ final class SupabaseService {
             .order("created_at", ascending: false)
             .limit(limit)
             .execute()
+    }
+
+    func fetchLatestCurrentTrip(userId: UUID? = nil) async throws -> Trip? {
+        let uid: UUID
+        if let userId { uid = userId }
+        else if let currentUserID { uid = currentUserID }
+        else { throw TripLifecycleError.missingCurrentUser }
+
+        let trips: [Trip] = try await client.db.from("trips")
+            .select()
+            .eq("user_id", uid.uuidString)
+            .in("status", activeTripStatuses)
+            .order("created_at", ascending: false)
+            .limit(1)
+            .execute()
+        return trips.first
     }
 
     // MARK: - Jobs
@@ -193,13 +234,37 @@ final class SupabaseService {
         return trip
     }
 
-    func updateTripStatus(tripId: UUID, status: String, extras: [String: Any] = [:]) async throws {
+    @discardableResult
+    func updateTripStatus(tripId: UUID, status: String, extras: [String: Any] = [:]) async throws -> Bool {
         var row: [String: Any] = ["status": status]
         for (k, v) in extras { row[k] = v }
-        _ = try await client.db.from("trips")
+        let changed: [MutationID] = try await client.db.from("trips")
             .update(row)
             .eq("id", tripId.uuidString)
+            .notIn("status", terminalTripStatuses)
             .execute()
+        return !changed.isEmpty
+    }
+
+    @discardableResult
+    func setTripStatus(_ trip: Trip, status: String) async throws -> Bool {
+        if terminalTripStatuses.contains(trip.status) { throw TripLifecycleError.terminalTrip }
+        if status == "completed" && !["active", "paused", "draft", "planned"].contains(trip.status) {
+            throw TripLifecycleError.invalidTripTransition
+        }
+
+        var updates: [String: Any] = ["status": status]
+        let now = ISO8601DateFormatter().string(from: Date())
+        if status == "active" && trip.startedAt == nil { updates["started_at"] = now }
+        if status == "paused" { updates["paused_at"] = now }
+        if status == "completed" { updates["completed_at"] = now }
+
+        let changed = try await updateTripStatus(tripId: trip.id, status: status, extras: updates.filter { $0.key != "status" })
+        if changed {
+            if status == "paused" { await MainActor.run { TripTrackingController.shared.pause() } }
+            if status == "completed" || status == "canceled" { await MainActor.run { TripTrackingController.shared.stop() } }
+        }
+        return changed
     }
 
     func fetchTripStops(tripId: UUID, limit: Int = 50) async throws -> [TripStop] {
@@ -211,12 +276,75 @@ final class SupabaseService {
             .execute()
     }
 
-    func updateTripStopStatus(stopId: UUID, status: String, extras: [String: Any] = [:]) async throws {
-        var row: [String: Any] = ["status": status]
-        for (k, v) in extras { row[k] = v }
-        _ = try await client.db.from("trip_stops")
-            .update(row)
-            .eq("id", stopId.uuidString)
+    func fetchTripLocationPoints(tripId: UUID, limit: Int = 500) async throws -> [TripLocationPoint] {
+        try await client.db.from("trip_location_points")
+            .select("id,trip_id,latitude,longitude,recorded_at")
+            .eq("trip_id", tripId.uuidString)
+            .order("recorded_at", ascending: true)
+            .limit(limit)
             .execute()
     }
+
+    @discardableResult
+    func updateTripStopStatus(stopId: UUID, status: String, extras: [String: Any] = [:]) async throws -> Bool {
+        var row: [String: Any] = ["status": status]
+        for (k, v) in extras { row[k] = v }
+        let changed: [MutationID] = try await client.db.from("trip_stops")
+            .update(row)
+            .eq("id", stopId.uuidString)
+            .notIn("status", terminalStopStatuses)
+            .execute()
+        return !changed.isEmpty
+    }
+
+    @discardableResult
+    func setStopStatus(_ stop: TripStop, status: String, startJob: Bool = false, completeJob: Bool = false) async throws -> Bool {
+        let currentStatus = stop.status ?? "pending"
+        if terminalStopStatuses.contains(currentStatus) { throw TripLifecycleError.terminalStop }
+        if status == "arrived" && currentStatus != "pending" { throw TripLifecycleError.invalidStopTransition }
+        if status == "completed" && !["pending", "arrived"].contains(currentStatus) { throw TripLifecycleError.invalidStopTransition }
+        if status == "skipped" && currentStatus != "pending" { throw TripLifecycleError.invalidStopTransition }
+
+        let now = ISO8601DateFormatter().string(from: Date())
+        var updates: [String: Any] = [:]
+        if status == "arrived" && stop.arrivedAt == nil { updates["arrived_at"] = now }
+        if status == "completed" {
+            if stop.completedAt == nil { updates["completed_at"] = now }
+            if stop.departedAt == nil { updates["departed_at"] = now }
+            if stop.arrivedAt == nil { updates["arrived_at"] = now }
+        }
+        if status == "skipped" && stop.departedAt == nil { updates["departed_at"] = now }
+
+        let changed = try await updateTripStopStatus(stopId: stop.id, status: status, extras: updates)
+        guard changed else { return false }
+
+        if let jobID = stop.jobID {
+            if startJob { _ = try await startJobById(jobID) }
+            if completeJob { _ = try await completeJobById(jobID) }
+        }
+        return true
+    }
+
+    @discardableResult
+    private func startJobById(_ id: UUID) async throws -> Bool {
+        let changed: [MutationID] = try await client.db.from("jobs")
+            .update(["status": "in_progress", "actual_start_time": ISO8601DateFormatter().string(from: Date())])
+            .eq("id", id.uuidString)
+            .eq("status", "scheduled")
+            .isNull("actual_start_time")
+            .execute()
+        return !changed.isEmpty
+    }
+
+    @discardableResult
+    private func completeJobById(_ id: UUID) async throws -> Bool {
+        let changed: [MutationID] = try await client.db.from("jobs")
+            .update(["status": "completed", "actual_end_time": ISO8601DateFormatter().string(from: Date())])
+            .eq("id", id.uuidString)
+            .notIn("status", terminalJobStatuses)
+            .isNull("actual_end_time")
+            .execute()
+        return !changed.isEmpty
+    }
 }
+

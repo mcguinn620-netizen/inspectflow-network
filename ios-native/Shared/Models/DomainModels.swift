@@ -42,6 +42,8 @@ struct Trip: Codable, Identifiable, Equatable {
     let status: String
     let totalMiles: Double?
     let startedAt: Date?
+    let pausedAt: Date?
+    let completedAt: Date?
     let createdAt: Date?
 
     enum CodingKeys: String, CodingKey {
@@ -52,6 +54,8 @@ struct Trip: Codable, Identifiable, Equatable {
         case status
         case totalMiles = "total_miles"
         case startedAt = "started_at"
+        case pausedAt = "paused_at"
+        case completedAt = "completed_at"
         case createdAt = "created_at"
     }
 }
@@ -68,6 +72,7 @@ struct TripStop: Codable, Identifiable, Equatable {
     let status: String?
     let arrivedAt: Date?
     let completedAt: Date?
+    let departedAt: Date?
     let createdAt: Date?
 
     enum CodingKeys: String, CodingKey {
@@ -78,7 +83,44 @@ struct TripStop: Codable, Identifiable, Equatable {
         case label, address, latitude, longitude, status
         case arrivedAt = "arrived_at"
         case completedAt = "completed_at"
+        case departedAt = "departed_at"
         case createdAt = "created_at"
+    }
+}
+
+
+struct TripLocationPoint: Codable, Identifiable, Equatable {
+    let id: UUID
+    let tripID: UUID
+    let latitude: Double
+    let longitude: Double
+    let recordedAt: Date
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case tripID = "trip_id"
+        case latitude
+        case longitude
+        case recordedAt = "recorded_at"
+    }
+}
+
+struct NextStopData: Equatable {
+    let trip: Trip
+    let stop: TripStop
+
+    var title: String { stop.label ?? "Stop \(stop.sortOrder + 1)" }
+    var subtitle: String? { stop.address }
+    var coordinate: (latitude: Double, longitude: Double)? {
+        guard let latitude = stop.latitude, let longitude = stop.longitude else { return nil }
+        return (latitude, longitude)
+    }
+
+    static func resolve(trip: Trip?, stops: [TripStop]) -> NextStopData? {
+        guard let trip else { return nil }
+        let incompleteStatuses = ["pending", "arrived"]
+        guard let stop = stops.first(where: { incompleteStatuses.contains($0.status ?? "pending") }) else { return nil }
+        return NextStopData(trip: trip, stop: stop)
     }
 }
 
