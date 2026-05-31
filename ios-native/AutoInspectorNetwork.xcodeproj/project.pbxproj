@@ -57,6 +57,8 @@
 		B14C6A5E2FBBB8C7006C431B /* AINCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A5A2FBBB8C7006C431B /* AINCard.swift */; };
 		B14C6A5F2FBBB8C7006C431B /* AINStatusPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A5B2FBBB8C7006C431B /* AINStatusPill.swift */; };
 		B14C6A602FBBB8C7006C431B /* AINStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A5C2FBBB8C7006C431B /* AINStates.swift */; };
+		B14CF43C2FCBE82D002ED72E /* RealtimeChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14CF43B2FCBE82D002ED72E /* RealtimeChannel.swift */; };
+		B14CF43E2FCBE865002ED72E /* StorageClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14CF43D2FCBE865002ED72E /* StorageClient.swift */; };
 		B19AF1592FC4754600D65428 /* MapsLookupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19AF1582FC4754600D65428 /* MapsLookupService.swift */; };
 		B19AF1642FC4756C00D65428 /* VehicleEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19AF15B2FC4756B00D65428 /* VehicleEditViewModel.swift */; };
 		B19AF1652FC4756C00D65428 /* VehicleDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19AF15C2FC4756B00D65428 /* VehicleDetailViewModel.swift */; };
@@ -143,8 +145,8 @@
 		B14C6A5A2FBBB8C7006C431B /* AINCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AINCard.swift; sourceTree = "<group>"; };
 		B14C6A5B2FBBB8C7006C431B /* AINStatusPill.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AINStatusPill.swift; sourceTree = "<group>"; };
 		B14C6A5C2FBBB8C7006C431B /* AINStates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AINStates.swift; sourceTree = "<group>"; };
-		B14C6A612FBBBA42006C431B /* RealtimeChannel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RealtimeChannel.swift; path = "../../../swift-connector/Sources/InspectFlowConnector/Realtime/RealtimeChannel.swift"; sourceTree = "<group>"; };
-		B14C6A642FBBBA64006C431B /* StorageClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageClient.swift; sourceTree = "<group>"; };
+		B14CF43B2FCBE82D002ED72E /* RealtimeChannel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealtimeChannel.swift; sourceTree = "<group>"; };
+		B14CF43D2FCBE865002ED72E /* StorageClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageClient.swift; sourceTree = "<group>"; };
 		B18367283123AA618DD18523 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B19AF1582FC4754600D65428 /* MapsLookupService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapsLookupService.swift; sourceTree = "<group>"; };
 		B19AF15B2FC4756B00D65428 /* VehicleEditViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleEditViewModel.swift; sourceTree = "<group>"; };
@@ -363,7 +365,7 @@
 		93DDF341FC5AE0F58E91E038 /* Realtime */ = {
 			isa = PBXGroup;
 			children = (
-				B14C6A612FBBBA42006C431B /* RealtimeChannel.swift */,
+				B14CF43B2FCBE82D002ED72E /* RealtimeChannel.swift */,
 				04ABF7475DA3AC1CBC0886FA /* RealtimeSubscriptions.swift */,
 			);
 			path = Realtime;
@@ -472,7 +474,7 @@
 		B14C6A632FBBBA64006C431B /* Storage */ = {
 			isa = PBXGroup;
 			children = (
-				B14C6A642FBBBA64006C431B /* StorageClient.swift */,
+				B14CF43D2FCBE865002ED72E /* StorageClient.swift */,
 			);
 			name = Storage;
 			path = "../../../swift-connector/Sources/InspectFlowConnector/Storage";
@@ -681,6 +683,7 @@
 			files = (
 				A5D470A05ACB94A37FE2DE69 /* AppDelegate.swift in Sources */,
 				B19AF1682FC4756C00D65428 /* VehicleWriteModels.swift in Sources */,
+				B14CF43C2FCBE82D002ED72E /* RealtimeChannel.swift in Sources */,
 				C9AC8F291A3142999D91651E /* AutoInspectorNetworkApp.swift in Sources */,
 				8DFD36F2D698E4DA3E8E6FCF /* MainTabView.swift in Sources */,
 				B14C6A5F2FBBB8C7006C431B /* AINStatusPill.swift in Sources */,
@@ -712,6 +715,7 @@
 				B14C6A5E2FBBB8C7006C431B /* AINCard.swift in Sources */,
 				B9053B5C8CD2F2766361789A /* RealtimeSubscriptions.swift in Sources */,
 				B14C6A562FBBB854006C431B /* SessionStore.swift in Sources */,
+				B14CF43E2FCBE865002ED72E /* StorageClient.swift in Sources */,
 				F283A55FE693D3192FB736F1 /* CoreDataCache.swift in Sources */,
 				46A81275311533F311417167 /* Outbox.swift in Sources */,
 				7BA8B6EC04DAF2495730F04A /* SyncEngine.swift in Sources */,
