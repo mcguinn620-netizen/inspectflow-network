@@ -57,8 +57,6 @@
 		B14C6A5E2FBBB8C7006C431B /* AINCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A5A2FBBB8C7006C431B /* AINCard.swift */; };
 		B14C6A5F2FBBB8C7006C431B /* AINStatusPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A5B2FBBB8C7006C431B /* AINStatusPill.swift */; };
 		B14C6A602FBBB8C7006C431B /* AINStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A5C2FBBB8C7006C431B /* AINStates.swift */; };
-		B14C6A622FBBBA42006C431B /* RealtimeChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A612FBBBA42006C431B /* RealtimeChannel.swift */; };
-		B14C6A652FBBBA64006C431B /* StorageClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A642FBBBA64006C431B /* StorageClient.swift */; };
 		B19AF1592FC4754600D65428 /* MapsLookupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19AF1582FC4754600D65428 /* MapsLookupService.swift */; };
 		B19AF1642FC4756C00D65428 /* VehicleEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19AF15B2FC4756B00D65428 /* VehicleEditViewModel.swift */; };
 		B19AF1652FC4756C00D65428 /* VehicleDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19AF15C2FC4756B00D65428 /* VehicleDetailViewModel.swift */; };
@@ -681,7 +679,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B14C6A622FBBBA42006C431B /* RealtimeChannel.swift in Sources */,
 				A5D470A05ACB94A37FE2DE69 /* AppDelegate.swift in Sources */,
 				B19AF1682FC4756C00D65428 /* VehicleWriteModels.swift in Sources */,
 				C9AC8F291A3142999D91651E /* AutoInspectorNetworkApp.swift in Sources */,
@@ -721,7 +718,6 @@
 				B14C6A5D2FBBB8C7006C431B /* AINButtons.swift in Sources */,
 				2D15AA7686667954E9D77C53 /* TripTrackingController.swift in Sources */,
 				3C7D73605588A031CCC0FA24 /* AuthView.swift in Sources */,
-				B14C6A652FBBBA64006C431B /* StorageClient.swift in Sources */,
 				490E2B9B0C8CDE7165A3E43B /* AuthViewModel.swift in Sources */,
 				A9C954DDCC11B8D0AE0AA87D /* DashboardView.swift in Sources */,
 				D7A5DDBD1FF712EC25F3B0BF /* DashboardViewModel.swift in Sources */,
@@ -780,6 +776,7 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "Apple Development: mcguinn620@hotmail.com (95VG5GW59K)";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -871,6 +868,7 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "Apple Development: mcguinn620@hotmail.com (95VG5GW59K)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
