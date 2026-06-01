@@ -58,7 +58,29 @@ struct JobDetailView: View {
                 Button("Edit") {
                     showEditSheet = true
                 }
-            }
+        Button {
+
+    Task {
+
+        let success =
+            await CalendarSyncService
+                .shared
+                .sync(job: job)
+
+        if success {
+
+            print("Added to Calendar")
+        }
+    }
+
+} label: {
+
+    Label(
+        "Add To Calendar",
+        systemImage: "calendar.badge.plus"
+    )
+}
+            
         }
         .sheet(isPresented: $showEditSheet) {
             JobEditSheet(job: job) { scheduledAt, _ in
