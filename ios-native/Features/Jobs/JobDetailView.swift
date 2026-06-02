@@ -53,32 +53,35 @@ struct JobDetailView: View {
             }
         }
         .navigationTitle("Job Details")
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button("Edit") {
-                    showEditSheet = true
-                }
+       .toolbar {
+
+    ToolbarItemGroup(
+        placement: .navigationBarTrailing
+    ) {
+
+        Button("Edit") {
+            showEditSheet = true
+        }
+
         Button {
 
-    Task {
+            Task {
 
-        let success =
-            await CalendarSyncService
-                .shared
-                .sync(job: job)
+                let success =
+                    await CalendarSyncService
+                        .shared
+                        .sync(job: job)
 
-        if success {
+                actionMessage = success
+                    ? "Added to Calendar"
+                    : "Unable to add event to Calendar"
+            }
 
-            print("Added to Calendar")
+        } label: {
+
+            Image(systemName: "calendar.badge.plus")
         }
     }
-
-} label: {
-
-    Label(
-        "Add To Calendar",
-        systemImage: "calendar.badge.plus"
-    )
 }
             
         }
