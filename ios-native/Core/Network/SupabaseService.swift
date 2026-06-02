@@ -111,6 +111,52 @@ final class SupabaseService {
             .limit(limit)
             .execute()
     }
+    
+    func createJob(
+    orgId: UUID,
+    title: String,
+    customerName: String?,
+    location: String?,
+    scheduledAt: Date?) async throws -> Job {
+
+    struct Payload: Encodable {
+        let organization_id: UUID
+        let title: String
+        let customer_name: String?
+        let location: String?
+        let scheduled_at: Date?
+        let status: String
+    }
+
+    let payload = Payload(
+        organization_id: orgId,
+        title: title,
+        customer_name: customerName,
+        location: location,
+        scheduled_at: scheduledAt,
+        status: "scheduled"
+    )
+
+    let created: [Job] = try await client
+        .from("jobs")
+        .insert(payload)
+        .select()
+        .execute()
+        .value
+
+    guard let job = created.first else {
+        throw NSError(
+            domain: "InspectFlow",
+            code: -1,
+            userInfo: [
+                NSLocalizedDescriptionKey:
+                "Failed to create job"
+            ]
+        )
+    }
+
+    return job
+    }
 
 
     // MARK: - Job mutations
