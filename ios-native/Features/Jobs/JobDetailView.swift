@@ -74,7 +74,7 @@ struct JobDetailView: View {
 }
         }
         .navigationTitle("Job Details")
-       .toolbar {
+         .toolbar {
 
     ToolbarItemGroup(
         placement: .navigationBarTrailing
@@ -89,18 +89,20 @@ struct JobDetailView: View {
             Task {
 
                 let success =
-                    await CalendarSyncService
-                        .shared
-                        .sync(job: job)
+                    await CalendarSyncService.shared.sync(
+                        job: job
+                    )
 
                 actionMessage = success
                     ? "Added to Calendar"
-                    : "Unable to add event to Calendar"
+                    : "Unable to add event"
             }
 
         } label: {
 
-            Image(systemName: "calendar.badge.plus")
+            Image(
+                systemName: "calendar.badge.plus"
+            )
         }
     }
 }
