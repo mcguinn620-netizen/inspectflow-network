@@ -21,18 +21,23 @@ struct MainTabView: View {
     }
 
     var body: some View {
-        TabView {
-            if appState.effectiveRole == "inspector" { // role-aware home tab
-                InspectorDashboardHomeView().tabItem { Label("Dashboard", systemImage: "house.fill") }
-            } else {
-                DashboardView().tabItem { Label("Dashboard", systemImage: "house.fill") }
+        VStack(spacing: 0) {
+            #if DEBUG
+            AINDebugBanner()
+            #endif
+            TabView {
+                if appState.effectiveRole == "inspector" { // role-aware home tab
+                    InspectorDashboardHomeView().tabItem { Label("Dashboard", systemImage: "house.fill") }
+                } else {
+                    DashboardView().tabItem { Label("Dashboard", systemImage: "house.fill") }
+                }
+                ScheduleView().tabItem { Label("Schedule", systemImage: "calendar") }
+                JobsView().tabItem { Label("Jobs", systemImage: "briefcase.fill") }
+                TripsView().tabItem { Label("Trips", systemImage: "map.fill") }
+                MoreView().tabItem { Label("More", systemImage: "ellipsis.circle.fill") }
             }
-            ScheduleView().tabItem { Label("Schedule", systemImage: "calendar") }
-            JobsView().tabItem { Label("Jobs", systemImage: "briefcase.fill") }
-            TripsView().tabItem { Label("Trips", systemImage: "map.fill") }
-            MoreView().tabItem { Label("More", systemImage: "ellipsis.circle.fill") }
+            .tint(AINTheme.Color.accent)
         }
-        .tint(AINTheme.Color.accent)
     }
 }
 
