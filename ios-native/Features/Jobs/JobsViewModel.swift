@@ -37,8 +37,14 @@ final class JobsViewModel: ObservableObject {
                 scheduledAt: scheduledAt
             )
 
-            var updatedJob = job
-            updatedJob.scheduledAt = scheduledAt
+            let updatedJob = Job(
+                id: job.id,
+                title: job.title,
+                customerName: job.customerName,
+                location: job.location,
+                scheduledAt: scheduledAt,
+                status: job.status
+            )
 
             _ = await CalendarSyncService.shared.sync(
                 job: updatedJob
@@ -87,8 +93,14 @@ final class JobsViewModel: ObservableObject {
                 status: "completed"
             )
 
-            var completedJob = job
-            completedJob.status = "completed"
+            let completedJob = Job(
+                id: job.id,
+                title: job.title,
+                customerName: job.customerName,
+                location: job.location,
+                scheduledAt: job.scheduledAt,
+                status: "completed"
+            )
 
             _ = await CalendarSyncService.shared.sync(
                 job: completedJob
@@ -101,4 +113,3 @@ final class JobsViewModel: ObservableObject {
         }
     }
 }
-    
