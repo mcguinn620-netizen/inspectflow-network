@@ -61,6 +61,9 @@ final class CalendarSyncService {
             return nil
         }
     }
+    private func findEventForJob(
+    _ job: Job
+) -> EKEvent?
 
     // MARK: - Sync
 
