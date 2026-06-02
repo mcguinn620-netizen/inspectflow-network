@@ -3,7 +3,8 @@ import SwiftUI
 struct JobsView: View {
     @EnvironmentObject private var appState: AppState
     @StateObject private var viewModel = JobsViewModel()
-
+    @State private var showCreateSheet = false
+    
     var body: some View {
         NavigationStack {
             Group {
@@ -34,7 +35,35 @@ struct JobsView: View {
                 }
             }
             .navigationTitle("Jobs")
-            .toolbar { ToolbarItem(placement: .navigationBarTrailing) { SyncStatusView() } }
+            .toolbar {
+
+    ToolbarItem(
+        placement:
+            .navigationBarTrailing
+    ) {
+
+        Button {
+
+            showCreateSheet = true
+
+        } label: {
+
+            Image(systemName: "plus")
+        }
+    }
+}
+.sheet(
+    isPresented: $showCreateSheet
+) {
+
+    if let orgId =
+        appState.activeOrganizationID {
+
+        JobCreateView(
+            orgId: orgId
+        )
+    }
+}
             .refreshable { await viewModel.load(orgId: appState.activeOrganizationID) }
             .task { await viewModel.load(orgId: appState.activeOrganizationID) }
         }
