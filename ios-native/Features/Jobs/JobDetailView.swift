@@ -38,19 +38,40 @@ struct JobDetailView: View {
             }
 
             Section("Quick Actions") {
-                Button("Start Inspection") {
-                    actionMessage = "Open this job from Inspections to start the checklist."
-                }
-                Button("Navigate") {
-                    MapsLookupService.shared.open(job: job)
-                }
-                Button("Call") {
-                    actionMessage = "Customer phone is not attached to this job yet."
-                }
-                Button("Mark Complete") {
-                    onMarkComplete(job)
-                }
-            }
+
+    Button("Start Inspection") {
+        actionMessage =
+            "Open this job from Inspections to start the checklist."
+    }
+
+    Button("Navigate") {
+        MapsLookupService.shared.open(job: job)
+    }
+
+    Button("Add To Calendar") {
+
+        Task {
+
+            let success =
+                await CalendarSyncService.shared.sync(
+                    job: job
+                )
+
+            actionMessage = success
+                ? "Added to Calendar"
+                : "Unable to add event"
+        }
+    }
+
+    Button("Call") {
+        actionMessage =
+            "Customer phone is not attached to this job yet."
+    }
+
+    Button("Mark Complete") {
+        onMarkComplete(job)
+    }
+}
         }
         .navigationTitle("Job Details")
        .toolbar {
