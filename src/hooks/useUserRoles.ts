@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useDebugUser } from "@/hooks/useDebugUser";
 
 export type AppRole =
   | "super_admin"
@@ -23,12 +24,28 @@ export interface OrgMembership {
 
 export function useUserRoles() {
   const { user } = useAuth();
+  const { debugUser, enabled: debugEnabled } = useDebugUser();
   const [roles, setRoles] = useState<AppRole[]>([]);
   const [memberships, setMemberships] = useState<OrgMembership[]>([]);
   const [activeOrgId, setActiveOrgId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // DEV-only impersonation short-circuit. Stripped in production.
+    if (debugEnabled && debugUser) {
+      setRoles([debugUser.role]);
+      setMemberships([
+        {
+          organization_id: debugUser.organization_id,
+          role: debugUser.role,
+          is_default: true,
+          organization_name: debugUser.organization_name ?? undefined,
+        },
+      ]);
+      setActiveOrgId(debugUser.organization_id);
+      setLoading(false);
+      return;
+    }
     if (!user) {
       setRoles([]);
       setMemberships([]);
@@ -69,7 +86,7 @@ export function useUserRoles() {
     return () => {
       cancelled = true;
     };
-  }, [user]);
+  }, [user, debugEnabled, debugUser]);
 
   const hasRole = (r: AppRole) => roles.includes(r);
   const isAdmin =

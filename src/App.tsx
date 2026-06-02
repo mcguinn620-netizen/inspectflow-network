@@ -8,8 +8,11 @@ import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { useUserRoles } from "@/hooks/useUserRoles";
 import { ActiveTripProvider } from "@/hooks/useActiveTrip";
+import { DebugUserProvider, useDebugUser } from "@/hooks/useDebugUser";
+import { isDebugMode } from "@/lib/debugAuth";
 import Index from "./pages/Index";
 import AuthPage from "./pages/Auth";
+import DebugLogin from "./pages/DebugLogin";
 import DispatchPage from "./pages/Dispatch";
 import InspectorsPage from "./pages/Inspectors";
 import VehiclesPage from "./pages/Vehicles";
@@ -36,8 +39,10 @@ const queryClient = new QueryClient();
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
+  const { debugUser, enabled: debugEnabled } = useDebugUser();
+  if (debugEnabled && debugUser) return <>{children}</>;
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-background"><div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full" /></div>;
-  if (!user) return <Navigate to="/auth" replace />;
+  if (!user) return <Navigate to={isDebugMode() ? "/debug" : "/auth"} replace />;
   return <>{children}</>;
 }
 
@@ -50,6 +55,7 @@ function HomeRedirect() {
 const AppRoutes = () => (
   <Routes>
     <Route path="/auth" element={<AuthPage />} />
+    {isDebugMode() && <Route path="/debug" element={<DebugLogin />} />}
     <Route path="/" element={<ProtectedRoute><HomeRedirect /></ProtectedRoute>} />
 
     {/* Inspector workspace */}
@@ -86,10 +92,12 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <AuthProvider>
-            <ActiveTripProvider>
-              <AppRoutes />
-              <InstallPrompt />
-            </ActiveTripProvider>
+            <DebugUserProvider>
+              <ActiveTripProvider>
+                <AppRoutes />
+                <InstallPrompt />
+              </ActiveTripProvider>
+            </DebugUserProvider>
           </AuthProvider>
         </BrowserRouter>
       </TooltipProvider>

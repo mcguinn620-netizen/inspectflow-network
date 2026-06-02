@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { Navigate } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
 import { Car } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
+import { isDebugMode } from "@/lib/debugAuth";
 import { toast } from "sonner";
 
 export default function AuthPage() {
@@ -125,6 +126,16 @@ export default function AuthPage() {
               {isSignUp ? "Sign in" : "Sign up"}
             </button>
           </p>
+          {isDebugMode() && (
+            <div className="pt-2 border-t">
+              <Link
+                to="/debug"
+                className="block text-center text-xs text-amber-600 dark:text-amber-400 hover:underline font-medium"
+              >
+                ⚠ Skip auth — Debug user picker (dev only)
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -4,62 +4,52 @@ Parallel DEBUG-only path for both iOS and Web that lets you pick any user and im
 
 ## Scope guardrails
 
-- Additive only. No changes to Supabase Auth, sign-in screens, RLS, or `useAuth` semantics in production builds.
-- iOS gated by `#if DEBUG`. Web gated by `import.meta.env.DEV` (Vite — production builds set this to `false`, dead-code-eliminated).
-- No DB schema changes. Reads from existing `profiles` + `organization_users` + `user_roles`.
-- Role badge colors map onto the 8-role system already in `useUserRoles` (Admin = super/network/company admin, Manager = repair_shop_manager/fleet_manager, Dispatcher = dispatcher, Inspector = inspector/technician/mechanic, Client = client).
+- Additive only. No changes to Supabase Auth, sign-in screens, RLS, or production code paths.
+- iOS gated by `#if DEBUG`. Web gated by `import.meta.env.DEV` (Vite strips dead branches in prod).
+- No DB schema changes. Reads from existing `profiles`, `organization_users`, `organizations`.
+- Role badge colors map onto the existing 8-role system in `useUserRoles`.
 
 ## Backend
 
-No new tables / edge functions. A "debug user service" on each client just queries:
+No new tables or edge functions. Both clients query:
 
-```
-select p.id, p.full_name, ou.organization_id, o.name as organization_name, ou.role
-from profiles p
-join organization_users ou on ou.user_id = p.id
-join organizations o on o.id = ou.organization_id
-order by p.full_name;
+```text
+profiles  ⋈  organization_users  ⋈  organizations
+order by full_name
 ```
 
-Email comes from `auth.users` indirectly — we'll use `profiles.full_name` + a derived email-ish handle, and on web fall back to `supabase.auth.admin` is not available client-side, so we display `full_name` + org + role only (email left blank if unknown). This avoids needing a service-role edge function.
+Email is unavailable client-side without service role, so the picker shows full_name + org + role (email optional/blank).
 
 ## iOS deliverables
 
-New files (all wrapped in `#if DEBUG` where they reference debug-only state):
-
-1. `ios-native/Core/Debug/DebugUser.swift` — `struct DebugUser: Identifiable, Codable` with `id, fullName, email?, organizationID, organizationName, role`.
-2. `ios-native/Core/Debug/DebugUserService.swift` — `fetchDebugUsers() async throws -> [DebugUser]` using `SupabaseClientProvider.shared.db`.
-3. `ios-native/App/DebugUserPickerView.swift` — searchable list (name / email / org), role pill, avatar initials, large rows, "Continue as" CTA.
-4. `ios-native/Shared/UI/AINDebugBanner.swift` — slim amber banner "⚠ DEBUG USER MODE — {Name} ({Role})", tap to open picker.
-5. `ios-native/Shared/UI/AINRoleBadge.swift` — reusable colored pill (Admin red, Manager purple, Dispatcher blue, Inspector green).
+New files:
+1. `Core/Debug/DebugUser.swift` — model
+2. `Core/Debug/DebugUserService.swift` — `fetchDebugUsers()` / `fetchOne(id:)`
+3. `App/DebugUserPickerView.swift` — searchable list, avatar initials, role pill, large rows
+4. `Shared/UI/AINDebugBanner.swift` — slim amber banner, tap to re-pick
+5. `Shared/UI/AINRoleBadge.swift` — colored role pill
 
 Edits:
+6. `Core/Auth/AppState.swift` — `selectedDebugUser`, `debugSignIn(as:)`, `clearDebugUser()`
+7. `App/RootView.swift` — DEBUG branch: no user → picker, user → MainTabView. Production branch unchanged.
+8. `App/MainTabView.swift` — overlay `AINDebugBanner` in `#if DEBUG`
+9. `Features/Settings/SettingsView.swift` — `#if DEBUG` "Developer Tools" section (current user/role/org + Switch / Clear / Reset)
+10. `AutoInspectorNetwork.xcodeproj/project.pbxproj` — register 5 new files
 
-6. `ios-native/Core/Auth/AppState.swift` — add `@Published var selectedDebugUser: DebugUser?` and `func debugSignIn(as user: DebugUser)` that sets `authState = .signedIn(syntheticProfile)`, `activeOrganizationID`, `effectiveRole`. No network call.
-7. `ios-native/App/RootView.swift` — replace existing `debugLoginBypass` block with: if no `@AppStorage("debugUserID")` value -> `DebugUserPickerView`; else hydrate `AppState` and show `MainTabView`. Production `#else` branch unchanged.
-8. `ios-native/App/MainTabView.swift` — overlay `AINDebugBanner` at the top inside `#if DEBUG` so it appears on every tab (Dashboard, Jobs, Schedule, Inspections, Trips, Vehicles).
-9. `ios-native/Features/Settings/SettingsView.swift` — add `#if DEBUG` "Developer Tools" section: Current User / Role / Org rows + "Switch User", "Clear User", "Reset Debug Session" buttons.
-10. `ios-native/AutoInspectorNetwork.xcodeproj/project.pbxproj` — register the 5 new files.
-
-Persistence: `@AppStorage("debugUserID")` holds the UUID string; on launch `RootView` reads it, calls `DebugUserService.fetchOne(id:)` and hands to `AppState.debugSignIn(as:)`.
+Persistence: `@AppStorage("debugUserID")`. On launch, RootView hydrates and calls `debugSignIn`.
 
 ## Web deliverables
 
-11. `src/lib/debugAuth.ts` — `isDebugMode()` (returns `import.meta.env.DEV`), `loadDebugUser()`, `saveDebugUser(u)`, `clearDebugUser()` against `localStorage.debugUserID`.
-12. `src/hooks/useDebugUser.tsx` — context provider exposing `{ debugUser, setDebugUser, clearDebugUser }`. In dev, wraps `useAuth` and `useUserRoles` consumers so `effectiveRole` / `activeOrgId` come from the debug pick when set.
-13. `src/components/debug/DebugUserPicker.tsx` — searchable list mirroring iOS picker; same query as backend section above.
-14. `src/components/debug/DebugBanner.tsx` — sticky amber bar at top of `DashboardLayout` rendered only when `isDebugMode() && debugUser`.
-15. `src/pages/DebugLogin.tsx` — `/debug` route rendering the picker. Auto-redirects to `/app/inspector/dashboard` after pick.
-16. Edits:
-    - `src/App.tsx` — wrap with `DebugUserProvider` (no-op in prod) and register `/debug` route.
-    - `src/components/DashboardLayout.tsx` — render `<DebugBanner />` above the fixed header.
-    - `src/hooks/useUserRoles.ts` — in dev, if a debug user is set, prefer their `role` / `organization_id` over the real Supabase fetch. Read code stays identical in prod.
-
-Production safety: `isDebugMode()` returns `false` in prod, so `DebugBanner`, `/debug` route handler, and provider all short-circuit. Vite strips the dead branches.
+11. `src/lib/debugAuth.ts` — `isDebugMode()`, load/save/clear `localStorage.debugUserID`, role-group helper
+12. `src/hooks/useDebugUser.tsx` — context provider; in dev overrides `effectiveRole` / `activeOrgId`
+13. `src/components/debug/DebugUserPicker.tsx` — searchable list (name / email / org)
+14. `src/components/debug/DebugBanner.tsx` — sticky amber bar above DashboardLayout header
+15. `src/pages/DebugLogin.tsx` — `/debug` route
+16. Edits to `src/App.tsx`, `src/components/DashboardLayout.tsx`, `src/hooks/useUserRoles.ts`
 
 ## Role badge mapping
 
-| Group      | Roles (AppRole)                                  | Color  |
+| Group      | Roles                                            | Color  |
 |------------|--------------------------------------------------|--------|
 | Admin      | super_admin, network_admin, company_admin        | Red    |
 | Manager    | repair_shop_manager, fleet_manager               | Purple |
@@ -67,15 +57,14 @@ Production safety: `isDebugMode()` returns `false` in prod, so `DebugBanner`, `/
 | Inspector  | inspector, technician, mechanic                  | Green  |
 | Client     | client                                           | Slate  |
 
-Single helper `roleGroup(role)` lives in both `AINRoleBadge.swift` and `src/lib/debugAuth.ts` to keep colors consistent.
-
 ## Out of scope
 
-- Creating fake users (we only impersonate existing ones).
-- Editing RLS — debug picker still respects RLS via the real anon JWT for the actual signed-in dev account on web (so RLS-protected reads work as long as that JWT is present). On iOS, debug mode skips the Supabase session entirely; queries that need org membership will fail unless you keep a real session — acceptable for UI/perm testing.
-- Production fallback if `import.meta.env.DEV` is somehow true in prod — Vite guarantees this.
+- Creating fake users (impersonate existing only)
+- RLS changes — iOS debug mode skips Supabase session; reads requiring org membership need a real JWT. Acceptable for UI/perm testing.
 
-## Steps (one approval at a time recommended)
+## Suggested rollout
 
-1. iOS files 1–10 (debug picker + banner + AppState + RootView + Settings).
-2. Web files 11–16 (provider + picker + banner + route + role override).
+1. iOS files 1–10
+2. Web files 11–16
+
+Approve one step at a time to control credit spend.

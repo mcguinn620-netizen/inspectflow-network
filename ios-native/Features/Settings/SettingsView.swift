@@ -20,6 +20,11 @@ struct SettingsView: View {
                 Section("Driving") {
                     Toggle("Voice cues while driving", isOn: $voiceCuesEnabled)
                 }
+
+                #if DEBUG
+                DeveloperToolsSection()
+                #endif
+
                 Section {
                     Button("Sign Out", role: .destructive) {
                         Task { await appState.signOut() }

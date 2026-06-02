@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 @MainActor
 final class AppState: ObservableObject {
@@ -12,7 +13,27 @@ final class AppState: ObservableObject {
     @Published var activeOrganizationID: UUID?
     @Published var effectiveRole: String = "inspector"
 
+    #if DEBUG
+    @Published var selectedDebugUser: DebugUser?
+    private let debugUserIDKey = "debugUserID"
+    #endif
+
     func bootstrap() async {
+        #if DEBUG
+        if let user = loadStoredDebugUser() {
+            applyDebugUser(user)
+            return
+        }
+        // Try to hydrate from a stored debug user ID by fetching it once.
+        if let idString = UserDefaults.standard.string(forKey: debugUserIDKey),
+           let id = UUID(uuidString: idString) {
+            if let user = try? await DebugUserService.fetchOne(id: id) {
+                applyDebugUser(user)
+                return
+            }
+        }
+        #endif
+
         let service = SupabaseService.shared
         guard let userID = service.currentUserID else {
             authState = .signedOut
@@ -26,7 +47,6 @@ final class AppState: ObservableObject {
             }
             authState = .signedIn(profile)
         } catch {
-            // Token might be stale; treat as signed out.
             try? await service.signOut()
             authState = .signedOut
         }
@@ -39,5 +59,44 @@ final class AppState: ObservableObject {
         activeOrganizationID = nil
         effectiveRole = "inspector"
         authState = .signedOut
+        #if DEBUG
+        clearDebugUser()
+        #endif
     }
+
+    #if DEBUG
+    func debugSignIn(as user: DebugUser) {
+        UserDefaults.standard.set(user.id.uuidString, forKey: debugUserIDKey)
+        if let data = try? JSONEncoder().encode(user) {
+            UserDefaults.standard.set(data, forKey: "debugUserPayload")
+        }
+        applyDebugUser(user)
+    }
+
+    func clearDebugUser() {
+        UserDefaults.standard.removeObject(forKey: debugUserIDKey)
+        UserDefaults.standard.removeObject(forKey: "debugUserPayload")
+        selectedDebugUser = nil
+        activeOrganizationID = nil
+        effectiveRole = "inspector"
+        authState = .signedOut
+    }
+
+    private func applyDebugUser(_ user: DebugUser) {
+        selectedDebugUser = user
+        activeOrganizationID = user.organizationID
+        effectiveRole = user.role
+        let profile = UserProfile(
+            id: user.id,
+            fullName: user.fullName,
+            email: user.email
+        )
+        authState = .signedIn(profile)
+    }
+
+    private func loadStoredDebugUser() -> DebugUser? {
+        guard let data = UserDefaults.standard.data(forKey: "debugUserPayload") else { return nil }
+        return try? JSONDecoder().decode(DebugUser.self, from: data)
+    }
+    #endif
 }
