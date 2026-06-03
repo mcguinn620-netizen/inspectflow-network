@@ -447,6 +447,7 @@
 				6CB3449D752F3F7896AB664C /* AutoInspectorNetworkApp.swift */,
 				4159112EA36531898205E02D /* MainTabView.swift */,
 				51D040F47EF88117C120244A /* RootView.swift */,
+				DBUG00000000000000000006 /* DebugUserPickerView.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -455,6 +456,7 @@
 			isa = PBXGroup;
 			children = (
 				6D9B26AAB9CAAB4FDC8CBA42 /* SettingsView.swift */,
+				DBUG0000000000000000000C /* DeveloperToolsSection.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -626,6 +628,15 @@
 			path = Trips;
 			sourceTree = "<group>";
 		};
+		DBUG00000000000000000001 /* Debug */ = {
+			isa = PBXGroup;
+			children = (
+				DBUG00000000000000000002 /* DebugUser.swift */,
+				DBUG00000000000000000004 /* DebugUserService.swift */,
+			);
+			path = Debug;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -775,6 +786,12 @@
 				AAAA000000000000000D0006 /* AINInputs.swift in Sources */,
 				AAAA000000000000000D0007 /* AINOverlays.swift in Sources */,
 				B1D25DD32FC1F5EC00E9EDD8 /* OpenInMapsButton.swift in Sources */,
+				DBUG00000000000000000003 /* DebugUser.swift in Sources */,
+				DBUG00000000000000000005 /* DebugUserService.swift in Sources */,
+				DBUG00000000000000000007 /* DebugUserPickerView.swift in Sources */,
+				DBUG00000000000000000009 /* AINRoleBadge.swift in Sources */,
+				DBUG0000000000000000000B /* AINDebugBanner.swift in Sources */,
+				DBUG0000000000000000000D /* DeveloperToolsSection.swift in Sources */,
 				B1D25DD02FC1F5EC00E9EDD8 /* JobEditSheet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
