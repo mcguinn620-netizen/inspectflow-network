@@ -89,6 +89,12 @@
 		E95E5C80C7268CE08A42ECA5 /* PushRegistrar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63153CED0A0A2D000BBDCC14 /* PushRegistrar.swift */; };
 		F283A55FE693D3192FB736F1 /* CoreDataCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F145748823881A6F0D9F26 /* CoreDataCache.swift */; };
 		F9D7651D08E0F62880FCA950 /* InspectionModel.xcdatamodeld in Resources */ = {isa = PBXBuildFile; fileRef = D7A27A5F7DD012D94E8002F7 /* InspectionModel.xcdatamodeld */; };
+		DBUG00000000000000000003 /* DebugUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG00000000000000000002 /* DebugUser.swift */; };
+		DBUG00000000000000000005 /* DebugUserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG00000000000000000004 /* DebugUserService.swift */; };
+		DBUG00000000000000000007 /* DebugUserPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG00000000000000000006 /* DebugUserPickerView.swift */; };
+		DBUG00000000000000000009 /* AINRoleBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG00000000000000000008 /* AINRoleBadge.swift */; };
+		DBUG0000000000000000000B /* AINDebugBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG0000000000000000000A /* AINDebugBanner.swift */; };
+		DBUG0000000000000000000D /* DeveloperToolsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG0000000000000000000C /* DeveloperToolsSection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -177,6 +183,12 @@
 		F3C4D2C3F50073D1A27B62CA /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		F71F1C6C6FFBEE562BF3481F /* CarPlayScheduleTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayScheduleTemplate.swift; sourceTree = "<group>"; };
 		FE220E882E0F0F3349EE2545 /* DriveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveView.swift; sourceTree = "<group>"; };
+		DBUG00000000000000000002 /* DebugUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugUser.swift; sourceTree = "<group>"; };
+		DBUG00000000000000000004 /* DebugUserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugUserService.swift; sourceTree = "<group>"; };
+		DBUG00000000000000000006 /* DebugUserPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugUserPickerView.swift; sourceTree = "<group>"; };
+		DBUG00000000000000000008 /* AINRoleBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINRoleBadge.swift; sourceTree = "<group>"; };
+		DBUG0000000000000000000A /* AINDebugBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINDebugBanner.swift; sourceTree = "<group>"; };
+		DBUG0000000000000000000C /* DeveloperToolsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperToolsSection.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -196,6 +208,7 @@
 				71B8F5FD007318DA05FBD9C6 /* Audit */,
 				E75A17A1D8C22BC327FFE28F /* Auth */,
 				B19AF16A2FC475B500D65428 /* Calendar */,
+				DBUG00000000000000000001 /* Debug */,
 				AAAA000000000000000C0000 /* InspectFlowConnector */,
 				B19AF1572FC4754600D65428 /* Maps */,
 				3F3BA5C895DEF081A2E3B57D /* Location */,
@@ -216,6 +229,8 @@
 				B14C6A5A2FBBB8C7006C431B /* AINCard.swift */,
 				B14C6A5C2FBBB8C7006C431B /* AINStates.swift */,
 				B14C6A5B2FBBB8C7006C431B /* AINStatusPill.swift */,
+				DBUG00000000000000000008 /* AINRoleBadge.swift */,
+				DBUG0000000000000000000A /* AINDebugBanner.swift */,
 				2CF0D1A3575838CCF21C4C0A /* SyncStatusView.swift */,
 				AAAA000000000000000C0006 /* AINInputs.swift */,
 				AAAA000000000000000C0007 /* AINOverlays.swift */,
@@ -432,6 +447,7 @@
 				6CB3449D752F3F7896AB664C /* AutoInspectorNetworkApp.swift */,
 				4159112EA36531898205E02D /* MainTabView.swift */,
 				51D040F47EF88117C120244A /* RootView.swift */,
+				DBUG00000000000000000006 /* DebugUserPickerView.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -440,6 +456,7 @@
 			isa = PBXGroup;
 			children = (
 				6D9B26AAB9CAAB4FDC8CBA42 /* SettingsView.swift */,
+				DBUG0000000000000000000C /* DeveloperToolsSection.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -611,6 +628,15 @@
 			path = Trips;
 			sourceTree = "<group>";
 		};
+		DBUG00000000000000000001 /* Debug */ = {
+			isa = PBXGroup;
+			children = (
+				DBUG00000000000000000002 /* DebugUser.swift */,
+				DBUG00000000000000000004 /* DebugUserService.swift */,
+			);
+			path = Debug;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -760,6 +786,12 @@
 				AAAA000000000000000D0006 /* AINInputs.swift in Sources */,
 				AAAA000000000000000D0007 /* AINOverlays.swift in Sources */,
 				B1D25DD32FC1F5EC00E9EDD8 /* OpenInMapsButton.swift in Sources */,
+				DBUG00000000000000000003 /* DebugUser.swift in Sources */,
+				DBUG00000000000000000005 /* DebugUserService.swift in Sources */,
+				DBUG00000000000000000007 /* DebugUserPickerView.swift in Sources */,
+				DBUG00000000000000000009 /* AINRoleBadge.swift in Sources */,
+				DBUG0000000000000000000B /* AINDebugBanner.swift in Sources */,
+				DBUG0000000000000000000D /* DeveloperToolsSection.swift in Sources */,
 				B1D25DD02FC1F5EC00E9EDD8 /* JobEditSheet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
