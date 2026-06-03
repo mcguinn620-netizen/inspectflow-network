@@ -89,6 +89,12 @@
 		E95E5C80C7268CE08A42ECA5 /* PushRegistrar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63153CED0A0A2D000BBDCC14 /* PushRegistrar.swift */; };
 		F283A55FE693D3192FB736F1 /* CoreDataCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F145748823881A6F0D9F26 /* CoreDataCache.swift */; };
 		F9D7651D08E0F62880FCA950 /* InspectionModel.xcdatamodeld in Resources */ = {isa = PBXBuildFile; fileRef = D7A27A5F7DD012D94E8002F7 /* InspectionModel.xcdatamodeld */; };
+		DBUG00000000000000000003 /* DebugUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG00000000000000000002 /* DebugUser.swift */; };
+		DBUG00000000000000000005 /* DebugUserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG00000000000000000004 /* DebugUserService.swift */; };
+		DBUG00000000000000000007 /* DebugUserPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG00000000000000000006 /* DebugUserPickerView.swift */; };
+		DBUG00000000000000000009 /* AINRoleBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG00000000000000000008 /* AINRoleBadge.swift */; };
+		DBUG0000000000000000000B /* AINDebugBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG0000000000000000000A /* AINDebugBanner.swift */; };
+		DBUG0000000000000000000D /* DeveloperToolsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG0000000000000000000C /* DeveloperToolsSection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
