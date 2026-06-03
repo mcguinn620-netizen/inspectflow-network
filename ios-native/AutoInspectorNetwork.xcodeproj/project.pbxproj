@@ -183,6 +183,12 @@
 		F3C4D2C3F50073D1A27B62CA /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		F71F1C6C6FFBEE562BF3481F /* CarPlayScheduleTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayScheduleTemplate.swift; sourceTree = "<group>"; };
 		FE220E882E0F0F3349EE2545 /* DriveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveView.swift; sourceTree = "<group>"; };
+		DBUG00000000000000000002 /* DebugUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugUser.swift; sourceTree = "<group>"; };
+		DBUG00000000000000000004 /* DebugUserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugUserService.swift; sourceTree = "<group>"; };
+		DBUG00000000000000000006 /* DebugUserPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugUserPickerView.swift; sourceTree = "<group>"; };
+		DBUG00000000000000000008 /* AINRoleBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINRoleBadge.swift; sourceTree = "<group>"; };
+		DBUG0000000000000000000A /* AINDebugBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINDebugBanner.swift; sourceTree = "<group>"; };
+		DBUG0000000000000000000C /* DeveloperToolsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperToolsSection.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
