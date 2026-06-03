@@ -14,7 +14,13 @@ const STORAGE_KEY = "debugUserID";
 const STORAGE_USER_KEY = "debugUserPayload";
 
 export function isDebugMode(): boolean {
-  return Boolean(import.meta.env.DEV);
+  // Vite strips import.meta.env.DEV in production builds.
+  // Allow explicit override via localStorage for testing in preview builds.
+  try {
+    return Boolean(import.meta.env.DEV || localStorage.getItem("lovable-debug-mode") === "1");
+  } catch {
+    return false;
+  }
 }
 
 export function loadDebugUser(): DebugUser | null {
