@@ -104,7 +104,8 @@ export function DebugUserPicker({ redirectTo = "/" }: { redirectTo?: string }) {
   };
 
   return (
-    <div className="mx-auto w-full max-w-2xl py-8 px-4">
+    <div className="mx-auto w-full max-w-2xl py-6 px-3 sm:px-4 sm:py-8">
+
       <div className="mb-6 flex items-start gap-3 rounded-lg border border-amber-500/40 bg-amber-500/10 p-4">
         <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400 mt-0.5" />
         <div className="text-sm">
