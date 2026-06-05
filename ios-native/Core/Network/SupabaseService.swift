@@ -182,6 +182,16 @@ final class SupabaseService {
             .execute()
     }
 
+    func fetchOrgInspectors(orgId: UUID) async throws -> [OrganizationMembership] {
+        let rows: [OrganizationMembership] = try await client.db.from("organization_users")
+            .select()
+            .eq("organization_id", orgId.uuidString)
+            .eq("role", "inspector")
+            .limit(100)
+            .execute()
+        return rows
+    }
+
     // MARK: - Vehicles
 
     func fetchVehicles(orgId: UUID, limit: Int = 100) async throws -> [Vehicle] {
