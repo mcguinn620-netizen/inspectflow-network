@@ -169,6 +169,7 @@ struct ScheduleView: View {
             ForEach(jobs) { job in
                 ScheduleJobPill(job: job, conflicts: conflicts[job.id] ?? [])
                     .onTapGesture { selectedJobID = job.id }
+                    .onLongPressGesture { selectedJobID = job.id }
                     .draggable(job.id.uuidString)
                     .contextMenu {
                         if isDispatcher {
