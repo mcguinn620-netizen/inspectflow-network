@@ -37,20 +37,39 @@ export function DebugUserPicker({ redirectTo = "/" }: { redirectTo?: string }) {
     (async () => {
       setLoading(true);
       setError(null);
-      const { data, error } = await supabase
+      const { data: memberships, error: mErr } = await supabase
         .from("organization_users")
-        .select("user_id, role, organization_id, organizations(name), profiles!inner(id, full_name)")
+        .select("user_id, role, organization_id, organizations(name)")
         .order("created_at", { ascending: false })
         .limit(500);
       if (cancelled) return;
-      if (error) {
-        setError(error.message);
+      if (mErr) {
+        setError(mErr.message);
         setLoading(false);
         return;
       }
-      const mapped: DebugUser[] = (data ?? []).map((row: any) => ({
+      const userIds = Array.from(
+        new Set((memberships ?? []).map((m: any) => m.user_id).filter(Boolean)),
+      );
+      let profileMap = new Map<string, { full_name: string | null }>();
+      if (userIds.length) {
+        const { data: profiles, error: pErr } = await supabase
+          .from("profiles")
+          .select("id, full_name")
+          .in("id", userIds);
+        if (cancelled) return;
+        if (pErr) {
+          setError(pErr.message);
+          setLoading(false);
+          return;
+        }
+        profileMap = new Map(
+          (profiles ?? []).map((p: any) => [p.id, { full_name: p.full_name ?? null }]),
+        );
+      }
+      const mapped: DebugUser[] = (memberships ?? []).map((row: any) => ({
         id: row.user_id,
-        full_name: row.profiles?.full_name ?? null,
+        full_name: profileMap.get(row.user_id)?.full_name ?? null,
         organization_id: row.organization_id,
         organization_name: row.organizations?.name ?? null,
         role: row.role,
