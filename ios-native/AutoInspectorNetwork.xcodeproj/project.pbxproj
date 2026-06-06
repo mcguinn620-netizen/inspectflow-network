@@ -95,6 +95,8 @@
 		DBUG00000000000000000009 /* AINRoleBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG00000000000000000008 /* AINRoleBadge.swift */; };
 		DBUG0000000000000000000B /* AINDebugBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG0000000000000000000A /* AINDebugBanner.swift */; };
 		DBUG0000000000000000000D /* DeveloperToolsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG0000000000000000000C /* DeveloperToolsSection.swift */; };
+		JOB000000000000000000000B1 /* JobCreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = JOB00000000000000000000001 /* JobCreateView.swift */; };
+		JOB000000000000000000000B2 /* JobCreateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = JOB00000000000000000000002 /* JobCreateViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
