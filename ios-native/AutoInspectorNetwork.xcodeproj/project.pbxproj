@@ -95,6 +95,8 @@
 		DBUG00000000000000000009 /* AINRoleBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG00000000000000000008 /* AINRoleBadge.swift */; };
 		DBUG0000000000000000000B /* AINDebugBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG0000000000000000000A /* AINDebugBanner.swift */; };
 		DBUG0000000000000000000D /* DeveloperToolsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG0000000000000000000C /* DeveloperToolsSection.swift */; };
+		JOB000000000000000000000B1 /* JobCreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = JOB00000000000000000000001 /* JobCreateView.swift */; };
+		JOB000000000000000000000B2 /* JobCreateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = JOB00000000000000000000002 /* JobCreateViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -189,6 +191,8 @@
 		DBUG00000000000000000008 /* AINRoleBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINRoleBadge.swift; sourceTree = "<group>"; };
 		DBUG0000000000000000000A /* AINDebugBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINDebugBanner.swift; sourceTree = "<group>"; };
 		DBUG0000000000000000000C /* DeveloperToolsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperToolsSection.swift; sourceTree = "<group>"; };
+		JOB00000000000000000000001 /* JobCreateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobCreateView.swift; sourceTree = "<group>"; };
+		JOB00000000000000000000002 /* JobCreateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobCreateViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -391,6 +395,8 @@
 			children = (
 				B1D25DCF2FC1F5EC00E9EDD8 /* JobDetailView.swift */,
 				B1D25DCE2FC1F5EC00E9EDD8 /* JobEditSheet.swift */,
+				JOB00000000000000000000001 /* JobCreateView.swift */,
+				JOB00000000000000000000002 /* JobCreateViewModel.swift */,
 				22B7DFF288D646A9E38F2592 /* JobsView.swift */,
 				E4FB918863C258C1718BAB06 /* JobsViewModel.swift */,
 			);
@@ -790,10 +796,11 @@
 				DBUG00000000000000000005 /* DebugUserService.swift in Sources */,
 				DBUG00000000000000000007 /* DebugUserPickerView.swift in Sources */,
 				DBUG00000000000000000009 /* AINRoleBadge.swift in Sources */,
-				DBUG0000000000000000000B /* AINDebugBanner.swift in Sources */,
-				DBUG0000000000000000000D /* DeveloperToolsSection.swift in Sources */,
-				B1D25DD02FC1F5EC00E9EDD8 /* JobEditSheet.swift in Sources */,
-			);
+			DBUG0000000000000000000B /* AINDebugBanner.swift in Sources */,
+			DBUG0000000000000000000D /* DeveloperToolsSection.swift in Sources */,
+			B1D25DD02FC1F5EC00E9EDD8 /* JobEditSheet.swift in Sources */,
+			JOB000000000000000000000B1 /* JobCreateView.swift in Sources */,
+			JOB000000000000000000000B2 /* JobCreateViewModel.swift in Sources */,
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
