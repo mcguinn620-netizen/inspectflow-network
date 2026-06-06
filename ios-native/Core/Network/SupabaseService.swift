@@ -137,12 +137,11 @@ final class SupabaseService {
         status: "scheduled"
     )
 
-    let created: [Job] = try await client
+    let created: [Job] = try await client.db
         .from("jobs")
         .insert(payload)
         .select()
         .execute()
-        .value
 
     guard let job = created.first else {
         throw NSError(
@@ -403,4 +402,3 @@ final class SupabaseService {
         return !changed.isEmpty
     }
 }
-

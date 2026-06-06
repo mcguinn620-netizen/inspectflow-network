@@ -17,17 +17,9 @@ final class CalendarSyncService {
 
     func ensureAccess() async -> Bool {
 
-        if #available(iOS 17.0, *) {
-            do {
-                return try await store.requestFullAccessToEvents()
-            } catch {
-                return false
-            }
-        } else {
-            return await withCheckedContinuation { continuation in
-                store.requestAccess(to: .event) { granted, _ in
-                    continuation.resume(returning: granted)
-                }
+        await withCheckedContinuation { continuation in
+            store.requestAccess(to: .event) { granted, _ in
+                continuation.resume(returning: granted)
             }
         }
     }
@@ -41,7 +33,10 @@ final class CalendarSyncService {
             return existing
         }
 
-        let calendar = EKCalendar(for: .event)
+        let calendar = EKCalendar(
+            for: .event,
+            eventStore: store
+        )
 
         calendar.title = "InspectFlow Jobs"
 
@@ -61,10 +56,6 @@ final class CalendarSyncService {
             return nil
         }
     }
-    private func findEventForJob(
-    _ job: Job
-) -> EKEvent?
-
     // MARK: - Sync
 
     func sync(job: Job) async -> Bool {
@@ -119,8 +110,6 @@ final class CalendarSyncService {
             )
 
             event.structuredLocation = location
-
-            event.travelTime = 1800
         }
 
         do {

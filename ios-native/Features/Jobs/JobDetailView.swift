@@ -38,75 +38,65 @@ struct JobDetailView: View {
             }
 
             Section("Quick Actions") {
+                Button("Start Inspection") {
+                    actionMessage =
+                        "Open this job from Inspections to start the checklist."
+                }
 
-    Button("Start Inspection") {
-        actionMessage =
-            "Open this job from Inspections to start the checklist."
-    }
+                Button("Navigate") {
+                    MapsLookupService.shared.open(job: job)
+                }
 
-    Button("Navigate") {
-        MapsLookupService.shared.open(job: job)
-    }
+                Button("Add To Calendar") {
+                    Task {
+                        let success =
+                            await CalendarSyncService.shared.sync(
+                                job: job
+                            )
 
-    Button("Add To Calendar") {
+                        actionMessage = success
+                            ? "Added to Calendar"
+                            : "Unable to add event"
+                    }
+                }
 
-        Task {
+                Button("Call") {
+                    actionMessage =
+                        "Customer phone is not attached to this job yet."
+                }
 
-            let success =
-                await CalendarSyncService.shared.sync(
-                    job: job
-                )
-
-            actionMessage = success
-                ? "Added to Calendar"
-                : "Unable to add event"
-        }
-    }
-
-    Button("Call") {
-        actionMessage =
-            "Customer phone is not attached to this job yet."
-    }
-
-    Button("Mark Complete") {
-        onMarkComplete(job)
-    }
-}
+                Button("Mark Complete") {
+                    onMarkComplete(job)
+                }
+            }
         }
         .navigationTitle("Job Details")
-         .toolbar {
+        .toolbar {
+            ToolbarItemGroup(
+                placement: .navigationBarTrailing
+            ) {
+                Button("Edit") {
+                    showEditSheet = true
+                }
 
-    ToolbarItemGroup(
-        placement: .navigationBarTrailing
-    ) {
+                Button {
+                    Task {
+                        let success =
+                            await CalendarSyncService.shared.sync(
+                                job: job
+                            )
 
-        Button("Edit") {
-            showEditSheet = true
-        }
+                        actionMessage = success
+                            ? "Added to Calendar"
+                            : "Unable to add event"
+                    }
 
-        Button {
-
-            Task {
-
-                let success =
-                    await CalendarSyncService.shared.sync(
-                        job: job
+                } label: {
+                    Image(
+                        systemName: "calendar.badge.plus"
                     )
-
-                actionMessage = success
-                    ? "Added to Calendar"
-                    : "Unable to add event"
+                }
             }
-
-        } label: {
-
-            Image(
-                systemName: "calendar.badge.plus"
-            )
-        }
-    }
-}
-            
         }
         .sheet(isPresented: $showEditSheet) {
             JobEditSheet(job: job) { scheduledAt, _ in
