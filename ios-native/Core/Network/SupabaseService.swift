@@ -119,23 +119,14 @@ final class SupabaseService {
     location: String?,
     scheduledAt: Date?) async throws -> Job {
 
-    struct Payload: Encodable {
-        let organization_id: UUID
-        let title: String
-        let customer_name: String?
-        let location: String?
-        let scheduled_at: Date?
-        let status: String
-    }
-
-    let payload = Payload(
-        organization_id: orgId,
-        title: title,
-        customer_name: customerName,
-        location: location,
-        scheduled_at: scheduledAt,
-        status: "scheduled"
-    )
+    var payload: [String: Any] = [
+        "organization_id": orgId.uuidString,
+        "title": title,
+        "status": "scheduled"
+    ]
+    if let customerName { payload["customer_name"] = customerName }
+    if let location { payload["location"] = location }
+    if let scheduledAt { payload["scheduled_at"] = ISO8601DateFormatter().string(from: scheduledAt) }
 
     let created: [Job] = try await client.db
         .from("jobs")
