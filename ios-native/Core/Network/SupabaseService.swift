@@ -265,7 +265,10 @@ final class SupabaseService {
     }
 
 
+    // MARK: - Templates
+
     func fetchTemplate(templateId: UUID) async throws -> InspectionTemplate {
+
         try await client.db.from("inspection_templates")
             .select()
             .eq("id", templateId.uuidString)
