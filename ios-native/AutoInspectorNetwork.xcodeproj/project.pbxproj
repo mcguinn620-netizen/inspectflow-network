@@ -97,6 +97,9 @@
 		DBUG0000000000000000000D /* DeveloperToolsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG0000000000000000000C /* DeveloperToolsSection.swift */; };
 		AB10000000000000000000B1 /* JobCreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1000000000000000000001 /* JobCreateView.swift */; };
 		AB10000000000000000000B2 /* JobCreateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1000000000000000000002 /* JobCreateViewModel.swift */; };
+		AB20000000000000000000B1 /* IntakeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB2000000000000000000001 /* IntakeModels.swift */; };
+		AB20000000000000000000B2 /* IntakeInboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB2000000000000000000002 /* IntakeInboxView.swift */; };
+		AB20000000000000000000B3 /* IntakeReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB2000000000000000000003 /* IntakeReviewView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -193,6 +196,9 @@
 		DBUG0000000000000000000C /* DeveloperToolsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperToolsSection.swift; sourceTree = "<group>"; };
 		AB1000000000000000000001 /* JobCreateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobCreateView.swift; sourceTree = "<group>"; };
 		AB1000000000000000000002 /* JobCreateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobCreateViewModel.swift; sourceTree = "<group>"; };
+		AB2000000000000000000001 /* IntakeModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntakeModels.swift; sourceTree = "<group>"; };
+		AB2000000000000000000002 /* IntakeInboxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntakeInboxView.swift; sourceTree = "<group>"; };
+		AB2000000000000000000003 /* IntakeReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntakeReviewView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
