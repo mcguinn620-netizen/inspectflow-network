@@ -706,6 +706,72 @@ export type Database = {
           },
         ]
       }
+      intake_items: {
+        Row: {
+          attachments: Json
+          channel: string
+          confidence: number | null
+          created_at: string
+          created_by: string | null
+          dedupe_hash: string | null
+          error: string | null
+          id: string
+          inspection_request_id: string | null
+          organization_id: string
+          parsed_data: Json | null
+          raw_payload: Json | null
+          raw_text: string | null
+          source_address: string | null
+          source_ref: string | null
+          status: string
+          subject: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          attachments?: Json
+          channel: string
+          confidence?: number | null
+          created_at?: string
+          created_by?: string | null
+          dedupe_hash?: string | null
+          error?: string | null
+          id?: string
+          inspection_request_id?: string | null
+          organization_id: string
+          parsed_data?: Json | null
+          raw_payload?: Json | null
+          raw_text?: string | null
+          source_address?: string | null
+          source_ref?: string | null
+          status?: string
+          subject?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          attachments?: Json
+          channel?: string
+          confidence?: number | null
+          created_at?: string
+          created_by?: string | null
+          dedupe_hash?: string | null
+          error?: string | null
+          id?: string
+          inspection_request_id?: string | null
+          organization_id?: string
+          parsed_data?: Json | null
+          raw_payload?: Json | null
+          raw_text?: string | null
+          source_address?: string | null
+          source_ref?: string | null
+          status?: string
+          subject?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       jobs: {
         Row: {
           actual_end_time: string | null
