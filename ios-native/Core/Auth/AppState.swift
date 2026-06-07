@@ -35,11 +35,9 @@ final class AppState: ObservableObject {
         #endif
 
         let service = SupabaseService.shared
-        guard let userID = service.currentUserID else {
-            authState = .signedOut
-            return
-        }
         do {
+            let session = try await service.restoreAndValidateSession()
+            let userID = session.user.id
             let profile = try await service.fetchMyProfile(userId: userID)
             if let membership = try? await service.fetchDefaultOrganization(userId: userID) {
                 activeOrganizationID = membership.organizationID

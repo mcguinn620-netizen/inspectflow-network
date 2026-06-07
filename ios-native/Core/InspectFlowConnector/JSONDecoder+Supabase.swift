@@ -5,14 +5,13 @@ extension JSONDecoder {
     /// timestamps both with and without fractional seconds.
     static func supabase() -> JSONDecoder {
         let decoder = JSONDecoder()
-        let withFractional = ISO8601DateFormatter()
-        withFractional.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        let plain = ISO8601DateFormatter()
-        plain.formatOptions = [.withInternetDateTime]
-
         decoder.dateDecodingStrategy = .custom { decoder in
             let container = try decoder.singleValueContainer()
             let raw = try container.decode(String.self)
+            let withFractional = ISO8601DateFormatter()
+            withFractional.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            let plain = ISO8601DateFormatter()
+            plain.formatOptions = [.withInternetDateTime]
             if let date = withFractional.date(from: raw) ?? plain.date(from: raw) {
                 return date
             }

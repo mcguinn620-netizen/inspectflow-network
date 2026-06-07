@@ -5,45 +5,59 @@ import FoundationNetworking
 
 public final class StorageClient {
     private let config: InspectFlowConfig
-    private let session: SessionStore
+    private let auth: AuthClient
     private let urlSession: URLSession
 
-    init(config: InspectFlowConfig, session: SessionStore, urlSession: URLSession = .shared) {
+    init(config: InspectFlowConfig, auth: AuthClient, urlSession: URLSession = .shared) {
         self.config = config
-        self.session = session
+        self.auth = auth
         self.urlSession = urlSession
     }
 
     public func upload(bucket: String, path: String, data: Data, contentType: String = "application/octet-stream", upsert: Bool = false) async throws {
         let url = config.storageURL.appendingPathComponent("object/\(bucket)/\(path)")
-        var req = URLRequest(url: url)
-        req.httpMethod = "POST"
-        req.setValue(contentType, forHTTPHeaderField: "Content-Type")
-        req.setValue(config.anonKey, forHTTPHeaderField: "apikey")
-        if let token = session.current()?.accessToken {
-            req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        let token = try await auth.bearerTokenForAuthenticatedRequest()
+        let result = try await sendRequest(url: url, method: "POST", contentType: contentType, accessToken: token, body: data) { req in
+            if upsert { req.setValue("true", forHTTPHeaderField: "x-upsert") }
         }
-        if upsert { req.setValue("true", forHTTPHeaderField: "x-upsert") }
-        req.httpBody = data
+        guard auth.shouldRetryAfterRefreshing(status: result.http.statusCode, body: result.body) else {
+            guard (200..<300).contains(result.http.statusCode) else {
+                throw InspectFlowError.http(status: result.http.statusCode, body: result.body)
+            }
+            return
+        }
 
-        let (respData, resp) = try await urlSession.data(for: req)
-        guard let http = resp as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
-            let status = (resp as? HTTPURLResponse)?.statusCode ?? -1
-            throw InspectFlowError.http(status: status, body: String(data: respData, encoding: .utf8) ?? "")
+        let refreshedToken = try await auth.refreshAccessTokenForRetry()
+        auth.logRetryingAfterJWTRefresh()
+        let retry = try await sendRequest(url: url, method: "POST", contentType: contentType, accessToken: refreshedToken, body: data) { req in
+            if upsert { req.setValue("true", forHTTPHeaderField: "x-upsert") }
+        }
+        guard (200..<300).contains(retry.http.statusCode) else {
+            throw InspectFlowError.http(status: retry.http.statusCode, body: retry.body)
         }
     }
 
     public func createSignedURL(bucket: String, path: String, expiresIn seconds: Int = 3600) async throws -> URL {
         let url = config.storageURL.appendingPathComponent("object/sign/\(bucket)/\(path)")
-        var req = URLRequest(url: url)
-        req.httpMethod = "POST"
-        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        req.setValue(config.anonKey, forHTTPHeaderField: "apikey")
-        if let token = session.current()?.accessToken {
-            req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        let body = try JSONSerialization.data(withJSONObject: ["expiresIn": seconds])
+        let token = try await auth.bearerTokenForAuthenticatedRequest()
+        let result = try await sendRequest(url: url, method: "POST", contentType: "application/json", accessToken: token, body: body)
+        let data: Data
+        if auth.shouldRetryAfterRefreshing(status: result.http.statusCode, body: result.body) {
+            let refreshedToken = try await auth.refreshAccessTokenForRetry()
+            auth.logRetryingAfterJWTRefresh()
+            let retry = try await sendRequest(url: url, method: "POST", contentType: "application/json", accessToken: refreshedToken, body: body)
+            guard (200..<300).contains(retry.http.statusCode) else {
+                throw InspectFlowError.http(status: retry.http.statusCode, body: retry.body)
+            }
+            data = retry.data
+        } else {
+            guard (200..<300).contains(result.http.statusCode) else {
+                throw InspectFlowError.http(status: result.http.statusCode, body: result.body)
+            }
+            data = result.data
         }
-        req.httpBody = try JSONSerialization.data(withJSONObject: ["expiresIn": seconds])
-        let (data, _) = try await urlSession.data(for: req)
+
         let obj = try JSONSerialization.jsonObject(with: data) as? [String: Any]
         guard let signed = obj?["signedURL"] as? String,
               let url = URL(string: signed, relativeTo: config.storageURL) else {
@@ -54,16 +68,42 @@ public final class StorageClient {
 
     public func download(bucket: String, path: String) async throws -> Data {
         let url = config.storageURL.appendingPathComponent("object/\(bucket)/\(path)")
+        let token = try await auth.bearerTokenForAuthenticatedRequest()
+        let result = try await sendRequest(url: url, method: "GET", accessToken: token)
+        guard auth.shouldRetryAfterRefreshing(status: result.http.statusCode, body: result.body) else {
+            guard (200..<300).contains(result.http.statusCode) else {
+                throw InspectFlowError.http(status: result.http.statusCode, body: result.body)
+            }
+            return result.data
+        }
+
+        let refreshedToken = try await auth.refreshAccessTokenForRetry()
+        auth.logRetryingAfterJWTRefresh()
+        let retry = try await sendRequest(url: url, method: "GET", accessToken: refreshedToken)
+        guard (200..<300).contains(retry.http.statusCode) else {
+            throw InspectFlowError.http(status: retry.http.statusCode, body: retry.body)
+        }
+        return retry.data
+    }
+
+    private func sendRequest(
+        url: URL,
+        method: String,
+        contentType: String? = nil,
+        accessToken: String?,
+        body: Data? = nil,
+        configure: ((inout URLRequest) -> Void)? = nil
+    ) async throws -> (data: Data, http: HTTPURLResponse, body: String) {
         var req = URLRequest(url: url)
+        req.httpMethod = method
+        if let contentType { req.setValue(contentType, forHTTPHeaderField: "Content-Type") }
         req.setValue(config.anonKey, forHTTPHeaderField: "apikey")
-        if let token = session.current()?.accessToken {
-            req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        }
+        req.setValue("Bearer \(accessToken ?? config.anonKey)", forHTTPHeaderField: "Authorization")
+        req.httpBody = body
+        configure?(&req)
+
         let (data, resp) = try await urlSession.data(for: req)
-        guard let http = resp as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
-            throw InspectFlowError.http(status: (resp as? HTTPURLResponse)?.statusCode ?? -1,
-                                       body: String(data: data, encoding: .utf8) ?? "")
-        }
-        return data
+        guard let http = resp as? HTTPURLResponse else { throw InspectFlowError.invalidResponse }
+        return (data, http, String(data: data, encoding: .utf8) ?? "")
     }
 }
