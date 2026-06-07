@@ -18,10 +18,11 @@ public final class InspectFlowClient {
         self.config = config
         let store = SessionStore(config: config)
         self.session = store
-        self.auth = AuthClient(config: config, session: store)
-        self.db = RestClient(config: config, session: store)
+        let auth = AuthClient(config: config, session: store)
+        self.auth = auth
+        self.db = RestClient(config: config, auth: auth)
         self.realtime = RealtimeClient(config: config, session: store)
-        self.storage = StorageClient(config: config, session: store)
-        self.functions = FunctionsClient(config: config, session: store)
+        self.storage = StorageClient(config: config, auth: auth)
+        self.functions = FunctionsClient(config: config, auth: auth)
     }
 }

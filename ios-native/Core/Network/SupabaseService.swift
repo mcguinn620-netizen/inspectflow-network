@@ -38,6 +38,11 @@ final class SupabaseService {
     var hasSession: Bool { client.auth.currentSession != nil }
 
     @discardableResult
+    func restoreAndValidateSession() async throws -> InspectFlowSession {
+        try await client.auth.restoreAndValidateSession()
+    }
+
+    @discardableResult
     func signIn(email: String, password: String) async throws -> InspectFlowSession {
         try await client.auth.signIn(email: email, password: password)
     }

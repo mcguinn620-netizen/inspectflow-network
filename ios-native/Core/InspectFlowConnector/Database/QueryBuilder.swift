@@ -6,7 +6,7 @@ import FoundationNetworking
 public final class QueryBuilder {
     private let table: String
     private let config: InspectFlowConfig
-    private let session: SessionStore
+    private let auth: AuthClient
     private let urlSession: URLSession
 
     private var method: String = "GET"
@@ -14,10 +14,10 @@ public final class QueryBuilder {
     private var body: Data?
     private var prefer: [String] = []
 
-    init(table: String, config: InspectFlowConfig, session: SessionStore, urlSession: URLSession) {
+    init(table: String, config: InspectFlowConfig, auth: AuthClient, urlSession: URLSession) {
         self.table = table
         self.config = config
-        self.session = session
+        self.auth = auth
         self.urlSession = urlSession
     }
 
@@ -46,6 +46,12 @@ public final class QueryBuilder {
 
     @discardableResult public func delete() -> Self {
         method = "DELETE"; prefer.append("return=representation"); return self
+    }
+
+    @discardableResult public func rpc(_ params: [String: Any] = [:]) -> Self {
+        method = "POST"
+        body = try? JSONSerialization.data(withJSONObject: params)
+        return self
     }
 
     @discardableResult public func upsert(_ values: [[String: Any]], onConflict: String? = nil) -> Self {
@@ -129,26 +135,38 @@ public final class QueryBuilder {
     }
 
     private func raw() async throws -> (Data, HTTPURLResponse) {
+        let token = try await auth.bearerTokenForAuthenticatedRequest()
+        let result = try await sendRequest(accessToken: token)
+        guard auth.shouldRetryAfterRefreshing(status: result.http.statusCode, body: result.body) else {
+            guard (200..<300).contains(result.http.statusCode) else {
+                throw InspectFlowError.http(status: result.http.statusCode, body: result.body)
+            }
+            return (result.data, result.http)
+        }
+
+        let refreshedToken = try await auth.refreshAccessTokenForRetry()
+        auth.logRetryingAfterJWTRefresh()
+        let retry = try await sendRequest(accessToken: refreshedToken)
+        guard (200..<300).contains(retry.http.statusCode) else {
+            throw InspectFlowError.http(status: retry.http.statusCode, body: retry.body)
+        }
+        return (retry.data, retry.http)
+    }
+
+    private func sendRequest(accessToken: String?) async throws -> (data: Data, http: HTTPURLResponse, body: String) {
         var comps = URLComponents(url: config.restURL.appendingPathComponent(table), resolvingAgainstBaseURL: false)!
         if !query.isEmpty { comps.queryItems = query }
         var req = URLRequest(url: comps.url!)
         req.httpMethod = method
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.setValue(config.anonKey, forHTTPHeaderField: "apikey")
-        if let token = session.current()?.accessToken {
-            req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        } else {
-            req.setValue("Bearer \(config.anonKey)", forHTTPHeaderField: "Authorization")
-        }
+        req.setValue("Bearer \(accessToken ?? config.anonKey)", forHTTPHeaderField: "Authorization")
         if _singleRow { req.setValue("application/vnd.pgrst.object+json", forHTTPHeaderField: "Accept") }
         if !prefer.isEmpty { req.setValue(prefer.joined(separator: ","), forHTTPHeaderField: "Prefer") }
         req.httpBody = body
 
         let (data, resp) = try await urlSession.data(for: req)
         guard let http = resp as? HTTPURLResponse else { throw InspectFlowError.invalidResponse }
-        guard (200..<300).contains(http.statusCode) else {
-            throw InspectFlowError.http(status: http.statusCode, body: String(data: data, encoding: .utf8) ?? "")
-        }
-        return (data, http)
+        return (data, http, String(data: data, encoding: .utf8) ?? "")
     }
 }

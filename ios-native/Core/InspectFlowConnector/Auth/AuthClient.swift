@@ -41,17 +41,25 @@ public final class AuthClient {
 
     public func refresh() async throws -> InspectFlowSession {
         guard let s = session.current() else { throw InspectFlowError.notAuthenticated }
-        return try await post("/token",
-                              body: ["refresh_token": s.refreshToken],
-                              query: [URLQueryItem(name: "grant_type", value: "refresh_token")])
+        do {
+            let refreshed = try await post("/token",
+                                           body: ["refresh_token": s.refreshToken],
+                                           query: [URLQueryItem(name: "grant_type", value: "refresh_token")])
+            debugAuthLog("[AUTH] Session refreshed")
+            return refreshed
+        } catch {
+            debugAuthLog("[AUTH] Refresh failed")
+            throw error
+        }
     }
 
     public func signOut() async throws {
-        guard let s = session.current() else { return }
+        guard session.current() != nil else { return }
+        let token = try? await validAccessToken()
         var req = URLRequest(url: config.authURL.appendingPathComponent("logout"))
         req.httpMethod = "POST"
         req.setValue(config.anonKey, forHTTPHeaderField: "apikey")
-        req.setValue("Bearer \(s.accessToken)", forHTTPHeaderField: "Authorization")
+        req.setValue("Bearer \(token ?? config.anonKey)", forHTTPHeaderField: "Authorization")
         _ = try? await urlSession.data(for: req)
         try session.set(nil)
     }
@@ -63,7 +71,40 @@ public final class AuthClient {
         return try await refresh().accessToken
     }
 
+    /// Restores and validates the persisted session without signing the user out on refresh failure.
+    @discardableResult
+    public func restoreAndValidateSession() async throws -> InspectFlowSession {
+        guard session.current() != nil else { throw InspectFlowError.notAuthenticated }
+        debugAuthLog("[AUTH] Session restored")
+        _ = try await validAccessToken()
+        guard let current = session.current() else { throw InspectFlowError.notAuthenticated }
+        return current
+    }
+
+    public func bearerTokenForAuthenticatedRequest() async throws -> String? {
+        guard session.current() != nil else { return nil }
+        return try await validAccessToken()
+    }
+
+    public func refreshAccessTokenForRetry() async throws -> String {
+        try await refresh().accessToken
+    }
+
+    public func shouldRetryAfterRefreshing(status: Int, body: String) -> Bool {
+        status == 401 && (body.contains("PGRST303") || body.localizedCaseInsensitiveContains("JWT expired"))
+    }
+
+    public func logRetryingAfterJWTRefresh() {
+        debugAuthLog("[AUTH] Retrying request after JWT refresh")
+    }
+
     // MARK: - Private
+
+    private func debugAuthLog(_ message: String) {
+        #if DEBUG
+        print(message)
+        #endif
+    }
 
     @discardableResult
     private func post(_ path: String, body: [String: Any], query: [URLQueryItem]?) async throws -> InspectFlowSession {
