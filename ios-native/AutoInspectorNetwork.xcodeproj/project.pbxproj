@@ -302,6 +302,7 @@
 				67F5D723AFFBBF37A6D10CF5 /* Drive */,
 				A56F8C2844653A5EF957E175 /* Inspections */,
 				9D8FB123A1621A97F2E6B02F /* Jobs */,
+				AB20000000000000000000F0 /* Intake */,
 				38C362A50C6B6123747B41D4 /* Schedule */,
 				AF2799AFA0CD32C828177CE8 /* Settings */,
 				AAC4ADE8B8A2C6227A883AF1 /* Tax */,
@@ -601,8 +602,18 @@
 			children = (
 				0F91FE72E2545B9592848B66 /* DomainModels.swift */,
 				77A8D7405D4EEF6598B26AE8 /* InspectionTemplateModels.swift */,
+				AB2000000000000000000001 /* IntakeModels.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		AB20000000000000000000F0 /* Intake */ = {
+			isa = PBXGroup;
+			children = (
+				AB2000000000000000000002 /* IntakeInboxView.swift */,
+				AB2000000000000000000003 /* IntakeReviewView.swift */,
+			);
+			path = Intake;
 			sourceTree = "<group>";
 		};
 		E75A17A1D8C22BC327FFE28F /* Auth */ = {
@@ -807,6 +818,9 @@
 				B1D25DD02FC1F5EC00E9EDD8 /* JobEditSheet.swift in Sources */,
 				AB10000000000000000000B1 /* JobCreateView.swift in Sources */,
 				AB10000000000000000000B2 /* JobCreateViewModel.swift in Sources */,
+				AB20000000000000000000B1 /* IntakeModels.swift in Sources */,
+				AB20000000000000000000B2 /* IntakeInboxView.swift in Sources */,
+				AB20000000000000000000B3 /* IntakeReviewView.swift in Sources */,
 				);
 				runOnlyForDeploymentPostprocessing = 0;
 			};
