@@ -203,7 +203,67 @@ final class SupabaseService {
             .execute()
     }
 
-    // MARK: - Templates
+    // MARK: - Intake
+
+    func fetchIntakeItems(orgId: UUID, status: String? = nil, limit: Int = 100) async throws -> [IntakeItem] {
+        var q = client.db.from("intake_items")
+            .select()
+            .eq("organization_id", orgId.uuidString)
+        if let status { q = q.eq("status", status) }
+        return try await q
+            .order("created_at", ascending: false)
+            .limit(limit)
+            .execute()
+    }
+
+    func updateIntakeItemStatus(itemId: UUID, status: String) async throws {
+        _ = try await client.db.from("intake_items")
+            .update(["status": status])
+            .eq("id", itemId.uuidString)
+            .execute()
+    }
+
+    func convertIntakeItem(item: IntakeItem, edited: IntakeParsedData) async throws -> UUID {
+        var payload: [String: Any] = [
+            "status": "request_received",
+            "template_name": edited.templateName ?? "Standard Inspection",
+            "priority": edited.priority ?? "medium",
+        ]
+        if let v = edited.clientName { payload["client_name"] = v }
+        if let v = edited.companyName { payload["company_name"] = v }
+        if let v = edited.vin { payload["vin"] = v }
+        if let v = edited.vehicleYear { payload["vehicle_year"] = v }
+        if let v = edited.vehicleMake { payload["vehicle_make"] = v }
+        if let v = edited.vehicleModel { payload["vehicle_model"] = v }
+        if let v = edited.mileage { payload["mileage"] = v }
+        if let v = edited.inspectionLocation { payload["inspection_location"] = v }
+        if let v = edited.requestedDate { payload["requested_date"] = v }
+        if let v = edited.inspectionType { payload["inspection_type"] = v }
+        if let v = edited.notes { payload["notes"] = v }
+
+        let created: [InspectionRequest] = try await client.db
+            .from("inspection_requests")
+            .insert(payload)
+            .select()
+            .execute()
+        guard let req = created.first else {
+            throw NSError(domain: "InspectFlow", code: -1,
+                          userInfo: [NSLocalizedDescriptionKey: "Failed to create inspection request"])
+        }
+        _ = try await client.db.from("intake_items")
+            .update([
+                "status": "converted",
+                "inspection_request_id": req.id.uuidString,
+            ])
+            .eq("id", item.id.uuidString)
+            .execute()
+        return req.id
+    }
+
+    func ingestUrl(url: String) async throws {
+        _ = try await client.functions.invokeRaw("intake-fetch-url", body: ["url": url])
+    }
+
 
     func fetchTemplate(templateId: UUID) async throws -> InspectionTemplate {
         try await client.db.from("inspection_templates")
