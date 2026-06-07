@@ -42,9 +42,11 @@ struct MainTabView: View {
 }
 
 struct MoreView: View {
+    @EnvironmentObject private var appState: AppState
     var body: some View {
         NavigationStack {
             List {
+                NavigationLink("Intake Inbox", destination: IntakeInboxView(appState: appState))
                 NavigationLink("Drive", destination: DriveView())
                 NavigationLink("Tax", destination: TaxView())
                 NavigationLink("Vehicles", destination: VehiclesView())
