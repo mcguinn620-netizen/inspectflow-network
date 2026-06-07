@@ -24,6 +24,7 @@ import {
   ClientPortalPage,
 } from "./pages/PlaceholderPages";
 import SettingsPage from "./pages/Settings";
+import IntakeInbox from "./pages/IntakeInbox";
 import NotFound from "./pages/NotFound";
 import InspectorDashboard from "./pages/inspector/InspectorDashboard";
 import InspectorSchedule from "./pages/inspector/InspectorSchedule";
@@ -80,6 +81,7 @@ const AppRoutes = () => (
     <Route path="/repair-shop" element={<ProtectedRoute><RepairShopPage /></ProtectedRoute>} />
     <Route path="/client-portal" element={<ProtectedRoute><ClientPortalPage /></ProtectedRoute>} />
     <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+    <Route path="/intake" element={<ProtectedRoute><IntakeInbox /></ProtectedRoute>} />
     <Route path="*" element={<NotFound />} />
   </Routes>
 );
