@@ -796,13 +796,14 @@
 				DBUG00000000000000000005 /* DebugUserService.swift in Sources */,
 				DBUG00000000000000000007 /* DebugUserPickerView.swift in Sources */,
 				DBUG00000000000000000009 /* AINRoleBadge.swift in Sources */,
-			DBUG0000000000000000000B /* AINDebugBanner.swift in Sources */,
-			DBUG0000000000000000000D /* DeveloperToolsSection.swift in Sources */,
-			B1D25DD02FC1F5EC00E9EDD8 /* JobEditSheet.swift in Sources */,
-			AB10000000000000000000B1 /* JobCreateView.swift in Sources */,
-			AB10000000000000000000B2 /* JobCreateViewModel.swift in Sources */,
-			runOnlyForDeploymentPostprocessing = 0;
-		};
+				DBUG0000000000000000000B /* AINDebugBanner.swift in Sources */,
+				DBUG0000000000000000000D /* DeveloperToolsSection.swift in Sources */,
+				B1D25DD02FC1F5EC00E9EDD8 /* JobEditSheet.swift in Sources */,
+				AB10000000000000000000B1 /* JobCreateView.swift in Sources */,
+				AB10000000000000000000B2 /* JobCreateViewModel.swift in Sources */,
+				);
+				runOnlyForDeploymentPostprocessing = 0;
+			};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
