@@ -14,10 +14,21 @@ final class IntakeReviewViewModel: ObservableObject {
         self.data = item.parsedData ?? IntakeParsedData()
     }
 
-    func convert() async -> Bool {
+    func convert() async -> UUID? {
         isSaving = true; defer { isSaving = false }
         do {
-            _ = try await service.convertIntakeItem(item: item, edited: data)
+            return try await service.convertIntakeItem(item: item, edited: data)
+        } catch {
+            self.error = error.localizedDescription
+            return nil
+        }
+    }
+
+    func convertAndAssignToMe(inspectorId: UUID) async -> Bool {
+        guard let requestId = await convert() else { return false }
+        isSaving = true; defer { isSaving = false }
+        do {
+            try await service.claimInspectionRequest(requestId: requestId, inspectorId: inspectorId)
             return true
         } catch {
             self.error = error.localizedDescription
