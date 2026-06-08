@@ -6,6 +6,8 @@ final class JobsViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
 
+    private var realtime: RealtimeSubscription?
+
     func load(orgId: UUID?) async {
         guard let orgId else { return }
         isLoading = true
@@ -13,8 +15,31 @@ final class JobsViewModel: ObservableObject {
         do {
             jobs = try await SupabaseService.shared.fetchJobs(orgId: orgId)
             errorMessage = nil
+            await ensureRealtime(orgId: orgId)
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = AINFriendlyError.message(for: error)
+        }
+    }
+
+    /// Scoped load for the Schedule week grid: pulls jobs in `[weekStart, weekStart+7d)`.
+    func loadForWeek(_ weekStart: Date, orgId: UUID?) async {
+        guard let orgId else { return }
+        let end = Calendar.current.date(byAdding: .day, value: 7, to: weekStart) ?? weekStart
+        isLoading = true
+        defer { isLoading = false }
+        do {
+            jobs = try await SupabaseService.shared.fetchJobs(orgId: orgId, from: weekStart, to: end)
+            errorMessage = nil
+            await ensureRealtime(orgId: orgId)
+        } catch {
+            errorMessage = AINFriendlyError.message(for: error)
+        }
+    }
+
+    private func ensureRealtime(orgId: UUID) async {
+        guard realtime == nil else { return }
+        realtime = await RealtimeSubscriptions.jobs(orgId: orgId) { [weak self] _ in
+            Task { @MainActor in await self?.load(orgId: orgId) }
         }
     }
 
@@ -32,7 +57,7 @@ final class JobsViewModel: ObservableObject {
             _ = await CalendarSyncService.shared.sync(job: updatedJob)
             await load(orgId: orgId)
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = AINFriendlyError.message(for: error)
         }
     }
 
@@ -42,7 +67,7 @@ final class JobsViewModel: ObservableObject {
             _ = await CalendarSyncService.shared.sync(job: job)
             await load(orgId: orgId)
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = AINFriendlyError.message(for: error)
         }
     }
 
@@ -60,7 +85,7 @@ final class JobsViewModel: ObservableObject {
             _ = await CalendarSyncService.shared.sync(job: completedJob)
             await load(orgId: orgId)
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = AINFriendlyError.message(for: error)
         }
     }
 }

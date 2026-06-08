@@ -14,7 +14,7 @@ final class VehiclesViewModel: ObservableObject {
             vehicles = try await SupabaseService.shared.fetchVehicles(orgId: orgId)
             errorMessage = nil
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = AINFriendlyError.message(for: error)
         }
     }
 }

@@ -153,8 +153,8 @@ struct ScheduleView: View {
             } message: {
                 Text(bannerMessage ?? "")
             }
-            .refreshable { await viewModel.load(orgId: appState.activeOrganizationID) }
-            .task { await viewModel.load(orgId: appState.activeOrganizationID) }
+            .refreshable { await viewModel.loadForWeek(selectedWeekStart, orgId: appState.activeOrganizationID) }
+            .task(id: selectedWeekStart) { await viewModel.loadForWeek(selectedWeekStart, orgId: appState.activeOrganizationID) }
         }
     }
 

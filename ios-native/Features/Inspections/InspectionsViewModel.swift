@@ -24,7 +24,7 @@ final class InspectionsViewModel: ObservableObject {
             errorMessage = nil
             await ensureRealtime(orgId: orgId)
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = AINFriendlyError.message(for: error)
         }
     }
 
