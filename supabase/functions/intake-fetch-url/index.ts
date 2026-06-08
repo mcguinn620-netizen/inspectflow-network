@@ -4,6 +4,11 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { corsHeaders } from "../_shared/cors.ts";
 
+function sanitize(s: string): string {
+  // Postgres text cannot contain NUL bytes (\u0000) or other lone control chars
+  return s.replace(/\u0000/g, "").replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, "");
+}
+
 function stripHtml(html: string): { title: string | null; text: string } {
   const titleMatch = html.match(/<title>([^<]*)<\/title>/i);
   const title = titleMatch ? titleMatch[1].trim() : null;
@@ -18,7 +23,7 @@ function stripHtml(html: string): { title: string | null; text: string } {
     .replace(/&quot;/g, '"')
     .replace(/\s+/g, " ")
     .trim();
-  return { title, text: noScript.slice(0, 20000) };
+  return { title: title ? sanitize(title) : null, text: sanitize(noScript.slice(0, 20000)) };
 }
 
 async function sha256Hex(s: string): Promise<string> {
