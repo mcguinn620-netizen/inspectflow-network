@@ -35,16 +35,31 @@ import { RoleRoute } from "./components/RoleRoute";
 
 const queryClient = new QueryClient();
 
+function AppSplash() {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background gap-4 px-6 text-center">
+      <div className="h-14 w-14 rounded-xl bg-primary flex items-center justify-center shadow-sm">
+        <span className="text-primary-foreground font-bold text-xl">DS</span>
+      </div>
+      <div className="space-y-1">
+        <p className="text-base font-semibold text-foreground">Drive Smooth</p>
+        <p className="text-xs text-muted-foreground">Loading your workspace…</p>
+      </div>
+      <div className="animate-spin h-6 w-6 border-2 border-primary border-t-transparent rounded-full" />
+    </div>
+  );
+}
+
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-background"><div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full" /></div>;
+  if (loading) return <AppSplash />;
   if (!user) return <Navigate to="/auth" replace />;
   return <>{children}</>;
 }
 
 function HomeRedirect() {
   const { isAdmin, loading } = useUserRoles();
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-background"><div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full" /></div>;
+  if (loading) return <AppSplash />;
   return isAdmin ? <Index /> : <Navigate to="/app/inspector/dashboard" replace />;
 }
 
@@ -86,7 +101,7 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
+        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <AuthProvider>
             <ActiveTripProvider>
               <AppRoutes />

@@ -19,7 +19,26 @@
     <meta name="author" content="Drive Smooth" />
 
     <!-- PWA -->
-    <link rel="manifest" href="/manifest.webmanifest" />
+    <link id="app-manifest" rel="manifest" href="/manifest.webmanifest" />
+    <script>
+      // Strip the manifest link inside Lovable preview iframes — the asset is
+      // auth-gated there and the 401 trips Lovable's preview render heuristic.
+      (function () {
+        try {
+          var h = window.location.hostname;
+          var inIframe = window.self !== window.top;
+          if (
+            inIframe ||
+            h.indexOf("lovableproject.com") !== -1 ||
+            h.indexOf("lovable.app") !== -1 ||
+            h.indexOf("id-preview--") !== -1
+          ) {
+            var l = document.getElementById("app-manifest");
+            if (l && l.parentNode) l.parentNode.removeChild(l);
+          }
+        } catch (e) {}
+      })();
+    </script>
     <meta name="theme-color" content="#0f172a" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
