@@ -285,6 +285,28 @@ final class SupabaseService {
         _ = try await client.functions.invokeRaw("intake-fetch-url", body: ["url": url])
     }
 
+    /// Uploads a PDF to the `intake-files` bucket, then invokes `intake-parse-pdf`
+    /// which extracts text and creates an intake_item.
+    func ingestPdf(orgId: UUID, fileName: String, data: Data) async throws {
+        let safeName = fileName.replacingOccurrences(of: "/", with: "_")
+        let path = "\(orgId.uuidString)/\(Int(Date().timeIntervalSince1970))-\(safeName)"
+        try await client.storage.upload(
+            bucket: "intake-files",
+            path: path,
+            data: data,
+            contentType: "application/pdf",
+            upsert: false
+        )
+        _ = try await client.functions.invokeRaw("intake-parse-pdf", body: [
+            "storage_path": path,
+            "organization_id": orgId.uuidString,
+            "channel": "manual_pdf",
+            "subject": fileName,
+        ])
+    }
+
+
+
 
     // MARK: - Templates
 
