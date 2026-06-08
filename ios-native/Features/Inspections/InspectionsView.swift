@@ -11,15 +11,8 @@ struct InspectionsView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                Picker("Scope", selection: $scope) {
-                    Text("All in org").tag("all")
-                    Text("Assigned to me").tag("mine")
-                }
-                .pickerStyle(.segmented)
-                .padding(.horizontal)
-                .padding(.vertical, 8)
-
                 Group {
+
                     if filtered.isEmpty {
                         VStack(spacing: 16) {
                             ContentUnavailableCompat(
