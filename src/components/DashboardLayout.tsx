@@ -6,7 +6,7 @@ import { useUserRoles } from "@/hooks/useUserRoles";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { MobileTabBar } from "@/components/MobileTabBar";
 import { ActiveTripBanner } from "@/components/inspector/ActiveTripBanner";
-import { DebugBanner } from "@/components/debug/DebugBanner";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,7 +42,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <SidebarProvider>
-      <DebugBanner />
+      
       <div className="h-[100dvh] flex w-full overflow-hidden">
         <AppSidebar onLogout={handleLogout} />
         <div className="flex-1 flex flex-col min-w-0 h-[100dvh] relative">
