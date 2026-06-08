@@ -14,10 +14,21 @@ final class IntakeReviewViewModel: ObservableObject {
         self.data = item.parsedData ?? IntakeParsedData()
     }
 
-    func convert() async -> Bool {
+    func convert() async -> UUID? {
         isSaving = true; defer { isSaving = false }
         do {
-            _ = try await service.convertIntakeItem(item: item, edited: data)
+            return try await service.convertIntakeItem(item: item, edited: data)
+        } catch {
+            self.error = error.localizedDescription
+            return nil
+        }
+    }
+
+    func convertAndAssignToMe(inspectorId: UUID) async -> Bool {
+        guard let requestId = await convert() else { return false }
+        isSaving = true; defer { isSaving = false }
+        do {
+            try await service.claimInspectionRequest(requestId: requestId, inspectorId: inspectorId)
             return true
         } catch {
             self.error = error.localizedDescription
@@ -32,6 +43,7 @@ final class IntakeReviewViewModel: ObservableObject {
 }
 
 struct IntakeReviewView: View {
+    @EnvironmentObject private var appState: AppState
     @StateObject private var vm: IntakeReviewViewModel
     let onClose: () -> Void
     @Environment(\.dismiss) private var dismissEnv
@@ -87,6 +99,22 @@ struct IntakeReviewView: View {
                     }
                 }
 
+                Section {
+                    Button {
+                        guard let uid = SupabaseService.shared.currentUserID else { return }
+                        Task {
+                            if await vm.convertAndAssignToMe(inspectorId: uid) { onClose() }
+                        }
+                    } label: {
+                        Label("Convert & assign to me", systemImage: "person.fill.checkmark")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .disabled(vm.isSaving || SupabaseService.shared.currentUserID == nil)
+                } footer: {
+                    Text("Creates the inspection request and assigns it to you in one step.")
+                        .font(.caption)
+                }
+
                 if let notes = vm.data.notes, !notes.isEmpty {
                     Section("Notes") {
                         TextEditor(text: bind($vm.data.notes))
@@ -111,7 +139,7 @@ struct IntakeReviewView: View {
                     else {
                         Button("Convert") {
                             Task {
-                                if await vm.convert() { onClose() }
+                                if await vm.convert() != nil { onClose() }
                             }
                         }
                     }

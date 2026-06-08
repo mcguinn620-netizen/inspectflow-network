@@ -1,30 +1,33 @@
 import Foundation
-#if canImport(FoundationNetworking)
-import FoundationNetworking
-#endif
 
 public final class QueryBuilder {
     private let table: String
     private let config: InspectFlowConfig
-    private let auth: AuthClient
+    private let session: SessionStore
     private let urlSession: URLSession
 
     private var method: String = "GET"
+    private var isMutating: Bool = false
     private var query: [URLQueryItem] = []
     private var body: Data?
     private var prefer: [String] = []
 
-    init(table: String, config: InspectFlowConfig, auth: AuthClient, urlSession: URLSession) {
+    init(table: String, config: InspectFlowConfig, session: SessionStore, urlSession: URLSession) {
         self.table = table
         self.config = config
-        self.auth = auth
+        self.session = session
         self.urlSession = urlSession
     }
 
     // MARK: - Selection
 
     @discardableResult public func select(_ columns: String = "*") -> Self {
-        method = "GET"; query.append(URLQueryItem(name: "select", value: columns)); return self
+        // Only flip to GET when no mutation has been chained. PostgREST accepts
+        // ?select=... on POST/PATCH/DELETE to shape the returned representation,
+        // so we must preserve the mutation method here.
+        if !isMutating { method = "GET" }
+        query.append(URLQueryItem(name: "select", value: columns))
+        return self
     }
 
     // MARK: - Mutations
@@ -32,33 +35,33 @@ public final class QueryBuilder {
     @discardableResult public func insert(_ values: [String: Any]) -> Self { insert([values]) }
     @discardableResult public func insert(_ values: [[String: Any]]) -> Self {
         method = "POST"
+        isMutating = true
         body = try? JSONSerialization.data(withJSONObject: values)
-        prefer.append("return=representation")
+        if !prefer.contains("return=representation") { prefer.append("return=representation") }
         return self
     }
 
     @discardableResult public func update(_ values: [String: Any]) -> Self {
         method = "PATCH"
+        isMutating = true
         body = try? JSONSerialization.data(withJSONObject: values)
-        prefer.append("return=representation")
+        if !prefer.contains("return=representation") { prefer.append("return=representation") }
         return self
     }
 
     @discardableResult public func delete() -> Self {
-        method = "DELETE"; prefer.append("return=representation"); return self
-    }
-
-    @discardableResult public func rpc(_ params: [String: Any] = [:]) -> Self {
-        method = "POST"
-        body = try? JSONSerialization.data(withJSONObject: params)
+        method = "DELETE"
+        isMutating = true
+        if !prefer.contains("return=representation") { prefer.append("return=representation") }
         return self
     }
 
     @discardableResult public func upsert(_ values: [[String: Any]], onConflict: String? = nil) -> Self {
         method = "POST"
+        isMutating = true
         body = try? JSONSerialization.data(withJSONObject: values)
-        prefer.append("resolution=merge-duplicates")
-        prefer.append("return=representation")
+        if !prefer.contains("resolution=merge-duplicates") { prefer.append("resolution=merge-duplicates") }
+        if !prefer.contains("return=representation") { prefer.append("return=representation") }
         if let onConflict { query.append(URLQueryItem(name: "on_conflict", value: onConflict)) }
         return self
     }
@@ -77,17 +80,6 @@ public final class QueryBuilder {
     @discardableResult public func `in`(_ column: String, _ values: [Any]) -> Self {
         let joined = values.map { "\($0)" }.joined(separator: ",")
         query.append(URLQueryItem(name: column, value: "in.(\(joined))"))
-        return self
-    }
-
-    @discardableResult public func notIn(_ column: String, _ values: [Any]) -> Self {
-        let joined = values.map { "\($0)" }.joined(separator: ",")
-        query.append(URLQueryItem(name: column, value: "not.in.(\(joined))"))
-        return self
-    }
-
-    @discardableResult public func not(_ column: String, _ op: String, _ value: Any) -> Self {
-        query.append(URLQueryItem(name: column, value: "not.\(op).\(value)"))
         return self
     }
 
@@ -135,46 +127,26 @@ public final class QueryBuilder {
     }
 
     private func raw() async throws -> (Data, HTTPURLResponse) {
-        let token = try await auth.bearerTokenForAuthenticatedRequest()
-        let result = try await sendRequest(accessToken: token)
-        guard auth.shouldRetryAfterRefreshing(status: result.http.statusCode, body: result.body) else {
-            guard (200..<300).contains(result.http.statusCode) else {
-                throw InspectFlowError.http(status: result.http.statusCode, body: result.body)
-            }
-            return (result.data, result.http)
-        }
-
-        let refreshedToken: String
-        do {
-            refreshedToken = try await auth.refreshAccessTokenForRetry()
-        } catch InspectFlowError.notAuthenticated {
-            throw InspectFlowError.notAuthenticated
-        }
-        auth.logRetryingAfterJWTRefresh()
-        let retry = try await sendRequest(accessToken: refreshedToken)
-        guard (200..<300).contains(retry.http.statusCode) else {
-            if auth.shouldRetryAfterRefreshing(status: retry.http.statusCode, body: retry.body) {
-                throw InspectFlowError.notAuthenticated
-            }
-            throw InspectFlowError.http(status: retry.http.statusCode, body: retry.body)
-        }
-        return (retry.data, retry.http)
-    }
-
-    private func sendRequest(accessToken: String?) async throws -> (data: Data, http: HTTPURLResponse, body: String) {
         var comps = URLComponents(url: config.restURL.appendingPathComponent(table), resolvingAgainstBaseURL: false)!
         if !query.isEmpty { comps.queryItems = query }
         var req = URLRequest(url: comps.url!)
         req.httpMethod = method
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.setValue(config.anonKey, forHTTPHeaderField: "apikey")
-        req.setValue("Bearer \(accessToken ?? config.anonKey)", forHTTPHeaderField: "Authorization")
+        if let token = session.current()?.accessToken {
+            req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        } else {
+            req.setValue("Bearer \(config.anonKey)", forHTTPHeaderField: "Authorization")
+        }
         if _singleRow { req.setValue("application/vnd.pgrst.object+json", forHTTPHeaderField: "Accept") }
         if !prefer.isEmpty { req.setValue(prefer.joined(separator: ","), forHTTPHeaderField: "Prefer") }
         req.httpBody = body
 
         let (data, resp) = try await urlSession.data(for: req)
         guard let http = resp as? HTTPURLResponse else { throw InspectFlowError.invalidResponse }
-        return (data, http, String(data: data, encoding: .utf8) ?? "")
+        guard (200..<300).contains(http.statusCode) else {
+            throw InspectFlowError.http(status: http.statusCode, body: String(data: data, encoding: .utf8) ?? "")
+        }
+        return (data, http)
     }
 }
