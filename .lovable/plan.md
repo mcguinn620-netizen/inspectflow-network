@@ -1,53 +1,38 @@
-# Fix: `extra argument 'auth'` in InspectFlowClient.swift
+# Fix "Couldn't load preview" on first open
 
-## Root cause
+## What's actually happening
 
-`ios-native/Core/InspectFlowConnector/InspectFlowClient.swift` line 31 calls
-`StorageClient(config: config, auth: auth)`.
+The app renders correctly — I navigated to it in the preview iframe and the Auth page loads and is interactive. The banner is Lovable's preview-render heuristic tripping on two signals during cold boot:
 
-There are **two** `StorageClient.swift` files in the repo:
+1. **`/manifest.webmanifest` → HTTP 401** inside the preview iframe (Lovable gates static assets behind auth). Browser logs this as a hard resource failure.
+2. **Full-screen spinner on every route** until `supabase.auth.getSession()` resolves. While loading, `<ProtectedRoute>` and `<HomeRedirect>` return an empty centered spinner — the heuristic sees no real content for the first paint.
 
-- `ios-native/Core/InspectFlowConnector/Storage/StorageClient.swift` — `init(config:, auth:)` ✅ matches the call site
-- `swift-connector/Sources/InspectFlowConnector/Storage/StorageClient.swift` — `init(config:, session:)` ❌
+No backend or business logic changes. UI-only.
 
-The Xcode project (`AutoInspectorNetwork.xcodeproj/project.pbxproj`) currently points its `Storage` group at the **wrong** file. Group `B14C6A632FBBBA64006C431B` has:
+## Plan
 
-```
-path = "../../../swift-connector/Sources/InspectFlowConnector/Storage";
-```
+### 1. Skip the PWA manifest in Lovable preview hosts
+`index.html` always links `/manifest.webmanifest`. In the preview iframe that asset is 401-gated, so the browser surfaces a hard load error every cold boot. Add a tiny inline script in `<head>` that removes the `<link rel="manifest">` tag when running on a Lovable preview host (`lovableproject.com`, `lovable.app`, `id-preview--*`). Production / installed PWA keeps the manifest exactly as today. This mirrors the existing service-worker guard in `src/main.tsx`.
 
-So Xcode compiles the `session:`-based `StorageClient`, and the call with `auth:` fails to type-check. The local Storage folder under `Core/InspectFlowConnector/Storage/` (which has the correct, Xcode 14 / Swift 5.7 compatible implementation) is not in the build.
+### 2. Make the cold-boot fallback render real content
+Replace the bare full-screen spinner in `ProtectedRoute` and `HomeRedirect` (`src/App.tsx`) with a lightweight branded splash (logo + app name + spinner) so the iframe always has visible DOM on first paint. Same loading semantics, just not a blank screen.
 
-All other Connector clients (`AuthClient`, `RestClient`, `FunctionsClient`, `RealtimeClient`) already resolve to the correct local copies under `Core/InspectFlowConnector/`, so this is the only mismatch.
+### 3. Silence React Router v7 deprecation warnings (cosmetic)
+Add `future={{ v7_startTransition: true, v7_relativeSplatPath: true }}` to `<BrowserRouter>` in `src/App.tsx`. Removes the two console warnings showing during boot — doesn't change routing behavior.
 
-## Fix
-
-Edit `ios-native/AutoInspectorNetwork.xcodeproj/project.pbxproj`, group `B14C6A632FBBBA64006C431B /* Storage */`:
-
-```text
-B14C6A632FBBBA64006C431B /* Storage */ = {
-    isa = PBXGroup;
-    children = (
-        B14CF43D2FCBE865002ED72E /* StorageClient.swift */,
-    );
-    path = Storage;          // was: "../../../swift-connector/.../Storage"
-    sourceTree = "<group>";
-};
-```
-
-This makes the existing file reference (`path = StorageClient.swift`, `sourceTree = <group>`) resolve relative to its parent group `Core/InspectFlowConnector/`, i.e. to `Core/InspectFlowConnector/Storage/StorageClient.swift` — the local, `auth:`-based implementation.
-
-No Swift source changes needed; the call sites in `InspectFlowClient.swift` already match the local file's signature.
-
-## Other issues swept while investigating
-
-- `Package.swift` (SPM) at `ios-native/Package.swift` points to `Core/InspectFlowConnector` and is self-consistent (all local files use `auth:`). After the pbxproj fix the Xcode target matches SPM.
-- Local `Core/InspectFlowConnector/Storage/StorageClient.swift`, `RestClient.swift`, `FunctionsClient.swift`, and `AuthClient.swift` are Swift 5.7 / iOS 16-safe: only `async`/`await`, `URLSession.data(for:)` (iOS 15+), `NSLock`, no iOS 17-only APIs, no result builders requiring newer toolchains. No availability guards required.
-- The duplicate connector tree under `swift-connector/Sources/InspectFlowConnector/` should remain decoupled from the app target (it is its own SPM package, used by external consumers). No changes there.
+### Out of scope
+- No changes to `useAuth`, `useUserRoles`, Supabase client, routes, or any data flow.
+- No iOS / Swift changes.
+- No service worker changes (already preview-guarded in `src/main.tsx`).
 
 ## Verification
 
-1. Clean build folder in Xcode.
-2. Build the `AutoInspectorNetwork` scheme (Xcode 14, iOS 16 simulator).
-3. Confirm `InspectFlowClient.swift:31` compiles and the file shown in the Project Navigator under `InspectFlowConnector ▸ Storage ▸ StorageClient.swift` opens the local `Core/InspectFlowConnector/Storage/StorageClient.swift` (path inspector should show that location, not `swift-connector/...`).
-4. Run `InspectFlowConnectorTests` (`AuthRefreshTests`) to make sure auth wiring still passes.
+1. Reload the preview iframe — banner should not appear; Auth screen paints immediately with branded splash → Auth form.
+2. Browser console: no `manifest.webmanifest` 401, no React Router future-flag warnings.
+3. Sign-in flow still routes correctly to `/app/inspector/dashboard` (admin → `/`).
+4. Production build (`bun run build`) still emits the manifest link in `index.html` and SW registers on non-preview hosts.
+
+## Files touched
+
+- `index.html` — inline guard that strips the manifest link on preview hosts.
+- `src/App.tsx` — branded splash component for loading states; add router `future` flags.
