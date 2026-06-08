@@ -512,8 +512,7 @@
 			children = (
 				B14CF43D2FCBE865002ED72E /* StorageClient.swift */,
 			);
-			name = Storage;
-			path = "../../../swift-connector/Sources/InspectFlowConnector/Storage";
+			path = Storage;
 			sourceTree = "<group>";
 		};
 		B19AF1562FC472FB00D65428 /* Recovered References */ = {
