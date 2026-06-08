@@ -17,7 +17,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { DeveloperToolsCard } from "@/components/debug/DeveloperToolsCard";
+
 
 const US_STATES = [
   "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA",
@@ -199,7 +199,7 @@ export default function SettingsPage() {
           <p className="text-sm text-muted-foreground mt-1">Platform configuration and preferences</p>
         </div>
 
-        <DeveloperToolsCard />
+        
 
         {/* Appearance */}
         <CollapsibleCard
