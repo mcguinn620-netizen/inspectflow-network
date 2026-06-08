@@ -4,17 +4,9 @@ struct InspectionsView: View {
     @EnvironmentObject private var appState: AppState
     @StateObject private var viewModel = InspectionsViewModel()
     @State private var showCreate = false
-    @AppStorage("inspections.scope") private var scope: String = "all"
 
-    private var filtered: [InspectionRequest] {
-        switch scope {
-        case "mine":
-            guard let uid = SupabaseService.shared.currentUserID else { return viewModel.requests }
-            return viewModel.requests.filter { $0.assignedInspectorID == uid }
-        default:
-            return viewModel.requests
-        }
-    }
+    private var filtered: [InspectionRequest] { viewModel.requests }
+
 
     var body: some View {
         NavigationStack {
