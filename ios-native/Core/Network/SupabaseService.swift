@@ -246,6 +246,7 @@ final class SupabaseService {
 
     func convertIntakeItem(item: IntakeItem, edited: IntakeParsedData) async throws -> UUID {
         var payload: [String: Any] = [
+            "organization_id": item.organizationID.uuidString,
             "status": "request_received",
             "template_name": edited.templateName ?? "Standard Inspection",
             "priority": edited.priority ?? "medium",
@@ -262,6 +263,8 @@ final class SupabaseService {
         if let v = edited.inspectionType { payload["inspection_type"] = v }
         if let v = edited.notes { payload["notes"] = v }
 
+        // POST + Prefer: return=representation returns the inserted row.
+        // (After QueryBuilder fix, .select() no longer flips this to GET.)
         let created: [InspectionRequest] = try await client.db
             .from("inspection_requests")
             .insert(payload)
@@ -280,6 +283,64 @@ final class SupabaseService {
             .execute()
         return req.id
     }
+
+    /// Claim an inspection request for the given inspector. Sets
+    /// `assigned_inspector_id` and moves the request into `assigned`.
+    func claimInspectionRequest(requestId: UUID, inspectorId: UUID) async throws {
+        _ = try await client.db.from("inspection_requests")
+            .update([
+                "assigned_inspector_id": inspectorId.uuidString,
+                "status": "assigned",
+            ])
+            .eq("id", requestId.uuidString)
+            .execute()
+    }
+
+    /// Create an inspection request manually (used by the Inspections tab "+" action).
+    func createInspectionRequest(
+        orgId: UUID,
+        clientName: String?,
+        vin: String?,
+        vehicleYear: String?,
+        vehicleMake: String?,
+        vehicleModel: String?,
+        inspectionLocation: String?,
+        requestedDate: Date?,
+        templateName: String = "Standard Inspection",
+        priority: String = "medium"
+    ) async throws -> InspectionRequest {
+        var payload: [String: Any] = [
+            "organization_id": orgId.uuidString,
+            "status": "request_received",
+            "template_name": templateName,
+            "priority": priority,
+        ]
+        if let v = clientName { payload["client_name"] = v }
+        if let v = vin { payload["vin"] = v }
+        if let v = vehicleYear { payload["vehicle_year"] = v }
+        if let v = vehicleMake { payload["vehicle_make"] = v }
+        if let v = vehicleModel { payload["vehicle_model"] = v }
+        if let v = inspectionLocation { payload["inspection_location"] = v }
+        if let d = requestedDate {
+            let f = DateFormatter()
+            f.calendar = Calendar(identifier: .gregorian)
+            f.locale = Locale(identifier: "en_US_POSIX")
+            f.timeZone = .current
+            f.dateFormat = "yyyy-MM-dd"
+            payload["requested_date"] = f.string(from: d)
+        }
+        let created: [InspectionRequest] = try await client.db
+            .from("inspection_requests")
+            .insert(payload)
+            .select()
+            .execute()
+        guard let row = created.first else {
+            throw NSError(domain: "InspectFlow", code: -1,
+                          userInfo: [NSLocalizedDescriptionKey: "Failed to create inspection request"])
+        }
+        return row
+    }
+
 
     func ingestUrl(url: String) async throws {
         _ = try await client.functions.invokeRaw("intake-fetch-url", body: ["url": url])
