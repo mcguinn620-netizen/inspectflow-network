@@ -85,6 +85,7 @@ struct ScheduleView: View {
     @State private var selectedJobID: UUID?
     @State private var dispatchTargetJob: Job?
     @State private var bannerMessage: String?
+    @AppStorage("schedule.viewMode") private var viewMode: String = "week"
 
     private var dayColumns: [Date] {
         (0..<7).compactMap { Calendar.current.date(byAdding: .day, value: $0, to: selectedWeekStart) }
@@ -103,27 +104,49 @@ struct ScheduleView: View {
 
     var body: some View {
         NavigationStack {
-            Group {
+            VStack(spacing: 0) {
+                Picker("View", selection: $viewMode) {
+                    Text("Week").tag("week")
+                    Text("List").tag("list")
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+
                 if viewModel.isLoading && viewModel.jobs.isEmpty {
-                    ProgressView()
+                    ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if viewModel.jobs.isEmpty {
                     ContentUnavailableCompat(
                         title: "No jobs this week",
-                        message: viewModel.errorMessage ?? "Scheduled jobs appear in this week grid."
+                        message: viewModel.errorMessage ?? "Scheduled jobs appear here."
+                    )
+                } else if viewMode == "week" {
+                    ScheduleWeekCalendarView(
+                        weekStart: selectedWeekStart,
+                        jobs: viewModel.jobs,
+                        onSelect: { job in selectedJobID = job.id },
+                        onLongPress: { job in
+                            if isDispatcher { dispatchTargetJob = job }
+                        }
+                    )
+                    .gesture(
+                        DragGesture(minimumDistance: 30)
+                            .onEnded { value in
+                                if value.translation.width < -50 {
+                                    selectedWeekStart = Calendar.current.date(byAdding: .day, value: 7, to: selectedWeekStart) ?? selectedWeekStart
+                                } else if value.translation.width > 50 {
+                                    selectedWeekStart = Calendar.current.date(byAdding: .day, value: -7, to: selectedWeekStart) ?? selectedWeekStart
+                                }
+                            }
                     )
                 } else {
-                    ScrollView {
-                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 7), spacing: 8) {
-                            ForEach(dayColumns, id: \.self) { day in
-                                DayHeader(day: day)
-                            }
-                            ForEach(dayColumns, id: \.self) { day in
-                                dayCell(for: day)
-                            }
-                        }
-                        .padding(.horizontal)
-                        .padding(.bottom)
-                    }
+                    ScheduleListView(
+                        weekStart: selectedWeekStart,
+                        jobs: viewModel.jobs,
+                        conflicts: conflicts,
+                        onSelect: { selectedJobID = $0.id },
+                        onAssign: { job in if isDispatcher { dispatchTargetJob = job } }
+                    )
                 }
             }
             .navigationTitle("Schedule")
@@ -157,67 +180,44 @@ struct ScheduleView: View {
             .task(id: selectedWeekStart) { await viewModel.loadForWeek(selectedWeekStart, orgId: appState.activeOrganizationID) }
         }
     }
-
-    @ViewBuilder
-    private func dayCell(for day: Date) -> some View {
-        let jobs = viewModel.jobs.filter { job in
-            guard let scheduled = job.scheduledAt else { return false }
-            return Calendar.current.isDate(scheduled, inSameDayAs: day)
-        }
-
-        VStack(alignment: .leading, spacing: 6) {
-            ForEach(jobs) { job in
-                ScheduleJobPill(job: job, conflicts: conflicts[job.id] ?? [])
-                    .onTapGesture { selectedJobID = job.id }
-                    .onLongPressGesture { selectedJobID = job.id }
-                    .draggable(job.id.uuidString)
-                    .contextMenu {
-                        if isDispatcher {
-                            Button("Assign to inspector") { dispatchTargetJob = job }
-                        }
-                        Button("Sync to device calendar") {
-                            Task {
-                                let synced = await CalendarSyncService.shared.sync(job: job)
-                                bannerMessage = synced ? "Synced to Calendar" : "Unable to sync with Calendar"
-                            }
-                        }
-                        Button("Open with Apple Maps") {
-                            MapsLookupService.shared.open(job: job)
-                        }
-                    }
-            }
-            Spacer(minLength: 36)
-        }
-        .padding(8)
-        .frame(maxWidth: .infinity, minHeight: 130, alignment: .topLeading)
-        .background(RoundedRectangle(cornerRadius: 10).fill(Color(.secondarySystemBackground)))
-        .overlay(
-            RoundedRectangle(cornerRadius: 10)
-                .stroke(selectedJobID != nil ? Color.accentColor.opacity(0.2) : Color.clear, lineWidth: 1)
-        )
-        .dropDestination(for: String.self) { items, _ in
-            guard let first = items.first, let droppedID = UUID(uuidString: first) else { return false }
-            guard let source = viewModel.jobs.first(where: { $0.id == droppedID }) else { return false }
-            let baseHour = source.scheduledAt.flatMap { Calendar.current.dateComponents([.hour, .minute], from: $0).hour } ?? 9
-            let baseMinute = source.scheduledAt.flatMap { Calendar.current.dateComponents([.minute], from: $0).minute } ?? 0
-            guard let merged = Calendar.current.date(bySettingHour: baseHour, minute: baseMinute, second: 0, of: day) else { return false }
-            Task { await viewModel.reschedule(job: source, scheduledAt: merged, orgId: appState.activeOrganizationID) }
-            return true
-        }
-    }
 }
 
-private struct DayHeader: View {
-    let day: Date
+private struct ScheduleListView: View {
+    let weekStart: Date
+    let jobs: [Job]
+    let conflicts: [UUID: [ScheduleConflict]]
+    let onSelect: (Job) -> Void
+    let onAssign: (Job) -> Void
+
+    private var dayColumns: [Date] {
+        (0..<7).compactMap { Calendar.current.date(byAdding: .day, value: $0, to: weekStart) }
+    }
+
     var body: some View {
-        VStack(spacing: 2) {
-            Text(day, format: .dateTime.weekday(.abbreviated))
-                .font(.caption)
-                .foregroundColor(.secondary)
-            Text(day, format: .dateTime.day())
-                .font(.headline)
+        List {
+            ForEach(dayColumns, id: \.self) { day in
+                let dayJobs = jobs.filter { job in
+                    guard let s = job.scheduledAt else { return false }
+                    return Calendar.current.isDate(s, inSameDayAs: day)
+                }
+                Section(header: Text(day, format: .dateTime.weekday(.wide).month().day())) {
+                    if dayJobs.isEmpty {
+                        Text("No jobs").font(.caption).foregroundStyle(.secondary)
+                    } else {
+                        ForEach(dayJobs) { job in
+                            Button { onSelect(job) } label: {
+                                ScheduleJobPill(job: job, conflicts: conflicts[job.id] ?? [])
+                            }
+                            .swipeActions {
+                                Button { onAssign(job) } label: { Label("Assign", systemImage: "person.badge.plus") }
+                                    .tint(.blue)
+                            }
+                        }
+                    }
+                }
+            }
         }
-        .frame(maxWidth: .infinity)
+        .listStyle(.insetGrouped)
     }
 }
 
