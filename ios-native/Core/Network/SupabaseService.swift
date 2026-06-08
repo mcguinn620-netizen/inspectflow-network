@@ -116,6 +116,22 @@ final class SupabaseService {
             .limit(limit)
             .execute()
     }
+
+    /// Fetches jobs scheduled within `[from, to)` for the org. Used by the
+    /// Schedule week grid so all jobs in view come back, not just the first 50.
+    func fetchJobs(orgId: UUID, from: Date, to: Date, limit: Int = 200) async throws -> [Job] {
+        let iso = ISO8601DateFormatter()
+        return try await client.db.from("jobs")
+            .select()
+            .eq("organization_id", orgId.uuidString)
+            .isNull("deleted_at")
+            .gte("scheduled_at", iso.string(from: from))
+            .lt("scheduled_at", iso.string(from: to))
+            .order("scheduled_at", ascending: true)
+            .limit(limit)
+            .execute()
+    }
+
     
     func createJob(
     orgId: UUID,
