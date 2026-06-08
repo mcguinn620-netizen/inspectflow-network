@@ -100,6 +100,8 @@
 		AB20000000000000000000B1 /* IntakeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB2000000000000000000001 /* IntakeModels.swift */; };
 		AB20000000000000000000B2 /* IntakeInboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB2000000000000000000002 /* IntakeInboxView.swift */; };
 		AB20000000000000000000B3 /* IntakeReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB2000000000000000000003 /* IntakeReviewView.swift */; };
+		AB30000000000000000000B1 /* AINFriendlyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB3000000000000000000001 /* AINFriendlyError.swift */; };
+		AB30000000000000000000B2 /* AINSortMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB3000000000000000000002 /* AINSortMenu.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -199,6 +201,8 @@
 		AB2000000000000000000001 /* IntakeModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntakeModels.swift; sourceTree = "<group>"; };
 		AB2000000000000000000002 /* IntakeInboxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntakeInboxView.swift; sourceTree = "<group>"; };
 		AB2000000000000000000003 /* IntakeReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntakeReviewView.swift; sourceTree = "<group>"; };
+		AB3000000000000000000001 /* AINFriendlyError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINFriendlyError.swift; sourceTree = "<group>"; };
+		AB3000000000000000000002 /* AINSortMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINSortMenu.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -245,6 +249,8 @@
 				AAAA000000000000000C0006 /* AINInputs.swift */,
 				AAAA000000000000000C0007 /* AINOverlays.swift */,
 				B1D25DD22FC1F5EC00E9EDD8 /* OpenInMapsButton.swift */,
+				AB3000000000000000000001 /* AINFriendlyError.swift */,
+				AB3000000000000000000002 /* AINSortMenu.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -821,6 +827,8 @@
 				AB20000000000000000000B1 /* IntakeModels.swift in Sources */,
 				AB20000000000000000000B2 /* IntakeInboxView.swift in Sources */,
 				AB20000000000000000000B3 /* IntakeReviewView.swift in Sources */,
+				AB30000000000000000000B1 /* AINFriendlyError.swift in Sources */,
+				AB30000000000000000000B2 /* AINSortMenu.swift in Sources */,
 				);
 				runOnlyForDeploymentPostprocessing = 0;
 			};
