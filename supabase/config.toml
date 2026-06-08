@@ -5,3 +5,21 @@ verify_jwt = false
 
 [functions.calendar-feed]
 verify_jwt = false
+
+[functions.intake-telegram-webhook]
+verify_jwt = false
+
+[functions.intake-ingest-gmail]
+verify_jwt = false
+
+[functions.intake-ingest-outlook]
+verify_jwt = false
+
+[functions.intake-parse]
+verify_jwt = false
+
+[functions.intake-parse-pdf]
+verify_jwt = false
+
+[functions.intake-fetch-url]
+verify_jwt = false
