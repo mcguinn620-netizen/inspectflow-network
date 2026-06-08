@@ -7,6 +7,7 @@ public final class QueryBuilder {
     private let urlSession: URLSession
 
     private var method: String = "GET"
+    private var isMutating: Bool = false
     private var query: [URLQueryItem] = []
     private var body: Data?
     private var prefer: [String] = []
@@ -21,7 +22,12 @@ public final class QueryBuilder {
     // MARK: - Selection
 
     @discardableResult public func select(_ columns: String = "*") -> Self {
-        method = "GET"; query.append(URLQueryItem(name: "select", value: columns)); return self
+        // Only flip to GET when no mutation has been chained. PostgREST accepts
+        // ?select=... on POST/PATCH/DELETE to shape the returned representation,
+        // so we must preserve the mutation method here.
+        if !isMutating { method = "GET" }
+        query.append(URLQueryItem(name: "select", value: columns))
+        return self
     }
 
     // MARK: - Mutations
@@ -29,27 +35,33 @@ public final class QueryBuilder {
     @discardableResult public func insert(_ values: [String: Any]) -> Self { insert([values]) }
     @discardableResult public func insert(_ values: [[String: Any]]) -> Self {
         method = "POST"
+        isMutating = true
         body = try? JSONSerialization.data(withJSONObject: values)
-        prefer.append("return=representation")
+        if !prefer.contains("return=representation") { prefer.append("return=representation") }
         return self
     }
 
     @discardableResult public func update(_ values: [String: Any]) -> Self {
         method = "PATCH"
+        isMutating = true
         body = try? JSONSerialization.data(withJSONObject: values)
-        prefer.append("return=representation")
+        if !prefer.contains("return=representation") { prefer.append("return=representation") }
         return self
     }
 
     @discardableResult public func delete() -> Self {
-        method = "DELETE"; prefer.append("return=representation"); return self
+        method = "DELETE"
+        isMutating = true
+        if !prefer.contains("return=representation") { prefer.append("return=representation") }
+        return self
     }
 
     @discardableResult public func upsert(_ values: [[String: Any]], onConflict: String? = nil) -> Self {
         method = "POST"
+        isMutating = true
         body = try? JSONSerialization.data(withJSONObject: values)
-        prefer.append("resolution=merge-duplicates")
-        prefer.append("return=representation")
+        if !prefer.contains("resolution=merge-duplicates") { prefer.append("resolution=merge-duplicates") }
+        if !prefer.contains("return=representation") { prefer.append("return=representation") }
         if let onConflict { query.append(URLQueryItem(name: "on_conflict", value: onConflict)) }
         return self
     }
