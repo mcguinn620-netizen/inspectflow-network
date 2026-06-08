@@ -27,7 +27,7 @@ final class TripsViewModel: ObservableObject {
             activeTripID = TripTrackingController.shared.snapshot?.tripId
             await ensureRealtime(userId: uid)
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = AINFriendlyError.message(for: error)
         }
     }
 

@@ -8,6 +8,11 @@ public final class AuthClient {
     private let session: SessionStore
     private let urlSession: URLSession
 
+    /// Single in-flight refresh task — coalesces concurrent refresh attempts so
+    /// the (single-use) refresh token is not burned by parallel tab loads.
+    private let refreshLock = NSLock()
+    private var inflightRefresh: Task<InspectFlowSession, Error>?
+
     init(config: InspectFlowConfig, session: SessionStore, urlSession: URLSession = .shared) {
         self.config = config
         self.session = session
@@ -39,18 +44,50 @@ public final class AuthClient {
                        query: nil)
     }
 
+    /// Refresh the access token. Coalesces concurrent callers so the refresh
+    /// token is only spent once. On hard refresh failure (`invalid_grant`,
+    /// `refresh_token_not_found`, 4xx auth error), the session is cleared and
+    /// `.notAuthenticated` is thrown so the UI can route to sign-in.
     public func refresh() async throws -> InspectFlowSession {
-        guard let s = session.current() else { throw InspectFlowError.notAuthenticated }
-        do {
-            let refreshed = try await post("/token",
-                                           body: ["refresh_token": s.refreshToken],
-                                           query: [URLQueryItem(name: "grant_type", value: "refresh_token")])
-            debugAuthLog("[AUTH] Session refreshed")
-            return refreshed
-        } catch {
-            debugAuthLog("[AUTH] Refresh failed")
-            throw error
+        refreshLock.lock()
+        if let task = inflightRefresh {
+            refreshLock.unlock()
+            return try await task.value
         }
+        let task = Task<InspectFlowSession, Error> { [weak self] in
+            guard let self else { throw InspectFlowError.notAuthenticated }
+            defer {
+                self.refreshLock.lock()
+                self.inflightRefresh = nil
+                self.refreshLock.unlock()
+            }
+            guard let s = self.session.current() else { throw InspectFlowError.notAuthenticated }
+            do {
+                let refreshed = try await self.post("/token",
+                                                    body: ["refresh_token": s.refreshToken],
+                                                    query: [URLQueryItem(name: "grant_type", value: "refresh_token")])
+                self.debugAuthLog("[AUTH] Session refreshed")
+                return refreshed
+            } catch let InspectFlowError.http(status, body) {
+                self.debugAuthLog("[AUTH] Refresh failed status=\(status) body=\(body.prefix(180))")
+                let bodyLower = body.lowercased()
+                let hardFailure = (400...401).contains(status)
+                    || bodyLower.contains("invalid_grant")
+                    || bodyLower.contains("refresh_token_not_found")
+                    || bodyLower.contains("refresh token")
+                if hardFailure {
+                    try? self.session.set(nil)
+                    throw InspectFlowError.notAuthenticated
+                }
+                throw InspectFlowError.http(status: status, body: body)
+            } catch {
+                self.debugAuthLog("[AUTH] Refresh failed: \(error)")
+                throw error
+            }
+        }
+        inflightRefresh = task
+        refreshLock.unlock()
+        return try await task.value
     }
 
     public func signOut() async throws {
@@ -64,14 +101,16 @@ public final class AuthClient {
         try session.set(nil)
     }
 
-    /// Returns a valid access token, refreshing if expired.
+    /// Returns a valid access token, refreshing if it expires within the skew
+    /// window (120s) or has already expired.
     public func validAccessToken() async throws -> String {
         guard let s = session.current() else { throw InspectFlowError.notAuthenticated }
-        if s.expiresAt.timeIntervalSinceNow > 60 { return s.accessToken }
+        if s.expiresAt.timeIntervalSinceNow > 120 { return s.accessToken }
         return try await refresh().accessToken
     }
 
-    /// Restores and validates the persisted session without signing the user out on refresh failure.
+    /// Restores and validates the persisted session. On hard-refresh failure the
+    /// underlying session is cleared by `refresh()` and `.notAuthenticated` bubbles up.
     @discardableResult
     public func restoreAndValidateSession() async throws -> InspectFlowSession {
         guard session.current() != nil else { throw InspectFlowError.notAuthenticated }

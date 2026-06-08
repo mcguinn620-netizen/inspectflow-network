@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 @MainActor
 final class IntakeInboxViewModel: ObservableObject {
@@ -8,6 +9,7 @@ final class IntakeInboxViewModel: ObservableObject {
     @Published var filter: String = "needs_review"
     @Published var urlInput: String = ""
     @Published var isFetchingUrl = false
+    @Published var isUploadingPdf = false
 
     private let service = SupabaseService.shared
     private let appState: AppState
@@ -24,7 +26,7 @@ final class IntakeInboxViewModel: ObservableObject {
             )
             error = nil
         } catch {
-            self.error = error.localizedDescription
+            self.error = AINFriendlyError.message(for: error)
         }
     }
 
@@ -37,7 +39,21 @@ final class IntakeInboxViewModel: ObservableObject {
             urlInput = ""
             await load()
         } catch {
-            self.error = error.localizedDescription
+            self.error = AINFriendlyError.message(for: error)
+        }
+    }
+
+    func uploadPdf(fileURL: URL) async {
+        guard let orgId = appState.activeOrganizationID else { return }
+        isUploadingPdf = true; defer { isUploadingPdf = false }
+        let didStart = fileURL.startAccessingSecurityScopedResource()
+        defer { if didStart { fileURL.stopAccessingSecurityScopedResource() } }
+        do {
+            let data = try Data(contentsOf: fileURL)
+            try await service.ingestPdf(orgId: orgId, fileName: fileURL.lastPathComponent, data: data)
+            await load()
+        } catch {
+            self.error = AINFriendlyError.message(for: error)
         }
     }
 
@@ -45,17 +61,47 @@ final class IntakeInboxViewModel: ObservableObject {
         do {
             try await service.updateIntakeItemStatus(itemId: item.id, status: "dismissed")
             await load()
-        } catch { self.error = error.localizedDescription }
+        } catch { self.error = AINFriendlyError.message(for: error) }
     }
 }
 
 struct IntakeInboxView: View {
     @EnvironmentObject private var appState: AppState
     @StateObject private var vm: IntakeInboxViewModel
+    @StateObject private var sort = AINSortState(storageKey: "intake", defaultID: "created_at")
     @State private var selected: IntakeItem?
+    @State private var showPdfPicker = false
 
     init(appState: AppState) {
         _vm = StateObject(wrappedValue: IntakeInboxViewModel(appState: appState))
+    }
+
+    private static let sortOptions: [AINSortOption] = [
+        .init(id: "created_at", label: "Date added"),
+        .init(id: "status", label: "Status"),
+        .init(id: "confidence", label: "Confidence"),
+        .init(id: "channel", label: "Channel"),
+    ]
+
+    private var sortedItems: [IntakeItem] {
+        let items = vm.items
+        let asc = sort.ascending
+        switch sort.selectedID {
+        case "status":
+            return items.sorted { asc ? $0.status < $1.status : $0.status > $1.status }
+        case "confidence":
+            return items.sorted {
+                let a = $0.confidence ?? -1, b = $1.confidence ?? -1
+                return asc ? a < b : a > b
+            }
+        case "channel":
+            return items.sorted { asc ? $0.channel < $1.channel : $0.channel > $1.channel }
+        default:
+            return items.sorted {
+                let a = $0.createdAt ?? .distantPast, b = $1.createdAt ?? .distantPast
+                return asc ? a < b : a > b
+            }
+        }
     }
 
     var body: some View {
@@ -73,7 +119,13 @@ struct IntakeInboxView: View {
                         }
                         .disabled(vm.urlInput.trimmingCharacters(in: .whitespaces).isEmpty || vm.isFetchingUrl)
                     }
-                } header: { Text("Add by URL") }
+                    Button {
+                        showPdfPicker = true
+                    } label: {
+                        Label(vm.isUploadingPdf ? "Uploading PDF…" : "Import PDF", systemImage: "doc.richtext")
+                    }
+                    .disabled(vm.isUploadingPdf)
+                } header: { Text("Add by URL or PDF") }
 
                 Section {
                     Picker("Filter", selection: $vm.filter) {
@@ -90,13 +142,13 @@ struct IntakeInboxView: View {
                 Section {
                     if vm.isLoading {
                         HStack { Spacer(); ProgressView(); Spacer() }
-                    } else if vm.items.isEmpty {
+                    } else if sortedItems.isEmpty {
                         Text("No items in this view.")
                             .foregroundStyle(.secondary)
                             .frame(maxWidth: .infinity, alignment: .center)
                             .padding(.vertical, 12)
                     } else {
-                        ForEach(vm.items) { item in
+                        ForEach(sortedItems) { item in
                             Button { selected = item } label: {
                                 IntakeRow(item: item)
                             }
@@ -113,8 +165,18 @@ struct IntakeInboxView: View {
             }
             .navigationTitle("Intake Inbox")
             .toolbar {
-                Button { Task { await vm.load() } } label: {
-                    Image(systemName: "arrow.clockwise")
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    AINSortMenu(storageKey: "intake",
+                                options: Self.sortOptions,
+                                selectedID: $sort.selectedID,
+                                ascending: $sort.ascending)
+                        .onChange(of: sort.selectedID) { _ in sort.persist() }
+                        .onChange(of: sort.ascending) { _ in sort.persist() }
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button { Task { await vm.load() } } label: {
+                        Image(systemName: "arrow.clockwise")
+                    }
                 }
             }
             .refreshable { await vm.load() }
@@ -125,6 +187,11 @@ struct IntakeInboxView: View {
                     Task { await vm.load() }
                 }
                 .environmentObject(appState)
+            }
+            .fileImporter(isPresented: $showPdfPicker, allowedContentTypes: [.pdf]) { result in
+                if case .success(let url) = result {
+                    Task { await vm.uploadPdf(fileURL: url) }
+                }
             }
             .alert("Error", isPresented: Binding(
                 get: { vm.error != nil },
@@ -176,6 +243,7 @@ private struct IntakeRow: View {
         case "gmail", "outlook": return "envelope.fill"
         case "telegram": return "message.fill"
         case "web_link": return "link"
+        case "manual_pdf": return "doc.richtext"
         default: return "tray.fill"
         }
     }

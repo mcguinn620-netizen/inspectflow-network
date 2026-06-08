@@ -144,10 +144,18 @@ public final class QueryBuilder {
             return (result.data, result.http)
         }
 
-        let refreshedToken = try await auth.refreshAccessTokenForRetry()
+        let refreshedToken: String
+        do {
+            refreshedToken = try await auth.refreshAccessTokenForRetry()
+        } catch InspectFlowError.notAuthenticated {
+            throw InspectFlowError.notAuthenticated
+        }
         auth.logRetryingAfterJWTRefresh()
         let retry = try await sendRequest(accessToken: refreshedToken)
         guard (200..<300).contains(retry.http.statusCode) else {
+            if auth.shouldRetryAfterRefreshing(status: retry.http.statusCode, body: retry.body) {
+                throw InspectFlowError.notAuthenticated
+            }
             throw InspectFlowError.http(status: retry.http.statusCode, body: retry.body)
         }
         return (retry.data, retry.http)
