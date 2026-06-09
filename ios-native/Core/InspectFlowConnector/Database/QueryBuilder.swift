@@ -3,7 +3,7 @@ import Foundation
 public final class QueryBuilder {
     private let table: String
     private let config: InspectFlowConfig
-    private let session: SessionStore
+    private let auth: AuthClient
     private let urlSession: URLSession
 
     private var method: String = "GET"
@@ -12,11 +12,11 @@ public final class QueryBuilder {
     private var body: Data?
     private var prefer: [String] = []
 
-    init(table: String, config: InspectFlowConfig, session: SessionStore, urlSession: URLSession) {
+    init(table: String, config: InspectFlowConfig, auth: AuthClient, session: URLSession) {
         self.table = table
         self.config = config
-        self.session = session
-        self.urlSession = urlSession
+        self.auth = auth
+        self.urlSession = session
     }
 
     // MARK: - Selection
@@ -83,6 +83,19 @@ public final class QueryBuilder {
         return self
     }
 
+    @discardableResult public func notIn(_ column: String, _ values: [Any]) -> Self {
+        let joined = values.map { "\($0)" }.joined(separator: ",")
+        query.append(URLQueryItem(name: column, value: "not.in.(\(joined))"))
+        return self
+    }
+
+    @discardableResult public func rpc(_ params: [String: Any] = [:]) -> Self {
+        method = "POST"
+        isMutating = true
+        body = try? JSONSerialization.data(withJSONObject: params)
+        return self
+    }
+
     private func filter(_ column: String, _ op: String, _ value: Any) -> Self {
         query.append(URLQueryItem(name: column, value: "\(op).\(value)"))
         return self
@@ -133,7 +146,7 @@ public final class QueryBuilder {
         req.httpMethod = method
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.setValue(config.anonKey, forHTTPHeaderField: "apikey")
-        if let token = session.current()?.accessToken {
+        if let token = auth.currentSession?.accessToken {
             req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         } else {
             req.setValue("Bearer \(config.anonKey)", forHTTPHeaderField: "Authorization")
