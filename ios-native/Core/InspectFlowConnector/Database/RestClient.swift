@@ -15,11 +15,11 @@ public final class RestClient {
     }
 
     public func from(_ table: String) -> QueryBuilder {
-        QueryBuilder(table: table, config: config, auth: auth, urlSession: urlSession)
+        QueryBuilder(table: table, config: config, auth: auth, session: urlSession)
     }
 
     public func rpc(_ function: String, params: [String: Any] = [:]) -> QueryBuilder {
-        QueryBuilder(table: "rpc/\(function)", config: config, auth: auth, urlSession: urlSession)
+        QueryBuilder(table: "rpc/\(function)", config: config, auth: auth, session: urlSession)
             .rpc(params)
     }
 }
