@@ -3,7 +3,7 @@ import Foundation
 public final class QueryBuilder {
     private let table: String
     private let config: InspectFlowConfig
-    private let session: SessionStore
+    private let auth: AuthClient
     private let urlSession: URLSession
 
     private var method: String = "GET"
@@ -12,11 +12,11 @@ public final class QueryBuilder {
     private var body: Data?
     private var prefer: [String] = []
 
-    init(table: String, config: InspectFlowConfig, session: SessionStore, urlSession: URLSession) {
+    init(table: String, config: InspectFlowConfig, auth: AuthClient, session: URLSession) {
         self.table = table
         self.config = config
-        self.session = session
-        self.urlSession = urlSession
+        self.auth = auth
+        self.urlSession = session
     }
 
     // MARK: - Selection
