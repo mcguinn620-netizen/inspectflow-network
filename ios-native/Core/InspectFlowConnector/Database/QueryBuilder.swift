@@ -146,7 +146,7 @@ public final class QueryBuilder {
         req.httpMethod = method
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.setValue(config.anonKey, forHTTPHeaderField: "apikey")
-        if let token = session.current()?.accessToken {
+        if let token = auth.currentSession?.accessToken {
             req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         } else {
             req.setValue("Bearer \(config.anonKey)", forHTTPHeaderField: "Authorization")
