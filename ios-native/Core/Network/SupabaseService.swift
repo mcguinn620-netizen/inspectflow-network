@@ -559,4 +559,39 @@ final class SupabaseService {
             .execute()
         return !changed.isEmpty
     }
+
+    // MARK: - Mileage feature (Trip edits + earnings rate)
+
+    /// Patch arbitrary fields on a trip (note, job_category, started_at, completed_at, total_miles).
+    @discardableResult
+    func updateTrip(tripId: UUID, fields: [String: Any]) async throws -> Bool {
+        guard !fields.isEmpty else { return false }
+        let changed: [MutationID] = try await client.db.from("trips")
+            .update(fields)
+            .eq("id", tripId.uuidString)
+            .execute()
+        return !changed.isEmpty
+    }
+
+    /// Hard-delete a trip row (used by the "Delete" button on the mileage detail screen).
+    @discardableResult
+    func deleteTrip(tripId: UUID) async throws -> Bool {
+        let changed: [MutationID] = try await client.db.from("trips")
+            .delete()
+            .eq("id", tripId.uuidString)
+            .execute()
+        return !changed.isEmpty
+    }
+
+    /// Returns the configured `$/mi` rate for the given user from `earnings_settings`,
+    /// falling back to the current IRS standard mileage rate when unset.
+    func fetchPerMileRate(userId: UUID) async throws -> Double {
+        struct Row: Decodable { let per_mile_rate: Double? }
+        let rows: [Row] = try await client.db.from("earnings_settings")
+            .select("per_mile_rate")
+            .eq("user_id", userId.uuidString)
+            .limit(1)
+            .execute()
+        return rows.first?.per_mile_rate ?? MileageDeduction.currentIRSRate
+    }
 }
