@@ -183,8 +183,26 @@ struct ScheduleView: View {
                 }
 
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Today") { selectedWeekStart = Date.startOfWeek(for: Date()) }
+                    Button("Today") {
+                        selectedWeekStart = Date.startOfWeek(for: Date())
+                        selectedDate = Date()
+                    }
                 }
+                if viewMode == "day" {
+                    ToolbarItem(placement: .principal) {
+                        HStack(spacing: 12) {
+                            Button {
+                                selectedDate = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate) ?? selectedDate
+                            } label: { Image(systemName: "chevron.left") }
+                            Text(selectedDate, format: .dateTime.weekday(.abbreviated).month().day())
+                                .font(.subheadline.weight(.semibold))
+                            Button {
+                                selectedDate = Calendar.current.date(byAdding: .day, value: 1, to: selectedDate) ?? selectedDate
+                            } label: { Image(systemName: "chevron.right") }
+                        }
+                    }
+                }
+
             }
             .safeAreaInset(edge: .bottom) {
                 if hasConflicts {
