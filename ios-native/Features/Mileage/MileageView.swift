@@ -90,7 +90,7 @@ struct MileageView: View {
                 .padding(.horizontal)
 
                 if let snap = tracker.snapshot {
-                    ActiveTripBanner(snapshot: snap, viewModel: viewModel)
+                    MileageActiveTripBanner(snapshot: snap, viewModel: viewModel)
                         .padding(.horizontal)
                 }
 
