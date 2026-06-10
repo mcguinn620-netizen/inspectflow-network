@@ -594,4 +594,84 @@ final class SupabaseService {
             .execute()
         return rows.first?.mileage_rate ?? MileageDeduction.currentIRSRate
     }
+
+    // MARK: - Profile / Settings helpers (Section 3)
+
+    func updateProfile(userId: UUID, fullName: String?, phone: String?, avatarUrl: String?) async throws {
+        var fields: [String: String] = [:]
+        if let fullName { fields["full_name"] = fullName }
+        if let phone { fields["phone"] = phone }
+        if let avatarUrl { fields["avatar_url"] = avatarUrl }
+        guard !fields.isEmpty else { return }
+        _ = try await client.db.from("profiles")
+            .update(fields)
+            .eq("id", userId.uuidString)
+            .execute()
+    }
+
+    func uploadAvatar(userId: UUID, data: Data, contentType: String = "image/jpeg") async throws -> String {
+        let path = "\(userId.uuidString)/avatar-\(Int(Date().timeIntervalSince1970)).jpg"
+        try await client.storage.upload(bucket: "avatars", path: path, data: data, contentType: contentType, upsert: true)
+        return path
+    }
+
+    func avatarSignedURL(path: String) async throws -> URL {
+        try await client.storage.createSignedURL(bucket: "avatars", path: path, expiresIn: 3600)
+    }
+
+    func fetchAvailability(userId: UUID) async throws -> [AvailabilityRow] {
+        try await client.db.from("availability_schedules")
+            .select()
+            .eq("inspector_id", userId.uuidString)
+            .order("day_of_week", ascending: true)
+            .execute()
+    }
+
+    func upsertAvailability(_ rows: [AvailabilityRow]) async throws {
+        for row in rows {
+            let fields: [String: String] = [
+                "id": row.id.uuidString,
+                "inspector_id": row.inspectorID.uuidString,
+                "day_of_week": String(row.dayOfWeek),
+                "start_time": row.startTime,
+                "end_time": row.endTime,
+                "is_available": row.isAvailable ? "true" : "false"
+            ]
+            _ = try await client.db.from("availability_schedules")
+                .update(fields)
+                .eq("id", row.id.uuidString)
+                .execute()
+        }
+    }
+
+    func fetchEarningsSettings(userId: UUID) async throws -> EarningsSettings? {
+        let rows: [EarningsSettings] = try await client.db.from("earnings_settings")
+            .select()
+            .eq("user_id", userId.uuidString)
+            .limit(1)
+            .execute()
+        return rows.first
+    }
+
+    func updateEarningsSettings(userId: UUID, mileageRate: Double?, defaultJobFee: Double?, estimatedTaxRate: Double?, stateCode: String?, filingStatus: String?) async throws {
+        var fields: [String: String] = [:]
+        if let mileageRate { fields["mileage_rate"] = String(mileageRate) }
+        if let defaultJobFee { fields["default_job_fee"] = String(defaultJobFee) }
+        if let estimatedTaxRate { fields["estimated_tax_rate"] = String(estimatedTaxRate) }
+        if let stateCode { fields["state_code"] = stateCode }
+        if let filingStatus { fields["filing_status"] = filingStatus }
+        guard !fields.isEmpty else { return }
+        _ = try await client.db.from("earnings_settings")
+            .update(fields)
+            .eq("user_id", userId.uuidString)
+            .execute()
+    }
+
+    func listMyMemberships(userId: UUID) async throws -> [OrganizationMembership] {
+        try await client.db.from("organization_users")
+            .select()
+            .eq("user_id", userId.uuidString)
+            .execute()
+    }
 }
+
