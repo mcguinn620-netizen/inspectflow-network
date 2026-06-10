@@ -82,10 +82,13 @@ struct ScheduleView: View {
     @EnvironmentObject private var appState: AppState
     @StateObject private var viewModel = JobsViewModel()
     @State private var selectedWeekStart = Date.startOfWeek(for: Date())
+    @State private var selectedDate = Date()
     @State private var selectedJobID: UUID?
     @State private var dispatchTargetJob: Job?
     @State private var bannerMessage: String?
-    @AppStorage("schedule.viewMode") private var viewMode: String = "week"
+    @State private var rescheduleMode: Bool = false
+    @AppStorage("schedule.viewMode") private var viewMode: String = "day"
+
 
     private var dayColumns: [Date] {
         (0..<7).compactMap { Calendar.current.date(byAdding: .day, value: $0, to: selectedWeekStart) }
@@ -106,6 +109,7 @@ struct ScheduleView: View {
         NavigationStack {
             VStack(spacing: 0) {
                 Picker("View", selection: $viewMode) {
+                    Text("Day").tag("day")
                     Text("Week").tag("week")
                     Text("List").tag("list")
                 }
@@ -113,12 +117,25 @@ struct ScheduleView: View {
                 .padding(.horizontal)
                 .padding(.vertical, 8)
 
+
                 if viewModel.isLoading && viewModel.jobs.isEmpty {
                     ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if viewModel.jobs.isEmpty {
                     ContentUnavailableCompat(
                         title: "No jobs this week",
                         message: viewModel.errorMessage ?? "Scheduled jobs appear here."
+                    )
+                } else if viewMode == "day" {
+                    CalendarKitDayView(
+                        date: selectedDate,
+                        jobs: viewModel.jobs,
+                        conflicts: conflicts,
+                        canReschedule: rescheduleMode && isDispatcher,
+                        onSelect: { job in selectedJobID = job.id },
+                        onLongPress: { job in if isDispatcher { dispatchTargetJob = job } },
+                        onReschedule: { job, newStart in
+                            Task { await viewModel.reschedule(job: job, scheduledAt: newStart, orgId: appState.activeOrganizationID) }
+                        }
                     )
                 } else if viewMode == "week" {
                     ScheduleWeekCalendarView(
@@ -152,6 +169,19 @@ struct ScheduleView: View {
             .navigationTitle("Schedule")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) { SyncStatusView() }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    ScheduleExportMenu(jobs: viewModel.jobs) { msg in bannerMessage = msg }
+                }
+                if isDispatcher && viewMode == "day" {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Toggle(isOn: $rescheduleMode) {
+                            Image(systemName: rescheduleMode ? "lock.open" : "lock")
+                        }
+                        .toggleStyle(.button)
+                        .accessibilityLabel("Reschedule mode")
+                    }
+                }
+
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Today") { selectedWeekStart = Date.startOfWeek(for: Date()) }
                 }
