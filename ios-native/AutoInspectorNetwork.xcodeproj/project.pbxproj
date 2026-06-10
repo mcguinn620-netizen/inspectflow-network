@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CK00000000000000000000B2 /* CalendarKitDayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CK00000000000000000000B1 /* CalendarKitDayView.swift */; };
+		CK00000000000000000000C2 /* ScheduleExportMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = CK00000000000000000000C1 /* ScheduleExportMenu.swift */; };
+		CK00000000000000000000A3 /* CalendarKit in Frameworks */ = {isa = PBXBuildFile; productRef = CK00000000000000000000A2 /* CalendarKit */; };
 		MILE000000000000000B0001 /* MileageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MILE000000000000000F0001 /* MileageView.swift */; };
 		MILE000000000000000B0002 /* MileageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = MILE000000000000000F0002 /* MileageViewModel.swift */; };
 		MILE000000000000000B0003 /* MileageDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MILE000000000000000F0003 /* MileageDetailView.swift */; };
@@ -112,6 +115,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CK00000000000000000000B1 /* CalendarKitDayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarKitDayView.swift; sourceTree = "<group>"; };
+		CK00000000000000000000C1 /* ScheduleExportMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleExportMenu.swift; sourceTree = "<group>"; };
 		MILE000000000000000F0001 /* MileageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MileageView.swift; sourceTree = "<group>"; };
 		MILE000000000000000F0002 /* MileageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MileageViewModel.swift; sourceTree = "<group>"; };
 		MILE000000000000000F0003 /* MileageDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MileageDetailView.swift; sourceTree = "<group>"; };
@@ -224,6 +229,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CK00000000000000000000A3 /* CalendarKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,6 +309,8 @@
 			isa = PBXGroup;
 			children = (
 				851A9FED51A53A0EAF5F18A4 /* ScheduleView.swift */,
+				CK00000000000000000000B1 /* CalendarKitDayView.swift */,
+				CK00000000000000000000C1 /* ScheduleExportMenu.swift */,
 			);
 			path = Schedule;
 			sourceTree = "<group>";
@@ -718,6 +726,9 @@
 			dependencies = (
 			);
 			name = AutoInspectorNetwork;
+			packageProductDependencies = (
+				CK00000000000000000000A2 /* CalendarKit */,
+			);
 			productName = AutoInspectorNetwork;
 			productReference = A612554AFBDBB78BBE69496E /* AutoInspectorNetwork.app */;
 			productType = "com.apple.product-type.application";
@@ -747,6 +758,9 @@
 			);
 			mainGroup = 8A23CA811AD5DE2F3F9275D1;
 			productRefGroup = C863DA5204F95EC573510473 /* Products */;
+			packageReferences = (
+				CK00000000000000000000A1 /* XCRemoteSwiftPackageReference "CalendarKit" */,
+			);
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -773,6 +787,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				A5D470A05ACB94A37FE2DE69 /* AppDelegate.swift in Sources */,
+				CK00000000000000000000B2 /* CalendarKitDayView.swift in Sources */,
+				CK00000000000000000000C2 /* ScheduleExportMenu.swift in Sources */,
 				MILE000000000000000B0001 /* MileageView.swift in Sources */,
 				MILE000000000000000B0002 /* MileageViewModel.swift in Sources */,
 				MILE000000000000000B0003 /* MileageDetailView.swift in Sources */,
@@ -1030,4 +1046,23 @@
 /* End XCConfigurationList section */
 	};
 	rootObject = BDDA1F48097C0373FD15D0DD /* Project object */;
+/* Begin XCRemoteSwiftPackageReference section */
+		CK00000000000000000000A1 /* XCRemoteSwiftPackageReference "CalendarKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/richardtop/CalendarKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.5;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CK00000000000000000000A2 /* CalendarKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CK00000000000000000000A1 /* XCRemoteSwiftPackageReference "CalendarKit" */;
+			productName = CalendarKit;
+		};
+/* End XCSwiftPackageProductDependency section */
+
 }
