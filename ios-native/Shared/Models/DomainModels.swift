@@ -6,13 +6,68 @@ struct UserProfile: Codable, Identifiable, Equatable {
     let id: UUID
     let fullName: String?
     let email: String?
+    let avatarUrl: String?
+    let phone: String?
+
+    init(id: UUID, fullName: String?, email: String?, avatarUrl: String? = nil, phone: String? = nil) {
+        self.id = id
+        self.fullName = fullName
+        self.email = email
+        self.avatarUrl = avatarUrl
+        self.phone = phone
+    }
 
     enum CodingKeys: String, CodingKey {
         case id
         case fullName = "full_name"
         case email
+        case avatarUrl = "avatar_url"
+        case phone
     }
 }
+
+// MARK: - Availability + Earnings settings
+
+struct AvailabilityRow: Codable, Identifiable, Equatable {
+    let id: UUID
+    let inspectorID: UUID
+    let dayOfWeek: Int
+    let startTime: String
+    let endTime: String
+    let isAvailable: Bool
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case inspectorID = "inspector_id"
+        case dayOfWeek = "day_of_week"
+        case startTime = "start_time"
+        case endTime = "end_time"
+        case isAvailable = "is_available"
+    }
+}
+
+struct EarningsSettings: Codable, Equatable {
+    let id: UUID?
+    let userID: UUID?
+    let organizationID: UUID?
+    let mileageRate: Double?
+    let defaultJobFee: Double?
+    let estimatedTaxRate: Double?
+    let stateCode: String?
+    let filingStatus: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case userID = "user_id"
+        case organizationID = "organization_id"
+        case mileageRate = "mileage_rate"
+        case defaultJobFee = "default_job_fee"
+        case estimatedTaxRate = "estimated_tax_rate"
+        case stateCode = "state_code"
+        case filingStatus = "filing_status"
+    }
+}
+
 
 // MARK: - Organization membership
 
