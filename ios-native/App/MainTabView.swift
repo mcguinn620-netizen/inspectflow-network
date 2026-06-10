@@ -46,6 +46,7 @@ struct MoreView: View {
     var body: some View {
         NavigationStack {
             List {
+                NavigationLink("Profile", destination: ProfileView())
                 NavigationLink("Intake Inbox", destination: IntakeInboxView(appState: appState))
                 NavigationLink("Active Trip", destination: DriveView())
                 NavigationLink("Tax", destination: TaxView())
@@ -53,6 +54,7 @@ struct MoreView: View {
                 NavigationLink("Inspections", destination: InspectionsView())
                 NavigationLink("Settings", destination: SettingsView())
             }
+
             .navigationTitle("More")
         }
     }

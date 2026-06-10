@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		PRF000000000000000000B2 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRF000000000000000000B1 /* ProfileView.swift */; };
+		PRF000000000000000000C2 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRF000000000000000000C1 /* ProfileViewModel.swift */; };
+		STG000000000000000000A2 /* AccountSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STG000000000000000000A1 /* AccountSettingsView.swift */; };
+		STG000000000000000000B2 /* OrganizationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STG000000000000000000B1 /* OrganizationSettingsView.swift */; };
+		STG000000000000000000C2 /* AvailabilitySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STG000000000000000000C1 /* AvailabilitySettingsView.swift */; };
+		STG000000000000000000D2 /* EarningsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STG000000000000000000D1 /* EarningsSettingsView.swift */; };
+		STG000000000000000000E2 /* NotificationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STG000000000000000000E1 /* NotificationSettingsView.swift */; };
+		STG000000000000000000F2 /* CalendarSyncSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STG000000000000000000F1 /* CalendarSyncSettingsView.swift */; };
+		STG000000000000000000G2 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STG000000000000000000G1 /* AboutView.swift */; };
 		CK00000000000000000000B2 /* CalendarKitDayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CK00000000000000000000B1 /* CalendarKitDayView.swift */; };
 		CK00000000000000000000C2 /* ScheduleExportMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = CK00000000000000000000C1 /* ScheduleExportMenu.swift */; };
 		CK00000000000000000000A3 /* CalendarKit in Frameworks */ = {isa = PBXBuildFile; productRef = CK00000000000000000000A2 /* CalendarKit */; };
@@ -115,6 +124,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		PRF000000000000000000B1 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		PRF000000000000000000C1 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		STG000000000000000000A1 /* AccountSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettingsView.swift; sourceTree = "<group>"; };
+		STG000000000000000000B1 /* OrganizationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizationSettingsView.swift; sourceTree = "<group>"; };
+		STG000000000000000000C1 /* AvailabilitySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailabilitySettingsView.swift; sourceTree = "<group>"; };
+		STG000000000000000000D1 /* EarningsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarningsSettingsView.swift; sourceTree = "<group>"; };
+		STG000000000000000000E1 /* NotificationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsView.swift; sourceTree = "<group>"; };
+		STG000000000000000000F1 /* CalendarSyncSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarSyncSettingsView.swift; sourceTree = "<group>"; };
+		STG000000000000000000G1 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		CK00000000000000000000B1 /* CalendarKitDayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarKitDayView.swift; sourceTree = "<group>"; };
 		CK00000000000000000000C1 /* ScheduleExportMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleExportMenu.swift; sourceTree = "<group>"; };
 		MILE000000000000000F0001 /* MileageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MileageView.swift; sourceTree = "<group>"; };
@@ -236,6 +254,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		PRF000000000000000000001 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				PRF000000000000000000B1 /* ProfileView.swift */,
+				PRF000000000000000000C1 /* ProfileViewModel.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
 		MILE000000000000000A0001 /* Mileage */ = {
 			isa = PBXGroup;
 			children = (
@@ -353,6 +380,7 @@
 				A56F8C2844653A5EF957E175 /* Inspections */,
 				9D8FB123A1621A97F2E6B02F /* Jobs */,
 				AB20000000000000000000F0 /* Intake */,
+				PRF000000000000000000001 /* Profile */,
 				38C362A50C6B6123747B41D4 /* Schedule */,
 				AF2799AFA0CD32C828177CE8 /* Settings */,
 				AAC4ADE8B8A2C6227A883AF1 /* Tax */,
@@ -521,6 +549,13 @@
 			children = (
 				6D9B26AAB9CAAB4FDC8CBA42 /* SettingsView.swift */,
 				DBUG0000000000000000000C /* DeveloperToolsSection.swift */,
+				STG000000000000000000A1 /* AccountSettingsView.swift */,
+				STG000000000000000000B1 /* OrganizationSettingsView.swift */,
+				STG000000000000000000C1 /* AvailabilitySettingsView.swift */,
+				STG000000000000000000D1 /* EarningsSettingsView.swift */,
+				STG000000000000000000E1 /* NotificationSettingsView.swift */,
+				STG000000000000000000F1 /* CalendarSyncSettingsView.swift */,
+				STG000000000000000000G1 /* AboutView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -787,6 +822,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				A5D470A05ACB94A37FE2DE69 /* AppDelegate.swift in Sources */,
+				PRF000000000000000000B2 /* ProfileView.swift in Sources */,
+				PRF000000000000000000C2 /* ProfileViewModel.swift in Sources */,
+				STG000000000000000000A2 /* AccountSettingsView.swift in Sources */,
+				STG000000000000000000B2 /* OrganizationSettingsView.swift in Sources */,
+				STG000000000000000000C2 /* AvailabilitySettingsView.swift in Sources */,
+				STG000000000000000000D2 /* EarningsSettingsView.swift in Sources */,
+				STG000000000000000000E2 /* NotificationSettingsView.swift in Sources */,
+				STG000000000000000000F2 /* CalendarSyncSettingsView.swift in Sources */,
+				STG000000000000000000G2 /* AboutView.swift in Sources */,
 				CK00000000000000000000B2 /* CalendarKitDayView.swift in Sources */,
 				CK00000000000000000000C2 /* ScheduleExportMenu.swift in Sources */,
 				MILE000000000000000B0001 /* MileageView.swift in Sources */,
