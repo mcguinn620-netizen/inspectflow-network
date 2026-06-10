@@ -46,6 +46,9 @@
 	<string>Auto Inspector syncs scheduled jobs to your device calendar.</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>Auto Inspector syncs scheduled jobs to your device calendar.</string>
+	<key>NSCalendarsWriteOnlyAccessUsageDescription</key>
+	<string>Auto Inspector adds scheduled jobs to your device calendar.</string>
+
 	<key>NSCameraUsageDescription</key>
 	<string>Capture inspection photos of vehicles, damage, and required documentation.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
