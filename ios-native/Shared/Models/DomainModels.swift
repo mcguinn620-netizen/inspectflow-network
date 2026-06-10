@@ -45,6 +45,8 @@ struct Trip: Codable, Identifiable, Equatable {
     let pausedAt: Date?
     let completedAt: Date?
     let createdAt: Date?
+    let note: String?
+    let jobCategory: String?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -57,6 +59,8 @@ struct Trip: Codable, Identifiable, Equatable {
         case pausedAt = "paused_at"
         case completedAt = "completed_at"
         case createdAt = "created_at"
+        case note
+        case jobCategory = "job_category"
     }
 }
 
