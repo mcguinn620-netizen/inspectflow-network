@@ -90,7 +90,7 @@ struct MileageView: View {
                 .padding(.horizontal)
 
                 if let snap = tracker.snapshot {
-                    ActiveTripBanner(snapshot: snap, viewModel: viewModel)
+                    MileageActiveTripBanner(snapshot: snap, viewModel: viewModel)
                         .padding(.horizontal)
                 }
 
@@ -196,7 +196,7 @@ private struct MileageRow: View {
 
 // MARK: - Active trip banner
 
-private struct ActiveTripBanner: View {
+private struct MileageActiveTripBanner: View {
     let snapshot: TripTrackingController.Snapshot
     @ObservedObject var viewModel: MileageViewModel
 

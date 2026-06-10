@@ -31,10 +31,10 @@ struct UserProfile: Codable, Identifiable, Equatable {
 struct AvailabilityRow: Codable, Identifiable, Equatable {
     let id: UUID
     let inspectorID: UUID
-    let dayOfWeek: Int
-    let startTime: String
-    let endTime: String
-    let isAvailable: Bool
+    var dayOfWeek: Int
+    var startTime: String
+    var endTime: String
+    var isAvailable: Bool
 
     enum CodingKeys: String, CodingKey {
         case id
