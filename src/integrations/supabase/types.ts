@@ -1466,6 +1466,8 @@ export type Database = {
           end_time: string | null
           id: string
           inspector_vehicle_id: string | null
+          job_category: string | null
+          note: string | null
           notes: string | null
           organization_id: string
           paused_at: string | null
@@ -1486,6 +1488,8 @@ export type Database = {
           end_time?: string | null
           id?: string
           inspector_vehicle_id?: string | null
+          job_category?: string | null
+          note?: string | null
           notes?: string | null
           organization_id: string
           paused_at?: string | null
@@ -1506,6 +1510,8 @@ export type Database = {
           end_time?: string | null
           id?: string
           inspector_vehicle_id?: string | null
+          job_category?: string | null
+          note?: string | null
           notes?: string | null
           organization_id?: string
           paused_at?: string | null
