@@ -2,23 +2,45 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject private var appState: AppState
-    @AppStorage("inspector.voice_cues_enabled") private var voiceCuesEnabled = true
 
     var body: some View {
         NavigationStack {
             List {
                 if case let .signedIn(profile) = appState.authState {
-                    Section("Account") {
-                        LabeledContent("Name", value: profile.fullName ?? "—")
-                        LabeledContent("Email", value: profile.email ?? "—")
+                    Section {
+                        NavigationLink(destination: ProfileView()) {
+                            HStack(spacing: 12) {
+                                Image(systemName: "person.crop.circle.fill")
+                                    .font(.system(size: 32))
+                                    .foregroundStyle(.tint)
+                                VStack(alignment: .leading) {
+                                    Text(profile.fullName ?? "Your profile").font(.headline)
+                                    Text(profile.email ?? "").font(.caption).foregroundStyle(.secondary)
+                                }
+                            }
+                            .padding(.vertical, 4)
+                        }
                     }
                 }
-                Section("App") {
-                    LabeledContent("Version", value: appVersion)
-                    LabeledContent("Brand", value: AINBrand.displayName)
+
+                Section("Account") {
+                    NavigationLink("Account", destination: AccountSettingsView())
+                    NavigationLink("Organization", destination: OrganizationSettingsView())
                 }
-                Section("Driving") {
-                    Toggle("Voice cues while driving", isOn: $voiceCuesEnabled)
+
+                Section("Work") {
+                    NavigationLink("Availability", destination: AvailabilitySettingsView())
+                    NavigationLink("Earnings & Tax", destination: EarningsSettingsView())
+                    NavigationLink("Vehicles", destination: VehiclesView())
+                }
+
+                Section("Device") {
+                    NavigationLink("Notifications", destination: NotificationSettingsView())
+                    NavigationLink("Calendar Sync", destination: CalendarSyncSettingsView())
+                }
+
+                Section("About") {
+                    NavigationLink("About", destination: AboutView())
                 }
 
                 #if DEBUG
@@ -34,11 +56,5 @@ struct SettingsView: View {
             .toolbar { ToolbarItem(placement: .navigationBarTrailing) { SyncStatusView() } }
             .navigationTitle("Settings")
         }
-    }
-
-    private var appVersion: String {
-        let v = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
-        let b = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
-        return "\(v) (\(b))"
     }
 }
