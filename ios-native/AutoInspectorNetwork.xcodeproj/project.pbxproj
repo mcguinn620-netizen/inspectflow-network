@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		MILE000000000000000B0001 /* MileageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MILE000000000000000F0001 /* MileageView.swift */; };
+		MILE000000000000000B0002 /* MileageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = MILE000000000000000F0002 /* MileageViewModel.swift */; };
+		MILE000000000000000B0003 /* MileageDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MILE000000000000000F0003 /* MileageDetailView.swift */; };
+		MILE000000000000000B0004 /* MileageEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MILE000000000000000F0004 /* MileageEditView.swift */; };
+		MILE000000000000000B0005 /* AddMileageActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = MILE000000000000000F0005 /* AddMileageActionSheet.swift */; };
+		TXMS000000000000000B0001 /* MileageDeduction.swift in Sources */ = {isa = PBXBuildFile; fileRef = TXMS000000000000000F0001 /* MileageDeduction.swift */; };
+		TMAP000000000000000B0001 /* TripMapSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = TMAP000000000000000F0001 /* TripMapSnapshot.swift */; };
 		22827134EA78326A414A5A53 /* SupabaseClientProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D379B752680E42F56D50324E /* SupabaseClientProvider.swift */; };
 		2BD64856D6C7F609C82F8A0D /* JobsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FB918863C258C1718BAB06 /* JobsViewModel.swift */; };
 		2D15AA7686667954E9D77C53 /* TripTrackingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F45FC55D363DE54E7B5111 /* TripTrackingController.swift */; };
@@ -105,6 +112,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		MILE000000000000000F0001 /* MileageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MileageView.swift; sourceTree = "<group>"; };
+		MILE000000000000000F0002 /* MileageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MileageViewModel.swift; sourceTree = "<group>"; };
+		MILE000000000000000F0003 /* MileageDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MileageDetailView.swift; sourceTree = "<group>"; };
+		MILE000000000000000F0004 /* MileageEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MileageEditView.swift; sourceTree = "<group>"; };
+		MILE000000000000000F0005 /* AddMileageActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMileageActionSheet.swift; sourceTree = "<group>"; };
+		TXMS000000000000000F0001 /* MileageDeduction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MileageDeduction.swift; sourceTree = "<group>"; };
+		TMAP000000000000000F0001 /* TripMapSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripMapSnapshot.swift; sourceTree = "<group>"; };
 		04ABF7475DA3AC1CBC0886FA /* RealtimeSubscriptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealtimeSubscriptions.swift; sourceTree = "<group>"; };
 		0F91FE72E2545B9592848B66 /* DomainModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainModels.swift; sourceTree = "<group>"; };
 		11615170D089568C51DDF2CE /* PhotoCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCapture.swift; sourceTree = "<group>"; };
@@ -216,6 +230,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		MILE000000000000000A0001 /* Mileage */ = {
+			isa = PBXGroup;
+			children = (
+				MILE000000000000000F0001 /* MileageView.swift */,
+				MILE000000000000000F0002 /* MileageViewModel.swift */,
+				MILE000000000000000F0003 /* MileageDetailView.swift */,
+				MILE000000000000000F0004 /* MileageEditView.swift */,
+				MILE000000000000000F0005 /* AddMileageActionSheet.swift */,
+			);
+			path = Mileage;
+			sourceTree = "<group>";
+		};
+		TXMS000000000000000A0001 /* Tax */ = {
+			isa = PBXGroup;
+			children = (
+				TXMS000000000000000F0001 /* MileageDeduction.swift */,
+			);
+			path = Tax;
+			sourceTree = "<group>";
+		};
 		0ADB5386121963586531221C /* Core */ = {
 			isa = PBXGroup;
 			children = (
@@ -232,6 +266,7 @@
 				93DDF341FC5AE0F58E91E038 /* Realtime */,
 				A565CDEE83AD7E6A49E8D5FE /* Sync */,
 				FD44EC599816899F4F81FD11 /* Trips */,
+				TXMS000000000000000A0001 /* Tax */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -251,6 +286,7 @@
 				B1D25DD22FC1F5EC00E9EDD8 /* OpenInMapsButton.swift */,
 				AB3000000000000000000001 /* AINFriendlyError.swift */,
 				AB3000000000000000000002 /* AINSortMenu.swift */,
+				TMAP000000000000000F0001 /* TripMapSnapshot.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -313,6 +349,7 @@
 				AF2799AFA0CD32C828177CE8 /* Settings */,
 				AAC4ADE8B8A2C6227A883AF1 /* Tax */,
 				EDEEA5A7C65C0A765BD9B511 /* Trips */,
+				MILE000000000000000A0001 /* Mileage */,
 				8F42C359E013EAE547848580 /* Vehicles */,
 			);
 			path = Features;
@@ -736,6 +773,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				A5D470A05ACB94A37FE2DE69 /* AppDelegate.swift in Sources */,
+				MILE000000000000000B0001 /* MileageView.swift in Sources */,
+				MILE000000000000000B0002 /* MileageViewModel.swift in Sources */,
+				MILE000000000000000B0003 /* MileageDetailView.swift in Sources */,
+				MILE000000000000000B0004 /* MileageEditView.swift in Sources */,
+				MILE000000000000000B0005 /* AddMileageActionSheet.swift in Sources */,
+				TXMS000000000000000B0001 /* MileageDeduction.swift in Sources */,
+				TMAP000000000000000B0001 /* TripMapSnapshot.swift in Sources */,
 				B19AF1682FC4756C00D65428 /* VehicleWriteModels.swift in Sources */,
 				B14CF43C2FCBE82D002ED72E /* RealtimeChannel.swift in Sources */,
 				C9AC8F291A3142999D91651E /* AutoInspectorNetworkApp.swift in Sources */,
