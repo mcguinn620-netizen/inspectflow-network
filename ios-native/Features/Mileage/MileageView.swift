@@ -196,7 +196,7 @@ private struct MileageRow: View {
 
 // MARK: - Active trip banner
 
-private struct ActiveTripBanner: View {
+private struct MileageActiveTripBanner: View {
     let snapshot: TripTrackingController.Snapshot
     @ObservedObject var viewModel: MileageViewModel
 
