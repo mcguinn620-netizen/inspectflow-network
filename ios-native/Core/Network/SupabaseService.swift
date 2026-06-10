@@ -586,12 +586,12 @@ final class SupabaseService {
     /// Returns the configured `$/mi` rate for the given user from `earnings_settings`,
     /// falling back to the current IRS standard mileage rate when unset.
     func fetchPerMileRate(userId: UUID) async throws -> Double {
-        struct Row: Decodable { let per_mile_rate: Double? }
+        struct Row: Decodable { let mileage_rate: Double? }
         let rows: [Row] = try await client.db.from("earnings_settings")
-            .select("per_mile_rate")
+            .select("mileage_rate")
             .eq("user_id", userId.uuidString)
             .limit(1)
             .execute()
-        return rows.first?.per_mile_rate ?? MileageDeduction.currentIRSRate
+        return rows.first?.mileage_rate ?? MileageDeduction.currentIRSRate
     }
 }
