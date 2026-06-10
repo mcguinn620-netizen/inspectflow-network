@@ -166,7 +166,43 @@ final class CalendarSyncService {
         }
     }
 
+    // MARK: - Bulk helpers
+
+    func syncMany(_ jobs: [Job]) async -> (succeeded: Int, failed: Int) {
+        guard await ensureAccess() else { return (0, jobs.count) }
+        var ok = 0
+        var bad = 0
+        for job in jobs where job.scheduledAt != nil {
+            if await sync(job: job) { ok += 1 } else { bad += 1 }
+        }
+        return (ok, bad)
+    }
+
+    @discardableResult
+    func removeAll(jobIDs: [UUID]) async -> Int {
+        guard await ensureAccess() else { return 0 }
+        var count = 0
+        for jobID in jobIDs {
+            guard let eventID = eventIdentifier(for: jobID),
+                  let event = store.event(withIdentifier: eventID) else { continue }
+            do {
+                try store.remove(event, span: .thisEvent, commit: true)
+                removeEventID(for: jobID)
+                count += 1
+            } catch {
+                print("Bulk delete failed:", error)
+            }
+        }
+        return count
+    }
+
+    func isSynced(jobID: UUID) -> Bool {
+        eventIdentifier(for: jobID) != nil
+    }
+
     // MARK: - Mapping
+
+
 
     private func mappings() -> [String: String] {
 
