@@ -33,7 +33,7 @@ struct MainTabView: View {
                 }
                 ScheduleView().tabItem { Label("Schedule", systemImage: "calendar") }
                 JobsView().tabItem { Label("Jobs", systemImage: "briefcase.fill") }
-                TripsView().tabItem { Label("Trips", systemImage: "map.fill") }
+                MileageView().tabItem { Label("Mileage", systemImage: "car.fill") }
                 MoreView().tabItem { Label("More", systemImage: "ellipsis.circle.fill") }
             }
             .tint(AINTheme.Color.accent)
@@ -47,7 +47,7 @@ struct MoreView: View {
         NavigationStack {
             List {
                 NavigationLink("Intake Inbox", destination: IntakeInboxView(appState: appState))
-                NavigationLink("Drive", destination: DriveView())
+                NavigationLink("Active Trip", destination: DriveView())
                 NavigationLink("Tax", destination: TaxView())
                 NavigationLink("Vehicles", destination: VehiclesView())
                 NavigationLink("Inspections", destination: InspectionsView())
