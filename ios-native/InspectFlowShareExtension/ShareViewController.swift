@@ -138,18 +138,17 @@ final class ShareViewController: UIViewController {
             string: "inspectflow://imports"
         )!
 
+        // UIApplication.open(_:) is unavailable in app extensions.
+        // Walk the responder chain and invoke `openURL:` via selector.
+        let selector = NSSelectorFromString("openURL:")
         var responder: UIResponder? = self
 
-        while responder != nil {
-
-            if let application =
-                responder as? UIApplication {
-
-                application.open(url)
+        while let current = responder {
+            if current.responds(to: selector) {
+                _ = current.perform(selector, with: url)
                 break
             }
-
-            responder = responder?.next
+            responder = current.next
         }
 
         complete()
