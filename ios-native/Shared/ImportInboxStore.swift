@@ -7,7 +7,6 @@
 
 import Foundation
 
-@MainActor
 final class ImportInboxStore: ObservableObject {
 
     @Published var imports: [SharedImport] = []

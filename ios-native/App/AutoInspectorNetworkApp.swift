@@ -1,5 +1,9 @@
 import SwiftUI
 
+extension Notification.Name {
+    static let inspectFlowOpenImports = Notification.Name("inspectflow.openImports")
+}
+
 @main
 struct AutoInspectorNetworkApp: App {
     #if canImport(UIKit)
@@ -16,13 +20,11 @@ struct AutoInspectorNetworkApp: App {
                 .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
                 .task { await appState.bootstrap() }
                 .tint(AINBrand.accent)
-        }
-        .onOpenURL { url in
-
-            if url.host == "imports" {
-
-                appState.selectedTab = .inbox
-            }
+                .onOpenURL { url in
+                    if url.host == "imports" {
+                        NotificationCenter.default.post(name: .inspectFlowOpenImports, object: nil)
+                    }
+                }
         }
     }
 }
