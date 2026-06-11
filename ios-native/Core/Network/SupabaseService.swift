@@ -78,7 +78,63 @@ final class SupabaseService {
         return memberships.first
     }
 
+    // MARK: - Inspector Vehicles
+
+    func fetchInspectorVehicles(userId: UUID) async throws -> [InspectorVehicle] {
+        try await client.db.from("inspector_vehicles")
+            .select()
+            .eq("user_id", userId.uuidString)
+            .eq("is_archived", false)
+            .order("is_default", ascending: false)
+            .execute()
+    }
+
+    func archiveInspectorVehicle(id: UUID) async throws {
+        _ = try await client.db.from("inspector_vehicles")
+            .update(["is_archived": true])
+            .eq("id", id.uuidString)
+            .execute()
+    }
+
+    func clearDefaultInspectorVehicle(userId: UUID) async throws {
+        _ = try await client.db.from("inspector_vehicles")
+            .update(["is_default": false])
+            .eq("user_id", userId.uuidString)
+            .execute()
+    }
+
+    func setDefaultInspectorVehicle(id: UUID) async throws {
+        _ = try await client.db.from("inspector_vehicles")
+            .update(["is_default": true])
+            .eq("id", id.uuidString)
+            .execute()
+    }
+
+    func createInspectorVehicle(
+        userId: UUID,
+        nickname: String,
+        year: Int?,
+        make: String,
+        model: String,
+        plate: String
+    ) async throws {
+        var payload: [String: Any] = [
+            "user_id": userId.uuidString,
+            "nickname": nickname,
+            "make": make,
+            "model": model,
+            "license_plate": plate,
+            "is_default": false,
+            "is_archived": false
+        ]
+        if let year { payload["year"] = year }
+        _ = try await client.db.from("inspector_vehicles")
+            .insert(payload)
+            .execute()
+    }
+
     // MARK: - Trips
+
 
     func fetchTrips(userId: UUID, limit: Int = 50) async throws -> [Trip] {
         try await client.db.from("trips")
