@@ -17,5 +17,12 @@ struct AutoInspectorNetworkApp: App {
                 .task { await appState.bootstrap() }
                 .tint(AINBrand.accent)
         }
+        .onOpenURL { url in
+
+            if url.host == "imports" {
+
+                appState.selectedTab = .inbox
+            }
+        }
     }
 }

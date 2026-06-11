@@ -7,25 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		PRF000000000000000000B2 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRF000000000000000000B1 /* ProfileView.swift */; };
-		PRF000000000000000000C2 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRF000000000000000000C1 /* ProfileViewModel.swift */; };
-		STG000000000000000000A2 /* AccountSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STG000000000000000000A1 /* AccountSettingsView.swift */; };
-		STG000000000000000000B2 /* OrganizationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STG000000000000000000B1 /* OrganizationSettingsView.swift */; };
-		STG000000000000000000C2 /* AvailabilitySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STG000000000000000000C1 /* AvailabilitySettingsView.swift */; };
-		STG000000000000000000D2 /* EarningsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STG000000000000000000D1 /* EarningsSettingsView.swift */; };
-		STG000000000000000000E2 /* NotificationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STG000000000000000000E1 /* NotificationSettingsView.swift */; };
-		STG000000000000000000F2 /* CalendarSyncSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STG000000000000000000F1 /* CalendarSyncSettingsView.swift */; };
-		STG000000000000000000G2 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STG000000000000000000G1 /* AboutView.swift */; };
-		CK00000000000000000000B2 /* CalendarKitDayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CK00000000000000000000B1 /* CalendarKitDayView.swift */; };
-		CK00000000000000000000C2 /* ScheduleExportMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = CK00000000000000000000C1 /* ScheduleExportMenu.swift */; };
-		CK00000000000000000000A3 /* CalendarKit in Frameworks */ = {isa = PBXBuildFile; productRef = CK00000000000000000000A2 /* CalendarKit */; };
-		MILE000000000000000B0001 /* MileageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MILE000000000000000F0001 /* MileageView.swift */; };
-		MILE000000000000000B0002 /* MileageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = MILE000000000000000F0002 /* MileageViewModel.swift */; };
-		MILE000000000000000B0003 /* MileageDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MILE000000000000000F0003 /* MileageDetailView.swift */; };
-		MILE000000000000000B0004 /* MileageEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MILE000000000000000F0004 /* MileageEditView.swift */; };
-		MILE000000000000000B0005 /* AddMileageActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = MILE000000000000000F0005 /* AddMileageActionSheet.swift */; };
-		TXMS000000000000000B0001 /* MileageDeduction.swift in Sources */ = {isa = PBXBuildFile; fileRef = TXMS000000000000000F0001 /* MileageDeduction.swift */; };
-		TMAP000000000000000B0001 /* TripMapSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = TMAP000000000000000F0001 /* TripMapSnapshot.swift */; };
 		22827134EA78326A414A5A53 /* SupabaseClientProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D379B752680E42F56D50324E /* SupabaseClientProvider.swift */; };
 		2BD64856D6C7F609C82F8A0D /* JobsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FB918863C258C1718BAB06 /* JobsViewModel.swift */; };
 		2D15AA7686667954E9D77C53 /* TripTrackingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F45FC55D363DE54E7B5111 /* TripTrackingController.swift */; };
@@ -64,6 +45,13 @@
 		AAAA000000000000000B000B /* JSONDecoder+Supabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A000B /* JSONDecoder+Supabase.swift */; };
 		AAAA000000000000000D0006 /* AINInputs.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000C0006 /* AINInputs.swift */; };
 		AAAA000000000000000D0007 /* AINOverlays.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000C0007 /* AINOverlays.swift */; };
+		AB10000000000000000000B1 /* JobCreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1000000000000000000001 /* JobCreateView.swift */; };
+		AB10000000000000000000B2 /* JobCreateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1000000000000000000002 /* JobCreateViewModel.swift */; };
+		AB20000000000000000000B1 /* IntakeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB2000000000000000000001 /* IntakeModels.swift */; };
+		AB20000000000000000000B2 /* IntakeInboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB2000000000000000000002 /* IntakeInboxView.swift */; };
+		AB20000000000000000000B3 /* IntakeReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB2000000000000000000003 /* IntakeReviewView.swift */; };
+		AB30000000000000000000B1 /* AINFriendlyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB3000000000000000000001 /* AINFriendlyError.swift */; };
+		AB30000000000000000000B2 /* AINSortMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB3000000000000000000002 /* AINSortMenu.swift */; };
 		B003E44E4DD8247B34FB95AA /* DriveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE220E882E0F0F3349EE2545 /* DriveView.swift */; };
 		B14C6A492FBBB7A1006C431B /* AINTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A482FBBB7A1006C431B /* AINTheme.swift */; };
 		B14C6A532FBBB854006C431B /* RestClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A4B2FBBB854006C431B /* RestClient.swift */; };
@@ -78,6 +66,15 @@
 		B14C6A602FBBB8C7006C431B /* AINStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A5C2FBBB8C7006C431B /* AINStates.swift */; };
 		B14CF43C2FCBE82D002ED72E /* RealtimeChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14CF43B2FCBE82D002ED72E /* RealtimeChannel.swift */; };
 		B14CF43E2FCBE865002ED72E /* StorageClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14CF43D2FCBE865002ED72E /* StorageClient.swift */; };
+		B1526CDB2FDB6AEB00964B69 /* InspectorVehiclesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1526CDA2FDB6AEB00964B69 /* InspectorVehiclesView.swift */; };
+		B1526CE32FDB6F3900964B69 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1526CE22FDB6F3900964B69 /* ShareViewController.swift */; };
+		B1526CE62FDB6F3900964B69 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B1526CE42FDB6F3900964B69 /* MainInterface.storyboard */; };
+		B1526CEA2FDB6F3900964B69 /* InspectFlowShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B1526CE02FDB6F3900964B69 /* InspectFlowShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B1526CF12FDB6FDD00964B69 /* SharedPayloadModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1526CEF2FDB6FDD00964B69 /* SharedPayloadModel.swift */; };
+		B1526CF42FDB734100964B69 /* ImportInboxStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1526CF32FDB734100964B69 /* ImportInboxStore.swift */; };
+		B1526CF52FDB734100964B69 /* ImportInboxStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1526CF32FDB734100964B69 /* ImportInboxStore.swift */; };
+		B1526CF72FDB736900964B69 /* ImportInboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1526CF62FDB736900964B69 /* ImportInboxView.swift */; };
+		B1526CF82FDB736900964B69 /* ImportInboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1526CF62FDB736900964B69 /* ImportInboxView.swift */; };
 		B19AF1592FC4754600D65428 /* MapsLookupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19AF1582FC4754600D65428 /* MapsLookupService.swift */; };
 		B19AF1642FC4756C00D65428 /* VehicleEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19AF15B2FC4756B00D65428 /* VehicleEditViewModel.swift */; };
 		B19AF1652FC4756C00D65428 /* VehicleDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19AF15C2FC4756B00D65428 /* VehicleDetailViewModel.swift */; };
@@ -102,46 +99,64 @@
 		C9AC8F291A3142999D91651E /* AutoInspectorNetworkApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB3449D752F3F7896AB664C /* AutoInspectorNetworkApp.swift */; };
 		CAA12E02BBA8BC2163FE5268 /* CarPlayStopListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878503DB7BEF2B4C9F0F7957 /* CarPlayStopListTemplate.swift */; };
 		CF060EDA55214F8807267183 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795A386ABB1A4064D751A091 /* PersistenceController.swift */; };
+		CK00000000000000000000A3 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
+		CK00000000000000000000B2 /* CalendarKitDayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CK00000000000000000000B1 /* CalendarKitDayView.swift */; };
+		CK00000000000000000000C2 /* ScheduleExportMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = CK00000000000000000000C1 /* ScheduleExportMenu.swift */; };
 		D3E926D8BDC9849D0CCA295B /* SupabaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1AF4106A07592985CE2D9A /* SupabaseConfig.swift */; };
 		D7A5DDBD1FF712EC25F3B0BF /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC30D8C9079EF31A07BF1339 /* DashboardViewModel.swift */; };
-		E486E6D797D3220DCE47E681 /* PhotoCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11615170D089568C51DDF2CE /* PhotoCapture.swift */; };
-		E95E5C80C7268CE08A42ECA5 /* PushRegistrar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63153CED0A0A2D000BBDCC14 /* PushRegistrar.swift */; };
-		F283A55FE693D3192FB736F1 /* CoreDataCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F145748823881A6F0D9F26 /* CoreDataCache.swift */; };
-		F9D7651D08E0F62880FCA950 /* InspectionModel.xcdatamodeld in Resources */ = {isa = PBXBuildFile; fileRef = D7A27A5F7DD012D94E8002F7 /* InspectionModel.xcdatamodeld */; };
 		DBUG00000000000000000003 /* DebugUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG00000000000000000002 /* DebugUser.swift */; };
 		DBUG00000000000000000005 /* DebugUserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG00000000000000000004 /* DebugUserService.swift */; };
 		DBUG00000000000000000007 /* DebugUserPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG00000000000000000006 /* DebugUserPickerView.swift */; };
 		DBUG00000000000000000009 /* AINRoleBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG00000000000000000008 /* AINRoleBadge.swift */; };
 		DBUG0000000000000000000B /* AINDebugBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG0000000000000000000A /* AINDebugBanner.swift */; };
 		DBUG0000000000000000000D /* DeveloperToolsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBUG0000000000000000000C /* DeveloperToolsSection.swift */; };
-		AB10000000000000000000B1 /* JobCreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1000000000000000000001 /* JobCreateView.swift */; };
-		AB10000000000000000000B2 /* JobCreateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1000000000000000000002 /* JobCreateViewModel.swift */; };
-		AB20000000000000000000B1 /* IntakeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB2000000000000000000001 /* IntakeModels.swift */; };
-		AB20000000000000000000B2 /* IntakeInboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB2000000000000000000002 /* IntakeInboxView.swift */; };
-		AB20000000000000000000B3 /* IntakeReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB2000000000000000000003 /* IntakeReviewView.swift */; };
-		AB30000000000000000000B1 /* AINFriendlyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB3000000000000000000001 /* AINFriendlyError.swift */; };
-		AB30000000000000000000B2 /* AINSortMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB3000000000000000000002 /* AINSortMenu.swift */; };
+		E486E6D797D3220DCE47E681 /* PhotoCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11615170D089568C51DDF2CE /* PhotoCapture.swift */; };
+		E95E5C80C7268CE08A42ECA5 /* PushRegistrar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63153CED0A0A2D000BBDCC14 /* PushRegistrar.swift */; };
+		F283A55FE693D3192FB736F1 /* CoreDataCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F145748823881A6F0D9F26 /* CoreDataCache.swift */; };
+		F9D7651D08E0F62880FCA950 /* InspectionModel.xcdatamodeld in Resources */ = {isa = PBXBuildFile; fileRef = D7A27A5F7DD012D94E8002F7 /* InspectionModel.xcdatamodeld */; };
+		MILE000000000000000B0001 /* MileageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MILE000000000000000F0001 /* MileageView.swift */; };
+		MILE000000000000000B0002 /* MileageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = MILE000000000000000F0002 /* MileageViewModel.swift */; };
+		MILE000000000000000B0003 /* MileageDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MILE000000000000000F0003 /* MileageDetailView.swift */; };
+		MILE000000000000000B0004 /* MileageEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MILE000000000000000F0004 /* MileageEditView.swift */; };
+		MILE000000000000000B0005 /* AddMileageActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = MILE000000000000000F0005 /* AddMileageActionSheet.swift */; };
+		PRF000000000000000000B2 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRF000000000000000000B1 /* ProfileView.swift */; };
+		PRF000000000000000000C2 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRF000000000000000000C1 /* ProfileViewModel.swift */; };
+		STG000000000000000000A2 /* AccountSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STG000000000000000000A1 /* AccountSettingsView.swift */; };
+		STG000000000000000000B2 /* OrganizationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STG000000000000000000B1 /* OrganizationSettingsView.swift */; };
+		STG000000000000000000C2 /* AvailabilitySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STG000000000000000000C1 /* AvailabilitySettingsView.swift */; };
+		STG000000000000000000D2 /* EarningsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STG000000000000000000D1 /* EarningsSettingsView.swift */; };
+		STG000000000000000000E2 /* NotificationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STG000000000000000000E1 /* NotificationSettingsView.swift */; };
+		STG000000000000000000F2 /* CalendarSyncSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STG000000000000000000F1 /* CalendarSyncSettingsView.swift */; };
+		STG000000000000000000G2 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STG000000000000000000G1 /* AboutView.swift */; };
+		TMAP000000000000000B0001 /* TripMapSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = TMAP000000000000000F0001 /* TripMapSnapshot.swift */; };
+		TXMS000000000000000B0001 /* MileageDeduction.swift in Sources */ = {isa = PBXBuildFile; fileRef = TXMS000000000000000F0001 /* MileageDeduction.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		B1526CE82FDB6F3900964B69 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BDDA1F48097C0373FD15D0DD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B1526CDF2FDB6F3900964B69;
+			remoteInfo = InspectFlowShareExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B1526CEE2FDB6F3900964B69 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				B1526CEA2FDB6F3900964B69 /* InspectFlowShareExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		PRF000000000000000000B1 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
-		PRF000000000000000000C1 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
-		STG000000000000000000A1 /* AccountSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettingsView.swift; sourceTree = "<group>"; };
-		STG000000000000000000B1 /* OrganizationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizationSettingsView.swift; sourceTree = "<group>"; };
-		STG000000000000000000C1 /* AvailabilitySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailabilitySettingsView.swift; sourceTree = "<group>"; };
-		STG000000000000000000D1 /* EarningsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarningsSettingsView.swift; sourceTree = "<group>"; };
-		STG000000000000000000E1 /* NotificationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsView.swift; sourceTree = "<group>"; };
-		STG000000000000000000F1 /* CalendarSyncSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarSyncSettingsView.swift; sourceTree = "<group>"; };
-		STG000000000000000000G1 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
-		CK00000000000000000000B1 /* CalendarKitDayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarKitDayView.swift; sourceTree = "<group>"; };
-		CK00000000000000000000C1 /* ScheduleExportMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleExportMenu.swift; sourceTree = "<group>"; };
-		MILE000000000000000F0001 /* MileageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MileageView.swift; sourceTree = "<group>"; };
-		MILE000000000000000F0002 /* MileageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MileageViewModel.swift; sourceTree = "<group>"; };
-		MILE000000000000000F0003 /* MileageDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MileageDetailView.swift; sourceTree = "<group>"; };
-		MILE000000000000000F0004 /* MileageEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MileageEditView.swift; sourceTree = "<group>"; };
-		MILE000000000000000F0005 /* AddMileageActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMileageActionSheet.swift; sourceTree = "<group>"; };
-		TXMS000000000000000F0001 /* MileageDeduction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MileageDeduction.swift; sourceTree = "<group>"; };
-		TMAP000000000000000F0001 /* TripMapSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripMapSnapshot.swift; sourceTree = "<group>"; };
 		04ABF7475DA3AC1CBC0886FA /* RealtimeSubscriptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealtimeSubscriptions.swift; sourceTree = "<group>"; };
 		0F91FE72E2545B9592848B66 /* DomainModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainModels.swift; sourceTree = "<group>"; };
 		11615170D089568C51DDF2CE /* PhotoCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCapture.swift; sourceTree = "<group>"; };
@@ -183,6 +198,13 @@
 		AAAA000000000000000A000B /* JSONDecoder+Supabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSONDecoder+Supabase.swift"; sourceTree = "<group>"; };
 		AAAA000000000000000C0006 /* AINInputs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINInputs.swift; sourceTree = "<group>"; };
 		AAAA000000000000000C0007 /* AINOverlays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINOverlays.swift; sourceTree = "<group>"; };
+		AB1000000000000000000001 /* JobCreateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobCreateView.swift; sourceTree = "<group>"; };
+		AB1000000000000000000002 /* JobCreateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobCreateViewModel.swift; sourceTree = "<group>"; };
+		AB2000000000000000000001 /* IntakeModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntakeModels.swift; sourceTree = "<group>"; };
+		AB2000000000000000000002 /* IntakeInboxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntakeInboxView.swift; sourceTree = "<group>"; };
+		AB2000000000000000000003 /* IntakeReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntakeReviewView.swift; sourceTree = "<group>"; };
+		AB3000000000000000000001 /* AINFriendlyError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINFriendlyError.swift; sourceTree = "<group>"; };
+		AB3000000000000000000002 /* AINSortMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINSortMenu.swift; sourceTree = "<group>"; };
 		ACD6A5B54D49B7EF0DF06F20 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		B14C6A482FBBB7A1006C431B /* AINTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AINTheme.swift; sourceTree = "<group>"; };
 		B14C6A4B2FBBB854006C431B /* RestClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestClient.swift; sourceTree = "<group>"; };
@@ -197,6 +219,15 @@
 		B14C6A5C2FBBB8C7006C431B /* AINStates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AINStates.swift; sourceTree = "<group>"; };
 		B14CF43B2FCBE82D002ED72E /* RealtimeChannel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealtimeChannel.swift; sourceTree = "<group>"; };
 		B14CF43D2FCBE865002ED72E /* StorageClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageClient.swift; sourceTree = "<group>"; };
+		B1526CDA2FDB6AEB00964B69 /* InspectorVehiclesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorVehiclesView.swift; sourceTree = "<group>"; };
+		B1526CE02FDB6F3900964B69 /* InspectFlowShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = InspectFlowShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1526CE22FDB6F3900964B69 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		B1526CE52FDB6F3900964B69 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		B1526CE72FDB6F3900964B69 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B1526CEF2FDB6FDD00964B69 /* SharedPayloadModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedPayloadModel.swift; sourceTree = "<group>"; };
+		B1526CF22FDB717700964B69 /* InspectFlowShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = InspectFlowShareExtension.entitlements; sourceTree = "<group>"; };
+		B1526CF32FDB734100964B69 /* ImportInboxStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportInboxStore.swift; sourceTree = "<group>"; };
+		B1526CF62FDB736900964B69 /* ImportInboxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportInboxView.swift; sourceTree = "<group>"; };
 		B18367283123AA618DD18523 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B19AF1582FC4754600D65428 /* MapsLookupService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapsLookupService.swift; sourceTree = "<group>"; };
 		B19AF15B2FC4756B00D65428 /* VehicleEditViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleEditViewModel.swift; sourceTree = "<group>"; };
@@ -215,9 +246,17 @@
 		B34B0507FE00BF36365A62E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C1D2E3F4A5B60718293A4B5C /* Core/Calendar/CalendarSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Calendar/CalendarSyncService.swift; sourceTree = "<group>"; };
 		C22E204106824B601217B467 /* InspectionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectionDetailView.swift; sourceTree = "<group>"; };
+		CK00000000000000000000B1 /* CalendarKitDayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarKitDayView.swift; sourceTree = "<group>"; };
+		CK00000000000000000000C1 /* ScheduleExportMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleExportMenu.swift; sourceTree = "<group>"; };
 		D379B752680E42F56D50324E /* SupabaseClientProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClientProvider.swift; sourceTree = "<group>"; };
 		D7A27A5F7DD012D94E8002F7 /* InspectionModel.xcdatamodeld */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = InspectionModel.xcdatamodeld; sourceTree = "<group>"; };
 		DB1AF4106A07592985CE2D9A /* SupabaseConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseConfig.swift; sourceTree = "<group>"; };
+		DBUG00000000000000000002 /* DebugUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugUser.swift; sourceTree = "<group>"; };
+		DBUG00000000000000000004 /* DebugUserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugUserService.swift; sourceTree = "<group>"; };
+		DBUG00000000000000000006 /* DebugUserPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugUserPickerView.swift; sourceTree = "<group>"; };
+		DBUG00000000000000000008 /* AINRoleBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINRoleBadge.swift; sourceTree = "<group>"; };
+		DBUG0000000000000000000A /* AINDebugBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINDebugBanner.swift; sourceTree = "<group>"; };
+		DBUG0000000000000000000C /* DeveloperToolsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperToolsSection.swift; sourceTree = "<group>"; };
 		DC30D8C9079EF31A07BF1339 /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModel.swift; sourceTree = "<group>"; };
 		E20F1056F3F7E0AB102710E0 /* CarPlayStop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayStop.swift; sourceTree = "<group>"; };
 		E24EB72291667DA6828601AF /* TaxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxView.swift; sourceTree = "<group>"; };
@@ -227,19 +266,22 @@
 		F3C4D2C3F50073D1A27B62CA /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		F71F1C6C6FFBEE562BF3481F /* CarPlayScheduleTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayScheduleTemplate.swift; sourceTree = "<group>"; };
 		FE220E882E0F0F3349EE2545 /* DriveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveView.swift; sourceTree = "<group>"; };
-		DBUG00000000000000000002 /* DebugUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugUser.swift; sourceTree = "<group>"; };
-		DBUG00000000000000000004 /* DebugUserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugUserService.swift; sourceTree = "<group>"; };
-		DBUG00000000000000000006 /* DebugUserPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugUserPickerView.swift; sourceTree = "<group>"; };
-		DBUG00000000000000000008 /* AINRoleBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINRoleBadge.swift; sourceTree = "<group>"; };
-		DBUG0000000000000000000A /* AINDebugBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINDebugBanner.swift; sourceTree = "<group>"; };
-		DBUG0000000000000000000C /* DeveloperToolsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperToolsSection.swift; sourceTree = "<group>"; };
-		AB1000000000000000000001 /* JobCreateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobCreateView.swift; sourceTree = "<group>"; };
-		AB1000000000000000000002 /* JobCreateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobCreateViewModel.swift; sourceTree = "<group>"; };
-		AB2000000000000000000001 /* IntakeModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntakeModels.swift; sourceTree = "<group>"; };
-		AB2000000000000000000002 /* IntakeInboxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntakeInboxView.swift; sourceTree = "<group>"; };
-		AB2000000000000000000003 /* IntakeReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntakeReviewView.swift; sourceTree = "<group>"; };
-		AB3000000000000000000001 /* AINFriendlyError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINFriendlyError.swift; sourceTree = "<group>"; };
-		AB3000000000000000000002 /* AINSortMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINSortMenu.swift; sourceTree = "<group>"; };
+		MILE000000000000000F0001 /* MileageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MileageView.swift; sourceTree = "<group>"; };
+		MILE000000000000000F0002 /* MileageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MileageViewModel.swift; sourceTree = "<group>"; };
+		MILE000000000000000F0003 /* MileageDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MileageDetailView.swift; sourceTree = "<group>"; };
+		MILE000000000000000F0004 /* MileageEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MileageEditView.swift; sourceTree = "<group>"; };
+		MILE000000000000000F0005 /* AddMileageActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMileageActionSheet.swift; sourceTree = "<group>"; };
+		PRF000000000000000000B1 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		PRF000000000000000000C1 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		STG000000000000000000A1 /* AccountSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettingsView.swift; sourceTree = "<group>"; };
+		STG000000000000000000B1 /* OrganizationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizationSettingsView.swift; sourceTree = "<group>"; };
+		STG000000000000000000C1 /* AvailabilitySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailabilitySettingsView.swift; sourceTree = "<group>"; };
+		STG000000000000000000D1 /* EarningsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarningsSettingsView.swift; sourceTree = "<group>"; };
+		STG000000000000000000E1 /* NotificationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsView.swift; sourceTree = "<group>"; };
+		STG000000000000000000F1 /* CalendarSyncSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarSyncSettingsView.swift; sourceTree = "<group>"; };
+		STG000000000000000000G1 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		TMAP000000000000000F0001 /* TripMapSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripMapSnapshot.swift; sourceTree = "<group>"; };
+		TXMS000000000000000F0001 /* MileageDeduction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MileageDeduction.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -247,42 +289,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CK00000000000000000000A3 /* CalendarKit in Frameworks */,
+				CK00000000000000000000A3 /* (null) in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B1526CDD2FDB6F3900964B69 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		PRF000000000000000000001 /* Profile */ = {
-			isa = PBXGroup;
-			children = (
-				PRF000000000000000000B1 /* ProfileView.swift */,
-				PRF000000000000000000C1 /* ProfileViewModel.swift */,
-			);
-			path = Profile;
-			sourceTree = "<group>";
-		};
-		MILE000000000000000A0001 /* Mileage */ = {
-			isa = PBXGroup;
-			children = (
-				MILE000000000000000F0001 /* MileageView.swift */,
-				MILE000000000000000F0002 /* MileageViewModel.swift */,
-				MILE000000000000000F0003 /* MileageDetailView.swift */,
-				MILE000000000000000F0004 /* MileageEditView.swift */,
-				MILE000000000000000F0005 /* AddMileageActionSheet.swift */,
-			);
-			path = Mileage;
-			sourceTree = "<group>";
-		};
-		TXMS000000000000000A0001 /* Tax */ = {
-			isa = PBXGroup;
-			children = (
-				TXMS000000000000000F0001 /* MileageDeduction.swift */,
-			);
-			path = Tax;
-			sourceTree = "<group>";
-		};
 		0ADB5386121963586531221C /* Core */ = {
 			isa = PBXGroup;
 			children = (
@@ -367,6 +387,8 @@
 				FA8DC440A7B38C4B3B50CA0F /* Brand */,
 				E2887F3FBA14E4C8B792B526 /* Models */,
 				0FBA977372182A1DA1E0DAD5 /* UI */,
+				B1526CF32FDB734100964B69 /* ImportInboxStore.swift */,
+				B1526CF62FDB736900964B69 /* ImportInboxView.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -449,6 +471,7 @@
 				D7A27A5F7DD012D94E8002F7 /* InspectionModel.xcdatamodeld */,
 				B34B0507FE00BF36365A62E0 /* Info.plist */,
 				7AFB22251DBA18891B1D9A84 /* AutoInspectorNetwork.entitlements */,
+				B1526CE12FDB6F3900964B69 /* InspectFlowShareExtension */,
 				C863DA5204F95EC573510473 /* Products */,
 				B19AF1562FC472FB00D65428 /* Recovered References */,
 			);
@@ -532,6 +555,15 @@
 			path = Tax;
 			sourceTree = "<group>";
 		};
+		AB20000000000000000000F0 /* Intake */ = {
+			isa = PBXGroup;
+			children = (
+				AB2000000000000000000002 /* IntakeInboxView.swift */,
+				AB2000000000000000000003 /* IntakeReviewView.swift */,
+			);
+			path = Intake;
+			sourceTree = "<group>";
+		};
 		AC6545EDE5A39074A15E6244 /* App */ = {
 			isa = PBXGroup;
 			children = (
@@ -556,6 +588,7 @@
 				STG000000000000000000E1 /* NotificationSettingsView.swift */,
 				STG000000000000000000F1 /* CalendarSyncSettingsView.swift */,
 				STG000000000000000000G1 /* AboutView.swift */,
+				B1526CDA2FDB6AEB00964B69 /* InspectorVehiclesView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -593,6 +626,18 @@
 				B14CF43D2FCBE865002ED72E /* StorageClient.swift */,
 			);
 			path = Storage;
+			sourceTree = "<group>";
+		};
+		B1526CE12FDB6F3900964B69 /* InspectFlowShareExtension */ = {
+			isa = PBXGroup;
+			children = (
+				B1526CF22FDB717700964B69 /* InspectFlowShareExtension.entitlements */,
+				B1526CEF2FDB6FDD00964B69 /* SharedPayloadModel.swift */,
+				B1526CE22FDB6F3900964B69 /* ShareViewController.swift */,
+				B1526CE42FDB6F3900964B69 /* MainInterface.storyboard */,
+				B1526CE72FDB6F3900964B69 /* Info.plist */,
+			);
+			path = InspectFlowShareExtension;
 			sourceTree = "<group>";
 		};
 		B19AF1562FC472FB00D65428 /* Recovered References */ = {
@@ -678,8 +723,18 @@
 			isa = PBXGroup;
 			children = (
 				A612554AFBDBB78BBE69496E /* AutoInspectorNetwork.app */,
+				B1526CE02FDB6F3900964B69 /* InspectFlowShareExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		DBUG00000000000000000001 /* Debug */ = {
+			isa = PBXGroup;
+			children = (
+				DBUG00000000000000000002 /* DebugUser.swift */,
+				DBUG00000000000000000004 /* DebugUserService.swift */,
+			);
+			path = Debug;
 			sourceTree = "<group>";
 		};
 		E2887F3FBA14E4C8B792B526 /* Models */ = {
@@ -690,15 +745,6 @@
 				AB2000000000000000000001 /* IntakeModels.swift */,
 			);
 			path = Models;
-			sourceTree = "<group>";
-		};
-		AB20000000000000000000F0 /* Intake */ = {
-			isa = PBXGroup;
-			children = (
-				AB2000000000000000000002 /* IntakeInboxView.swift */,
-				AB2000000000000000000003 /* IntakeReviewView.swift */,
-			);
-			path = Intake;
 			sourceTree = "<group>";
 		};
 		E75A17A1D8C22BC327FFE28F /* Auth */ = {
@@ -736,13 +782,33 @@
 			path = Trips;
 			sourceTree = "<group>";
 		};
-		DBUG00000000000000000001 /* Debug */ = {
+		MILE000000000000000A0001 /* Mileage */ = {
 			isa = PBXGroup;
 			children = (
-				DBUG00000000000000000002 /* DebugUser.swift */,
-				DBUG00000000000000000004 /* DebugUserService.swift */,
+				MILE000000000000000F0001 /* MileageView.swift */,
+				MILE000000000000000F0002 /* MileageViewModel.swift */,
+				MILE000000000000000F0003 /* MileageDetailView.swift */,
+				MILE000000000000000F0004 /* MileageEditView.swift */,
+				MILE000000000000000F0005 /* AddMileageActionSheet.swift */,
 			);
-			path = Debug;
+			path = Mileage;
+			sourceTree = "<group>";
+		};
+		PRF000000000000000000001 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				PRF000000000000000000B1 /* ProfileView.swift */,
+				PRF000000000000000000C1 /* ProfileViewModel.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+		TXMS000000000000000A0001 /* Tax */ = {
+			isa = PBXGroup;
+			children = (
+				TXMS000000000000000F0001 /* MileageDeduction.swift */,
+			);
+			path = Tax;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -755,18 +821,36 @@
 				F3F3D267CF0FD5307403D537 /* Sources */,
 				349B578E88FC623128D2018B /* Frameworks */,
 				41B260B1D2A5E0B273280C8E /* Resources */,
+				B1526CEE2FDB6F3900964B69 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B1526CE92FDB6F3900964B69 /* PBXTargetDependency */,
+			);
+			name = AutoInspectorNetwork;
+			packageProductDependencies = (
+			);
+			productName = AutoInspectorNetwork;
+			productReference = A612554AFBDBB78BBE69496E /* AutoInspectorNetwork.app */;
+			productType = "com.apple.product-type.application";
+		};
+		B1526CDF2FDB6F3900964B69 /* InspectFlowShareExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B1526CEB2FDB6F3900964B69 /* Build configuration list for PBXNativeTarget "InspectFlowShareExtension" */;
+			buildPhases = (
+				B1526CDC2FDB6F3900964B69 /* Sources */,
+				B1526CDD2FDB6F3900964B69 /* Frameworks */,
+				B1526CDE2FDB6F3900964B69 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = AutoInspectorNetwork;
-			packageProductDependencies = (
-				CK00000000000000000000A2 /* CalendarKit */,
-			);
-			productName = AutoInspectorNetwork;
-			productReference = A612554AFBDBB78BBE69496E /* AutoInspectorNetwork.app */;
-			productType = "com.apple.product-type.application";
+			name = InspectFlowShareExtension;
+			productName = InspectFlowShareExtension;
+			productReference = B1526CE02FDB6F3900964B69 /* InspectFlowShareExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -775,11 +859,14 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1500;
+				LastSwiftUpdateCheck = 1420;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					1EAF6B1C573B98DE03975706 = {
 						CreatedOnToolsVersion = 15.0;
+					};
+					B1526CDF2FDB6F3900964B69 = {
+						CreatedOnToolsVersion = 14.2;
 					};
 				};
 			};
@@ -792,14 +879,14 @@
 				Base,
 			);
 			mainGroup = 8A23CA811AD5DE2F3F9275D1;
-			productRefGroup = C863DA5204F95EC573510473 /* Products */;
 			packageReferences = (
-				CK00000000000000000000A1 /* XCRemoteSwiftPackageReference "CalendarKit" */,
 			);
+			productRefGroup = C863DA5204F95EC573510473 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				1EAF6B1C573B98DE03975706 /* AutoInspectorNetwork */,
+				B1526CDF2FDB6F3900964B69 /* InspectFlowShareExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -814,9 +901,28 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B1526CDE2FDB6F3900964B69 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B1526CE62FDB6F3900964B69 /* MainInterface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		B1526CDC2FDB6F3900964B69 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B1526CE32FDB6F3900964B69 /* ShareViewController.swift in Sources */,
+				B1526CF52FDB734100964B69 /* ImportInboxStore.swift in Sources */,
+				B1526CF82FDB736900964B69 /* ImportInboxView.swift in Sources */,
+				B1526CF12FDB6FDD00964B69 /* SharedPayloadModel.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F3F3D267CF0FD5307403D537 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -833,6 +939,7 @@
 				STG000000000000000000G2 /* AboutView.swift in Sources */,
 				CK00000000000000000000B2 /* CalendarKitDayView.swift in Sources */,
 				CK00000000000000000000C2 /* ScheduleExportMenu.swift in Sources */,
+				B1526CF72FDB736900964B69 /* ImportInboxView.swift in Sources */,
 				MILE000000000000000B0001 /* MileageView.swift in Sources */,
 				MILE000000000000000B0002 /* MileageViewModel.swift in Sources */,
 				MILE000000000000000B0003 /* MileageDetailView.swift in Sources */,
@@ -840,6 +947,7 @@
 				MILE000000000000000B0005 /* AddMileageActionSheet.swift in Sources */,
 				TXMS000000000000000B0001 /* MileageDeduction.swift in Sources */,
 				TMAP000000000000000B0001 /* TripMapSnapshot.swift in Sources */,
+				B1526CF42FDB734100964B69 /* ImportInboxStore.swift in Sources */,
 				B19AF1682FC4756C00D65428 /* VehicleWriteModels.swift in Sources */,
 				B14CF43C2FCBE82D002ED72E /* RealtimeChannel.swift in Sources */,
 				C9AC8F291A3142999D91651E /* AutoInspectorNetworkApp.swift in Sources */,
@@ -864,6 +972,7 @@
 				22827134EA78326A414A5A53 /* SupabaseClientProvider.swift in Sources */,
 				B14C6A602FBBB8C7006C431B /* AINStates.swift in Sources */,
 				D3E926D8BDC9849D0CCA295B /* SupabaseConfig.swift in Sources */,
+				B1526CDB2FDB6AEB00964B69 /* InspectorVehiclesView.swift in Sources */,
 				4C14FB0B4CDF4D41148656D7 /* SupabaseService.swift in Sources */,
 				E95E5C80C7268CE08A42ECA5 /* PushRegistrar.swift in Sources */,
 				B14C6A552FBBB854006C431B /* FunctionsClient.swift in Sources */,
@@ -932,10 +1041,29 @@
 				AB20000000000000000000B3 /* IntakeReviewView.swift in Sources */,
 				AB30000000000000000000B1 /* AINFriendlyError.swift in Sources */,
 				AB30000000000000000000B2 /* AINSortMenu.swift in Sources */,
-				);
-				runOnlyForDeploymentPostprocessing = 0;
-			};
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B1526CE92FDB6F3900964B69 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B1526CDF2FDB6F3900964B69 /* InspectFlowShareExtension */;
+			targetProxy = B1526CE82FDB6F3900964B69 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		B1526CE42FDB6F3900964B69 /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B1526CE52FDB6F3900964B69 /* Base */,
+			);
+			name = MainInterface.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		2D7C126B1DD510A133F9BB7F /* Debug */ = {
@@ -978,6 +1106,7 @@
 		4ECAA958A3DFDDA2302A923A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = AutoInspectorNetwork.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -1005,6 +1134,7 @@
 		607452B9685AD870712F396D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = AutoInspectorNetwork.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -1066,6 +1196,113 @@
 			};
 			name = Release;
 		};
+		B1526CEC2FDB6F3900964B69 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = InspectFlowShareExtension/InspectFlowShareExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 264U37X2A5;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = InspectFlowShareExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = InspectFlowShareExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.autoinspectornetwork.ios.InspectFlowShareExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B1526CED2FDB6F3900964B69 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = InspectFlowShareExtension/InspectFlowShareExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 264U37X2A5;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = InspectFlowShareExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = InspectFlowShareExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.autoinspectornetwork.ios.InspectFlowShareExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1087,26 +1324,16 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		B1526CEB2FDB6F3900964B69 /* Build configuration list for PBXNativeTarget "InspectFlowShareExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B1526CEC2FDB6F3900964B69 /* Debug */,
+				B1526CED2FDB6F3900964B69 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 	};
 	rootObject = BDDA1F48097C0373FD15D0DD /* Project object */;
-/* Begin XCRemoteSwiftPackageReference section */
-		CK00000000000000000000A1 /* XCRemoteSwiftPackageReference "CalendarKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/richardtop/CalendarKit.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.5;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		CK00000000000000000000A2 /* CalendarKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CK00000000000000000000A1 /* XCRemoteSwiftPackageReference "CalendarKit" */;
-			productName = CalendarKit;
-		};
-/* End XCSwiftPackageProductDependency section */
-
 }

@@ -25,6 +25,13 @@
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>inspectflow</string>
+		</dict>
+	</array>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -48,7 +55,6 @@
 	<string>Auto Inspector syncs scheduled jobs to your device calendar.</string>
 	<key>NSCalendarsWriteOnlyAccessUsageDescription</key>
 	<string>Auto Inspector adds scheduled jobs to your device calendar.</string>
-
 	<key>NSCameraUsageDescription</key>
 	<string>Capture inspection photos of vehicles, damage, and required documentation.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>

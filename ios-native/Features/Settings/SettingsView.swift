@@ -31,7 +31,7 @@ struct SettingsView: View {
                 Section("Work") {
                     NavigationLink("Availability", destination: AvailabilitySettingsView())
                     NavigationLink("Earnings & Tax", destination: EarningsSettingsView())
-                    NavigationLink("Vehicles", destination: VehiclesView())
+                    NavigationLink("My Vehicles", destination: InspectorVehiclesView())
                 }
 
                 Section("Device") {
