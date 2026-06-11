@@ -36,88 +36,37 @@ final class InspectorVehiclesViewModel: ObservableObject {
     @Published var errorMessage: String?
 
     func load() async {
-        isLoading = true
-
-        defer {
-            isLoading = false
+        guard let userID = SupabaseService.shared.currentUserID else {
+            errorMessage = "No signed-in user."
+            return
         }
-
+        isLoading = true
+        defer { isLoading = false }
         do {
-            let userID = try await currentUserID()
-
-            let response: [InspectorVehicle] =
-                try await SupabaseService.shared.client
-                    .db
-                    .from("inspector_vehicles")
-                    .select()
-                    .eq("user_id", value: userID.uuidString)
-                    .eq("is_archived", value: false)
-                    .order("is_default", ascending: false)
-                    .execute()
-                    .value
-
-            vehicles = response
-
+            vehicles = try await SupabaseService.shared.fetchInspectorVehicles(userId: userID)
         } catch {
             errorMessage = error.localizedDescription
         }
     }
 
     func delete(_ vehicle: InspectorVehicle) async {
-
         do {
-            try await SupabaseService.shared.client
-                .db
-                .from("inspector_vehicles")
-                .update([
-                    "is_archived": true
-                ])
-                .eq("id", value: vehicle.id.uuidString)
-                .execute()
-
+            try await SupabaseService.shared.archiveInspectorVehicle(id: vehicle.id)
             await load()
-
         } catch {
             errorMessage = error.localizedDescription
         }
     }
 
     func setDefault(_ vehicle: InspectorVehicle) async {
-
+        guard let userID = SupabaseService.shared.currentUserID else { return }
         do {
-
-            let userID = try await currentUserID()
-
-            try await SupabaseService.shared.client
-                .db
-                .from("inspector_vehicles")
-                .update([
-                    "is_default": false
-                ])
-                .eq("user_id", value: userID.uuidString)
-                .execute()
-
-            try await SupabaseService.shared.client
-                .db
-                .from("inspector_vehicles")
-                .update([
-                    "is_default": true
-                ])
-                .eq("id", value: vehicle.id.uuidString)
-                .execute()
-
+            try await SupabaseService.shared.clearDefaultInspectorVehicle(userId: userID)
+            try await SupabaseService.shared.setDefaultInspectorVehicle(id: vehicle.id)
             await load()
-
         } catch {
             errorMessage = error.localizedDescription
         }
-    }
-
-    private func currentUserID() async throws -> UUID {
-
-        let session = try await SupabaseService.shared.client.auth.session
-
-        return session.user.id
     }
 }
 
@@ -126,19 +75,13 @@ final class InspectorVehiclesViewModel: ObservableObject {
 struct InspectorVehiclesView: View {
 
     @StateObject private var vm = InspectorVehiclesViewModel()
-
     @State private var showingAdd = false
 
     var body: some View {
-
         List {
-
             ForEach(vm.vehicles) { vehicle in
-
                 VStack(alignment: .leading, spacing: 6) {
-
                     HStack {
-
                         Text(
                             [
                                 vehicle.year.map(String.init),
@@ -162,35 +105,19 @@ struct InspectorVehiclesView: View {
                         }
                     }
 
-                    if let nickname = vehicle.nickname,
-                       !nickname.isEmpty {
-
-                        Text(nickname)
-                            .foregroundColor(.secondary)
+                    if let nickname = vehicle.nickname, !nickname.isEmpty {
+                        Text(nickname).foregroundColor(.secondary)
                     }
-
-                    if let plate = vehicle.license_plate,
-                       !plate.isEmpty {
-
-                        Text(plate)
-                            .foregroundColor(.secondary)
+                    if let plate = vehicle.license_plate, !plate.isEmpty {
+                        Text(plate).foregroundColor(.secondary)
                     }
                 }
                 .swipeActions {
-
                     Button("Default") {
-
-                        Task {
-                            await vm.setDefault(vehicle)
-                        }
+                        Task { await vm.setDefault(vehicle) }
                     }
-
                     Button(role: .destructive) {
-
-                        Task {
-                            await vm.delete(vehicle)
-                        }
-
+                        Task { await vm.delete(vehicle) }
                     } label: {
                         Label("Archive", systemImage: "trash")
                     }
@@ -199,40 +126,22 @@ struct InspectorVehiclesView: View {
         }
         .navigationTitle("My Vehicles")
         .toolbar {
-
             ToolbarItem(placement: .navigationBarTrailing) {
-
-                Button {
-
-                    showingAdd = true
-
-                } label: {
-                    Image(systemName: "plus")
-                }
+                Button { showingAdd = true } label: { Image(systemName: "plus") }
             }
         }
         .sheet(isPresented: $showingAdd) {
-
             AddInspectorVehicleView {
-                Task {
-                    await vm.load()
-                }
+                Task { await vm.load() }
             }
         }
-        .task {
-            await vm.load()
-        }
+        .task { await vm.load() }
         .alert(
             "Error",
             isPresented: .constant(vm.errorMessage != nil)
         ) {
-
-            Button("OK") {
-                vm.errorMessage = nil
-            }
-
+            Button("OK") { vm.errorMessage = nil }
         } message: {
-
             Text(vm.errorMessage ?? "")
         }
     }
@@ -243,7 +152,6 @@ struct InspectorVehiclesView: View {
 struct AddInspectorVehicleView: View {
 
     @Environment(\.dismiss) private var dismiss
-
     let onSaved: () -> Void
 
     @State private var nickname = ""
@@ -251,15 +159,12 @@ struct AddInspectorVehicleView: View {
     @State private var make = ""
     @State private var model = ""
     @State private var plate = ""
-
     @State private var saving = false
+    @State private var errorMessage: String?
 
     var body: some View {
-
         NavigationStack {
-
             Form {
-
                 TextField("Nickname", text: $nickname)
                 TextField("Year", text: $year)
                 TextField("Make", text: $make)
@@ -268,63 +173,42 @@ struct AddInspectorVehicleView: View {
             }
             .navigationTitle("Add Vehicle")
             .toolbar {
-
                 ToolbarItem(placement: .cancellationAction) {
-
-                    Button("Cancel") {
-                        dismiss()
-                    }
+                    Button("Cancel") { dismiss() }
                 }
-
                 ToolbarItem(placement: .confirmationAction) {
-
                     Button("Save") {
-
-                        Task {
-                            await save()
-                        }
+                        Task { await save() }
                     }
                     .disabled(saving)
                 }
             }
+            .alert("Error", isPresented: .constant(errorMessage != nil)) {
+                Button("OK") { errorMessage = nil }
+            } message: { Text(errorMessage ?? "") }
         }
     }
 
     private func save() async {
-
-        saving = true
-
-        defer {
-            saving = false
+        guard let userID = SupabaseService.shared.currentUserID else {
+            errorMessage = "No signed-in user."
+            return
         }
-
+        saving = true
+        defer { saving = false }
         do {
-
-            let session =
-                try await SupabaseService.shared.client.auth.session
-
-            try await SupabaseService.shared.client
-                .db
-                .from("inspector_vehicles")
-                .insert([
-                    [
-                        "user_id": session.user.id.uuidString,
-                        "nickname": nickname,
-                        "year": Int(year) as Any,
-                        "make": make,
-                        "model": model,
-                        "license_plate": plate,
-                        "is_default": false,
-                        "is_archived": false
-                    ]
-                ])
-                .execute()
-
+            try await SupabaseService.shared.createInspectorVehicle(
+                userId: userID,
+                nickname: nickname,
+                year: Int(year),
+                make: make,
+                model: model,
+                plate: plate
+            )
             onSaved()
             dismiss()
-
         } catch {
-            print(error)
+            errorMessage = error.localizedDescription
         }
     }
 }
