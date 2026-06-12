@@ -121,7 +121,7 @@ struct MileageDetailView: View {
         defer { isDeleting = false }
         do {
             _ = try await SupabaseService.shared.deleteTrip(tripId: liveTrip.id)
-            AuditLogger.log(action: "delete", entityType: "trip", entityId: liveTrip.id)
+           await AuditLogger.log(action: "delete", entityType: "trip", entityId: liveTrip.id)
             onChanged()
             dismiss()
         } catch {

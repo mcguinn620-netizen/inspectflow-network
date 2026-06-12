@@ -81,7 +81,7 @@ struct MileageEditView: View {
         fields["note"] = note.isEmpty ? NSNull() : note
         do {
             _ = try await SupabaseService.shared.updateTrip(tripId: trip.id, fields: fields)
-            AuditLogger.log(action: "update", entityType: "trip", entityId: trip.id,
+            await AuditLogger.log(action: "update", entityType: "trip", entityId: trip.id,
                             changes: ["job_category": jobCategory])
             let updated = Trip(
                 id: trip.id, userID: trip.userID, organizationID: trip.organizationID,
