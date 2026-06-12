@@ -743,6 +743,7 @@
 			isa = PBXGroup;
 			children = (
 				0F91FE72E2545B9592848B66 /* DomainModels.swift */,
+				SHRDPM00000000000000A1 /* SharedPayloadModel.swift */,
 				77A8D7405D4EEF6598B26AE8 /* InspectionTemplateModels.swift */,
 				AB2000000000000000000001 /* IntakeModels.swift */,
 			);
