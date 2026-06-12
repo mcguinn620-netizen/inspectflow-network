@@ -1021,6 +1021,7 @@
 				77868B6AA543DF62CBA6C5BC /* VehiclesViewModel.swift in Sources */,
 				944162CDC4D04FE05C1FE4A4 /* AINBrand.swift in Sources */,
 				58B774BAB548F3CDEEFE984F /* DomainModels.swift in Sources */,
+				SHRDPM00000000000000B1 /* SharedPayloadModel.swift in Sources */,
 				B14C6A572FBBB854006C431B /* AuthClient.swift in Sources */,
 				47A5D4E5D08E65962F7E0954 /* InspectionTemplateModels.swift in Sources */,
 				A815EF4C8EF422D1E650384F /* SyncStatusView.swift in Sources */,
