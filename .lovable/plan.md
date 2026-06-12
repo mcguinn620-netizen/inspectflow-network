@@ -1,87 +1,75 @@
 ## Goal
-Resolve all reported Xcode build errors so `AutoInspectorNetwork` + `InspectFlowShareExtension` targets compile and the CalendarKit Schedule view stays wired up.
+Finish wiring the CalendarKit Swift Package into `AutoInspectorNetwork.xcodeproj` so `import CalendarKit` resolves and `CalendarKitDayView` renders (not the fallback placeholder).
 
-## Root causes
+## Current state (verified)
+- Source files `CalendarKitDayView.swift` + `ScheduleExportMenu.swift` are registered correctly (PBXBuildFile, PBXFileReference, Schedule group, Sources phase) — OK.
+- `packageReferences` array on PBXProject exists but is **empty** (line 882).
+- `packageProductDependencies` on the `AutoInspectorNetwork` target exists but is **empty** (line 832).
+- Frameworks build phase has `CK00000000000000000000A3 /* (null) in Frameworks */` with **no `productRef`** — malformed entry, renders as `(null)`.
+- No `XCRemoteSwiftPackageReference` section and no `XCSwiftPackageProductDependency` section exist anywhere in the file.
 
-1. **`InspectFlowShareExtension/Info.plist`** is missing the outer root `</dict>` — there are 4 `<dict>` opens but only 3 closes. XCBUtil error 2 = malformed XML.
-2. **`SharedImport` type does not exist.** Both `Shared/Models/SharedPayloadModel.swift` and `InspectFlowShareExtension/SharedPayloadModel.swift` contain only `import Foundation`. `ShareViewController`, `ImportInboxStore`, `ImportInboxView` all reference `SharedImport` and its `kind` enum.
-3. **`ImportInboxView` errors** cascade from (2) — once `SharedImport` exists with `id`, `title: String`, and `kind: Kind (rawValue: String)`, the `List`/`Text` bindings resolve. Also: `ImportInboxStore` is `@MainActor`-isolated, so `@StateObject ... = ImportInboxStore()` from a non-isolated `View` init triggers concurrency complaints — drop `@MainActor` from the class (the `@Published` updates still happen on main because the call sites are `@MainActor`).
-4. **`AutoInspectorNetworkApp.swift`** chains `.onOpenURL` on `WindowGroup` (Scene), and references `appState.selectedTab = .inbox` which doesn't exist on `AppState`. Move `.onOpenURL` onto `RootView` (a `View`) inside the `WindowGroup`, and instead of mutating a non-existent tab, post a `NotificationCenter` event (or just no-op for now) so the app builds. `MainTabView` can observe later.
-5. **`InspectorVehiclesView.swift`** calls `SupabaseService.shared.client` directly (private), uses labeled `eq("col", value:)` (connector uses unlabeled `eq("col", value)`), and reads `.execute().value` (connector returns the decoded value from `execute()` directly, not a `Data.value`). Also `client.auth.session` doesn't exist — pattern in repo is `SupabaseService.shared.currentUserID`.
+The previous `add_calendarkit_schedule.py` run only succeeded on the source-file edits; the four package-related regex substitutions silently no-oped because they didn't match the actual pbxproj layout (empty `( )` blocks with no anchor line, and `\Z` matching whitespace at EOF).
 
 ## Changes
 
-### 1. `ios-native/InspectFlowShareExtension/Info.plist`
-Add the missing closing `</dict>` before `</plist>` so the structure is root-`<dict>` → `NSExtension` `<dict>` → `NSExtensionAttributes` `<dict>` → `NSExtensionActivationRule` `<dict>` with matching closes.
+### 1. `ios-native/AutoInspectorNetwork.xcodeproj/project.pbxproj`
+Direct surgical edits (no script needed — five small `line_replace` calls):
 
-### 2. Define `SharedImport` (shared by both targets)
-Populate both `ios-native/Shared/Models/SharedPayloadModel.swift` and `ios-native/InspectFlowShareExtension/SharedPayloadModel.swift` with the same struct:
-
-```swift
-public struct SharedImport: Identifiable, Codable, Hashable {
-    public enum Kind: String, Codable { case webLink = "web_link", pdf = "pdf" }
-    public let id: UUID
-    public let kind: Kind
-    public let title: String
-    public let url: String?
-    public let localFile: String?
-    public let createdAt: Date
-}
+a. **Fix the malformed Frameworks build-file** (line 102):
+```
+CK00000000000000000000A3 /* CalendarKit in Frameworks */ = {isa = PBXBuildFile; productRef = CK00000000000000000000A2 /* CalendarKit */; };
 ```
 
-Keep both copies identical (the extension target can't import the app module). The pbxproj already lists both files.
-
-### 3. `ios-native/Shared/ImportInboxStore.swift`
-Remove the `@MainActor` annotation on the class. Keep `@Published` properties; SwiftUI delivers updates on main. This fixes the property-wrapper / `Binding` cascade errors in `ImportInboxView`.
-
-### 4. `ios-native/App/AutoInspectorNetworkApp.swift`
-Move `.onOpenURL` inside the `WindowGroup` onto `RootView`, and replace the missing tab mutation with a `NotificationCenter.default.post(name: .init("inspectflow.openImports"), object: nil)`. No `AppState` API change required; `MainTabView` can subscribe later when an Imports tab is added.
-
-### 5. `ios-native/Features/Settings/InspectorVehiclesView.swift`
-Stop reaching into the private connector. Add four small wrappers to `SupabaseService` (next to other table helpers) and call them from the view-model:
-
-```swift
-// SupabaseService.swift
-func fetchInspectorVehicles(userId: UUID) async throws -> [InspectorVehicle] {
-    try await client.db.from("inspector_vehicles")
-        .select()
-        .eq("user_id", userId.uuidString)
-        .eq("is_archived", false)
-        .order("is_default", ascending: false)
-        .execute()
-}
-func archiveInspectorVehicle(id: UUID) async throws {
-    _ = try await client.db.from("inspector_vehicles")
-        .update(["is_archived": true]).eq("id", id.uuidString).execute()
-}
-func clearDefaultInspectorVehicle(userId: UUID) async throws {
-    _ = try await client.db.from("inspector_vehicles")
-        .update(["is_default": false]).eq("user_id", userId.uuidString).execute()
-}
-func setDefaultInspectorVehicle(id: UUID) async throws {
-    _ = try await client.db.from("inspector_vehicles")
-        .update(["is_default": true]).eq("id", id.uuidString).execute()
-}
-func createInspectorVehicle(userId: UUID, nickname: String, year: Int?, make: String, model: String, plate: String) async throws {
-    var payload: [String: Any] = [
-        "user_id": userId.uuidString,
-        "nickname": nickname, "make": make, "model": model,
-        "license_plate": plate, "is_default": false, "is_archived": false
-    ]
-    if let year { payload["year"] = year }
-    _ = try await client.db.from("inspector_vehicles").insert(payload).execute()
-}
+b. **Populate `packageProductDependencies`** on the `AutoInspectorNetwork` target (lines 832-833):
+```
+packageProductDependencies = (
+    CK00000000000000000000A2 /* CalendarKit */,
+);
 ```
 
-Rewrite the view-model + `AddInspectorVehicleView.save()` to call these wrappers and obtain the user via `SupabaseService.shared.currentUserID`. Removes every "client is inaccessible / Data has no value / extraneous label" error.
+c. **Populate `packageReferences`** on the PBXProject (lines 882-883):
+```
+packageReferences = (
+    CK00000000000000000000A1 /* XCRemoteSwiftPackageReference "CalendarKit" */,
+);
+```
 
-### 6. CalendarKit Schedule wiring (verify)
-No code change expected — `CalendarKitDayView` already gates on `#if canImport(CalendarKit)`, `ScheduleView` consumes it, and `add_calendarkit_schedule.py` registered files + SPM. As part of this fix, re-run a quick read of `ScheduleView.swift` to confirm it instantiates `CalendarKitDayView` (not the fallback) and that the `CalendarKit` package dependency is still in `project.pbxproj`. If missing, re-run `ios-native/scripts/add_calendarkit_schedule.py`.
+d. **Append the two missing SPM sections** immediately before the final `};\n}` rootObject closer:
+```
+/* Begin XCRemoteSwiftPackageReference section */
+    CK00000000000000000000A1 /* XCRemoteSwiftPackageReference "CalendarKit" */ = {
+        isa = XCRemoteSwiftPackageReference;
+        repositoryURL = "https://github.com/richardtop/CalendarKit.git";
+        requirement = {
+            kind = upToNextMajorVersion;
+            minimumVersion = 1.1.5;
+        };
+    };
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+    CK00000000000000000000A2 /* CalendarKit */ = {
+        isa = XCSwiftPackageProductDependency;
+        package = CK00000000000000000000A1 /* XCRemoteSwiftPackageReference "CalendarKit" */;
+        productName = CalendarKit;
+    };
+/* End XCSwiftPackageProductDependency section */
+```
+
+### 2. `ios-native/scripts/add_calendarkit_schedule.py` (optional hardening)
+Update the idempotency guard and the failing regexes so future re-runs are safe:
+- Match empty `packageReferences = ( )` / `packageProductDependencies = ( )` blocks (not just a non-existent anchor line).
+- Replace `\Z` anchor with a search for the last `}\n}` pair.
+- Detect "partial application" (source files present but package missing) and only inject the missing pieces.
+
+This is documentation-only insurance; the pbxproj edits in step 1 are what actually fix the build.
 
 ## Out of scope
-No DB migration, no UI redesign, no new files beyond the two `SharedPayloadModel.swift` bodies. No changes to web app.
+- No changes to Swift source, Info.plist, or the share extension.
+- No CalendarKit version bump.
+- No workspace/xcconfig edits — Xcode will resolve the package on next open / `xcodebuild -resolvePackageDependencies`.
 
 ## Validation
-- Build `AutoInspectorNetwork` scheme (Release) — expect 0 errors.
-- Build `InspectFlowShareExtension` target — plist parses, `SharedImport` resolves.
-- Smoke-test Schedule tab opens the CalendarKit day view (not the fallback "CalendarKit is unavailable" placeholder).
+- Open the project (or run `xcodebuild -resolvePackageDependencies -workspace AutoInspectorNetwork.xcworkspace -scheme AutoInspectorNetwork`) — CalendarKit downloads to `~/Library/Developer/Xcode/DerivedData/.../SourcePackages`.
+- Archive: `xcodebuild archive -workspace … -scheme AutoInspectorNetwork -configuration Release` — expect 0 errors and no `(null) in Frameworks` warning.
+- Launch Schedule tab — verify the CalendarKit `DayView` renders (timeline with hour ruler), not the "CalendarKit is unavailable" fallback.
