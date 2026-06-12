@@ -22,6 +22,7 @@
 		4FF47DA50B05C0821B454724 /* AuditLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA88B2A2DB1B069BA0AC5D6 /* AuditLogger.swift */; };
 		54946F1D72DD87A440D6E2E0 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C4D2C3F50073D1A27B62CA /* AppState.swift */; };
 		58B774BAB548F3CDEEFE984F /* DomainModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F91FE72E2545B9592848B66 /* DomainModels.swift */; };
+		SHRDPM00000000000000B1 /* SharedPayloadModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = SHRDPM00000000000000A1 /* SharedPayloadModel.swift */; };
 		5F3D72571A5C23B0BEE82D59 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B26AAB9CAAB4FDC8CBA42 /* SettingsView.swift */; };
 		69DC0955514B0B8A66814FD1 /* TripsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0D42E0A074E62DCB16F8C7 /* TripsView.swift */; };
 		6AEDBA679D3FA0B61C54ADD1 /* VehiclesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D286DB64C0A8A338F090EB8 /* VehiclesView.swift */; };
@@ -159,6 +160,7 @@
 /* Begin PBXFileReference section */
 		04ABF7475DA3AC1CBC0886FA /* RealtimeSubscriptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealtimeSubscriptions.swift; sourceTree = "<group>"; };
 		0F91FE72E2545B9592848B66 /* DomainModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainModels.swift; sourceTree = "<group>"; };
+		SHRDPM00000000000000A1 /* SharedPayloadModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedPayloadModel.swift; sourceTree = "<group>"; };
 		11615170D089568C51DDF2CE /* PhotoCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCapture.swift; sourceTree = "<group>"; };
 		1A230A8C60F3599C93D16788 /* InspectionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectionsViewModel.swift; sourceTree = "<group>"; };
 		1B24CC01A1F4CC9A27D01698 /* CarPlayNavigationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayNavigationCoordinator.swift; sourceTree = "<group>"; };
@@ -741,6 +743,7 @@
 			isa = PBXGroup;
 			children = (
 				0F91FE72E2545B9592848B66 /* DomainModels.swift */,
+				SHRDPM00000000000000A1 /* SharedPayloadModel.swift */,
 				77A8D7405D4EEF6598B26AE8 /* InspectionTemplateModels.swift */,
 				AB2000000000000000000001 /* IntakeModels.swift */,
 			);
@@ -1018,6 +1021,7 @@
 				77868B6AA543DF62CBA6C5BC /* VehiclesViewModel.swift in Sources */,
 				944162CDC4D04FE05C1FE4A4 /* AINBrand.swift in Sources */,
 				58B774BAB548F3CDEEFE984F /* DomainModels.swift in Sources */,
+				SHRDPM00000000000000B1 /* SharedPayloadModel.swift in Sources */,
 				B14C6A572FBBB854006C431B /* AuthClient.swift in Sources */,
 				47A5D4E5D08E65962F7E0954 /* InspectionTemplateModels.swift in Sources */,
 				A815EF4C8EF422D1E650384F /* SyncStatusView.swift in Sources */,

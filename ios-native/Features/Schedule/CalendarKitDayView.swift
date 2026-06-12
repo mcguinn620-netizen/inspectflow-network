@@ -39,27 +39,28 @@ struct CalendarKitDayView: UIViewControllerRepresentable {
     }
 }
 
-/// `JobEvent` round-trips a `Job` through CalendarKit's `EventDescriptor`
-/// protocol so selections and drags can be mapped back to our domain model.
-final class JobEvent: Event {
-    let job: Job
-    init(job: Job, conflicts: [ScheduleConflict]) {
-        self.job = job
-        super.init()
+/// Factory that builds a CalendarKit `Event` from a `Job` and attaches the
+/// originating job via `userInfo` so callbacks can recover it.
+enum JobEventFactory {
+    static func make(job: Job, conflicts: [ScheduleConflict]) -> Event {
+        let event = Event()
         let start = job.scheduledAt ?? Date()
         let end = Calendar.current.date(byAdding: .minute, value: 90, to: start) ?? start.addingTimeInterval(5400)
-        dateInterval = DateInterval(start: start, end: end)
-        isAllDay = false
-        text = job.title + "\n" + (job.customerName ?? job.location ?? "")
-        color = JobEvent.color(for: job.status)
-        backgroundColor = color.withAlphaComponent(0.18)
-        textColor = .label
+        event.dateInterval = DateInterval(start: start, end: end)
+        event.isAllDay = false
+        var text = job.title + "\n" + (job.customerName ?? job.location ?? "")
+        event.color = color(for: job.status)
+        event.backgroundColor = event.color.withAlphaComponent(0.18)
+        event.textColor = .label
         if !conflicts.isEmpty {
-            lineBreakMode = .byTruncatingTail
-            color = .systemRed
-            backgroundColor = UIColor.systemRed.withAlphaComponent(0.18)
-            text = "⚠︎ " + (text ?? "")
+            event.lineBreakMode = .byTruncatingTail
+            event.color = .systemRed
+            event.backgroundColor = UIColor.systemRed.withAlphaComponent(0.18)
+            text = "⚠︎ " + text
         }
+        event.text = text
+        event.userInfo = job
+        return event
     }
 
     private static func color(for status: String) -> UIColor {
@@ -85,17 +86,21 @@ final class ScheduleDayViewController: DayViewController {
         let cal = Calendar.current
         return jobs.compactMap { job in
             guard let start = job.scheduledAt, cal.isDate(start, inSameDayAs: date) else { return nil }
-            return JobEvent(job: job, conflicts: conflicts[job.id] ?? [])
+            return JobEventFactory.make(job: job, conflicts: conflicts[job.id] ?? [])
         }
     }
 
+    private func job(from descriptor: EventDescriptor?) -> Job? {
+        (descriptor as? Event)?.userInfo as? Job
+    }
+
     override func dayViewDidSelectEventView(_ eventView: EventView) {
-        guard let job = (eventView.descriptor as? JobEvent)?.job else { return }
+        guard let job = job(from: eventView.descriptor) else { return }
         bridge?.parent.onSelect(job)
     }
 
     override func dayViewDidLongPressEventView(_ eventView: EventView) {
-        guard let job = (eventView.descriptor as? JobEvent)?.job else { return }
+        guard let job = job(from: eventView.descriptor) else { return }
         bridge?.parent.onLongPress(job)
     }
 
@@ -103,16 +108,15 @@ final class ScheduleDayViewController: DayViewController {
         super.dayView(dayView: dayView, willMoveTo: date)
     }
 
-    override func dayViewDidLongPressTimelineAtHour(_ hour: Int) { /* no-op */ }
-
     override func dayView(dayView: DayView, didUpdate event: EventDescriptor) {
         defer { endEventEditing() }
         guard canReschedule,
-              let descriptor = event.editedEvent as? JobEvent ?? event as? JobEvent
+              let job = job(from: event.editedEvent) ?? job(from: event)
         else { return }
         let newStart = (event.editedEvent?.dateInterval.start) ?? event.dateInterval.start
-        bridge?.parent.onReschedule(descriptor.job, newStart)
+        bridge?.parent.onReschedule(job, newStart)
     }
+
 }
 #else
 import SwiftUI
