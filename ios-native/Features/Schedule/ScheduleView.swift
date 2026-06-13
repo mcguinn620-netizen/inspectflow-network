@@ -105,7 +105,18 @@ struct ScheduleView: View {
         return role == "dispatcher" || role == "admin" || role == "company_owner"
     }
 
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
     var body: some View {
+        if sizeClass == .regular {
+            ScheduleRootView()
+                .environmentObject(appState)
+        } else {
+            compactBody
+        }
+    }
+
+    private var compactBody: some View {
         NavigationStack {
             VStack(spacing: 0) {
                 Picker("View", selection: $viewMode) {
