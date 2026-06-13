@@ -74,12 +74,13 @@ def add_file_refs(text: str) -> str:
             bf_line + "/* End PBXBuildFile section */",
             1,
         )
-        # PBXFileReference entry — use path with sourceTree SOURCE_ROOT so Xcode
-        # locates the file without requiring it to be inside a registered group.
+        # PBXFileReference entry — paths are relative to SOURCE_ROOT (the
+        # ios-native/ directory that contains the .xcodeproj), matching the
+        # convention used by every other Swift source in this project.
         fr_line = (
             f"\t\t{file_uuid} /* {name} */ = "
             f"{{isa = PBXFileReference; lastKnownFileType = sourcecode.swift; "
-            f"name = {name}; path = ios-native/{path}; sourceTree = SOURCE_ROOT; }};\n"
+            f"path = {path}; sourceTree = \"<group>\"; }};\n"
         )
         text = text.replace(
             "/* End PBXFileReference section */",
