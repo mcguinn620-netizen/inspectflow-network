@@ -118,7 +118,9 @@ struct EventInspectorView: View {
             Section("Category") {
                 TextField("Category", text: Binding(
                     get: { meta.category ?? "" },
-                    set: { update { $0.category = $1.isEmpty ? nil : $1 } ($0) }
+                    set: { newValue in
+                        update { $0.category = newValue.isEmpty ? nil : newValue }
+                    }
                 ))
             }
             Section("Tags") {
