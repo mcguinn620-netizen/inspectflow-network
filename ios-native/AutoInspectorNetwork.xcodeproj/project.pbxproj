@@ -100,7 +100,6 @@
 		C9AC8F291A3142999D91651E /* AutoInspectorNetworkApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB3449D752F3F7896AB664C /* AutoInspectorNetworkApp.swift */; };
 		CAA12E02BBA8BC2163FE5268 /* CarPlayStopListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878503DB7BEF2B4C9F0F7957 /* CarPlayStopListTemplate.swift */; };
 		CF060EDA55214F8807267183 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795A386ABB1A4064D751A091 /* PersistenceController.swift */; };
-		CK00000000000000000000A3 /* CalendarKit in Frameworks */ = {isa = PBXBuildFile; productRef = CK00000000000000000000A2 /* CalendarKit */; };
 		CK00000000000000000000B2 /* CalendarKitDayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CK00000000000000000000B1 /* CalendarKitDayView.swift */; };
 		CK00000000000000000000C2 /* ScheduleExportMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = CK00000000000000000000C1 /* ScheduleExportMenu.swift */; };
 		D3E926D8BDC9849D0CCA295B /* SupabaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1AF4106A07592985CE2D9A /* SupabaseConfig.swift */; };
@@ -131,6 +130,15 @@
 		STG000000000000000000G2 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STG000000000000000000G1 /* AboutView.swift */; };
 		TMAP000000000000000B0001 /* TripMapSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = TMAP000000000000000F0001 /* TripMapSnapshot.swift */; };
 		TXMS000000000000000B0001 /* MileageDeduction.swift in Sources */ = {isa = PBXBuildFile; fileRef = TXMS000000000000000F0001 /* MileageDeduction.swift */; };
+		EKSVC0000000000000000B1 /* EventKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EKSVC0000000000000000F1 /* EventKitService.swift */; };
+		SMDS00000000000000000B1 /* ScheduleMetadataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = SMDS00000000000000000F1 /* ScheduleMetadataStore.swift */; };
+		SMSD00000000000000000B1 /* SwiftDataMetadataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = SMSD00000000000000000F1 /* SwiftDataMetadataStore.swift */; };
+		SDG000000000000000000B1 /* ScheduleDayGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = SDG000000000000000000F1 /* ScheduleDayGrid.swift */; };
+		SMM000000000000000000B1 /* ScheduleMonthMatrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = SMM000000000000000000F1 /* ScheduleMonthMatrix.swift */; };
+		SRV000000000000000000B1 /* ScheduleRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SRV000000000000000000F1 /* ScheduleRootView.swift */; };
+		SSB000000000000000000B1 /* ScheduleSidebar.swift in Sources */ = {isa = PBXBuildFile; fileRef = SSB000000000000000000F1 /* ScheduleSidebar.swift */; };
+		EIV000000000000000000B1 /* EventInspectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EIV000000000000000000F1 /* EventInspectorView.swift */; };
+		SVM000000000000000000B1 /* ScheduleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = SVM000000000000000000F1 /* ScheduleViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -284,6 +292,15 @@
 		STG000000000000000000G1 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		TMAP000000000000000F0001 /* TripMapSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripMapSnapshot.swift; sourceTree = "<group>"; };
 		TXMS000000000000000F0001 /* MileageDeduction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MileageDeduction.swift; sourceTree = "<group>"; };
+		EKSVC0000000000000000F1 /* EventKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EventKitService.swift; path = ios-native/Core/Calendar/EventKitService.swift; sourceTree = SOURCE_ROOT; };
+		SMDS00000000000000000F1 /* ScheduleMetadataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScheduleMetadataStore.swift; path = ios-native/Core/Persistence/ScheduleMetadataStore.swift; sourceTree = SOURCE_ROOT; };
+		SMSD00000000000000000F1 /* SwiftDataMetadataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SwiftDataMetadataStore.swift; path = ios-native/Core/Persistence/SwiftDataMetadataStore.swift; sourceTree = SOURCE_ROOT; };
+		SDG000000000000000000F1 /* ScheduleDayGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScheduleDayGrid.swift; path = ios-native/Features/Schedule/ScheduleDayGrid.swift; sourceTree = SOURCE_ROOT; };
+		SMM000000000000000000F1 /* ScheduleMonthMatrix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScheduleMonthMatrix.swift; path = ios-native/Features/Schedule/ScheduleMonthMatrix.swift; sourceTree = SOURCE_ROOT; };
+		SRV000000000000000000F1 /* ScheduleRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScheduleRootView.swift; path = ios-native/Features/Schedule/ScheduleRootView.swift; sourceTree = SOURCE_ROOT; };
+		SSB000000000000000000F1 /* ScheduleSidebar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScheduleSidebar.swift; path = ios-native/Features/Schedule/ScheduleSidebar.swift; sourceTree = SOURCE_ROOT; };
+		EIV000000000000000000F1 /* EventInspectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EventInspectorView.swift; path = ios-native/Features/Schedule/EventInspectorView.swift; sourceTree = SOURCE_ROOT; };
+		SVM000000000000000000F1 /* ScheduleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScheduleViewModel.swift; path = ios-native/Features/Schedule/ScheduleViewModel.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -291,7 +308,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CK00000000000000000000A3 /* (null) in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -833,7 +849,6 @@
 			);
 			name = AutoInspectorNetwork;
 			packageProductDependencies = (
-				CK00000000000000000000A2 /* CalendarKit */,
 			);
 			productName = AutoInspectorNetwork;
 			productReference = A612554AFBDBB78BBE69496E /* AutoInspectorNetwork.app */;
@@ -884,7 +899,6 @@
 			);
 			mainGroup = 8A23CA811AD5DE2F3F9275D1;
 			packageReferences = (
-				CK00000000000000000000A1 /* XCRemoteSwiftPackageReference "CalendarKit" */,
 			);
 			productRefGroup = C863DA5204F95EC573510473 /* Products */;
 			projectDirPath = "";
@@ -932,6 +946,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				SVM000000000000000000B1 /* ScheduleViewModel.swift in Sources */,
+				EIV000000000000000000B1 /* EventInspectorView.swift in Sources */,
+				SSB000000000000000000B1 /* ScheduleSidebar.swift in Sources */,
+				SRV000000000000000000B1 /* ScheduleRootView.swift in Sources */,
+				SMM000000000000000000B1 /* ScheduleMonthMatrix.swift in Sources */,
+				SDG000000000000000000B1 /* ScheduleDayGrid.swift in Sources */,
+				SMSD00000000000000000B1 /* SwiftDataMetadataStore.swift in Sources */,
+				SMDS00000000000000000B1 /* ScheduleMetadataStore.swift in Sources */,
+				EKSVC0000000000000000B1 /* EventKitService.swift in Sources */,
 				A5D470A05ACB94A37FE2DE69 /* AppDelegate.swift in Sources */,
 				PRF000000000000000000B2 /* ProfileView.swift in Sources */,
 				PRF000000000000000000C2 /* ProfileViewModel.swift in Sources */,
@@ -1342,22 +1365,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		CK00000000000000000000A1 /* XCRemoteSwiftPackageReference "CalendarKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/richardtop/CalendarKit.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.5;
-			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		CK00000000000000000000A2 /* CalendarKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CK00000000000000000000A1 /* XCRemoteSwiftPackageReference "CalendarKit" */;
-			productName = CalendarKit;
-		};
 /* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = BDDA1F48097C0373FD15D0DD /* Project object */;
