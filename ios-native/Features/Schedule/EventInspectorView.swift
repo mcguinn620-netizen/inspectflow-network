@@ -194,16 +194,6 @@ struct EventInspectorView: View {
         localMetadata = meta
         Task { await viewModel.upsertMetadata(meta) }
     }
-
-    // Curried helper for the TextField category binding above.
-    private func update(_ mutate: @escaping (inout EventMetadata, String) -> Void) -> (String) -> Void {
-        { newValue in
-            guard var meta = localMetadata else { return }
-            mutate(&meta, newValue)
-            localMetadata = meta
-            Task { await viewModel.upsertMetadata(meta) }
-        }
-    }
 }
 
 // MARK: - System editor wrapper
