@@ -39,14 +39,21 @@ def strip_calendarkit(text: str) -> str:
     # Remove from packageReferences.
     text = re.sub(r"\n\t{4}CK00000000000000000000A1 /\* XCRemoteSwiftPackageReference \"CalendarKit\" \*/,\n", "\n", text)
     # Remove the XCRemoteSwiftPackageReference and XCSwiftPackageProductDependency objects.
+    # Use a tolerant matcher that consumes nested `};` (e.g. requirement = { ... };).
     text = re.sub(
-        r"\t\tCK00000000000000000000A1 /\* XCRemoteSwiftPackageReference \"CalendarKit\" \*/ = \{[\s\S]*?\};\n",
+        r"\t\tCK00000000000000000000A1 /\* XCRemoteSwiftPackageReference \"CalendarKit\" \*/ = \{(?:[^{}]|\{[^{}]*\})*\};\n",
         "",
         text,
     )
     text = re.sub(
-        r"\t\tCK00000000000000000000A2 /\* CalendarKit \*/ = \{[\s\S]*?\};\n",
+        r"\t\tCK00000000000000000000A2 /\* CalendarKit \*/ = \{(?:[^{}]|\{[^{}]*\})*\};\n",
         "",
+        text,
+    )
+    # Clean up any orphan `};` left inside the now-empty section by a prior buggy run.
+    text = re.sub(
+        r"(/\* Begin XCRemoteSwiftPackageReference section \*/\n)\t\t\};\n",
+        r"\1",
         text,
     )
     return text
