@@ -292,15 +292,15 @@
 		STG000000000000000000G1 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		TMAP000000000000000F0001 /* TripMapSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripMapSnapshot.swift; sourceTree = "<group>"; };
 		TXMS000000000000000F0001 /* MileageDeduction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MileageDeduction.swift; sourceTree = "<group>"; };
-		EKSVC0000000000000000F1 /* EventKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EventKitService.swift; path = ios-native/Core/Calendar/EventKitService.swift; sourceTree = SOURCE_ROOT; };
-		SMDS00000000000000000F1 /* ScheduleMetadataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScheduleMetadataStore.swift; path = ios-native/Core/Persistence/ScheduleMetadataStore.swift; sourceTree = SOURCE_ROOT; };
-		SMSD00000000000000000F1 /* SwiftDataMetadataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SwiftDataMetadataStore.swift; path = ios-native/Core/Persistence/SwiftDataMetadataStore.swift; sourceTree = SOURCE_ROOT; };
-		SDG000000000000000000F1 /* ScheduleDayGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScheduleDayGrid.swift; path = ios-native/Features/Schedule/ScheduleDayGrid.swift; sourceTree = SOURCE_ROOT; };
-		SMM000000000000000000F1 /* ScheduleMonthMatrix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScheduleMonthMatrix.swift; path = ios-native/Features/Schedule/ScheduleMonthMatrix.swift; sourceTree = SOURCE_ROOT; };
-		SRV000000000000000000F1 /* ScheduleRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScheduleRootView.swift; path = ios-native/Features/Schedule/ScheduleRootView.swift; sourceTree = SOURCE_ROOT; };
-		SSB000000000000000000F1 /* ScheduleSidebar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScheduleSidebar.swift; path = ios-native/Features/Schedule/ScheduleSidebar.swift; sourceTree = SOURCE_ROOT; };
-		EIV000000000000000000F1 /* EventInspectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EventInspectorView.swift; path = ios-native/Features/Schedule/EventInspectorView.swift; sourceTree = SOURCE_ROOT; };
-		SVM000000000000000000F1 /* ScheduleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScheduleViewModel.swift; path = ios-native/Features/Schedule/ScheduleViewModel.swift; sourceTree = SOURCE_ROOT; };
+		EKSVC0000000000000000F1 /* EventKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Calendar/EventKitService.swift; sourceTree = "<group>"; };
+		SMDS00000000000000000F1 /* ScheduleMetadataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Persistence/ScheduleMetadataStore.swift; sourceTree = "<group>"; };
+		SMSD00000000000000000F1 /* SwiftDataMetadataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Persistence/SwiftDataMetadataStore.swift; sourceTree = "<group>"; };
+		SDG000000000000000000F1 /* ScheduleDayGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/ScheduleDayGrid.swift; sourceTree = "<group>"; };
+		SMM000000000000000000F1 /* ScheduleMonthMatrix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/ScheduleMonthMatrix.swift; sourceTree = "<group>"; };
+		SRV000000000000000000F1 /* ScheduleRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/ScheduleRootView.swift; sourceTree = "<group>"; };
+		SSB000000000000000000F1 /* ScheduleSidebar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/ScheduleSidebar.swift; sourceTree = "<group>"; };
+		EIV000000000000000000F1 /* EventInspectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/EventInspectorView.swift; sourceTree = "<group>"; };
+		SVM000000000000000000F1 /* ScheduleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/ScheduleViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
