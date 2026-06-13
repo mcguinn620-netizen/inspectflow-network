@@ -1,75 +1,137 @@
-## Goal
-Finish wiring the CalendarKit Swift Package into `AutoInspectorNetwork.xcodeproj` so `import CalendarKit` resolves and `CalendarKitDayView` renders (not the fallback placeholder).
+# Native Schedule Architecture — Replace CalendarKit
 
-## Current state (verified)
-- Source files `CalendarKitDayView.swift` + `ScheduleExportMenu.swift` are registered correctly (PBXBuildFile, PBXFileReference, Schedule group, Sources phase) — OK.
-- `packageReferences` array on PBXProject exists but is **empty** (line 882).
-- `packageProductDependencies` on the `AutoInspectorNetwork` target exists but is **empty** (line 832).
-- Frameworks build phase has `CK00000000000000000000A3 /* (null) in Frameworks */` with **no `productRef`** — malformed entry, renders as `(null)`.
-- No `XCRemoteSwiftPackageReference` section and no `XCSwiftPackageProductDependency` section exist anywhere in the file.
+Switch the iOS app's Schedule screen from CalendarKit to a pure Apple-native stack: **EventKit** for system calendar I/O, **SwiftData (iOS 17+) with a Core Data fallback (iOS 16)** for app-specific metadata, and **NavigationSplitView** for iPad/Mac multi-pane layout. The existing `Job` / Supabase pipeline stays intact — we layer the system-calendar mirror and local metadata around it.
 
-The previous `add_calendarkit_schedule.py` run only succeeded on the source-file edits; the four package-related regex substitutions silently no-oped because they didn't match the actual pbxproj layout (empty `( )` blocks with no anchor line, and `\Z` matching whitespace at EOF).
+## Goals
 
-## Changes
+- One Schedule screen that works on iPhone, iPad, and Mac Catalyst.
+- Live two-way bridge between Supabase `Job`s and the user's system Calendar (via `EKEventStore`).
+- Per-job local metadata (custom category, checklist, rich notes) keyed by `Job.id` + `EKEvent.eventIdentifier`, persisted with SwiftData on iOS 17+ and Core Data on iOS 16.
+- Adaptive layout: sidebar / center grid / inspector on regular width; stacked navigation on compact width.
+- Remove CalendarKit SPM dependency entirely.
 
-### 1. `ios-native/AutoInspectorNetwork.xcodeproj/project.pbxproj`
-Direct surgical edits (no script needed — five small `line_replace` calls):
+## File plan
 
-a. **Fix the malformed Frameworks build-file** (line 102):
-```
-CK00000000000000000000A3 /* CalendarKit in Frameworks */ = {isa = PBXBuildFile; productRef = CK00000000000000000000A2 /* CalendarKit */; };
-```
+New files under `ios-native/`:
 
-b. **Populate `packageProductDependencies`** on the `AutoInspectorNetwork` target (lines 832-833):
-```
-packageProductDependencies = (
-    CK00000000000000000000A2 /* CalendarKit */,
-);
-```
-
-c. **Populate `packageReferences`** on the PBXProject (lines 882-883):
-```
-packageReferences = (
-    CK00000000000000000000A1 /* XCRemoteSwiftPackageReference "CalendarKit" */,
-);
-```
-
-d. **Append the two missing SPM sections** immediately before the final `};\n}` rootObject closer:
-```
-/* Begin XCRemoteSwiftPackageReference section */
-    CK00000000000000000000A1 /* XCRemoteSwiftPackageReference "CalendarKit" */ = {
-        isa = XCRemoteSwiftPackageReference;
-        repositoryURL = "https://github.com/richardtop/CalendarKit.git";
-        requirement = {
-            kind = upToNextMajorVersion;
-            minimumVersion = 1.1.5;
-        };
-    };
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-    CK00000000000000000000A2 /* CalendarKit */ = {
-        isa = XCSwiftPackageProductDependency;
-        package = CK00000000000000000000A1 /* XCRemoteSwiftPackageReference "CalendarKit" */;
-        productName = CalendarKit;
-    };
-/* End XCSwiftPackageProductDependency section */
+```text
+Core/
+  Calendar/
+    EventKitService.swift          // EKEventStore wrapper: auth, fetch, write, change notifications
+    CalendarSyncBridge.swift       // Job <-> EKEvent reconciliation (replaces CalendarSyncService)
+  Persistence/
+    ScheduleMetadata.swift         // Shared protocol + DTO (EventMetadata)
+    ScheduleMetadataStore.swift    // Protocol-driven facade; picks SwiftData or Core Data
+    SwiftDataMetadataStore.swift   // @available(iOS 17, *) @Model EventMetadataSD
+    CoreDataMetadataStore.swift    // iOS 16 fallback, NSPersistentContainer
+    ScheduleMetadata.xcdatamodeld  // Core Data model mirroring SwiftData schema
+Features/
+  Schedule/
+    ScheduleRootView.swift         // NavigationSplitView shell, size-class aware
+    ScheduleSidebar.swift          // Calendar toggles, category filters, quick tags
+    ScheduleContentView.swift      // Day / Week / Month switcher (native grids)
+    ScheduleDayGrid.swift          // Hour rail + event blocks (replaces CalendarKitDayView)
+    ScheduleWeekGrid.swift         // 7-col week (already partly exists — refactor)
+    ScheduleMonthMatrix.swift      // Month grid for iPad/Mac
+    EventInspectorView.swift       // Trailing pane: view/edit + metadata notes
+    ScheduleViewModel.swift        // @Observable; merges Jobs + EKEvents + metadata
 ```
 
-### 2. `ios-native/scripts/add_calendarkit_schedule.py` (optional hardening)
-Update the idempotency guard and the failing regexes so future re-runs are safe:
-- Match empty `packageReferences = ( )` / `packageProductDependencies = ( )` blocks (not just a non-existent anchor line).
-- Replace `\Z` anchor with a search for the last `}\n}` pair.
-- Detect "partial application" (source files present but package missing) and only inject the missing pieces.
+Files to remove / retire:
 
-This is documentation-only insurance; the pbxproj edits in step 1 are what actually fix the build.
+- `Features/Schedule/CalendarKitDayView.swift`
+- `scripts/add_calendarkit_schedule.py`
+- All `CalendarKit` SPM entries in `AutoInspectorNetwork.xcodeproj/project.pbxproj` (XCRemoteSwiftPackageReference, XCSwiftPackageProductDependency, Frameworks build file `CK00000000000000000000A3`, productDependencies entry).
+- CalendarKit reference in `ios-native/Package.swift` if present.
 
-## Out of scope
-- No changes to Swift source, Info.plist, or the share extension.
-- No CalendarKit version bump.
-- No workspace/xcconfig edits — Xcode will resolve the package on next open / `xcodebuild -resolvePackageDependencies`.
+Files to refactor (not rewrite):
+
+- `Features/Schedule/ScheduleView.swift` → becomes thin entry that hosts `ScheduleRootView`.
+- `Core/Calendar/CalendarSyncService.swift` → folded into `CalendarSyncBridge` (keep `UserDefaults` event-id mapping during migration, then move it into the metadata store).
+
+## Architecture
+
+```text
+                  ┌────────────────────────┐
+                  │   ScheduleRootView     │  NavigationSplitView
+                  │ (Sidebar | Content | Inspector)
+                  └─────────┬──────────────┘
+                            │ @State viewModel
+                  ┌─────────▼──────────────┐
+                  │  ScheduleViewModel     │  @Observable (iOS 17) / ObservableObject (iOS 16)
+                  │  - jobs (Supabase)     │
+                  │  - ekEvents (EventKit) │
+                  │  - metadata (local)    │
+                  └───┬─────────┬──────────┘
+                      │         │
+        ┌─────────────▼──┐   ┌──▼──────────────────────┐
+        │ EventKitService│   │ ScheduleMetadataStore   │ protocol
+        │ (EKEventStore) │   │  ├─ SwiftDataStore (17+)│
+        └────────────────┘   │  └─ CoreDataStore (16)  │
+                             └─────────────────────────┘
+```
+
+### EventKit layer (`EventKitService`)
+
+- Singleton actor.
+- `requestAccess()` — uses `requestFullAccessToEvents` on iOS 17+, falls back to `requestAccess(to:)` on iOS 16 via `if #available`.
+- `events(in dateInterval:, calendars:)` — predicate fetch.
+- `upsert(job: Job, calendar: EKCalendar)` → returns `eventIdentifier`.
+- `delete(eventIdentifier:)`.
+- `inspectFlowCalendar()` — preserves existing "InspectFlow Jobs" calendar logic.
+- Observes `.EKEventStoreChanged`; exposes an `AsyncStream<Void>` the view model subscribes to.
+
+### Metadata layer (`ScheduleMetadataStore`)
+
+Protocol:
+
+```swift
+protocol ScheduleMetadataStore {
+    func metadata(for eventID: String) async throws -> EventMetadata?
+    func upsert(_ metadata: EventMetadata) async throws
+    func delete(eventID: String) async throws
+    func allMetadata() async throws -> [EventMetadata]
+}
+```
+
+DTO `EventMetadata`: `eventID`, `jobID?`, `category`, `tags: [String]`, `checklist: [ChecklistItem]`, `richNotes`, `updatedAt`.
+
+- `SwiftDataMetadataStore` (`@available(iOS 17, *)`): `@Model EventMetadataSD`, container in app group for share-extension parity.
+- `CoreDataMetadataStore`: `NSPersistentContainer("ScheduleMetadata")`, identical entity `EventMetadataCD`, background context for writes, mainContext for reads.
+- Factory: `ScheduleMetadataStore.make()` — `if #available(iOS 17, *) { SwiftDataMetadataStore() } else { CoreDataMetadataStore() }`.
+
+### View layer
+
+- `ScheduleRootView` uses `NavigationSplitView(columnVisibility:)` with three columns. On compact size class (`horizontalSizeClass == .compact`) it collapses to a `NavigationStack` with sidebar in a sheet and inspector pushed.
+- `ScheduleContentView` hosts a segmented picker (Day / Week / Month) bound to `@AppStorage("schedule.viewMode")`.
+- `ScheduleDayGrid` reimplements the hour-rail + event blocks UI from `CalendarKitDayView` using pure SwiftUI `GeometryReader` + `ZStack` (the project already has the math from `ScheduleWeekCalendarView`).
+- `EventInspectorView` shows EKEvent fields (editable via `EKEventEditViewController` wrapped in `UIViewControllerRepresentable`) plus the metadata form (category picker, checklist, notes).
+- Conflict badges and the existing `ScheduleConflictDetector` carry over unchanged.
+
+### ViewModel
+
+`@Observable` (iOS 17) with `@available` split — on iOS 16 expose the same surface as an `ObservableObject`. Single source of truth:
+
+- `load(week:)` → parallel `async let` for `JobsViewModel.fetch`, `EventKitService.events`, `metadataStore.allMetadata`.
+- Reconciles by `Job.id ↔ EKEvent.eventIdentifier ↔ metadata.eventID`.
+- `subscribeToCalendarChanges()` task listens to `EventKitService` change stream and re-fetches.
+- Writes are dual: `EventKitService.upsert` then `metadataStore.upsert`, both awaited; failure on either rolls back the other.
+
+## Migration / cleanup
+
+1. Move existing `UserDefaults` event-id map from `CalendarSyncService` into the metadata store on first launch (one-shot migration in `EventKitService.bootstrap()`).
+2. Delete CalendarKit from `project.pbxproj` (reverse of `add_calendarkit_schedule.py`).
+3. Strip `CalendarKitDayView` import sites; `ScheduleView` now renders `ScheduleRootView()`.
 
 ## Validation
-- Open the project (or run `xcodebuild -resolvePackageDependencies -workspace AutoInspectorNetwork.xcworkspace -scheme AutoInspectorNetwork`) — CalendarKit downloads to `~/Library/Developer/Xcode/DerivedData/.../SourcePackages`.
-- Archive: `xcodebuild archive -workspace … -scheme AutoInspectorNetwork -configuration Release` — expect 0 errors and no `(null) in Frameworks` warning.
-- Launch Schedule tab — verify the CalendarKit `DayView` renders (timeline with hour ruler), not the "CalendarKit is unavailable" fallback.
+
+- Build for iPhone (iOS 16 simulator) and iPad (iOS 17 simulator) — confirm both persistence paths compile under their `#available` branches.
+- Manual: grant Calendar access → create job → see event in Apple Calendar → edit notes externally → app picks up via `EKEventStoreChanged`.
+- Inspector pane appears on iPad regular width, collapses on iPhone.
+- No CalendarKit symbols remain (`rg "CalendarKit" ios-native`).
+
+## Out of scope
+
+- Share-extension changes (already addressed).
+- macOS-specific window chrome beyond what Catalyst gives for free.
+- Push-based calendar sync (still pull via `EKEventStoreChanged`).
