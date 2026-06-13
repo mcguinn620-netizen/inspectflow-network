@@ -226,6 +226,7 @@ private struct EventEditSheet: UIViewControllerRepresentable {
 }
 
 // Expose the EKEventStore on the view model without leaking the whole service.
+@MainActor
 private extension ScheduleViewModel {
     var eventStore: EKEventStore { EventKitService.shared.store }
 }
