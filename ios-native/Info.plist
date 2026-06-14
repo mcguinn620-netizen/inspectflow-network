@@ -65,6 +65,8 @@
 	<string>Save inspection photos back to your photo library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Attach existing photos from your library to an inspection.</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
