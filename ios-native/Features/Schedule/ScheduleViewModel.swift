@@ -114,6 +114,7 @@ final class ScheduleViewModel: ObservableObject {
                 return filters.matches(meta)
             }
         }
+        events_repo.publishWidgetSnapshot(events: all)
         await refreshSearchResults()
     }
 
