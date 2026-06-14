@@ -152,6 +152,8 @@
 		EDRP00000000000000000B1 /* EventDropDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDRP00000000000000000F1 /* EventDropDelegates.swift */; };
 		SWGD00000000000000000B1 /* ScheduleWeekGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = SWGD00000000000000000F1 /* ScheduleWeekGrid.swift */; };
 		EDTW00000000000000000B1 /* EventDetailWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDTW00000000000000000F1 /* EventDetailWindow.swift */; };
+		NLSS00000000000000000B1 /* NaturalLanguageSchedulingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = NLSS00000000000000000F1 /* NaturalLanguageSchedulingService.swift */; };
+		QAEF00000000000000000B1 /* QuickAddEventField.swift in Sources */ = {isa = PBXBuildFile; fileRef = QAEF00000000000000000F1 /* QuickAddEventField.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -327,6 +329,8 @@
 		EDRP00000000000000000F1 /* EventDropDelegates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/EventDropDelegates.swift; sourceTree = "<group>"; };
 		SWGD00000000000000000F1 /* ScheduleWeekGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/ScheduleWeekGrid.swift; sourceTree = "<group>"; };
 		EDTW00000000000000000F1 /* EventDetailWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/EventDetailWindow.swift; sourceTree = "<group>"; };
+		NLSS00000000000000000F1 /* NaturalLanguageSchedulingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Calendar/NaturalLanguageSchedulingService.swift; sourceTree = "<group>"; };
+		QAEF00000000000000000F1 /* QuickAddEventField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/QuickAddEventField.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -972,6 +976,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				QAEF00000000000000000B1 /* QuickAddEventField.swift in Sources */,
+				NLSS00000000000000000B1 /* NaturalLanguageSchedulingService.swift in Sources */,
 				EDTW00000000000000000B1 /* EventDetailWindow.swift in Sources */,
 				SWGD00000000000000000B1 /* ScheduleWeekGrid.swift in Sources */,
 				EDRP00000000000000000B1 /* EventDropDelegates.swift in Sources */,
