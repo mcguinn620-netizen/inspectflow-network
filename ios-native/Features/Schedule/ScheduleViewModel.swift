@@ -105,8 +105,63 @@ final class ScheduleViewModel: ObservableObject {
             start: monthInterval.start.addingTimeInterval(-86400 * 7),
             end: monthInterval.end.addingTimeInterval(86400 * 7)
         )
-        events = events_repo.events(in: padded, visibleOnly: true)
+        let all = events_repo.events(in: padded, visibleOnly: true)
+        if filters.selectedCategories.isEmpty && filters.selectedTags.isEmpty {
+            events = all
+        } else {
+            events = all.filter { ev in
+                let meta = ev.eventIdentifier.flatMap { metadataByEventID[$0] }
+                return filters.matches(meta)
+            }
+        }
+        await refreshSearchResults()
     }
+
+    // MARK: - Search
+
+    func updateSearchQuery(_ query: String) {
+        filters.searchQuery = query
+        searchTask?.cancel()
+        searchTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 200_000_000)
+            guard let self, !Task.isCancelled else { return }
+            await self.refreshSearchResults()
+        }
+    }
+
+    private func refreshSearchResults() async {
+        let query = filters.searchQuery
+        guard !query.trimmingCharacters(in: .whitespaces).isEmpty else {
+            searchResults = []
+            return
+        }
+        let cal = Calendar.current
+        let interval = cal.dateInterval(of: .month, for: selectedDate) ?? DateInterval(
+            start: selectedDate.addingTimeInterval(-86400 * 30),
+            duration: 86400 * 60
+        )
+        let padded = DateInterval(
+            start: interval.start.addingTimeInterval(-86400 * 30),
+            end: interval.end.addingTimeInterval(86400 * 60)
+        )
+        searchResults = searchService.search(
+            query: query,
+            in: padded,
+            metadataByEventID: metadataByEventID
+        )
+    }
+
+    // MARK: - Recurrence
+
+    func applyRecurrence(_ spec: RecurrenceSpec, to event: EKEvent) async {
+        do {
+            try EventKitService.shared.applyRecurrence(spec, to: event)
+            await reloadEvents()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
 
     // MARK: - Selection helpers
 
