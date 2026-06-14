@@ -42,6 +42,10 @@ NEW_FILES = [
     ("Core/Calendar/NaturalLanguageSchedulingService.swift","NLSS00000000000000000F1", "NLSS00000000000000000B1"),
     ("Features/Schedule/QuickAddEventField.swift",          "QAEF00000000000000000F1", "QAEF00000000000000000B1"),
     ("Core/Calendar/FocusFilterManager.swift",              "FFMG00000000000000000F1", "FFMG00000000000000000B1"),
+    ("Shared/Widget/SharedAgendaStore.swift",                "AGSS00000000000000000F1", "AGSS00000000000000000B1"),
+    ("Shared/Widget/UpcomingEventLiveActivityAttributes.swift","AGAT00000000000000000F1", "AGAT00000000000000000B1"),
+    ("Core/Calendar/LiveActivityController.swift",           "AGLC00000000000000000F1", "AGLC00000000000000000B1"),
+    ("Core/Calendar/EventRepository+Snapshot.swift",         "AGSN00000000000000000F1", "AGSN00000000000000000B1"),
 ]
 
 
