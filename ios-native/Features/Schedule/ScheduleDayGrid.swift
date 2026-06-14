@@ -163,7 +163,13 @@ struct ScheduleDayGrid: View {
             )
         }
         .buttonStyle(.plain)
+        .opacity((block.event.calendar?.allowsContentModifications ?? true) ? 1.0 : 0.7)
+        .onDrag {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            return EventDragPayload(event: block.event).itemProvider()
+        }
     }
+
 
     @ViewBuilder
     private func jobBlockView(_ block: JobBlock) -> some View {
