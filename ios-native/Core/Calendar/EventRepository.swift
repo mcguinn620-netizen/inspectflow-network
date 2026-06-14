@@ -144,6 +144,29 @@ public final class EventRepository: ObservableObject {
         }
     }
 
+    /// Reschedules `event` to `newStart`, preserving its duration. Bumps
+    /// metadata `updatedAt`/`version` for conflict resolution.
+    public func reschedule(_ event: EKEvent, to newStart: Date, span: EKSpan = .thisEvent) async throws {
+        guard event.calendar?.allowsContentModifications ?? false else {
+            throw NSError(
+                domain: "EventRepository",
+                code: 1,
+                userInfo: [NSLocalizedDescriptionKey: "This calendar is read-only."]
+            )
+        }
+        let duration = max(60, event.endDate.timeIntervalSince(event.startDate))
+        event.startDate = newStart
+        event.endDate = newStart.addingTimeInterval(duration)
+        try service.store.save(event, span: span, commit: true)
+
+        if var meta = await metadata(for: event) {
+            meta.version &+= 1
+            meta.updatedAt = Date()
+            meta.lastSyncedAt = Date()
+            _ = try? await upsertMetadata(meta)
+        }
+    }
+
     // MARK: - Job mirroring
 
     /// Mirrors a `Job` into the system calendar and ties it to a metadata row.

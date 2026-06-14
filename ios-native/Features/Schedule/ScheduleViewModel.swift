@@ -216,6 +216,26 @@ final class ScheduleViewModel: ObservableObject {
             errorMessage = error.localizedDescription
         }
     }
+
+    /// Reschedule entry point shared by all calendar drop surfaces.
+    func reschedule(identity: EventIdentity, originalStart: Date, to newStart: Date) async {
+        guard let event = events_repo.event(matching: identity) else {
+            errorMessage = "The dragged event could not be found."
+            return
+        }
+        let cal = Calendar.current
+        if cal.compare(event.startDate, to: originalStart, toGranularity: .minute) != .orderedSame {
+            // Event moved while the drag was in flight — refresh and abort.
+            await reloadEvents()
+            return
+        }
+        do {
+            try await events_repo.reschedule(event, to: newStart)
+            await reloadEvents()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
 }
 
 extension Date {
