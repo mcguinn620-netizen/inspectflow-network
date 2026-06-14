@@ -10,7 +10,11 @@ struct EventInspectorView: View {
 
     @ObservedObject var viewModel: ScheduleViewModel
     @State private var presentingEditor = false
+    @State private var presentingRecurrence = false
     @State private var localMetadata: EventMetadata?
+    @State private var newTag: String = ""
+    @State private var newChecklistTitle: String = ""
+
     @State private var newTag: String = ""
     @State private var newChecklistTitle: String = ""
 
