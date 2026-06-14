@@ -154,6 +154,7 @@
 		EDTW00000000000000000B1 /* EventDetailWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDTW00000000000000000F1 /* EventDetailWindow.swift */; };
 		NLSS00000000000000000B1 /* NaturalLanguageSchedulingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = NLSS00000000000000000F1 /* NaturalLanguageSchedulingService.swift */; };
 		QAEF00000000000000000B1 /* QuickAddEventField.swift in Sources */ = {isa = PBXBuildFile; fileRef = QAEF00000000000000000F1 /* QuickAddEventField.swift */; };
+		FFMG00000000000000000B1 /* FocusFilterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFMG00000000000000000F1 /* FocusFilterManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -331,6 +332,7 @@
 		EDTW00000000000000000F1 /* EventDetailWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/EventDetailWindow.swift; sourceTree = "<group>"; };
 		NLSS00000000000000000F1 /* NaturalLanguageSchedulingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Calendar/NaturalLanguageSchedulingService.swift; sourceTree = "<group>"; };
 		QAEF00000000000000000F1 /* QuickAddEventField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/QuickAddEventField.swift; sourceTree = "<group>"; };
+		FFMG00000000000000000F1 /* FocusFilterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Calendar/FocusFilterManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -976,6 +978,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FFMG00000000000000000B1 /* FocusFilterManager.swift in Sources */,
 				QAEF00000000000000000B1 /* QuickAddEventField.swift in Sources */,
 				NLSS00000000000000000B1 /* NaturalLanguageSchedulingService.swift in Sources */,
 				EDTW00000000000000000B1 /* EventDetailWindow.swift in Sources */,
