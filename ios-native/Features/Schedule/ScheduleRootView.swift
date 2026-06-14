@@ -70,12 +70,17 @@ struct ScheduleContentPane: View {
     @ObservedObject var viewModel: ScheduleViewModel
     @AppStorage("schedule.viewMode.v2") private var rawMode: String = ScheduleViewModel.DisplayMode.day.rawValue
 
+    private var dropCoordinator: EventDropCoordinator {
+        EventDropCoordinator(viewModel: viewModel)
+    }
+
     private var mode: Binding<ScheduleViewModel.DisplayMode> {
         Binding(
             get: { ScheduleViewModel.DisplayMode(rawValue: rawMode) ?? .day },
             set: { rawMode = $0.rawValue }
         )
     }
+
 
     var body: some View {
         VStack(spacing: 0) {
@@ -101,6 +106,7 @@ struct ScheduleContentPane: View {
                         date: viewModel.selectedDate,
                         events: viewModel.events,
                         jobs: viewModel.jobs.filter { unsynced($0) },
+                        coordinator: dropCoordinator,
                         onSelectEvent: { ev in viewModel.selectedEventID = ev.eventIdentifier; viewModel.selectedJobID = nil },
                         onSelectJob: { job in viewModel.selectedJobID = job.id; viewModel.selectedEventID = nil }
                     )
@@ -109,11 +115,13 @@ struct ScheduleContentPane: View {
                 case .month:
                     ScheduleMonthMatrix(
                         selectedDate: $viewModel.selectedDate,
-                        events: viewModel.events
+                        events: viewModel.events,
+                        coordinator: dropCoordinator
                     )
                 case .list:
                     eventList
                 }
+
             }
         }
         .navigationTitle("Schedule")
@@ -191,13 +199,17 @@ struct ScheduleContentPane: View {
 
     private var weekView: some View {
         let weekStart = Date.startOfScheduleWeek(for: viewModel.selectedDate)
-        return ScheduleWeekCalendarView(
+        return ScheduleWeekGrid(
             weekStart: weekStart,
-            jobs: viewModel.jobs,
-            onSelect: { job in viewModel.selectedJobID = job.id },
-            onLongPress: { _ in }
+            events: viewModel.events,
+            coordinator: dropCoordinator,
+            onSelectEvent: { ev in
+                viewModel.selectedEventID = ev.eventIdentifier
+                viewModel.selectedJobID = nil
+            }
         )
     }
+
 
     // MARK: List
 
