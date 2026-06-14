@@ -18,6 +18,7 @@ SOURCES_PHASE = "F3F3D267CF0FD5307403D537"  # AutoInspectorNetwork app target So
 # (path-relative-to-group, group-id, file-uuid, buildfile-uuid)
 NEW_FILES = [
     ("Core/Calendar/EventKitService.swift",                "EKSVC0000000000000000F1", "EKSVC0000000000000000B1"),
+    ("Core/Calendar/EventIdentity.swift",                  "EVID00000000000000000F1", "EVID00000000000000000B1"),
     ("Core/Persistence/ScheduleMetadataStore.swift",       "SMDS00000000000000000F1", "SMDS00000000000000000B1"),
     ("Core/Persistence/SwiftDataMetadataStore.swift",      "SMSD00000000000000000F1", "SMSD00000000000000000B1"),
     ("Features/Schedule/ScheduleDayGrid.swift",            "SDG000000000000000000F1", "SDG000000000000000000B1"),
