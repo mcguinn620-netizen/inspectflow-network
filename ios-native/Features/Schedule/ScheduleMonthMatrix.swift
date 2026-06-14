@@ -104,6 +104,14 @@ struct ScheduleMonthMatrix: View {
         .buttonStyle(.plain)
         .modifier(MonthCellDropModifier(day: day, coordinator: coordinator, highlight: $dropHighlightedDay))
     }
+
+    private func monthDays() -> [Date] {
+        let cal = Calendar.current
+        guard let monthInterval = cal.dateInterval(of: .month, for: selectedDate) else { return [] }
+        let firstWeekday = cal.component(.weekday, from: monthInterval.start) - 1
+        guard let gridStart = cal.date(byAdding: .day, value: -firstWeekday, to: monthInterval.start) else { return [] }
+        return (0..<42).compactMap { cal.date(byAdding: .day, value: $0, to: gridStart) }
+    }
 }
 
 private struct MonthCellDropModifier: ViewModifier {
@@ -121,13 +129,5 @@ private struct MonthCellDropModifier: ViewModifier {
             content
         }
     }
-
-
-    private func monthDays() -> [Date] {
-        let cal = Calendar.current
-        guard let monthInterval = cal.dateInterval(of: .month, for: selectedDate) else { return [] }
-        let firstWeekday = cal.component(.weekday, from: monthInterval.start) - 1
-        guard let gridStart = cal.date(byAdding: .day, value: -firstWeekday, to: monthInterval.start) else { return [] }
-        return (0..<42).compactMap { cal.date(byAdding: .day, value: $0, to: gridStart) }
-    }
 }
+
