@@ -1,102 +1,64 @@
-# Native Schedule Upgrade — Phased Plan
+## Problem
 
-Production upgrade of the existing native Schedule module to an Apple Calendar-class experience. Each phase ends in a buildable state on iOS 16+/iPadOS 16+/macOS 13+ (Xcode 14+, Swift 5.7+). No scaffolds, no TODOs, no placeholders — every file lands fully implemented.
+`xcodebuild -showBuildSettings` on `AutoInspectorNetwork.xcodeproj` fails with:
 
----
+```
+The project 'AutoInspectorNetwork' is damaged and cannot be opened due to a parse error.
+```
 
-## Phase 0 — Project hygiene & shared types (foundation)
-Goal: land the cross-cutting types every later phase depends on, with zero behavior change.
+This is the same surface error as the previous `PRODUCT_NAME` failure. The earlier "GENERATE_INFOPLIST_FILE = YES → NO" change did not fix it because that wasn't the actual cause — `xcodebuild` cannot open the project at all, so no build-setting work happens.
 
-- `Core/Calendar/EventIdentity.swift` — value type wrapping `eventIdentifier` + `calendarItemExternalIdentifier`, with helpers to resolve an `EKEvent` from either, plus equality/hash on the strongest available id.
-- `Core/Persistence/EventMetadata.swift` (replace existing DTO) — expanded schema: `priority`, `status`, `estimatedDuration`, `travelTime`, `contactName`, `contactPhone`, `attachments`, `customFieldsJSON`, `createdAt`, `updatedAt`, `lastSyncedAt`, `version`, dual identifiers.
-- `Core/Persistence/SwiftDataMetadataStore.swift` + `CoreDataMetadataStore.swift` — mirror schemas exactly; Core Data model updated with `shouldMigrateStoreAutomatically` and `shouldInferMappingModelAutomatically`; lightweight migration mapping from current model.
-- Register all new files in `AutoInspectorNetwork.xcodeproj/project.pbxproj` using the corrected relative-path/`<group>` pattern from the prior fix; extend `switch_to_native_schedule.py` accordingly.
+## What I verified in this repo
 
-Skills: **core-data-expert**, **swiftdata-pro**, **xcode14-compatibility**.
+- `project.pbxproj` parses cleanly with the Node `xcode` library (3 native targets detected).
+- Braces, parens, and quotes are balanced; no merge-conflict markers; pure ASCII; no BOM.
+- All `AGWX*` widget-target additions look structurally valid.
+- Two pre-existing empty sections (`XCRemoteSwiftPackageReference`, `XCSwiftPackageProductDependency`) trip the strict Python `openstep_parser`, but real `xcodebuild` tolerates those — they predate our changes.
 
----
+So the file is most likely valid OpenStep, but Xcode 26.4's stricter loader is rejecting one of the recent `add_agenda_widget_target.py` additions. The cheapest fix is to remove the widget target entirely and re-introduce it with a known-good, minimal shape that mirrors the working `InspectFlowShareExtension` target byte-for-byte.
 
-## Phase 1 — Repository layer & ViewModel refactor
-Goal: ViewModels stop talking to `EventKitService` directly.
+## Plan
 
-- `Core/Calendar/EventRepository.swift` — load/create/update/delete events, merge metadata, expose `AsyncSequence` of change events (debounced via `EKEventStoreChanged`).
-- `Core/Calendar/CalendarRepository.swift` — calendars, sources, colors, visibility persistence.
-- `Core/Calendar/EventConflictResolver.swift` — deterministic merge using `updatedAt`/`lastSyncedAt`/`version`; field-level merge where safe, newest-wins otherwise.
-- Refactor `ScheduleViewModel` to depend on the two repositories only.
-- Trim `EventKitService` to pure EventKit I/O (no calendar listing/visibility logic).
+### 1. Diagnostic pass (read-only)
 
-Skills: **swift-concurrency**, **swiftui-view-refactor**.
+Add a small Python validator at `ios-native/scripts/validate_pbxproj.py` that:
 
----
+- Parses `project.pbxproj` with the `openstep_parser`-equivalent algorithm, but with proper comment skipping between dict entries (fixing the empty-section blind spot).
+- Walks every `PBXNativeTarget`, asserts each `buildPhases`/`buildConfigurationList`/`productReference` UUID resolves.
+- Walks `PBXBuildFile` and asserts every `fileRef` resolves.
+- Walks `PBXGroup` children and asserts every UUID resolves.
+- Prints the first unresolved UUID or structural anomaly.
 
-## Phase 2 — Sidebar, filters, recurrence, search
-Goal: feature parity with Apple Calendar's chrome.
+Run it locally; report any orphans it finds. This gives a precise failure pointer instead of Xcode's generic "damaged" message.
 
-- `Features/Schedule/CalendarFilterModel.swift` — `Identifiable, Codable` with required fields.
-- `Features/Schedule/CalendarSidebarView.swift` — replaces `ScheduleSidebar`; per-calendar color dot, name, source, visibility toggle persisted via `@AppStorage` keyed by `calendarIdentifier` and mirrored into `CalendarRepository`.
-- `Features/Schedule/RecurrenceEditorView.swift` + `EventKitService` extensions: `createRecurringEvent`, `updateRecurringEvent`, `removeRecurringEvent` using `EKRecurrenceRule`/`EKRecurrenceEnd` (daily/weekly/monthly/yearly, interval, end date OR occurrence count).
-- `Features/Schedule/EventInspectorView.swift` — wire recurrence editor.
-- `Core/Calendar/ScheduleSearchService.swift` + `.searchable` on root; merges EKEvent fields with metadata (title, notes, location, category, tags, rich notes); live results.
+### 2. Remove the AgendaWidgetExtension target
 
-Skills: **swiftui-ui-patterns**, **swiftui-pro**.
+Add `ios-native/scripts/remove_agenda_widget_target.py` (idempotent, mirrors the add script's UUID list) that strips every `AGWX*`, `AGBN*`, `AGWG*`, `AGLA*`, and the second-membership `AGSS*B2` / `AGAT*B2` `PBXBuildFile` entries, the widget `PBXGroup`, target, configs, configuration list, container proxy, target dependency, embed-phase file entry, and the mainGroup/Products/PBXProject `targets` references.
 
----
+Run it, then verify the validator passes and `xcodebuild -showBuildSettings` succeeds on the main app target.
 
-## Phase 3 — Drag & drop across Day/Week/Month
-Goal: native rescheduling by drag.
+### 3. Re-add the widget target with a minimal, share-extension-shaped block
 
-- Upgrade `ScheduleDayGrid`, `ScheduleMonthMatrix`, and a new `ScheduleWeekGrid` with `.onDrag` producing an `NSItemProvider` carrying an `EventIdentity` payload.
-- Fully implemented `DropDelegate` types per surface: snap to time slot (day/week) or date (month), update `EKEvent` via repository, bump metadata `updatedAt`/`version`, refresh.
-- Haptics + visual drop targets; respects read-only calendars.
+Rewrite `add_agenda_widget_target.py` to:
 
-Skills: **swiftui-ui-patterns**, **swiftui-pro**.
+- Use the InspectFlowShareExtension target as the literal template (same build-setting keys, same ordering, same quoting).
+- Drop `MTL_*` keys (they belong to graphics targets, not WidgetKit extensions) and any other settings not present on the share extension.
+- Keep `GENERATE_INFOPLIST_FILE = NO` with an explicit `INFOPLIST_FILE`.
+- Register the new file references as children of a real `Shared/Widget` `PBXGroup` so `SharedAgendaStore.swift` and `UpcomingEventLiveActivityAttributes.swift` are not orphan references.
+- Add a `TargetAttributes` entry under `PBXProject.attributes.TargetAttributes` for the new target (`CreatedOnToolsVersion = 16.0;`), matching what Xcode 26 expects.
 
----
+Re-run, then re-run the validator and `xcodebuild -showBuildSettings -target AutoInspectorNetwork -configuration Release`. Both must succeed before considering Phase 7 restored.
 
-## Phase 4 — Multi-window & app entry
-- Update `AutoInspectorNetworkApp` with an additional `WindowGroup("EventDetail", for: EventIdentity.self)` and `@Environment(\.openWindow)` plumbing.
-- `Features/Schedule/EventDetailWindow.swift` — standalone inspector window; iPad Stage Manager + macOS multi-window verified via availability guards.
-- Inspector toolbar gains "Open in New Window" action.
+### 4. Fallback if the rebuild still fails
 
-Skills: **swiftui-ui-patterns**.
+If the cleanly rebuilt target still fails to open in Xcode 26.4, ship Phase 7 without the WidgetKit extension target:
 
----
+- Keep `SharedAgendaStore`, `UpcomingEventLiveActivityAttributes`, `LiveActivityController`, and `EventRepository+Snapshot.swift` compiled into the main app only (they are already in its Sources phase).
+- Document in `RELEASING.md` that the Agenda widget + Live Activity require the extension target to be added through Xcode's "File → New → Target… → Widget Extension" wizard, then dragging the four widget source files in.
+- This unblocks the build today and avoids further hand-edited pbxproj surgery against a moving Xcode 26 parser.
 
-## Phase 5 — Natural language quick-add
-- `Core/Calendar/NaturalLanguageSchedulingService.swift` using `NSDataDetector` (.date) + `NaturalLanguage` tagging for title/location extraction; returns an `EKEvent` draft pre-populated on the InspectFlow calendar.
-- Quick-add field in `ScheduleRootView` toolbar; Enter creates draft and opens inspector.
+## Technical notes
 
-Skills: **swift-concurrency**.
-
----
-
-## Phase 6 — Focus filters, change streaming, caching
-- `Core/Calendar/FocusFilterManager.swift` — bridges system Focus state with calendar/category visibility; persists per-Focus presets.
-- Replace existing `EKEventStoreChanged` observer with `AsyncSequence` pipeline; debounce (250 ms) and diff visible window only.
-- In-memory caches for calendars, metadata, and search index inside repositories with invalidation on change events.
-
-Skills: **swift-concurrency**, **performance-optimization**.
-
----
-
-## Phase 7 — Widgets & Live Activities
-- New target `AgendaWidgetExtension` — `WidgetBundle`, `TimelineProvider`, `Entry`, small/medium/large views: next appointment, today agenda, overdue tasks. Reads via App Group shared store populated by repository.
-- `Features/Schedule/UpcomingEventLiveActivity.swift` — `ActivityKit` activity with title/countdown/location; gated by `if #available(iOS 16.1, *)` (Live Activities) and `if #available(iOS 16.2, *)` for Dynamic Island where used.
-- pbxproj updates for new extension target, entitlements, App Group, Info.plist.
-
-Skills: **xcode14-compatibility**, **app-store-deployment**.
-
----
-
-## Verification per phase
-- `plutil -lint` on `project.pbxproj` after each phase.
-- Run existing `scripts/validate_step_3_4_schedule.py` and extend it to assert presence of new files + group membership.
-- Local archive check (Release) gated by the bitrise job that previously failed; no new files may regenerate the doubled-prefix path bug.
-
-## Risks
-- Core Data migration from the current `EventMetadata` entity must be lightweight-compatible; if any rename is required, ship a mapping model in Phase 0.
-- ActivityKit + WidgetKit add a new extension target — pbxproj edits are the most error-prone step and will be scripted, not hand-edited.
-- iOS 16 fallbacks: SwiftData paths must remain `@available(iOS 17, *)`; every new API surface needs an iOS 16 branch.
-
-## Skills checklist
-core-data-expert · swiftdata-pro · swiftui-pro · swiftui-ui-patterns · swiftui-view-refactor · swift-concurrency · xcode14-compatibility · performance-optimization · app-store-deployment · inspection-app-architecture (for repo conventions).
+- `xcodebuild`'s "JSON text did not start with array or object" line is a red herring from its result-bundle writer after the project load already failed; the real failure is the OpenStep load.
+- The Node `xcode` parser succeeding does not guarantee Xcode 26 will — Apple's loader checks additional invariants (e.g. every `productReference` UUID being a member of `productRefGroup`, every file reference belonging to a group reachable from `mainGroup`). Step 1's validator targets exactly those invariants.
+- `add_agenda_widget_target.py` currently registers `AGSS*F1` / `AGAT*F1` as file references with multi-segment paths (`Shared/Widget/SharedAgendaStore.swift`) but never adds them to any `PBXGroup` — Xcode 26 is the most likely platform to reject this. Step 3 fixes it.
