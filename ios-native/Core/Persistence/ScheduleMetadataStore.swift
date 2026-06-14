@@ -1,61 +1,144 @@
 import Foundation
 import CoreData
 
-// MARK: - Shared DTO
+// MARK: - Shared DTOs
 
-struct ScheduleChecklistItem: Codable, Hashable, Identifiable {
-    var id: UUID = UUID()
-    var title: String
-    var done: Bool = false
+public struct ScheduleChecklistItem: Codable, Hashable, Identifiable {
+    public var id: UUID = UUID()
+    public var title: String
+    public var done: Bool = false
+
+    public init(id: UUID = UUID(), title: String, done: Bool = false) {
+        self.id = id
+        self.title = title
+        self.done = done
+    }
+}
+
+public enum EventPriority: String, Codable, CaseIterable, Sendable {
+    case none, low, normal, high, urgent
+}
+
+public enum EventStatus: String, Codable, CaseIterable, Sendable {
+    case tentative, confirmed, inProgress, completed, cancelled
+}
+
+public struct EventAttachment: Codable, Hashable, Identifiable {
+    public var id: UUID = UUID()
+    public var filename: String
+    public var urlString: String
+    public var byteSize: Int64
+
+    public init(id: UUID = UUID(), filename: String, urlString: String, byteSize: Int64 = 0) {
+        self.id = id
+        self.filename = filename
+        self.urlString = urlString
+        self.byteSize = byteSize
+    }
 }
 
 /// App-specific metadata mirrored next to a system calendar event.
 ///
-/// Keyed by the EKEvent's `eventIdentifier`; `jobID` ties back to the
-/// Supabase `Job` when one exists.
-struct EventMetadata: Identifiable, Equatable {
-    var id: String { eventID }
-    var eventID: String
-    var jobID: UUID?
-    var category: String?
-    var tags: [String]
-    var checklist: [ScheduleChecklistItem]
-    var richNotes: String
-    var updatedAt: Date
+/// The record is keyed primarily by `externalID`
+/// (`EKEvent.calendarItemExternalIdentifier`) and secondarily by
+/// `eventIdentifier`, which lets us survive sync churn that rewrites the
+/// per-store id without losing the link to the user's annotations.
+public struct EventMetadata: Identifiable, Equatable {
+    public var id: String { externalID ?? eventID }
 
-    init(
+    // Identity
+    public var eventID: String
+    public var externalID: String?
+
+    // Linkage
+    public var jobID: UUID?
+
+    // Classification
+    public var category: String?
+    public var tags: [String]
+
+    // Body
+    public var checklist: [ScheduleChecklistItem]
+    public var richNotes: String
+
+    // Extended schema
+    public var priority: EventPriority
+    public var status: EventStatus
+    public var estimatedDuration: TimeInterval
+    public var travelTime: TimeInterval
+    public var contactName: String?
+    public var contactPhone: String?
+    public var attachments: [EventAttachment]
+    public var customFieldsJSON: String
+
+    // Bookkeeping
+    public var createdAt: Date
+    public var updatedAt: Date
+    public var lastSyncedAt: Date?
+    public var version: Int
+
+    public init(
         eventID: String,
+        externalID: String? = nil,
         jobID: UUID? = nil,
         category: String? = nil,
         tags: [String] = [],
         checklist: [ScheduleChecklistItem] = [],
         richNotes: String = "",
-        updatedAt: Date = Date()
+        priority: EventPriority = .normal,
+        status: EventStatus = .confirmed,
+        estimatedDuration: TimeInterval = 0,
+        travelTime: TimeInterval = 0,
+        contactName: String? = nil,
+        contactPhone: String? = nil,
+        attachments: [EventAttachment] = [],
+        customFieldsJSON: String = "{}",
+        createdAt: Date = Date(),
+        updatedAt: Date = Date(),
+        lastSyncedAt: Date? = nil,
+        version: Int = 1
     ) {
         self.eventID = eventID
+        self.externalID = externalID
         self.jobID = jobID
         self.category = category
         self.tags = tags
         self.checklist = checklist
         self.richNotes = richNotes
+        self.priority = priority
+        self.status = status
+        self.estimatedDuration = estimatedDuration
+        self.travelTime = travelTime
+        self.contactName = contactName
+        self.contactPhone = contactPhone
+        self.attachments = attachments
+        self.customFieldsJSON = customFieldsJSON
+        self.createdAt = createdAt
         self.updatedAt = updatedAt
+        self.lastSyncedAt = lastSyncedAt
+        self.version = version
+    }
+
+    public var identity: EventIdentity {
+        EventIdentity(eventIdentifier: eventID, externalID: externalID)
     }
 }
 
 // MARK: - Protocol facade
 
-protocol ScheduleMetadataStore: AnyObject {
+public protocol ScheduleMetadataStore: AnyObject {
     func metadata(for eventID: String) async throws -> EventMetadata?
+    func metadata(forExternalID externalID: String) async throws -> EventMetadata?
     func allMetadata() async throws -> [EventMetadata]
     func upsert(_ metadata: EventMetadata) async throws
     func delete(eventID: String) async throws
 }
 
-enum ScheduleMetadataStoreFactory {
+public enum ScheduleMetadataStoreFactory {
     /// Returns the best available backing store for the current OS.
     /// On iOS 17+ we use SwiftData; on iOS 16 we fall back to Core Data.
-    static func make() -> ScheduleMetadataStore {
-        if #available(iOS 17.0, *) {
+    public static func make() -> ScheduleMetadataStore {
+        if #available(iOS 17.0, macOS 14.0, *) {
             return SwiftDataMetadataStore.shared
         } else {
             return CoreDataMetadataStore.shared
@@ -66,19 +149,24 @@ enum ScheduleMetadataStoreFactory {
 // MARK: - Core Data fallback (iOS 16+)
 //
 // A programmatic NSManagedObjectModel avoids bundling an extra .xcdatamodeld
-// resource. The schema mirrors `EventMetadata`.
+// resource. New attributes are optional so lightweight migration succeeds
+// against stores written by the previous schema.
 
-final class CoreDataMetadataStore: ScheduleMetadataStore {
+public final class CoreDataMetadataStore: ScheduleMetadataStore {
 
-    static let shared = CoreDataMetadataStore()
+    public static let shared = CoreDataMetadataStore()
 
     private let container: NSPersistentContainer
 
-    init(inMemory: Bool = false) {
+    public init(inMemory: Bool = false) {
         let model = Self.makeModel()
         container = NSPersistentContainer(name: "ScheduleMetadata", managedObjectModel: model)
-        if inMemory, let desc = container.persistentStoreDescriptions.first {
-            desc.url = URL(fileURLWithPath: "/dev/null")
+        if let desc = container.persistentStoreDescriptions.first {
+            if inMemory {
+                desc.url = URL(fileURLWithPath: "/dev/null")
+            }
+            desc.shouldMigrateStoreAutomatically = true
+            desc.shouldInferMappingModelAutomatically = true
         }
         container.loadPersistentStores { _, error in
             if let error { print("ScheduleMetadata store load failed:", error) }
@@ -93,22 +181,40 @@ final class CoreDataMetadataStore: ScheduleMetadataStore {
         entity.name = "EventMetadataCD"
         entity.managedObjectClassName = NSStringFromClass(NSManagedObject.self)
 
-        func attr(_ name: String, _ type: NSAttributeType, optional: Bool = true) -> NSAttributeDescription {
+        func attr(
+            _ name: String,
+            _ type: NSAttributeType,
+            optional: Bool = true,
+            defaultValue: Any? = nil
+        ) -> NSAttributeDescription {
             let a = NSAttributeDescription()
             a.name = name
             a.attributeType = type
             a.isOptional = optional
+            if let defaultValue { a.defaultValue = defaultValue }
             return a
         }
 
         entity.properties = [
             attr("eventID", .stringAttributeType, optional: false),
+            attr("externalID", .stringAttributeType),
             attr("jobID", .UUIDAttributeType),
             attr("category", .stringAttributeType),
-            attr("tagsJSON", .stringAttributeType),
-            attr("checklistJSON", .stringAttributeType),
-            attr("richNotes", .stringAttributeType),
+            attr("tagsJSON", .stringAttributeType, defaultValue: "[]"),
+            attr("checklistJSON", .stringAttributeType, defaultValue: "[]"),
+            attr("richNotes", .stringAttributeType, defaultValue: ""),
+            attr("priority", .stringAttributeType, defaultValue: EventPriority.normal.rawValue),
+            attr("status", .stringAttributeType, defaultValue: EventStatus.confirmed.rawValue),
+            attr("estimatedDuration", .doubleAttributeType, optional: false, defaultValue: 0.0),
+            attr("travelTime", .doubleAttributeType, optional: false, defaultValue: 0.0),
+            attr("contactName", .stringAttributeType),
+            attr("contactPhone", .stringAttributeType),
+            attr("attachmentsJSON", .stringAttributeType, defaultValue: "[]"),
+            attr("customFieldsJSON", .stringAttributeType, defaultValue: "{}"),
+            attr("createdAt", .dateAttributeType, optional: false),
             attr("updatedAt", .dateAttributeType, optional: false),
+            attr("lastSyncedAt", .dateAttributeType),
+            attr("version", .integer64AttributeType, optional: false, defaultValue: 1),
         ]
 
         let model = NSManagedObjectModel()
@@ -118,7 +224,7 @@ final class CoreDataMetadataStore: ScheduleMetadataStore {
 
     // MARK: Read
 
-    func metadata(for eventID: String) async throws -> EventMetadata? {
+    public func metadata(for eventID: String) async throws -> EventMetadata? {
         try await context { ctx in
             let req = NSFetchRequest<NSManagedObject>(entityName: "EventMetadataCD")
             req.predicate = NSPredicate(format: "eventID == %@", eventID)
@@ -127,7 +233,16 @@ final class CoreDataMetadataStore: ScheduleMetadataStore {
         }
     }
 
-    func allMetadata() async throws -> [EventMetadata] {
+    public func metadata(forExternalID externalID: String) async throws -> EventMetadata? {
+        try await context { ctx in
+            let req = NSFetchRequest<NSManagedObject>(entityName: "EventMetadataCD")
+            req.predicate = NSPredicate(format: "externalID == %@", externalID)
+            req.fetchLimit = 1
+            return try ctx.fetch(req).first.map { Self.toDTO($0) }
+        }
+    }
+
+    public func allMetadata() async throws -> [EventMetadata] {
         try await context { ctx in
             let req = NSFetchRequest<NSManagedObject>(entityName: "EventMetadataCD")
             return try ctx.fetch(req).map { Self.toDTO($0) }
@@ -136,10 +251,17 @@ final class CoreDataMetadataStore: ScheduleMetadataStore {
 
     // MARK: Write
 
-    func upsert(_ metadata: EventMetadata) async throws {
+    public func upsert(_ metadata: EventMetadata) async throws {
         try await context { ctx in
             let req = NSFetchRequest<NSManagedObject>(entityName: "EventMetadataCD")
-            req.predicate = NSPredicate(format: "eventID == %@", metadata.eventID)
+            if let externalID = metadata.externalID, !externalID.isEmpty {
+                req.predicate = NSPredicate(
+                    format: "externalID == %@ OR eventID == %@",
+                    externalID, metadata.eventID
+                )
+            } else {
+                req.predicate = NSPredicate(format: "eventID == %@", metadata.eventID)
+            }
             req.fetchLimit = 1
             let obj = try ctx.fetch(req).first ?? NSEntityDescription.insertNewObject(
                 forEntityName: "EventMetadataCD", into: ctx
@@ -149,7 +271,7 @@ final class CoreDataMetadataStore: ScheduleMetadataStore {
         }
     }
 
-    func delete(eventID: String) async throws {
+    public func delete(eventID: String) async throws {
         try await context { ctx in
             let req = NSFetchRequest<NSManagedObject>(entityName: "EventMetadataCD")
             req.predicate = NSPredicate(format: "eventID == %@", eventID)
@@ -163,35 +285,58 @@ final class CoreDataMetadataStore: ScheduleMetadataStore {
     // MARK: Mapping
 
     private static func toDTO(_ obj: NSManagedObject) -> EventMetadata {
-        let tags = (obj.value(forKey: "tagsJSON") as? String)
+        func string(_ key: String) -> String? { obj.value(forKey: key) as? String }
+        let tags = string("tagsJSON")
             .flatMap { try? JSONDecoder().decode([String].self, from: Data($0.utf8)) } ?? []
-        let checklist = (obj.value(forKey: "checklistJSON") as? String)
+        let checklist = string("checklistJSON")
             .flatMap { try? JSONDecoder().decode([ScheduleChecklistItem].self, from: Data($0.utf8)) } ?? []
+        let attachments = string("attachmentsJSON")
+            .flatMap { try? JSONDecoder().decode([EventAttachment].self, from: Data($0.utf8)) } ?? []
+        let priority = EventPriority(rawValue: string("priority") ?? "") ?? .normal
+        let status = EventStatus(rawValue: string("status") ?? "") ?? .confirmed
         return EventMetadata(
-            eventID: obj.value(forKey: "eventID") as? String ?? "",
+            eventID: string("eventID") ?? "",
+            externalID: string("externalID"),
             jobID: obj.value(forKey: "jobID") as? UUID,
-            category: obj.value(forKey: "category") as? String,
+            category: string("category"),
             tags: tags,
             checklist: checklist,
-            richNotes: (obj.value(forKey: "richNotes") as? String) ?? "",
-            updatedAt: (obj.value(forKey: "updatedAt") as? Date) ?? Date()
+            richNotes: string("richNotes") ?? "",
+            priority: priority,
+            status: status,
+            estimatedDuration: (obj.value(forKey: "estimatedDuration") as? Double) ?? 0,
+            travelTime: (obj.value(forKey: "travelTime") as? Double) ?? 0,
+            contactName: string("contactName"),
+            contactPhone: string("contactPhone"),
+            attachments: attachments,
+            customFieldsJSON: string("customFieldsJSON") ?? "{}",
+            createdAt: (obj.value(forKey: "createdAt") as? Date) ?? Date(),
+            updatedAt: (obj.value(forKey: "updatedAt") as? Date) ?? Date(),
+            lastSyncedAt: obj.value(forKey: "lastSyncedAt") as? Date,
+            version: (obj.value(forKey: "version") as? Int) ?? 1
         )
     }
 
     private static func apply(_ m: EventMetadata, to obj: NSManagedObject) {
         obj.setValue(m.eventID, forKey: "eventID")
+        obj.setValue(m.externalID, forKey: "externalID")
         obj.setValue(m.jobID, forKey: "jobID")
         obj.setValue(m.category, forKey: "category")
-        obj.setValue(
-            (try? JSONEncoder().encode(m.tags)).flatMap { String(data: $0, encoding: .utf8) },
-            forKey: "tagsJSON"
-        )
-        obj.setValue(
-            (try? JSONEncoder().encode(m.checklist)).flatMap { String(data: $0, encoding: .utf8) },
-            forKey: "checklistJSON"
-        )
+        obj.setValue(encodeJSON(m.tags) ?? "[]", forKey: "tagsJSON")
+        obj.setValue(encodeJSON(m.checklist) ?? "[]", forKey: "checklistJSON")
         obj.setValue(m.richNotes, forKey: "richNotes")
+        obj.setValue(m.priority.rawValue, forKey: "priority")
+        obj.setValue(m.status.rawValue, forKey: "status")
+        obj.setValue(m.estimatedDuration, forKey: "estimatedDuration")
+        obj.setValue(m.travelTime, forKey: "travelTime")
+        obj.setValue(m.contactName, forKey: "contactName")
+        obj.setValue(m.contactPhone, forKey: "contactPhone")
+        obj.setValue(encodeJSON(m.attachments) ?? "[]", forKey: "attachmentsJSON")
+        obj.setValue(m.customFieldsJSON, forKey: "customFieldsJSON")
+        obj.setValue(m.createdAt, forKey: "createdAt")
         obj.setValue(m.updatedAt, forKey: "updatedAt")
+        obj.setValue(m.lastSyncedAt, forKey: "lastSyncedAt")
+        obj.setValue(m.version, forKey: "version")
     }
 
     private func context<T>(_ work: @escaping (NSManagedObjectContext) throws -> T) async throws -> T {
@@ -202,4 +347,9 @@ final class CoreDataMetadataStore: ScheduleMetadataStore {
             }
         }
     }
+}
+
+@inline(__always)
+fileprivate func encodeJSON<T: Encodable>(_ value: T) -> String? {
+    (try? JSONEncoder().encode(value)).flatMap { String(data: $0, encoding: .utf8) }
 }
