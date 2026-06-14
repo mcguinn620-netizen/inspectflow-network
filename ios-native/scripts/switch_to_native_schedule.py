@@ -35,7 +35,11 @@ NEW_FILES = [
     ("Features/Schedule/RecurrenceEditorView.swift",       "RCED00000000000000000F1", "RCED00000000000000000B1"),
     ("Features/Schedule/EventInspectorView.swift",         "EIV000000000000000000F1", "EIV000000000000000000B1"),
     ("Features/Schedule/ScheduleViewModel.swift",          "SVM000000000000000000F1", "SVM000000000000000000B1"),
+    ("Core/Calendar/EventDragPayload.swift",               "EDPL00000000000000000F1", "EDPL00000000000000000B1"),
+    ("Features/Schedule/EventDropDelegates.swift",         "EDRP00000000000000000F1", "EDRP00000000000000000B1"),
+    ("Features/Schedule/ScheduleWeekGrid.swift",           "SWGD00000000000000000F1", "SWGD00000000000000000B1"),
 ]
+
 
 
 
