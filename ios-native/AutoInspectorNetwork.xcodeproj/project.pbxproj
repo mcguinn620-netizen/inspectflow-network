@@ -140,6 +140,9 @@
 		EIV000000000000000000B1 /* EventInspectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EIV000000000000000000F1 /* EventInspectorView.swift */; };
 		SVM000000000000000000B1 /* ScheduleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = SVM000000000000000000F1 /* ScheduleViewModel.swift */; };
 		EVID00000000000000000B1 /* EventIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = EVID00000000000000000F1 /* EventIdentity.swift */; };
+		CALR00000000000000000B1 /* CalendarRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = CALR00000000000000000F1 /* CalendarRepository.swift */; };
+		EVTR00000000000000000B1 /* EventRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EVTR00000000000000000F1 /* EventRepository.swift */; };
+		ECNF00000000000000000B1 /* EventConflictResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECNF00000000000000000F1 /* EventConflictResolver.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -303,6 +306,9 @@
 		EIV000000000000000000F1 /* EventInspectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/EventInspectorView.swift; sourceTree = "<group>"; };
 		SVM000000000000000000F1 /* ScheduleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/ScheduleViewModel.swift; sourceTree = "<group>"; };
 		EVID00000000000000000F1 /* EventIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Calendar/EventIdentity.swift; sourceTree = "<group>"; };
+		CALR00000000000000000F1 /* CalendarRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Calendar/CalendarRepository.swift; sourceTree = "<group>"; };
+		EVTR00000000000000000F1 /* EventRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Calendar/EventRepository.swift; sourceTree = "<group>"; };
+		ECNF00000000000000000F1 /* EventConflictResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Calendar/EventConflictResolver.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -948,6 +954,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ECNF00000000000000000B1 /* EventConflictResolver.swift in Sources */,
+				EVTR00000000000000000B1 /* EventRepository.swift in Sources */,
+				CALR00000000000000000B1 /* CalendarRepository.swift in Sources */,
 				EVID00000000000000000B1 /* EventIdentity.swift in Sources */,
 				SVM000000000000000000B1 /* ScheduleViewModel.swift in Sources */,
 				EIV000000000000000000B1 /* EventInspectorView.swift in Sources */,
