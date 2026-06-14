@@ -25,6 +25,17 @@ public final class EventRepository: ObservableObject {
     private var changeTask: Task<Void, Never>?
     private var debounceTask: Task<Void, Never>?
 
+    // MARK: - Caches (Phase 6)
+
+    private struct EventCacheKey: Hashable {
+        let start: Date
+        let end: Date
+        let visibleOnly: Bool
+    }
+    private var eventCache: [EventCacheKey: [EKEvent]] = [:]
+    private var metadataCache: [String: EventMetadata] = [:]
+    private var metadataCacheLoaded = false
+
     public init(
         service: EventKitService = .shared,
         calendars: CalendarRepository = .shared,
@@ -39,9 +50,18 @@ public final class EventRepository: ObservableObject {
         changeTask = Task { [weak self] in
             guard let self else { return }
             for await _ in self.service.changes() {
+                self.invalidateCaches()
                 self.scheduleDebouncedBroadcast()
             }
         }
+    }
+
+    /// Drops all in-memory caches. Called automatically on EK change events
+    /// and exposed for explicit refresh from tests/UI.
+    public func invalidateCaches() {
+        eventCache.removeAll(keepingCapacity: true)
+        metadataCache.removeAll(keepingCapacity: true)
+        metadataCacheLoaded = false
     }
 
     deinit {
@@ -63,8 +83,12 @@ public final class EventRepository: ObservableObject {
     /// (per `CalendarRepository`) are excluded.
     public func events(in interval: DateInterval, visibleOnly: Bool = true) -> [EKEvent] {
         guard service.hasAccess else { return [] }
+        let key = EventCacheKey(start: interval.start, end: interval.end, visibleOnly: visibleOnly)
+        if let cached = eventCache[key] { return cached }
         let cals: [EKCalendar]? = visibleOnly ? calendars.visibleCalendars() : nil
-        return service.events(in: interval, calendars: cals)
+        let loaded = service.events(in: interval, calendars: cals)
+        eventCache[key] = loaded
+        return loaded
     }
 
     public func event(matching identity: EventIdentity) -> EKEvent? {
@@ -75,18 +99,30 @@ public final class EventRepository: ObservableObject {
 
     public func metadata(for event: EKEvent) async -> EventMetadata? {
         let identity = EventIdentity(event: event)
+        if let eventID = identity.eventIdentifier, let cached = metadataCache[eventID] {
+            return cached
+        }
         if let externalID = identity.externalID,
            let found = try? await metadata.metadata(forExternalID: externalID) {
+            if let id = identity.eventIdentifier { metadataCache[id] = found }
             return found
         }
-        if let eventID = identity.eventIdentifier {
-            return try? await metadata.metadata(for: eventID)
+        if let eventID = identity.eventIdentifier,
+           let found = try? await metadata.metadata(for: eventID) {
+            metadataCache[eventID] = found
+            return found
         }
         return nil
     }
 
     public func allMetadata() async -> [EventMetadata] {
-        (try? await metadata.allMetadata()) ?? []
+        if metadataCacheLoaded {
+            return Array(metadataCache.values)
+        }
+        let list = (try? await metadata.allMetadata()) ?? []
+        metadataCache = Dictionary(uniqueKeysWithValues: list.map { ($0.eventID, $0) })
+        metadataCacheLoaded = true
+        return list
     }
 
     /// Upserts metadata with deterministic conflict resolution against any
@@ -105,6 +141,7 @@ public final class EventRepository: ObservableObject {
 
         let resolved = existing.map { EventConflictResolver.merge($0, next) } ?? next
         try await metadata.upsert(resolved)
+        metadataCache[resolved.eventID] = resolved
         return resolved
     }
 
@@ -127,6 +164,7 @@ public final class EventRepository: ObservableObject {
         event.location = location
         event.notes = notes
         try service.store.save(event, span: .thisEvent, commit: true)
+        eventCache.removeAll(keepingCapacity: true)
         return event
     }
 
@@ -135,13 +173,16 @@ public final class EventRepository: ObservableObject {
         span: EKSpan = .thisEvent
     ) throws {
         try service.store.save(event, span: span, commit: true)
+        eventCache.removeAll(keepingCapacity: true)
     }
 
     public func deleteEvent(_ event: EKEvent, span: EKSpan = .thisEvent) async throws {
         try service.store.remove(event, span: span, commit: true)
         if let id = event.eventIdentifier {
             try? await metadata.delete(eventID: id)
+            metadataCache[id] = nil
         }
+        eventCache.removeAll(keepingCapacity: true)
     }
 
     /// Reschedules `event` to `newStart`, preserving its duration. Bumps
