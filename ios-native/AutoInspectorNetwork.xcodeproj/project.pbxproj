@@ -155,6 +155,16 @@
 		NLSS00000000000000000B1 /* NaturalLanguageSchedulingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = NLSS00000000000000000F1 /* NaturalLanguageSchedulingService.swift */; };
 		QAEF00000000000000000B1 /* QuickAddEventField.swift in Sources */ = {isa = PBXBuildFile; fileRef = QAEF00000000000000000F1 /* QuickAddEventField.swift */; };
 		FFMG00000000000000000B1 /* FocusFilterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFMG00000000000000000F1 /* FocusFilterManager.swift */; };
+		AGSS00000000000000000B1 /* SharedAgendaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AGSS00000000000000000F1 /* SharedAgendaStore.swift */; };
+		AGAT00000000000000000B1 /* UpcomingEventLiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AGAT00000000000000000F1 /* UpcomingEventLiveActivityAttributes.swift */; };
+		AGLC00000000000000000B1 /* LiveActivityController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AGLC00000000000000000F1 /* LiveActivityController.swift */; };
+		AGSN00000000000000000B1 /* EventRepository+Snapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = AGSN00000000000000000F1 /* EventRepository+Snapshot.swift */; };
+		AGBN000000000000000B0001 /* AgendaWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AGBN000000000000000F0001 /* AgendaWidgetBundle.swift */; };
+		AGWG000000000000000B0001 /* AgendaWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AGWG000000000000000F0001 /* AgendaWidget.swift */; };
+		AGLA000000000000000B0001 /* UpcomingEventLiveActivityWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AGLA000000000000000F0001 /* UpcomingEventLiveActivityWidget.swift */; };
+		AGSS00000000000000000B2 /* SharedAgendaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AGSS00000000000000000F1 /* SharedAgendaStore.swift */; };
+		AGAT00000000000000000B2 /* UpcomingEventLiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AGAT00000000000000000F1 /* UpcomingEventLiveActivityAttributes.swift */; };
+		AGWX000000000000000E0001 /* AgendaWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AGWX000000000000000R0001 /* AgendaWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -165,6 +175,13 @@
 			remoteGlobalIDString = B1526CDF2FDB6F3900964B69;
 			remoteInfo = InspectFlowShareExtension;
 		};
+		AGWX000000000000000X0001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BDDA1F48097C0373FD15D0DD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AGWX000000000000000T0001;
+			remoteInfo = AgendaWidgetExtension;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -174,6 +191,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				AGWX000000000000000E0001 /* AgendaWidgetExtension.appex in Embed Foundation Extensions */,
 				B1526CEA2FDB6F3900964B69 /* InspectFlowShareExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
@@ -333,6 +351,16 @@
 		NLSS00000000000000000F1 /* NaturalLanguageSchedulingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Calendar/NaturalLanguageSchedulingService.swift; sourceTree = "<group>"; };
 		QAEF00000000000000000F1 /* QuickAddEventField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/QuickAddEventField.swift; sourceTree = "<group>"; };
 		FFMG00000000000000000F1 /* FocusFilterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Calendar/FocusFilterManager.swift; sourceTree = "<group>"; };
+		AGSS00000000000000000F1 /* SharedAgendaStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Widget/SharedAgendaStore.swift; sourceTree = "<group>"; };
+		AGAT00000000000000000F1 /* UpcomingEventLiveActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Widget/UpcomingEventLiveActivityAttributes.swift; sourceTree = "<group>"; };
+		AGLC00000000000000000F1 /* LiveActivityController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Calendar/LiveActivityController.swift; sourceTree = "<group>"; };
+		AGSN00000000000000000F1 /* EventRepository+Snapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Calendar/EventRepository+Snapshot.swift; sourceTree = "<group>"; };
+		AGBN000000000000000F0001 /* AgendaWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaWidgetBundle.swift; sourceTree = "<group>"; };
+		AGWG000000000000000F0001 /* AgendaWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaWidget.swift; sourceTree = "<group>"; };
+		AGLA000000000000000F0001 /* UpcomingEventLiveActivityWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingEventLiveActivityWidget.swift; sourceTree = "<group>"; };
+		AGWX000000000000000R0002 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AGWX000000000000000R0003 /* AgendaWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AgendaWidgetExtension.entitlements; sourceTree = "<group>"; };
+		AGWX000000000000000R0001 /* AgendaWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AgendaWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -344,6 +372,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B1526CDD2FDB6F3900964B69 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AGWX000000000000000P0002 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -522,6 +557,7 @@
 				B34B0507FE00BF36365A62E0 /* Info.plist */,
 				7AFB22251DBA18891B1D9A84 /* AutoInspectorNetwork.entitlements */,
 				B1526CE12FDB6F3900964B69 /* InspectFlowShareExtension */,
+				AGWX000000000000000G0001 /* AgendaWidgetExtension */,
 				C863DA5204F95EC573510473 /* Products */,
 				B19AF1562FC472FB00D65428 /* Recovered References */,
 			);
@@ -772,6 +808,7 @@
 		C863DA5204F95EC573510473 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				AGWX000000000000000R0001 /* AgendaWidgetExtension.appex */,
 				A612554AFBDBB78BBE69496E /* AutoInspectorNetwork.app */,
 				B1526CE02FDB6F3900964B69 /* InspectFlowShareExtension.appex */,
 			);
@@ -862,6 +899,18 @@
 			path = Tax;
 			sourceTree = "<group>";
 		};
+		AGWX000000000000000G0001 /* AgendaWidgetExtension */ = {
+			isa = PBXGroup;
+			children = (
+				AGWX000000000000000R0003 /* AgendaWidgetExtension.entitlements */,
+				AGBN000000000000000F0001 /* AgendaWidgetBundle.swift */,
+				AGWG000000000000000F0001 /* AgendaWidget.swift */,
+				AGLA000000000000000F0001 /* UpcomingEventLiveActivityWidget.swift */,
+				AGWX000000000000000R0002 /* Info.plist */,
+			);
+			path = AgendaWidgetExtension;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -877,6 +926,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				AGWX000000000000000D0001 /* PBXTargetDependency */,
 				B1526CE92FDB6F3900964B69 /* PBXTargetDependency */,
 			);
 			name = AutoInspectorNetwork;
@@ -901,6 +951,23 @@
 			name = InspectFlowShareExtension;
 			productName = InspectFlowShareExtension;
 			productReference = B1526CE02FDB6F3900964B69 /* InspectFlowShareExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		AGWX000000000000000T0001 /* AgendaWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AGWX000000000000000C0001 /* Build configuration list for PBXNativeTarget "AgendaWidgetExtension" */;
+			buildPhases = (
+				AGWX000000000000000P0001 /* Sources */,
+				AGWX000000000000000P0002 /* Frameworks */,
+				AGWX000000000000000P0003 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AgendaWidgetExtension;
+			productName = AgendaWidgetExtension;
+			productReference = AGWX000000000000000R0001 /* AgendaWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -938,6 +1005,7 @@
 			targets = (
 				1EAF6B1C573B98DE03975706 /* AutoInspectorNetwork */,
 				B1526CDF2FDB6F3900964B69 /* InspectFlowShareExtension */,
+				AGWX000000000000000T0001 /* AgendaWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -960,6 +1028,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AGWX000000000000000P0003 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -978,6 +1053,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AGSN00000000000000000B1 /* EventRepository+Snapshot.swift in Sources */,
+				AGLC00000000000000000B1 /* LiveActivityController.swift in Sources */,
+				AGAT00000000000000000B1 /* UpcomingEventLiveActivityAttributes.swift in Sources */,
+				AGSS00000000000000000B1 /* SharedAgendaStore.swift in Sources */,
 				FFMG00000000000000000B1 /* FocusFilterManager.swift in Sources */,
 				QAEF00000000000000000B1 /* QuickAddEventField.swift in Sources */,
 				NLSS00000000000000000B1 /* NaturalLanguageSchedulingService.swift in Sources */,
@@ -1121,6 +1200,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AGWX000000000000000P0001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AGBN000000000000000B0001 /* AgendaWidgetBundle.swift in Sources */,
+				AGWG000000000000000B0001 /* AgendaWidget.swift in Sources */,
+				AGLA000000000000000B0001 /* UpcomingEventLiveActivityWidget.swift in Sources */,
+				AGSS00000000000000000B2 /* SharedAgendaStore.swift in Sources */,
+				AGAT00000000000000000B2 /* UpcomingEventLiveActivityAttributes.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1128,6 +1219,11 @@
 			isa = PBXTargetDependency;
 			target = B1526CDF2FDB6F3900964B69 /* InspectFlowShareExtension */;
 			targetProxy = B1526CE82FDB6F3900964B69 /* PBXContainerItemProxy */;
+		};
+		AGWX000000000000000D0001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AGWX000000000000000T0001 /* AgendaWidgetExtension */;
+			targetProxy = AGWX000000000000000X0001 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1380,6 +1476,72 @@
 			};
 			name = Release;
 		};
+		AGWX000000000000000C0002 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = AgendaWidgetExtension/AgendaWidgetExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 264U37X2A5;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AgendaWidgetExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Agenda;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.autoinspectornetwork.ios.AgendaWidgetExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+			};
+			name = Debug;
+		};
+		AGWX000000000000000C0003 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = AgendaWidgetExtension/AgendaWidgetExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 264U37X2A5;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AgendaWidgetExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Agenda;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.autoinspectornetwork.ios.AgendaWidgetExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1406,6 +1568,15 @@
 			buildConfigurations = (
 				B1526CEC2FDB6F3900964B69 /* Debug */,
 				B1526CED2FDB6F3900964B69 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AGWX000000000000000C0001 /* Build configuration list for PBXNativeTarget "AgendaWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AGWX000000000000000C0002 /* Debug */,
+				AGWX000000000000000C0003 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
