@@ -143,6 +143,11 @@
 		CALR00000000000000000B1 /* CalendarRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = CALR00000000000000000F1 /* CalendarRepository.swift */; };
 		EVTR00000000000000000B1 /* EventRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EVTR00000000000000000F1 /* EventRepository.swift */; };
 		ECNF00000000000000000B1 /* EventConflictResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECNF00000000000000000F1 /* EventConflictResolver.swift */; };
+		CFMD00000000000000000B1 /* CalendarFilterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFMD00000000000000000F1 /* CalendarFilterModel.swift */; };
+		EKSR00000000000000000B1 /* EventKitService+Recurrence.swift in Sources */ = {isa = PBXBuildFile; fileRef = EKSR00000000000000000F1 /* EventKitService+Recurrence.swift */; };
+		SSCH00000000000000000B1 /* ScheduleSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = SSCH00000000000000000F1 /* ScheduleSearchService.swift */; };
+		CSBV00000000000000000B1 /* CalendarSidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CSBV00000000000000000F1 /* CalendarSidebarView.swift */; };
+		RCED00000000000000000B1 /* RecurrenceEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = RCED00000000000000000F1 /* RecurrenceEditorView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -309,6 +314,11 @@
 		CALR00000000000000000F1 /* CalendarRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Calendar/CalendarRepository.swift; sourceTree = "<group>"; };
 		EVTR00000000000000000F1 /* EventRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Calendar/EventRepository.swift; sourceTree = "<group>"; };
 		ECNF00000000000000000F1 /* EventConflictResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Calendar/EventConflictResolver.swift; sourceTree = "<group>"; };
+		CFMD00000000000000000F1 /* CalendarFilterModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Calendar/CalendarFilterModel.swift; sourceTree = "<group>"; };
+		EKSR00000000000000000F1 /* EventKitService+Recurrence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Calendar/EventKitService+Recurrence.swift; sourceTree = "<group>"; };
+		SSCH00000000000000000F1 /* ScheduleSearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Calendar/ScheduleSearchService.swift; sourceTree = "<group>"; };
+		CSBV00000000000000000F1 /* CalendarSidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/CalendarSidebarView.swift; sourceTree = "<group>"; };
+		RCED00000000000000000F1 /* RecurrenceEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/RecurrenceEditorView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -954,6 +964,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				RCED00000000000000000B1 /* RecurrenceEditorView.swift in Sources */,
+				CSBV00000000000000000B1 /* CalendarSidebarView.swift in Sources */,
+				SSCH00000000000000000B1 /* ScheduleSearchService.swift in Sources */,
+				EKSR00000000000000000B1 /* EventKitService+Recurrence.swift in Sources */,
+				CFMD00000000000000000B1 /* CalendarFilterModel.swift in Sources */,
 				ECNF00000000000000000B1 /* EventConflictResolver.swift in Sources */,
 				EVTR00000000000000000B1 /* EventRepository.swift in Sources */,
 				CALR00000000000000000B1 /* CalendarRepository.swift in Sources */,
