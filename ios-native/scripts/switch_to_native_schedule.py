@@ -22,15 +22,21 @@ NEW_FILES = [
     ("Core/Calendar/CalendarRepository.swift",             "CALR00000000000000000F1", "CALR00000000000000000B1"),
     ("Core/Calendar/EventRepository.swift",                "EVTR00000000000000000F1", "EVTR00000000000000000B1"),
     ("Core/Calendar/EventConflictResolver.swift",          "ECNF00000000000000000F1", "ECNF00000000000000000B1"),
+    ("Core/Calendar/CalendarFilterModel.swift",            "CFMD00000000000000000F1", "CFMD00000000000000000B1"),
+    ("Core/Calendar/EventKitService+Recurrence.swift",     "EKSR00000000000000000F1", "EKSR00000000000000000B1"),
+    ("Core/Calendar/ScheduleSearchService.swift",          "SSCH00000000000000000F1", "SSCH00000000000000000B1"),
     ("Core/Persistence/ScheduleMetadataStore.swift",       "SMDS00000000000000000F1", "SMDS00000000000000000B1"),
     ("Core/Persistence/SwiftDataMetadataStore.swift",      "SMSD00000000000000000F1", "SMSD00000000000000000B1"),
     ("Features/Schedule/ScheduleDayGrid.swift",            "SDG000000000000000000F1", "SDG000000000000000000B1"),
     ("Features/Schedule/ScheduleMonthMatrix.swift",        "SMM000000000000000000F1", "SMM000000000000000000B1"),
     ("Features/Schedule/ScheduleRootView.swift",           "SRV000000000000000000F1", "SRV000000000000000000B1"),
     ("Features/Schedule/ScheduleSidebar.swift",            "SSB000000000000000000F1", "SSB000000000000000000B1"),
+    ("Features/Schedule/CalendarSidebarView.swift",        "CSBV00000000000000000F1", "CSBV00000000000000000B1"),
+    ("Features/Schedule/RecurrenceEditorView.swift",       "RCED00000000000000000F1", "RCED00000000000000000B1"),
     ("Features/Schedule/EventInspectorView.swift",         "EIV000000000000000000F1", "EIV000000000000000000B1"),
     ("Features/Schedule/ScheduleViewModel.swift",          "SVM000000000000000000F1", "SVM000000000000000000B1"),
 ]
+
 
 
 def strip_calendarkit(text: str) -> str:

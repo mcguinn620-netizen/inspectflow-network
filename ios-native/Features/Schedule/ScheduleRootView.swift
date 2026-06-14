@@ -17,7 +17,7 @@ struct ScheduleRootView: View {
         Group {
             if sizeClass == .regular {
                 NavigationSplitView(columnVisibility: $columnVisibility) {
-                    ScheduleSidebar(viewModel: viewModel)
+                    CalendarSidebarView(viewModel: viewModel, filters: viewModel.filters)
                 } content: {
                     ScheduleContentPane(viewModel: viewModel)
                 } detail: {
@@ -42,6 +42,7 @@ struct ScheduleRootView: View {
             Text(viewModel.errorMessage ?? "")
         }
     }
+
 
     private var detailBinding: Binding<Bool> {
         Binding(
@@ -91,24 +92,28 @@ struct ScheduleContentPane: View {
 
             Divider()
 
-            switch mode.wrappedValue {
-            case .day:
-                ScheduleDayGrid(
-                    date: viewModel.selectedDate,
-                    events: viewModel.events,
-                    jobs: viewModel.jobs.filter { unsynced($0) },
-                    onSelectEvent: { ev in viewModel.selectedEventID = ev.eventIdentifier; viewModel.selectedJobID = nil },
-                    onSelectJob: { job in viewModel.selectedJobID = job.id; viewModel.selectedEventID = nil }
-                )
-            case .week:
-                weekView
-            case .month:
-                ScheduleMonthMatrix(
-                    selectedDate: $viewModel.selectedDate,
-                    events: viewModel.events
-                )
-            case .list:
-                eventList
+            if !viewModel.filters.searchQuery.isEmpty {
+                searchResultsList
+            } else {
+                switch mode.wrappedValue {
+                case .day:
+                    ScheduleDayGrid(
+                        date: viewModel.selectedDate,
+                        events: viewModel.events,
+                        jobs: viewModel.jobs.filter { unsynced($0) },
+                        onSelectEvent: { ev in viewModel.selectedEventID = ev.eventIdentifier; viewModel.selectedJobID = nil },
+                        onSelectJob: { job in viewModel.selectedJobID = job.id; viewModel.selectedEventID = nil }
+                    )
+                case .week:
+                    weekView
+                case .month:
+                    ScheduleMonthMatrix(
+                        selectedDate: $viewModel.selectedDate,
+                        events: viewModel.events
+                    )
+                case .list:
+                    eventList
+                }
             }
         }
         .navigationTitle("Schedule")
@@ -117,11 +122,47 @@ struct ScheduleContentPane: View {
                 Button("Today") { viewModel.selectedDate = Date() }
             }
         }
+        .searchable(
+            text: Binding(
+                get: { viewModel.filters.searchQuery },
+                set: { viewModel.updateSearchQuery($0) }
+            ),
+            prompt: "Search events, tags, notes"
+        )
         .refreshable { await viewModel.load(orgId: nil) }
         .onChange(of: viewModel.selectedDate) { _ in
             Task { await viewModel.reloadEvents() }
         }
     }
+
+    private var searchResultsList: some View {
+        List(viewModel.searchResults) { hit in
+            Button {
+                viewModel.selectedEventID = hit.event.eventIdentifier
+                viewModel.selectedJobID = nil
+            } label: {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(hit.event.title ?? "Untitled").font(.subheadline)
+                    HStack(spacing: 6) {
+                        Text(hit.event.startDate, format: .dateTime.month().day().hour().minute())
+                            .font(.caption).foregroundStyle(.secondary)
+                        if let category = hit.metadata?.category {
+                            Text("· \(category)").font(.caption).foregroundStyle(.secondary)
+                        }
+                    }
+                }
+            }
+        }
+        .overlay {
+            if viewModel.searchResults.isEmpty {
+                ContentUnavailableCompat(
+                    title: "No matches",
+                    message: "Try a different search term."
+                )
+            }
+        }
+    }
+
 
     private var dayNavigator: some View {
         HStack {

@@ -10,7 +10,11 @@ struct EventInspectorView: View {
 
     @ObservedObject var viewModel: ScheduleViewModel
     @State private var presentingEditor = false
+    @State private var presentingRecurrence = false
     @State private var localMetadata: EventMetadata?
+    @State private var newTag: String = ""
+    @State private var newChecklistTitle: String = ""
+
     @State private var newTag: String = ""
     @State private var newChecklistTitle: String = ""
 
@@ -63,6 +67,12 @@ struct EventInspectorView: View {
                 } label: {
                     Label("Edit in Calendar", systemImage: "pencil")
                 }
+                Button {
+                    presentingRecurrence = true
+                } label: {
+                    Label(recurrenceSummary(for: event), systemImage: "repeat")
+                }
+                .disabled(event.calendar?.allowsContentModifications == false)
                 Button(role: .destructive) {
                     Task { await viewModel.deleteEvent(event) }
                 } label: {
@@ -75,10 +85,26 @@ struct EventInspectorView: View {
                 Task { await viewModel.reloadEvents() }
             }
         }
+        .sheet(isPresented: $presentingRecurrence) {
+            RecurrenceEditorView(
+                initial: EventKitService.shared.recurrenceSpec(for: event)
+            ) { spec in
+                Task { await viewModel.applyRecurrence(spec, to: event) }
+            }
+        }
         .task(id: event.eventIdentifier) {
             await loadMetadata(for: event.eventIdentifier ?? "")
         }
     }
+
+    private func recurrenceSummary(for event: EKEvent) -> String {
+        let spec = EventKitService.shared.recurrenceSpec(for: event)
+        switch spec.frequency {
+        case .none: return "Does not repeat"
+        default:    return "Repeats \(spec.frequency.title.lowercased())"
+        }
+    }
+
 
     // MARK: - Job form (unsynced)
 

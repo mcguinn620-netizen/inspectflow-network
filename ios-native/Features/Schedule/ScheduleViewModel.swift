@@ -32,19 +32,27 @@ final class ScheduleViewModel: ObservableObject {
     @Published var visibleCalendarIDs: Set<String> = []
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
+    @Published var searchResults: [ScheduleSearchHit] = []
 
+    let filters: CalendarFilterModel
+    private let searchService: ScheduleSearchService
     private let jobsVM = JobsViewModel()
     private let events_repo: EventRepository
     private let calendarsRepo: CalendarRepository
 
     private var changeTask: Task<Void, Never>?
+    private var searchTask: Task<Void, Never>?
 
     init(
         events: EventRepository = .shared,
-        calendars: CalendarRepository = .shared
+        calendars: CalendarRepository = .shared,
+        filters: CalendarFilterModel = CalendarFilterModel(),
+        searchService: ScheduleSearchService? = nil
     ) {
         self.events_repo = events
         self.calendarsRepo = calendars
+        self.filters = filters
+        self.searchService = searchService ?? ScheduleSearchService(repository: events)
 
         changeTask = Task { [weak self] in
             guard let self else { return }
@@ -54,7 +62,11 @@ final class ScheduleViewModel: ObservableObject {
         }
     }
 
-    deinit { changeTask?.cancel() }
+    deinit {
+        changeTask?.cancel()
+        searchTask?.cancel()
+    }
+
 
     // MARK: - Load
 
@@ -93,8 +105,63 @@ final class ScheduleViewModel: ObservableObject {
             start: monthInterval.start.addingTimeInterval(-86400 * 7),
             end: monthInterval.end.addingTimeInterval(86400 * 7)
         )
-        events = events_repo.events(in: padded, visibleOnly: true)
+        let all = events_repo.events(in: padded, visibleOnly: true)
+        if filters.selectedCategories.isEmpty && filters.selectedTags.isEmpty {
+            events = all
+        } else {
+            events = all.filter { ev in
+                let meta = ev.eventIdentifier.flatMap { metadataByEventID[$0] }
+                return filters.matches(meta)
+            }
+        }
+        await refreshSearchResults()
     }
+
+    // MARK: - Search
+
+    func updateSearchQuery(_ query: String) {
+        filters.searchQuery = query
+        searchTask?.cancel()
+        searchTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 200_000_000)
+            guard let self, !Task.isCancelled else { return }
+            await self.refreshSearchResults()
+        }
+    }
+
+    private func refreshSearchResults() async {
+        let query = filters.searchQuery
+        guard !query.trimmingCharacters(in: .whitespaces).isEmpty else {
+            searchResults = []
+            return
+        }
+        let cal = Calendar.current
+        let interval = cal.dateInterval(of: .month, for: selectedDate) ?? DateInterval(
+            start: selectedDate.addingTimeInterval(-86400 * 30),
+            duration: 86400 * 60
+        )
+        let padded = DateInterval(
+            start: interval.start.addingTimeInterval(-86400 * 30),
+            end: interval.end.addingTimeInterval(86400 * 60)
+        )
+        searchResults = searchService.search(
+            query: query,
+            in: padded,
+            metadataByEventID: metadataByEventID
+        )
+    }
+
+    // MARK: - Recurrence
+
+    func applyRecurrence(_ spec: RecurrenceSpec, to event: EKEvent) async {
+        do {
+            try EventKitService.shared.applyRecurrence(spec, to: event)
+            await reloadEvents()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
 
     // MARK: - Selection helpers
 
