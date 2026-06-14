@@ -164,6 +164,7 @@ public final class EventRepository: ObservableObject {
         event.location = location
         event.notes = notes
         try service.store.save(event, span: .thisEvent, commit: true)
+        eventCache.removeAll(keepingCapacity: true)
         return event
     }
 
@@ -172,13 +173,16 @@ public final class EventRepository: ObservableObject {
         span: EKSpan = .thisEvent
     ) throws {
         try service.store.save(event, span: span, commit: true)
+        eventCache.removeAll(keepingCapacity: true)
     }
 
     public func deleteEvent(_ event: EKEvent, span: EKSpan = .thisEvent) async throws {
         try service.store.remove(event, span: span, commit: true)
         if let id = event.eventIdentifier {
             try? await metadata.delete(eventID: id)
+            metadataCache[id] = nil
         }
+        eventCache.removeAll(keepingCapacity: true)
     }
 
     /// Reschedules `event` to `newStart`, preserving its duration. Bumps
