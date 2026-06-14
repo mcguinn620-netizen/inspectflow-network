@@ -148,6 +148,9 @@
 		SSCH00000000000000000B1 /* ScheduleSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = SSCH00000000000000000F1 /* ScheduleSearchService.swift */; };
 		CSBV00000000000000000B1 /* CalendarSidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CSBV00000000000000000F1 /* CalendarSidebarView.swift */; };
 		RCED00000000000000000B1 /* RecurrenceEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = RCED00000000000000000F1 /* RecurrenceEditorView.swift */; };
+		EDPL00000000000000000B1 /* EventDragPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDPL00000000000000000F1 /* EventDragPayload.swift */; };
+		EDRP00000000000000000B1 /* EventDropDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDRP00000000000000000F1 /* EventDropDelegates.swift */; };
+		SWGD00000000000000000B1 /* ScheduleWeekGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = SWGD00000000000000000F1 /* ScheduleWeekGrid.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -319,6 +322,9 @@
 		SSCH00000000000000000F1 /* ScheduleSearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Calendar/ScheduleSearchService.swift; sourceTree = "<group>"; };
 		CSBV00000000000000000F1 /* CalendarSidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/CalendarSidebarView.swift; sourceTree = "<group>"; };
 		RCED00000000000000000F1 /* RecurrenceEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/RecurrenceEditorView.swift; sourceTree = "<group>"; };
+		EDPL00000000000000000F1 /* EventDragPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Calendar/EventDragPayload.swift; sourceTree = "<group>"; };
+		EDRP00000000000000000F1 /* EventDropDelegates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/EventDropDelegates.swift; sourceTree = "<group>"; };
+		SWGD00000000000000000F1 /* ScheduleWeekGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/ScheduleWeekGrid.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -964,6 +970,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				SWGD00000000000000000B1 /* ScheduleWeekGrid.swift in Sources */,
+				EDRP00000000000000000B1 /* EventDropDelegates.swift in Sources */,
+				EDPL00000000000000000B1 /* EventDragPayload.swift in Sources */,
 				RCED00000000000000000B1 /* RecurrenceEditorView.swift in Sources */,
 				CSBV00000000000000000B1 /* CalendarSidebarView.swift in Sources */,
 				SSCH00000000000000000B1 /* ScheduleSearchService.swift in Sources */,
