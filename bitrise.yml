@@ -3,6 +3,45 @@ format_version: '26'
 default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 project_type: ios
 workflows:
+  verify_project:
+    summary: Smoke-test the repaired AutoInspectorNetwork.xcodeproj end-to-end.
+    steps:
+    - git-clone@8: {}
+    - script@1:
+        title: xcodebuild -list
+        inputs:
+        - content: |
+            #!/bin/bash
+            set -ex
+            xcodebuild -list -project ios-native/AutoInspectorNetwork.xcodeproj
+    - script@1:
+        title: xcodebuild -resolvePackageDependencies
+        inputs:
+        - content: |
+            #!/bin/bash
+            set -ex
+            xcodebuild -resolvePackageDependencies \
+              -project ios-native/AutoInspectorNetwork.xcodeproj \
+              -scheme "$BITRISE_SCHEME"
+    - script@1:
+        title: xcodebuild archive (unsigned)
+        inputs:
+        - content: |
+            #!/bin/bash
+            set -ex
+            xcodebuild archive \
+              -project ios-native/AutoInspectorNetwork.xcodeproj \
+              -scheme "$BITRISE_SCHEME" \
+              -configuration Release \
+              -destination 'generic/platform=iOS' \
+              -archivePath "$BITRISE_DEPLOY_DIR/AutoInspectorNetwork.xcarchive" \
+              CODE_SIGNING_ALLOWED=NO \
+              CODE_SIGNING_REQUIRED=NO \
+              CODE_SIGN_IDENTITY="" \
+              CODE_SIGN_ENTITLEMENTS=""
+    - deploy-to-bitrise-io@2: {}
+    triggers:
+      enabled: false
   build:
     summary: Compile the native SwiftUI app for the iOS Simulator.
     steps:
