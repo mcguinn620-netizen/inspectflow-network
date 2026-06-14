@@ -9,9 +9,13 @@ struct ScheduleMonthMatrix: View {
 
     @Binding var selectedDate: Date
     let events: [EKEvent]
+    var coordinator: EventDropCoordinator? = nil
     var onSelectDay: (Date) -> Void = { _ in }
 
+    @State private var dropHighlightedDay: Date?
+
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 1), count: 7)
+
 
     var body: some View {
         VStack(spacing: 0) {
@@ -72,12 +76,17 @@ struct ScheduleMonthMatrix: View {
                                 .opacity(0.25)
                         )
                         .clipShape(RoundedRectangle(cornerRadius: 3))
+                        .onDrag {
+                            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                            return EventDragPayload(event: ev).itemProvider()
+                        }
                 }
                 if dayEvents.count > 3 {
                     Text("+\(dayEvents.count - 3) more")
                         .font(.system(size: 9))
                         .foregroundStyle(.secondary)
                 }
+
                 Spacer(minLength: 0)
             }
             .frame(maxWidth: .infinity, minHeight: 72, alignment: .topLeading)
