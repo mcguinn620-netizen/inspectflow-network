@@ -10,8 +10,12 @@ struct ScheduleDayGrid: View {
     let date: Date
     let events: [EKEvent]
     let jobs: [Job]
+    var coordinator: EventDropCoordinator? = nil
     var onSelectEvent: (EKEvent) -> Void = { _ in }
     var onSelectJob: (Job) -> Void = { _ in }
+
+    @State private var dropHighlight: Date?
+
 
     private let startHour = 6
     private let endHour = 22
