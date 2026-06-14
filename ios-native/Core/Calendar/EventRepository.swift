@@ -141,6 +141,7 @@ public final class EventRepository: ObservableObject {
 
         let resolved = existing.map { EventConflictResolver.merge($0, next) } ?? next
         try await metadata.upsert(resolved)
+        metadataCache[resolved.eventID] = resolved
         return resolved
     }
 
