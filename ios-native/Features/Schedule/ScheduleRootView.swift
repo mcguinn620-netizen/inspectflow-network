@@ -129,6 +129,9 @@ struct ScheduleContentPane: View {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button("Today") { viewModel.selectedDate = Date() }
             }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                QuickAddEventField(viewModel: viewModel)
+            }
         }
         .searchable(
             text: Binding(
