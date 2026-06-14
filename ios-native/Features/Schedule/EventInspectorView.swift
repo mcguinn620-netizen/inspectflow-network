@@ -35,7 +35,7 @@ struct EventInspectorView: View {
         .toolbar {
             if let event = viewModel.selectedEvent,
                UIApplication.shared.supportsMultipleScenes {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         openWindow(value: EventIdentity(event: event))
                     } label: {
