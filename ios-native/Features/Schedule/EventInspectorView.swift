@@ -32,6 +32,19 @@ struct EventInspectorView: View {
         }
         .navigationTitle("Inspector")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            if let event = viewModel.selectedEvent,
+               UIApplication.shared.supportsMultipleScenes {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        openWindow(value: EventIdentity(event: event))
+                    } label: {
+                        Label("Open in New Window", systemImage: "macwindow.badge.plus")
+                    }
+                }
+            }
+        }
+
     }
 
     // MARK: - Event form
