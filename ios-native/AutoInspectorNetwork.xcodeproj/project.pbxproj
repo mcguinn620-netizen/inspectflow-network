@@ -38,21 +38,21 @@
 		A496019E294407100B85C98C /* CarPlayScheduleTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71F1C6C6FFBEE562BF3481F /* CarPlayScheduleTemplate.swift */; };
 		A5D470A05ACB94A37FE2DE69 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18367283123AA618DD18523 /* AppDelegate.swift */; };
 		A815EF4C8EF422D1E650384F /* SyncStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF0D1A3575838CCF21C4C0A /* SyncStatusView.swift */; };
-		A8A0000000000000000B0001 /* InspectorDashboardHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8A0000000000000000A0001 /* InspectorDashboardHomeView.swift */; };
+		BF07DD1FF77A1061D00FBF11 /* InspectorDashboardHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DBDAF07F234B269D3D24FA /* InspectorDashboardHomeView.swift */; };
 		A9525E9882F5B2F733AF9579 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24D66C2E4EAFB44A5315E98C /* Assets.xcassets */; };
 		A9C954DDCC11B8D0AE0AA87D /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 823495D87B860D162FF96622 /* DashboardView.swift */; };
-		AAAA000000000000000B0009 /* InspectFlowClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A0009 /* InspectFlowClient.swift */; };
-		AAAA000000000000000B000A /* InspectFlowConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A000A /* InspectFlowConfig.swift */; };
-		AAAA000000000000000B000B /* JSONDecoder+Supabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000A000B /* JSONDecoder+Supabase.swift */; };
-		AAAA000000000000000D0006 /* AINInputs.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000C0006 /* AINInputs.swift */; };
-		AAAA000000000000000D0007 /* AINOverlays.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA000000000000000C0007 /* AINOverlays.swift */; };
-		AB10000000000000000000B1 /* JobCreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1000000000000000000001 /* JobCreateView.swift */; };
-		AB10000000000000000000B2 /* JobCreateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1000000000000000000002 /* JobCreateViewModel.swift */; };
-		AB20000000000000000000B1 /* IntakeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB2000000000000000000001 /* IntakeModels.swift */; };
-		AB20000000000000000000B2 /* IntakeInboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB2000000000000000000002 /* IntakeInboxView.swift */; };
-		AB20000000000000000000B3 /* IntakeReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB2000000000000000000003 /* IntakeReviewView.swift */; };
-		AB30000000000000000000B1 /* AINFriendlyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB3000000000000000000001 /* AINFriendlyError.swift */; };
-		AB30000000000000000000B2 /* AINSortMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB3000000000000000000002 /* AINSortMenu.swift */; };
+		8CC3C9877346AD73547AF18A /* InspectFlowClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6642FECBDA411AEF7C630113 /* InspectFlowClient.swift */; };
+		21BFC680C85E412E646A3BE6 /* InspectFlowConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9859D7688D5A68A99641DFC5 /* InspectFlowConfig.swift */; };
+		C56D595E04727510CDA94D5E /* JSONDecoder+Supabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040F594B4F3DC8BD6D42613D /* JSONDecoder+Supabase.swift */; };
+		85DB21E24256402144F7D24F /* AINInputs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C41418C88BAC5295CCC77BA /* AINInputs.swift */; };
+		B511CD0B7795427F1AA7C7CE /* AINOverlays.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04040228ADF2284ACBA287E9 /* AINOverlays.swift */; };
+		D77FCE56532D53FDDA0DE973 /* JobCreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544B7C61F6DD3280D9A2C07B /* JobCreateView.swift */; };
+		D690D41DC69813D600A73078 /* JobCreateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75DF969517C12BE4750139C6 /* JobCreateViewModel.swift */; };
+		D790460826DC94C58AA774AD /* IntakeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68248B63E9B5082DC82B4ECC /* IntakeModels.swift */; };
+		113E561054E66C1CD7809C5C /* IntakeInboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E301F4258CA96472004BC49B /* IntakeInboxView.swift */; };
+		E71D99C564DC9FFB17EA06E3 /* IntakeReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A558FCEED6468B6B190C253 /* IntakeReviewView.swift */; };
+		58A7D5B9E273C8AB13587762 /* AINFriendlyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9599ED3F4CA36C55F89EF754 /* AINFriendlyError.swift */; };
+		1E10FB07DC0935FB27C452F4 /* AINSortMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 954BFCB3F81909C127DA3669 /* AINSortMenu.swift */; };
 		B003E44E4DD8247B34FB95AA /* DriveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE220E882E0F0F3349EE2545 /* DriveView.swift */; };
 		B14C6A492FBBB7A1006C431B /* AINTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A482FBBB7A1006C431B /* AINTheme.swift */; };
 		B14C6A532FBBB854006C431B /* RestClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6A4B2FBBB854006C431B /* RestClient.swift */; };
@@ -235,20 +235,20 @@
 		A1A29FD49E34D2824F0728CF /* AINBrand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINBrand.swift; sourceTree = "<group>"; };
 		A612554AFBDBB78BBE69496E /* AutoInspectorNetwork.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutoInspectorNetwork.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6229C0BDE5ACBE60B1FD1FC /* CarPlaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlaySceneDelegate.swift; sourceTree = "<group>"; };
-		A8A0000000000000000A0001 /* InspectorDashboardHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorDashboardHomeView.swift; sourceTree = "<group>"; };
+		36DBDAF07F234B269D3D24FA /* InspectorDashboardHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorDashboardHomeView.swift; sourceTree = "<group>"; };
 		AA42E905663D907DBE8E637E /* InspectionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectionsView.swift; sourceTree = "<group>"; };
-		AAAA000000000000000A0009 /* InspectFlowClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectFlowClient.swift; sourceTree = "<group>"; };
-		AAAA000000000000000A000A /* InspectFlowConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectFlowConfig.swift; sourceTree = "<group>"; };
-		AAAA000000000000000A000B /* JSONDecoder+Supabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSONDecoder+Supabase.swift"; sourceTree = "<group>"; };
-		AAAA000000000000000C0006 /* AINInputs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINInputs.swift; sourceTree = "<group>"; };
-		AAAA000000000000000C0007 /* AINOverlays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINOverlays.swift; sourceTree = "<group>"; };
-		AB1000000000000000000001 /* JobCreateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobCreateView.swift; sourceTree = "<group>"; };
-		AB1000000000000000000002 /* JobCreateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobCreateViewModel.swift; sourceTree = "<group>"; };
-		AB2000000000000000000001 /* IntakeModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntakeModels.swift; sourceTree = "<group>"; };
-		AB2000000000000000000002 /* IntakeInboxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntakeInboxView.swift; sourceTree = "<group>"; };
-		AB2000000000000000000003 /* IntakeReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntakeReviewView.swift; sourceTree = "<group>"; };
-		AB3000000000000000000001 /* AINFriendlyError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINFriendlyError.swift; sourceTree = "<group>"; };
-		AB3000000000000000000002 /* AINSortMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINSortMenu.swift; sourceTree = "<group>"; };
+		6642FECBDA411AEF7C630113 /* InspectFlowClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectFlowClient.swift; sourceTree = "<group>"; };
+		9859D7688D5A68A99641DFC5 /* InspectFlowConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectFlowConfig.swift; sourceTree = "<group>"; };
+		040F594B4F3DC8BD6D42613D /* JSONDecoder+Supabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSONDecoder+Supabase.swift"; sourceTree = "<group>"; };
+		2C41418C88BAC5295CCC77BA /* AINInputs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINInputs.swift; sourceTree = "<group>"; };
+		04040228ADF2284ACBA287E9 /* AINOverlays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINOverlays.swift; sourceTree = "<group>"; };
+		544B7C61F6DD3280D9A2C07B /* JobCreateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobCreateView.swift; sourceTree = "<group>"; };
+		75DF969517C12BE4750139C6 /* JobCreateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobCreateViewModel.swift; sourceTree = "<group>"; };
+		68248B63E9B5082DC82B4ECC /* IntakeModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntakeModels.swift; sourceTree = "<group>"; };
+		E301F4258CA96472004BC49B /* IntakeInboxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntakeInboxView.swift; sourceTree = "<group>"; };
+		5A558FCEED6468B6B190C253 /* IntakeReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntakeReviewView.swift; sourceTree = "<group>"; };
+		9599ED3F4CA36C55F89EF754 /* AINFriendlyError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINFriendlyError.swift; sourceTree = "<group>"; };
+		954BFCB3F81909C127DA3669 /* AINSortMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINSortMenu.swift; sourceTree = "<group>"; };
 		ACD6A5B54D49B7EF0DF06F20 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		B14C6A482FBBB7A1006C431B /* AINTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AINTheme.swift; sourceTree = "<group>"; };
 		B14C6A4B2FBBB854006C431B /* RestClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestClient.swift; sourceTree = "<group>"; };
@@ -395,7 +395,7 @@
 				E75A17A1D8C22BC327FFE28F /* Auth */,
 				B19AF16A2FC475B500D65428 /* Calendar */,
 				34A5A0A7E47053E5D4833E9C /* Debug */,
-				AAAA000000000000000C0000 /* InspectFlowConnector */,
+				B35B937BABD25AE15185A72D /* InspectFlowConnector */,
 				B19AF1572FC4754600D65428 /* Maps */,
 				3F3BA5C895DEF081A2E3B57D /* Location */,
 				B4894F917AC9DD25B277FD92 /* Network */,
@@ -419,11 +419,11 @@
 				15A6133A54CE2A4CA86A7C37 /* AINRoleBadge.swift */,
 				FF19C64FE4F4620BF3BF99BD /* AINDebugBanner.swift */,
 				2CF0D1A3575838CCF21C4C0A /* SyncStatusView.swift */,
-				AAAA000000000000000C0006 /* AINInputs.swift */,
-				AAAA000000000000000C0007 /* AINOverlays.swift */,
+				2C41418C88BAC5295CCC77BA /* AINInputs.swift */,
+				04040228ADF2284ACBA287E9 /* AINOverlays.swift */,
 				B1D25DD22FC1F5EC00E9EDD8 /* OpenInMapsButton.swift */,
-				AB3000000000000000000001 /* AINFriendlyError.swift */,
-				AB3000000000000000000002 /* AINSortMenu.swift */,
+				9599ED3F4CA36C55F89EF754 /* AINFriendlyError.swift */,
+				954BFCB3F81909C127DA3669 /* AINSortMenu.swift */,
 				0CC7FDA6005E43DAFC5760FB /* TripMapSnapshot.swift */,
 			);
 			path = UI;
@@ -461,7 +461,7 @@
 				B1D25DC72FC1F5AC00E9EDD8 /* Components */,
 				823495D87B860D162FF96622 /* DashboardView.swift */,
 				DC30D8C9079EF31A07BF1339 /* DashboardViewModel.swift */,
-				A8A0000000000000000A0001 /* InspectorDashboardHomeView.swift */,
+				36DBDAF07F234B269D3D24FA /* InspectorDashboardHomeView.swift */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";
@@ -486,7 +486,7 @@
 				67F5D723AFFBBF37A6D10CF5 /* Drive */,
 				A56F8C2844653A5EF957E175 /* Inspections */,
 				9D8FB123A1621A97F2E6B02F /* Jobs */,
-				AB20000000000000000000F0 /* Intake */,
+				5103FCCA98995C89D9A698CB /* Intake */,
 				B7FC85E74F13B0F7B6421702 /* Profile */,
 				38C362A50C6B6123747B41D4 /* Schedule */,
 				AF2799AFA0CD32C828177CE8 /* Settings */,
@@ -590,8 +590,8 @@
 			children = (
 				B1D25DCF2FC1F5EC00E9EDD8 /* JobDetailView.swift */,
 				B1D25DCE2FC1F5EC00E9EDD8 /* JobEditSheet.swift */,
-				AB1000000000000000000001 /* JobCreateView.swift */,
-				AB1000000000000000000002 /* JobCreateViewModel.swift */,
+				544B7C61F6DD3280D9A2C07B /* JobCreateView.swift */,
+				75DF969517C12BE4750139C6 /* JobCreateViewModel.swift */,
 				22B7DFF288D646A9E38F2592 /* JobsView.swift */,
 				E4FB918863C258C1718BAB06 /* JobsViewModel.swift */,
 			);
@@ -619,16 +619,16 @@
 			path = Inspections;
 			sourceTree = "<group>";
 		};
-		AAAA000000000000000C0000 /* InspectFlowConnector */ = {
+		B35B937BABD25AE15185A72D /* InspectFlowConnector */ = {
 			isa = PBXGroup;
 			children = (
 				B14C6A632FBBBA64006C431B /* Storage */,
 				B14C6A4F2FBBB854006C431B /* Auth */,
 				B14C6A4A2FBBB854006C431B /* Database */,
 				B14C6A4D2FBBB854006C431B /* Functions */,
-				AAAA000000000000000A0009 /* InspectFlowClient.swift */,
-				AAAA000000000000000A000A /* InspectFlowConfig.swift */,
-				AAAA000000000000000A000B /* JSONDecoder+Supabase.swift */,
+				6642FECBDA411AEF7C630113 /* InspectFlowClient.swift */,
+				9859D7688D5A68A99641DFC5 /* InspectFlowConfig.swift */,
+				040F594B4F3DC8BD6D42613D /* JSONDecoder+Supabase.swift */,
 			);
 			path = InspectFlowConnector;
 			sourceTree = "<group>";
@@ -641,11 +641,11 @@
 			path = Tax;
 			sourceTree = "<group>";
 		};
-		AB20000000000000000000F0 /* Intake */ = {
+		5103FCCA98995C89D9A698CB /* Intake */ = {
 			isa = PBXGroup;
 			children = (
-				AB2000000000000000000002 /* IntakeInboxView.swift */,
-				AB2000000000000000000003 /* IntakeReviewView.swift */,
+				E301F4258CA96472004BC49B /* IntakeInboxView.swift */,
+				5A558FCEED6468B6B190C253 /* IntakeReviewView.swift */,
 			);
 			path = Intake;
 			sourceTree = "<group>";
@@ -859,7 +859,7 @@
 				0F91FE72E2545B9592848B66 /* DomainModels.swift */,
 				36B422B2A67850BCACD28A6B /* SharedPayloadModel.swift */,
 				77A8D7405D4EEF6598B26AE8 /* InspectionTemplateModels.swift */,
-				AB2000000000000000000001 /* IntakeModels.swift */,
+				68248B63E9B5082DC82B4ECC /* IntakeModels.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1007,12 +1007,15 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1420;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					1EAF6B1C573B98DE03975706 = {
-						CreatedOnToolsVersion = 15.0;
+						CreatedOnToolsVersion = 14.2;
 					};
 					B1526CDF2FDB6F3900964B69 = {
+						CreatedOnToolsVersion = 14.2;
+					};
+					FFD8FF2E0052F883CE368D5A = {
 						CreatedOnToolsVersion = 14.2;
 					};
 				};
@@ -1176,7 +1179,7 @@
 				490E2B9B0C8CDE7165A3E43B /* AuthViewModel.swift in Sources */,
 				A9C954DDCC11B8D0AE0AA87D /* DashboardView.swift in Sources */,
 				D7A5DDBD1FF712EC25F3B0BF /* DashboardViewModel.swift in Sources */,
-				A8A0000000000000000B0001 /* InspectorDashboardHomeView.swift in Sources */,
+				BF07DD1FF77A1061D00FBF11 /* InspectorDashboardHomeView.swift in Sources */,
 				B003E44E4DD8247B34FB95AA /* DriveView.swift in Sources */,
 				419B09558A44F6C45CC12153 /* InspectionDetailView.swift in Sources */,
 				B1D25DD12FC1F5EC00E9EDD8 /* JobDetailView.swift in Sources */,
@@ -1204,13 +1207,13 @@
 				B14C6A572FBBB854006C431B /* AuthClient.swift in Sources */,
 				47A5D4E5D08E65962F7E0954 /* InspectionTemplateModels.swift in Sources */,
 				A815EF4C8EF422D1E650384F /* SyncStatusView.swift in Sources */,
-				AAAA000000000000000B0009 /* InspectFlowClient.swift in Sources */,
+				8CC3C9877346AD73547AF18A /* InspectFlowClient.swift in Sources */,
 				B19AF1672FC4756C00D65428 /* VehicleDetailView.swift in Sources */,
-				AAAA000000000000000B000A /* InspectFlowConfig.swift in Sources */,
-				AAAA000000000000000B000B /* JSONDecoder+Supabase.swift in Sources */,
+				21BFC680C85E412E646A3BE6 /* InspectFlowConfig.swift in Sources */,
+				C56D595E04727510CDA94D5E /* JSONDecoder+Supabase.swift in Sources */,
 				B19AF1592FC4754600D65428 /* MapsLookupService.swift in Sources */,
-				AAAA000000000000000D0006 /* AINInputs.swift in Sources */,
-				AAAA000000000000000D0007 /* AINOverlays.swift in Sources */,
+				85DB21E24256402144F7D24F /* AINInputs.swift in Sources */,
+				B511CD0B7795427F1AA7C7CE /* AINOverlays.swift in Sources */,
 				B1D25DD32FC1F5EC00E9EDD8 /* OpenInMapsButton.swift in Sources */,
 				9B69359FDB179F51BD1CD62E /* DebugUser.swift in Sources */,
 				86FCE92A8AF2240338D87751 /* DebugUserService.swift in Sources */,
@@ -1219,13 +1222,13 @@
 				D3902D957795898C11960D5D /* AINDebugBanner.swift in Sources */,
 				CEC28A469EB71DB33CC3151A /* DeveloperToolsSection.swift in Sources */,
 				B1D25DD02FC1F5EC00E9EDD8 /* JobEditSheet.swift in Sources */,
-				AB10000000000000000000B1 /* JobCreateView.swift in Sources */,
-				AB10000000000000000000B2 /* JobCreateViewModel.swift in Sources */,
-				AB20000000000000000000B1 /* IntakeModels.swift in Sources */,
-				AB20000000000000000000B2 /* IntakeInboxView.swift in Sources */,
-				AB20000000000000000000B3 /* IntakeReviewView.swift in Sources */,
-				AB30000000000000000000B1 /* AINFriendlyError.swift in Sources */,
-				AB30000000000000000000B2 /* AINSortMenu.swift in Sources */,
+				D77FCE56532D53FDDA0DE973 /* JobCreateView.swift in Sources */,
+				D690D41DC69813D600A73078 /* JobCreateViewModel.swift in Sources */,
+				D790460826DC94C58AA774AD /* IntakeModels.swift in Sources */,
+				113E561054E66C1CD7809C5C /* IntakeInboxView.swift in Sources */,
+				E71D99C564DC9FFB17EA06E3 /* IntakeReviewView.swift in Sources */,
+				58A7D5B9E273C8AB13587762 /* AINFriendlyError.swift in Sources */,
+				1E10FB07DC0935FB27C452F4 /* AINSortMenu.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
