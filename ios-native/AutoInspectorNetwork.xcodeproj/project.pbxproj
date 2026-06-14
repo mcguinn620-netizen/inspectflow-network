@@ -151,6 +151,7 @@
 		EDPL00000000000000000B1 /* EventDragPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDPL00000000000000000F1 /* EventDragPayload.swift */; };
 		EDRP00000000000000000B1 /* EventDropDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDRP00000000000000000F1 /* EventDropDelegates.swift */; };
 		SWGD00000000000000000B1 /* ScheduleWeekGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = SWGD00000000000000000F1 /* ScheduleWeekGrid.swift */; };
+		EDTW00000000000000000B1 /* EventDetailWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDTW00000000000000000F1 /* EventDetailWindow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -325,6 +326,7 @@
 		EDPL00000000000000000F1 /* EventDragPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Calendar/EventDragPayload.swift; sourceTree = "<group>"; };
 		EDRP00000000000000000F1 /* EventDropDelegates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/EventDropDelegates.swift; sourceTree = "<group>"; };
 		SWGD00000000000000000F1 /* ScheduleWeekGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/ScheduleWeekGrid.swift; sourceTree = "<group>"; };
+		EDTW00000000000000000F1 /* EventDetailWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/EventDetailWindow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -970,6 +972,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EDTW00000000000000000B1 /* EventDetailWindow.swift in Sources */,
 				SWGD00000000000000000B1 /* ScheduleWeekGrid.swift in Sources */,
 				EDRP00000000000000000B1 /* EventDropDelegates.swift in Sources */,
 				EDPL00000000000000000B1 /* EventDragPayload.swift in Sources */,

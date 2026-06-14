@@ -26,5 +26,21 @@ struct AutoInspectorNetworkApp: App {
                     }
                 }
         }
+
+        WindowGroup("Event", id: "event-detail", for: EventIdentity.self) { $identity in
+            if let identity {
+                EventDetailWindow(identity: identity)
+                    .environmentObject(appState)
+                    .environmentObject(syncEngine)
+                    .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
+                    .tint(AINBrand.accent)
+            } else {
+                ContentUnavailableCompat(
+                    title: "Event Unavailable",
+                    message: "The requested event could not be opened."
+                )
+            }
+        }
     }
 }
+

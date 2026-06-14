@@ -9,14 +9,13 @@ import EventKitUI
 struct EventInspectorView: View {
 
     @ObservedObject var viewModel: ScheduleViewModel
+    @Environment(\.openWindow) private var openWindow
     @State private var presentingEditor = false
     @State private var presentingRecurrence = false
     @State private var localMetadata: EventMetadata?
     @State private var newTag: String = ""
     @State private var newChecklistTitle: String = ""
 
-    @State private var newTag: String = ""
-    @State private var newChecklistTitle: String = ""
 
     var body: some View {
         Group {
@@ -33,6 +32,19 @@ struct EventInspectorView: View {
         }
         .navigationTitle("Inspector")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            if let event = viewModel.selectedEvent,
+               UIApplication.shared.supportsMultipleScenes {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        openWindow(value: EventIdentity(event: event))
+                    } label: {
+                        Label("Open in New Window", systemImage: "macwindow.badge.plus")
+                    }
+                }
+            }
+        }
+
     }
 
     // MARK: - Event form

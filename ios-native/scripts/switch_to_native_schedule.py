@@ -38,7 +38,9 @@ NEW_FILES = [
     ("Core/Calendar/EventDragPayload.swift",               "EDPL00000000000000000F1", "EDPL00000000000000000B1"),
     ("Features/Schedule/EventDropDelegates.swift",         "EDRP00000000000000000F1", "EDRP00000000000000000B1"),
     ("Features/Schedule/ScheduleWeekGrid.swift",           "SWGD00000000000000000F1", "SWGD00000000000000000B1"),
+    ("Features/Schedule/EventDetailWindow.swift",          "EDTW00000000000000000F1", "EDTW00000000000000000B1"),
 ]
+
 
 
 
