@@ -139,6 +139,7 @@
 		SSB000000000000000000B1 /* ScheduleSidebar.swift in Sources */ = {isa = PBXBuildFile; fileRef = SSB000000000000000000F1 /* ScheduleSidebar.swift */; };
 		EIV000000000000000000B1 /* EventInspectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EIV000000000000000000F1 /* EventInspectorView.swift */; };
 		SVM000000000000000000B1 /* ScheduleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = SVM000000000000000000F1 /* ScheduleViewModel.swift */; };
+		EVID00000000000000000B1 /* EventIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = EVID00000000000000000F1 /* EventIdentity.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -301,6 +302,7 @@
 		SSB000000000000000000F1 /* ScheduleSidebar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/ScheduleSidebar.swift; sourceTree = "<group>"; };
 		EIV000000000000000000F1 /* EventInspectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/EventInspectorView.swift; sourceTree = "<group>"; };
 		SVM000000000000000000F1 /* ScheduleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Schedule/ScheduleViewModel.swift; sourceTree = "<group>"; };
+		EVID00000000000000000F1 /* EventIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Calendar/EventIdentity.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -946,6 +948,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EVID00000000000000000B1 /* EventIdentity.swift in Sources */,
 				SVM000000000000000000B1 /* ScheduleViewModel.swift in Sources */,
 				EIV000000000000000000B1 /* EventInspectorView.swift in Sources */,
 				SSB000000000000000000B1 /* ScheduleSidebar.swift in Sources */,
