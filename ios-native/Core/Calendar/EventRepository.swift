@@ -83,8 +83,12 @@ public final class EventRepository: ObservableObject {
     /// (per `CalendarRepository`) are excluded.
     public func events(in interval: DateInterval, visibleOnly: Bool = true) -> [EKEvent] {
         guard service.hasAccess else { return [] }
+        let key = EventCacheKey(start: interval.start, end: interval.end, visibleOnly: visibleOnly)
+        if let cached = eventCache[key] { return cached }
         let cals: [EKCalendar]? = visibleOnly ? calendars.visibleCalendars() : nil
-        return service.events(in: interval, calendars: cals)
+        let loaded = service.events(in: interval, calendars: cals)
+        eventCache[key] = loaded
+        return loaded
     }
 
     public func event(matching identity: EventIdentity) -> EKEvent? {
@@ -95,18 +99,30 @@ public final class EventRepository: ObservableObject {
 
     public func metadata(for event: EKEvent) async -> EventMetadata? {
         let identity = EventIdentity(event: event)
+        if let eventID = identity.eventIdentifier, let cached = metadataCache[eventID] {
+            return cached
+        }
         if let externalID = identity.externalID,
            let found = try? await metadata.metadata(forExternalID: externalID) {
+            if let id = identity.eventIdentifier { metadataCache[id] = found }
             return found
         }
-        if let eventID = identity.eventIdentifier {
-            return try? await metadata.metadata(for: eventID)
+        if let eventID = identity.eventIdentifier,
+           let found = try? await metadata.metadata(for: eventID) {
+            metadataCache[eventID] = found
+            return found
         }
         return nil
     }
 
     public func allMetadata() async -> [EventMetadata] {
-        (try? await metadata.allMetadata()) ?? []
+        if metadataCacheLoaded {
+            return Array(metadataCache.values)
+        }
+        let list = (try? await metadata.allMetadata()) ?? []
+        metadataCache = Dictionary(uniqueKeysWithValues: list.map { ($0.eventID, $0) })
+        metadataCacheLoaded = true
+        return list
     }
 
     /// Upserts metadata with deterministic conflict resolution against any
