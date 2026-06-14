@@ -32,19 +32,27 @@ final class ScheduleViewModel: ObservableObject {
     @Published var visibleCalendarIDs: Set<String> = []
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
+    @Published var searchResults: [ScheduleSearchHit] = []
 
+    let filters: CalendarFilterModel
+    private let searchService: ScheduleSearchService
     private let jobsVM = JobsViewModel()
     private let events_repo: EventRepository
     private let calendarsRepo: CalendarRepository
 
     private var changeTask: Task<Void, Never>?
+    private var searchTask: Task<Void, Never>?
 
     init(
         events: EventRepository = .shared,
-        calendars: CalendarRepository = .shared
+        calendars: CalendarRepository = .shared,
+        filters: CalendarFilterModel = CalendarFilterModel(),
+        searchService: ScheduleSearchService? = nil
     ) {
         self.events_repo = events
         self.calendarsRepo = calendars
+        self.filters = filters
+        self.searchService = searchService ?? ScheduleSearchService(repository: events)
 
         changeTask = Task { [weak self] in
             guard let self else { return }
@@ -54,7 +62,11 @@ final class ScheduleViewModel: ObservableObject {
         }
     }
 
-    deinit { changeTask?.cancel() }
+    deinit {
+        changeTask?.cancel()
+        searchTask?.cancel()
+    }
+
 
     // MARK: - Load
 
