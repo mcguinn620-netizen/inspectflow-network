@@ -21,6 +21,7 @@ struct ScheduleDayGrid: View {
     private let endHour = 22
     private let hourHeight: CGFloat = 56
     private let railWidth: CGFloat = 52
+    private let snapMinutes = 15
 
     private var hours: [Int] { Array(startHour..<endHour) }
 
@@ -28,12 +29,57 @@ struct ScheduleDayGrid: View {
         ScrollView {
             ZStack(alignment: .topLeading) {
                 hourRail
+                dropTargetColumn
+                dropHighlightOverlay
                 nowLine
                 blocksOverlay
             }
             .frame(height: CGFloat(hours.count) * hourHeight)
         }
     }
+
+    @ViewBuilder
+    private var dropTargetColumn: some View {
+        if let coordinator {
+            GeometryReader { geo in
+                let width = max(0, geo.size.width - railWidth - 8)
+                Rectangle()
+                    .fill(Color.clear)
+                    .contentShape(Rectangle())
+                    .frame(width: width, height: CGFloat(hours.count) * hourHeight)
+                    .offset(x: railWidth + 4)
+                    .onDrop(
+                        of: [EventDragPayload.utType],
+                        delegate: TimeColumnDropDelegate(
+                            date: date,
+                            startHour: startHour,
+                            endHour: endHour,
+                            hourHeight: hourHeight,
+                            snapMinutes: snapMinutes,
+                            coordinator: coordinator,
+                            highlight: $dropHighlight
+                        )
+                    )
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var dropHighlightOverlay: some View {
+        if let hl = dropHighlight, Calendar.current.isDate(hl, inSameDayAs: date) {
+            GeometryReader { geo in
+                let width = max(0, geo.size.width - railWidth - 8)
+                let comps = Calendar.current.dateComponents([.hour, .minute], from: hl)
+                let mins = (comps.hour ?? 0) * 60 + (comps.minute ?? 0) - startHour * 60
+                let y = CGFloat(max(0, mins)) / 60.0 * hourHeight
+                Rectangle()
+                    .fill(Color.accentColor.opacity(0.18))
+                    .frame(width: width, height: CGFloat(snapMinutes) / 60 * hourHeight)
+                    .offset(x: railWidth + 4, y: y)
+            }
+        }
+    }
+
 
     private var hourRail: some View {
         VStack(spacing: 0) {
