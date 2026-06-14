@@ -25,6 +25,17 @@ public final class EventRepository: ObservableObject {
     private var changeTask: Task<Void, Never>?
     private var debounceTask: Task<Void, Never>?
 
+    // MARK: - Caches (Phase 6)
+
+    private struct EventCacheKey: Hashable {
+        let start: Date
+        let end: Date
+        let visibleOnly: Bool
+    }
+    private var eventCache: [EventCacheKey: [EKEvent]] = [:]
+    private var metadataCache: [String: EventMetadata] = [:]
+    private var metadataCacheLoaded = false
+
     public init(
         service: EventKitService = .shared,
         calendars: CalendarRepository = .shared,
@@ -39,9 +50,18 @@ public final class EventRepository: ObservableObject {
         changeTask = Task { [weak self] in
             guard let self else { return }
             for await _ in self.service.changes() {
+                self.invalidateCaches()
                 self.scheduleDebouncedBroadcast()
             }
         }
+    }
+
+    /// Drops all in-memory caches. Called automatically on EK change events
+    /// and exposed for explicit refresh from tests/UI.
+    public func invalidateCaches() {
+        eventCache.removeAll(keepingCapacity: true)
+        metadataCache.removeAll(keepingCapacity: true)
+        metadataCacheLoaded = false
     }
 
     deinit {
