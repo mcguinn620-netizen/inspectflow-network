@@ -17,7 +17,7 @@ struct ScheduleRootView: View {
         Group {
             if sizeClass == .regular {
                 NavigationSplitView(columnVisibility: $columnVisibility) {
-                    ScheduleSidebar(viewModel: viewModel)
+                    CalendarSidebarView(viewModel: viewModel, filters: viewModel.filters)
                 } content: {
                     ScheduleContentPane(viewModel: viewModel)
                 } detail: {
@@ -42,6 +42,7 @@ struct ScheduleRootView: View {
             Text(viewModel.errorMessage ?? "")
         }
     }
+
 
     private var detailBinding: Binding<Bool> {
         Binding(
