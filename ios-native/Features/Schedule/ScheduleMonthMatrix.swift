@@ -91,14 +91,37 @@ struct ScheduleMonthMatrix: View {
             }
             .frame(maxWidth: .infinity, minHeight: 72, alignment: .topLeading)
             .padding(4)
-            .background(Color(.systemBackground))
+            .background(
+                (dropHighlightedDay.map { Calendar.current.isDate($0, inSameDayAs: day) } ?? false)
+                    ? Color.accentColor.opacity(0.18)
+                    : Color(.systemBackground)
+            )
             .overlay(
                 RoundedRectangle(cornerRadius: 0)
                     .stroke(isSelected ? Color.accentColor : .clear, lineWidth: 1.5)
             )
         }
         .buttonStyle(.plain)
+        .modifier(MonthCellDropModifier(day: day, coordinator: coordinator, highlight: $dropHighlightedDay))
     }
+}
+
+private struct MonthCellDropModifier: ViewModifier {
+    let day: Date
+    let coordinator: EventDropCoordinator?
+    @Binding var highlight: Date?
+
+    func body(content: Content) -> some View {
+        if let coordinator {
+            content.onDrop(
+                of: [EventDragPayload.utType],
+                delegate: MonthDayDropDelegate(day: day, coordinator: coordinator, highlightedDay: $highlight)
+            )
+        } else {
+            content
+        }
+    }
+
 
     private func monthDays() -> [Date] {
         let cal = Calendar.current
