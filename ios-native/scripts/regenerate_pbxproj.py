@@ -419,6 +419,10 @@ def main() -> int:
 
     # Extra (synthetic) children to append to specific groups when emitting the tree.
     extra_group_children: Dict[str, List[Tuple[str, str]]] = {}
+    _variant_uid_preview = uid("variantgroup:MainInterface.storyboard")
+    extra_group_children["InspectFlowShareExtension"] = [
+        (_variant_uid_preview, "MainInterface.storyboard"),
+    ]
 
     # Collect file nodes by path
     file_nodes: Dict[str, Node] = {}
