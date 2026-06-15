@@ -473,6 +473,9 @@ def main() -> int:
         for c in groups + files:
             children_uids.append((c.uid, c.name))
             emit_groups(c)
+        # synthetic injections (e.g. PBXVariantGroup)
+        for extra in extra_group_children.get(node.path, []):
+            children_uids.append(extra)
         # root group gets the Products subgroup appended
         if is_root:
             children_uids.append((PRODUCTS_GROUP_UID, "Products"))
