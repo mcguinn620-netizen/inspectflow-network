@@ -24,6 +24,16 @@ workflows:
               -project ios-native/AutoInspectorNetwork.xcodeproj \
               -scheme "$BITRISE_SCHEME"
     - script@1:
+        title: xcodebuild -showBuildSettings
+        inputs:
+        - content: |
+            #!/bin/bash
+            set -ex
+            xcodebuild -showBuildSettings \
+              -project ios-native/AutoInspectorNetwork.xcodeproj \
+              -scheme "$BITRISE_SCHEME" \
+              -configuration Release | head -200
+    - script@1:
         title: xcodebuild archive (unsigned)
         inputs:
         - content: |
