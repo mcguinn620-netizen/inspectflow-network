@@ -410,11 +410,15 @@ def main() -> int:
     tree.add_file("AutoInspectorNetwork.entitlements")
     tree.add_file("InspectFlowShareExtension/Info.plist")
     tree.add_file("InspectFlowShareExtension/InspectFlowShareExtension.entitlements")
-    tree.add_file("InspectFlowShareExtension/Base.lproj/MainInterface.storyboard")
+    # NOTE: MainInterface.storyboard intentionally not added as a plain file —
+    # it is represented by a PBXVariantGroup attached to InspectFlowShareExtension below.
     tree.add_file("AgendaWidgetExtension/Info.plist")
     tree.add_file("AgendaWidgetExtension/AgendaWidgetExtension.entitlements")
 
     tree.assign_uids()
+
+    # Extra (synthetic) children to append to specific groups when emitting the tree.
+    extra_group_children: Dict[str, List[Tuple[str, str]]] = {}
 
     # Collect file nodes by path
     file_nodes: Dict[str, Node] = {}
