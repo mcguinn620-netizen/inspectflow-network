@@ -555,7 +555,6 @@ def main() -> int:
         resources_bf["AutoInspectorNetwork"].append((bu, n.name))
 
     # MainInterface.storyboard for share extension (as PBXVariantGroup container)
-    storyboard_node = file_nodes["InspectFlowShareExtension/Base.lproj/MainInterface.storyboard"]
     variant_uid = uid("variantgroup:MainInterface.storyboard")
     # Need a Base lang fileRef inside the variant group
     base_lang_uid = uid("lang:Base:MainInterface.storyboard")
