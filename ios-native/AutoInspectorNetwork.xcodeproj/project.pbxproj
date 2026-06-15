@@ -332,7 +332,6 @@
 		CAE05BCA6487A51DC5C0EE70 /* JobsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobsViewModel.swift; sourceTree = "<group>"; };
 		CF889EE3CBDCA0FC61CDEE66 /* ScheduleWeekGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleWeekGrid.swift; sourceTree = "<group>"; };
 		D1252180910DB3DC5CA2AD22 /* InspectorDashboardHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorDashboardHomeView.swift; sourceTree = "<group>"; };
-		D273A949F39447DDFAA88815 /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
 		D3B814C4496205AE64C381EA /* ActiveTripBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveTripBanner.swift; sourceTree = "<group>"; };
 		D5F2124C68710DCF159D7143 /* SyncStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncStatusView.swift; sourceTree = "<group>"; };
 		D7C34308E6BB1EB8241CA5DB /* AgendaWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaWidgetBundle.swift; sourceTree = "<group>"; };
@@ -546,14 +545,6 @@
 				BAC75E4C7D1B6E22D85B2982 /* Trips */,
 			);
 			path = Core;
-			sourceTree = "<group>";
-		};
-		45F2B8D4BEBF040530C58912 /* Base.lproj */ = {
-			isa = PBXGroup;
-			children = (
-				D273A949F39447DDFAA88815 /* MainInterface.storyboard */,
-			);
-			path = Base.lproj;
 			sourceTree = "<group>";
 		};
 		47DD3291EB77A29BCC4B31A5 /* Mileage */ = {
@@ -907,11 +898,11 @@
 		EC8F0D82881EB6CC1B957D98 /* InspectFlowShareExtension */ = {
 			isa = PBXGroup;
 			children = (
-				45F2B8D4BEBF040530C58912 /* Base.lproj */,
 				14A9FC8743BC924D803EE05B /* Info.plist */,
 				A539282DEBC538C3FDB68B3A /* InspectFlowShareExtension.entitlements */,
 				2C2CA3FCC1A64A4DEC2B581D /* ShareViewController.swift */,
 				938CCFD3D66A0EFD792C9A30 /* SharedPayloadModel.swift */,
+				C97AD64A741E061B319BA0EC /* MainInterface.storyboard */,
 			);
 			path = InspectFlowShareExtension;
 			sourceTree = "<group>";
