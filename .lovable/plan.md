@@ -1,105 +1,38 @@
-## Regenerate AutoInspectorNetwork.xcodeproj from scratch
+## Diagnosis
 
-Build a fresh `project.pbxproj` deterministically from the on-disk `ios-native/` source tree. No incremental repair. Every PBX object is regenerated from a template with stable, content-addressed 24-character uppercase hex UUIDs (SHA-1 of the object's stable key, truncated). All legacy IDs (synthetic, AGWX-prefixed, AAAA/AB-prefixed, etc.) are discarded.
+**Build error — duplicate symbols.** Two files declare the same public types (`RealtimeEvent`, `RealtimeClient`, `RealtimeChannel`):
 
-### Source-tree mapping (preserved as today)
-```text
-ios-native/
-  App/                          → AutoInspectorNetwork target
-  CarPlay/                      → AutoInspectorNetwork target
-  Core/                         → AutoInspectorNetwork target
-    (excluding Tests, which stays in Package.swift only)
-  Features/                     → AutoInspectorNetwork target
-  Shared/                       → AutoInspectorNetwork target (+ ShareExt for shared files)
-  Assets.xcassets               → AutoInspectorNetwork resources
-  InspectionModel.xcdatamodeld  → AutoInspectorNetwork resources
-  Info.plist                    → AutoInspectorNetwork
-  AutoInspectorNetwork.entitlements
-  InspectFlowShareExtension/    → InspectFlowShareExtension target
-    Info.plist, .entitlements, ShareViewController.swift,
-    SharedPayloadModel.swift, Base.lproj/MainInterface.storyboard
-  AgendaWidgetExtension/        → AgendaWidgetExtension target
-    Info.plist, .entitlements, AgendaWidget.swift, AgendaWidgetBundle.swift,
-    UpcomingEventLiveActivityWidget.swift
-  Shared/Widget/SharedAgendaStore.swift, UpcomingEventLiveActivityAttributes.swift
-                                → also compiled into AgendaWidgetExtension
-```
+- `ios-native/Core/InspectFlowConnector/Realtime/RealtimeChannel.swift` (canonical — wired into `InspectFlowClient`)
+- `ios-native/Core/Realtime/RealtimeChannel.swift` (stray duplicate, byte-identical)
 
-### Targets and preserved settings
-| Target | Bundle ID | Product type | Deployment | Swift | Entitlements |
-|---|---|---|---|---|---|
-| AutoInspectorNetwork | com.autoinspectornetwork.ios | application | iOS 16.0 | 5.7 | AutoInspectorNetwork.entitlements |
-| InspectFlowShareExtension | com.autoinspectornetwork.ios.InspectFlowShareExtension | app-extension | iOS 16.2 | 5.0 | InspectFlowShareExtension/InspectFlowShareExtension.entitlements |
-| AgendaWidgetExtension | com.autoinspectornetwork.ios.AgendaWidgetExtension | app-extension | iOS 16.2 | 5.0 | AgendaWidgetExtension/AgendaWidgetExtension.entitlements |
+Both are listed in the `AutoInspectorNetwork` Sources build phase of the regenerated `project.pbxproj` (refs `B19E546E…` and `B19E5478…`), so the Swift compiler emits "invalid redeclaration" for every type in the file. This is the parser/compile error blocking the build.
 
-Shared build settings preserved: `DEVELOPMENT_TEAM = 264U37X2A5`, `CODE_SIGN_STYLE = Automatic`, `MARKETING_VERSION` (0.2.0 app, 1.0 extensions), `CURRENT_PROJECT_VERSION = 1`, `TARGETED_DEVICE_FAMILY = "1,2"`, `GENERATE_INFOPLIST_FILE = NO` (extensions keep YES if currently set), app group `group.com.inspectflow.shared`.
+**Realtime "config" issue.** `RealtimeChannel.subscribe()` in the connector sends a `phx_join` to `realtime:<topic>` but:
 
-### Build phases per target
-- AutoInspectorNetwork: Sources, Frameworks, Resources, Embed Foundation Extensions (both extensions, RemoveHeadersOnCopy).
-- InspectFlowShareExtension: Sources, Frameworks, Resources.
-- AgendaWidgetExtension: Sources, Frameworks, Resources.
+1. Never includes `access_token` in the join `payload` → Supabase Realtime rejects `postgres_changes` against any RLS-protected table; the channel joins but no row events are ever delivered.
+2. No `phx_heartbeat` is sent → Supabase closes the socket after ~30s, and our reconnect path silently swallows the error in `receiveLoop` (`catch { return }`).
+3. The join `config.postgres_changes` array is built from `handlers` at call time, but `RealtimeSubscriptions.*` registers the handler then calls `subscribe()` — that ordering is OK, but a second `onPostgresChange` after `subscribe()` would silently never be wired. Worth a guard.
 
-### Schemes (shared)
-- `xcshareddata/xcschemes/AutoInspectorNetwork.xcscheme` — builds/runs/archives `AutoInspectorNetwork.app`.
-- `xcshareddata/xcschemes/VehicleInspectorsApp.xcscheme` — alias scheme pointing at the same buildable for backward compatibility.
+These three together match the reported "realtime config issue in InspectFlow connector and Core/Realtime".
 
-Both use `LastUpgradeVersion="1500"` (Xcode 15+, compatible with Xcode 16/26), `version="1.3"`.
+## Changes
 
-### Project-level metadata
-- `objectVersion = 56` (Xcode 14+, accepted by Xcode 16 and 26).
-- `compatibilityVersion = "Xcode 14.0"`.
-- `LastUpgradeCheck = 1500`, `LastSwiftUpdateCheck = 1500`.
-- `BuildIndependentTargetsInParallel = 1`.
-- `TargetAttributes` for all three targets with `CreatedOnToolsVersion = 15.0`.
+1. **Delete** `ios-native/Core/Realtime/RealtimeChannel.swift` (the stray copy). Keep `ios-native/Core/Realtime/RealtimeSubscriptions.swift` — it consumes the public types from the connector file, which compiles into the same target.
+2. **Regenerate the pbxproj** by re-running `ios-native/scripts/regenerate_pbxproj.py` so the deleted file is dropped from PBXFileReference / PBXGroup / Sources build phase. Validate with `validate_pbxproj.py`.
+3. **Fix `Core/InspectFlowConnector/Realtime/RealtimeChannel.swift`:**
+  - On `subscribe()`, read the current access token from `SessionStore` and include it as `payload.access_token` (and `payload.config.broadcast`/`presence` empty objects, matching the Supabase Realtime v2 schema).
+  - Start a heartbeat `Task` in `RealtimeClient.connectIfNeeded()` that sends `{topic:"phoenix", event:"phx_heartbeat", payload:{}, ref:…}` every 25s while the task is `.running`; stop it when the socket dies.
+  - When `auth.onTokenRefresh` fires (or on next subscribe), send `{event:"access_token", payload:{access_token:…}}` on each joined channel so RLS keeps working.
+  - In `receiveLoop`, on `catch` clear `self.task` and tear down the heartbeat so the next `send` triggers a fresh connect instead of using a dead socket.
+  - Guard `onPostgresChange` after `subscribe()` by logging (or re-sending join) so silent misconfiguration is visible.
+4. **Verify** by re-running the same checks the regen script already uses (`validate_pbxproj.py`, Node `xcode` parser) and `xcodebuild -list` / `-showBuildSettings`.
 
-### Swift Package dependencies
-The current project has **no** SPM references in `packageReferences`/`packageProductDependencies` (both empty). The local `ios-native/Package.swift` is a separate package consumed only by tests, not by the app — its source files (`Core/InspectFlowConnector/...`) are compiled directly into the app target. The regenerated project will preserve that arrangement: no `XCRemoteSwiftPackageReference` or `XCLocalSwiftPackageReference` entries. `xcodebuild -resolvePackageDependencies` will succeed as a no-op.
+## Files touched
 
-### Workspace
-`ios-native/AutoInspectorNetwork.xcworkspace` and `…xcodeproj/project.xcworkspace/contents.xcworkspacedata` already point at the single project file. No changes needed.
+- delete `ios-native/Core/Realtime/RealtimeChannel.swift`
+- edit `ios-native/Core/InspectFlowConnector/Realtime/RealtimeChannel.swift`
+- regenerate `ios-native/AutoInspectorNetwork.xcodeproj/project.pbxproj` via existing script
 
-### Generator (one-shot Python script)
-`ios-native/scripts/regenerate_pbxproj.py`:
-1. Walk the source tree to discover Swift files per target.
-2. Build the PBXGroup tree mirroring on-disk folders (top-level group is `8A23CA811AD5DE2F3F9275D1` for stability).
-3. Allocate every UUID as `sha1("pbx:" + stable_key).hexdigest().upper()[:24]`, with collision guard.
-4. Emit `PBXBuildFile`, `PBXFileReference`, `PBXGroup`, `PBXVariantGroup` (for `MainInterface.storyboard`), `PBXSourcesBuildPhase`, `PBXResourcesBuildPhase`, `PBXFrameworksBuildPhase`, `PBXCopyFilesBuildPhase` (Embed Foundation Extensions), `PBXContainerItemProxy`, `PBXTargetDependency`, `PBXNativeTarget`, `PBXProject`, `XCBuildConfiguration`, `XCConfigurationList`.
-5. Write the file. Run `validate_pbxproj.py` against it.
-6. Write both scheme files.
+No scheme, entitlement, bundle-ID, or Bitrise changes required.
 
-The script is checked in so the regeneration is reproducible.
-
-### Validation in this sandbox
-- `python3 ios-native/scripts/validate_pbxproj.py` — must report OK with all references resolving.
-- UUID hygiene: every object key matches `^[0-9A-F]{24}$`; no `AGWX`/`AAAA`/`AB1`/`AB2`/`AB3`/`A8A0`/`MILE`/`DBUG`/`EKSVC` prefixes.
-- Brace/paren balance.
-- Node `xcode` parser cross-check: parses cleanly, lists exactly 3 targets.
-- XML well-formedness of both `.xcscheme` files.
-
-### macOS validation (cannot run in this sandbox)
-The Bitrise `verify_project` workflow (already wired on `osx-xcode-26.4.x`) covers:
-- `xcodebuild -list -project ios-native/AutoInspectorNetwork.xcodeproj`
-- `xcodebuild -resolvePackageDependencies -project … -scheme AutoInspectorNetwork`
-- `xcodebuild -showBuildSettings -project … -scheme AutoInspectorNetwork`
-- `xcodebuild archive -project … -scheme AutoInspectorNetwork -configuration Release -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO`
-
-I'll add the `-showBuildSettings` step.
-
-### Returned/replaced files
-- `ios-native/AutoInspectorNetwork.xcodeproj/project.pbxproj` (fully regenerated)
-- `ios-native/AutoInspectorNetwork.xcodeproj/xcshareddata/xcschemes/AutoInspectorNetwork.xcscheme`
-- `ios-native/AutoInspectorNetwork.xcodeproj/xcshareddata/xcschemes/VehicleInspectorsApp.xcscheme`
-- `ios-native/scripts/regenerate_pbxproj.py` (new, reproducible generator)
-- `bitrise.yml` (add `-showBuildSettings` step)
-- Workspace files: unchanged (verified pointing at the regenerated project).
-
-### Risks / honest caveats
-- Xcode itself cannot run in this Linux sandbox, so final `xcodebuild` validation must happen on Bitrise/macOS.
-- A few build settings in the old pbxproj appear redundant or stale (e.g., per-config warning flags duplicated). The regenerated project will keep a sensible Xcode 15 default warning baseline plus all preserved project-specific settings listed above. If you rely on a non-default flag not visible from the current file, name it and it will be added.
-
-### Open clarifications before I start
-1. Should `ios-native/Package.swift` (`InspectFlowConnector` library) be **attached** as a Local Swift Package on the app target, replacing the direct-compile of `Core/InspectFlowConnector/*.swift` into the app? (Today they're compiled directly; cleaner SPM model is opt-in.)
-2. Add a Tests target (`AutoInspectorNetworkTests` running `Tests/InspectFlowConnectorTests`) to the Xcode project, or leave tests as `swift test` only?
-3. Confirm there are **no** external SPM dependencies to re-add (the current pbxproj has none).
-
-If you answer "no/skip" to all three, I proceed exactly as planned above.
+additionally migrate `Core/Realtime/RealtimeSubscriptions.swift` into the `InspectFlowConnector/Realtime/` folder so all realtime code lives in one place. 
