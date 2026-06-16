@@ -78,7 +78,6 @@
 		B19E54542FE0C9A8000BC4C7 /* CarPlayStopListTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E53A02FE0C9A6000BC4C7 /* CarPlayStopListTemplate.swift */; };
 		B19E54552FE0C9A8000BC4C7 /* CarPlayTripService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E53A12FE0C9A6000BC4C7 /* CarPlayTripService.swift */; };
 		B19E54562FE0C9A8000BC4C7 /* CarPlayStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E53A22FE0C9A6000BC4C7 /* CarPlayStop.swift */; };
-		B19E54572FE0C9A8000BC4C7 /* InspectionModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B19E53A32FE0C9A6000BC4C7 /* InspectionModel.xcdatamodeld */; };
 		B19E54582FE0C9A8000BC4C7 /* MapsLookupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E53A72FE0C9A6000BC4C7 /* MapsLookupService.swift */; };
 		B19E54592FE0C9A8000BC4C7 /* CalendarSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E53A92FE0C9A6000BC4C7 /* CalendarSyncService.swift */; };
 		B19E545A2FE0C9A8000BC4C7 /* EventKitService+Recurrence.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E53AA2FE0C9A6000BC4C7 /* EventKitService+Recurrence.swift */; };
@@ -153,9 +152,6 @@
 		B19E54A02FE0C9A9000BC4C7 /* SharedPayloadModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54072FE0C9A8000BC4C7 /* SharedPayloadModel.swift */; };
 		B19E54A12FE0C9A9000BC4C7 /* ImportInboxStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54082FE0C9A8000BC4C7 /* ImportInboxStore.swift */; };
 		B19E54A22FE0C9A9000BC4C7 /* ImportInboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54092FE0C9A8000BC4C7 /* ImportInboxView.swift */; };
-		B19E54A32FE0C9A9000BC4C7 /* AgendaWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E540B2FE0C9A8000BC4C7 /* AgendaWidgetBundle.swift */; };
-		B19E54A42FE0C9A9000BC4C7 /* UpcomingEventLiveActivityWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E540D2FE0C9A8000BC4C7 /* UpcomingEventLiveActivityWidget.swift */; };
-		B19E54A52FE0C9A9000BC4C7 /* AgendaWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E540E2FE0C9A8000BC4C7 /* AgendaWidget.swift */; };
 		B19E54B52FE0C9D4000BC4C7 /* InspectFlowShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B19E54AB2FE0C9D4000BC4C7 /* InspectFlowShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B19E54C22FE0CA49000BC4C7 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B19E54BB2FE0CA48000BC4C7 /* Info.plist */; };
 		B19E54C32FE0CA49000BC4C7 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B19E54BD2FE0CA48000BC4C7 /* MainInterface.storyboard */; };
@@ -167,18 +163,12 @@
 		B19E54E92FE0CAF6000BC4C7 /* AgendaWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54E52FE0CAF6000BC4C7 /* AgendaWidgetBundle.swift */; };
 		B19E54EA2FE0CAF6000BC4C7 /* AgendaWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54E52FE0CAF6000BC4C7 /* AgendaWidgetBundle.swift */; };
 		B19E54EB2FE0CAF6000BC4C7 /* AgendaWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54E52FE0CAF6000BC4C7 /* AgendaWidgetBundle.swift */; };
-		B19E54EC2FE0CAF6000BC4C7 /* UpcomingEventLiveActivityWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54E62FE0CAF6000BC4C7 /* UpcomingEventLiveActivityWidget.swift */; };
-		B19E54ED2FE0CAF6000BC4C7 /* UpcomingEventLiveActivityWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54E62FE0CAF6000BC4C7 /* UpcomingEventLiveActivityWidget.swift */; };
 		B19E54EE2FE0CAF6000BC4C7 /* UpcomingEventLiveActivityWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54E62FE0CAF6000BC4C7 /* UpcomingEventLiveActivityWidget.swift */; };
-		B19E54F02FE0CAF6000BC4C7 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B19E54E72FE0CAF6000BC4C7 /* Info.plist */; };
 		B19E54F12FE0CAF6000BC4C7 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B19E54E72FE0CAF6000BC4C7 /* Info.plist */; };
-		B19E54F22FE0CAF6000BC4C7 /* AgendaWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54E82FE0CAF6000BC4C7 /* AgendaWidget.swift */; };
-		B19E54F32FE0CAF6000BC4C7 /* AgendaWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54E82FE0CAF6000BC4C7 /* AgendaWidget.swift */; };
 		B19E54F42FE0CAF6000BC4C7 /* AgendaWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54E82FE0CAF6000BC4C7 /* AgendaWidget.swift */; };
 		B19E54F52FE0CB8B000BC4C7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B19E53E72FE0C9A6000BC4C7 /* Assets.xcassets */; };
-		B19E54FD2FE0CE92000BC4C7 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54C02FE0CA49000BC4C7 /* ShareViewController.swift */; };
-		B19E54FE2FE0CE92000BC4C7 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54C02FE0CA49000BC4C7 /* ShareViewController.swift */; };
 		B19E55002FE0CEA9000BC4C7 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B19E54BD2FE0CA48000BC4C7 /* MainInterface.storyboard */; };
+		B19E550E2FE173B6000BC4C7 /* InspectionModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B19E550C2FE173B6000BC4C7 /* InspectionModel.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -279,14 +269,13 @@
 		B19E53982FE0C9A5000BC4C7 /* MileageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MileageView.swift; sourceTree = "<group>"; };
 		B19E53992FE0C9A5000BC4C7 /* MileageEditView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MileageEditView.swift; sourceTree = "<group>"; };
 		B19E539A2FE0C9A5000BC4C7 /* AddMileageActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddMileageActionSheet.swift; sourceTree = "<group>"; };
-		B19E539B2FE0C9A5000BC4C7 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../Info.plist; sourceTree = "<group>"; };
+		B19E539B2FE0C9A5000BC4C7 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B19E539D2FE0C9A6000BC4C7 /* CarPlayNavigationCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarPlayNavigationCoordinator.swift; sourceTree = "<group>"; };
 		B19E539E2FE0C9A6000BC4C7 /* CarPlayScheduleTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarPlayScheduleTemplate.swift; sourceTree = "<group>"; };
 		B19E539F2FE0C9A6000BC4C7 /* CarPlaySceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarPlaySceneDelegate.swift; sourceTree = "<group>"; };
 		B19E53A02FE0C9A6000BC4C7 /* CarPlayStopListTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarPlayStopListTemplate.swift; sourceTree = "<group>"; };
 		B19E53A12FE0C9A6000BC4C7 /* CarPlayTripService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarPlayTripService.swift; sourceTree = "<group>"; };
 		B19E53A22FE0C9A6000BC4C7 /* CarPlayStop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarPlayStop.swift; sourceTree = "<group>"; };
-		B19E53A42FE0C9A6000BC4C7 /* InspectionModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = InspectionModel.xcdatamodel; sourceTree = "<group>"; };
 		B19E53A72FE0C9A6000BC4C7 /* MapsLookupService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapsLookupService.swift; sourceTree = "<group>"; };
 		B19E53A92FE0C9A6000BC4C7 /* CalendarSyncService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarSyncService.swift; sourceTree = "<group>"; };
 		B19E53AA2FE0C9A6000BC4C7 /* EventKitService+Recurrence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "EventKitService+Recurrence.swift"; sourceTree = "<group>"; };
@@ -333,7 +322,7 @@
 		B19E53E32FE0C9A6000BC4C7 /* PushRegistrar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushRegistrar.swift; sourceTree = "<group>"; };
 		B19E53E52FE0C9A6000BC4C7 /* DebugUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugUser.swift; sourceTree = "<group>"; };
 		B19E53E62FE0C9A6000BC4C7 /* DebugUserService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugUserService.swift; sourceTree = "<group>"; };
-		B19E53E72FE0C9A6000BC4C7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../Assets.xcassets; sourceTree = "<group>"; };
+		B19E53E72FE0C9A6000BC4C7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B19E53E92FE0C9A7000BC4C7 /* MainTabView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		B19E53EA2FE0C9A7000BC4C7 /* DebugUserPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugUserPickerView.swift; sourceTree = "<group>"; };
 		B19E53EB2FE0C9A7000BC4C7 /* RootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -362,31 +351,27 @@
 		B19E54072FE0C9A8000BC4C7 /* SharedPayloadModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedPayloadModel.swift; sourceTree = "<group>"; };
 		B19E54082FE0C9A8000BC4C7 /* ImportInboxStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportInboxStore.swift; sourceTree = "<group>"; };
 		B19E54092FE0C9A8000BC4C7 /* ImportInboxView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportInboxView.swift; sourceTree = "<group>"; };
-		B19E540B2FE0C9A8000BC4C7 /* AgendaWidgetBundle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgendaWidgetBundle.swift; sourceTree = "<group>"; };
-		B19E540C2FE0C9A8000BC4C7 /* AgendaWidgetExtension.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = AgendaWidgetExtension.entitlements; sourceTree = "<group>"; };
-		B19E540D2FE0C9A8000BC4C7 /* UpcomingEventLiveActivityWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpcomingEventLiveActivityWidget.swift; sourceTree = "<group>"; };
-		B19E540E2FE0C9A8000BC4C7 /* AgendaWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgendaWidget.swift; sourceTree = "<group>"; };
-		B19E540F2FE0C9A8000BC4C7 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B19E54AB2FE0C9D4000BC4C7 /* InspectFlowShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = InspectFlowShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B19E54BA2FE0CA48000BC4C7 /* InspectFlowShareExtension-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "InspectFlowShareExtension-Bridging-Header.h"; sourceTree = "<group>"; };
-		B19E54BB2FE0CA48000BC4C7 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../../InspectFlowShareExtension/Info.plist; sourceTree = "<group>"; };
+		B19E54BB2FE0CA48000BC4C7 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B19E54BE2FE0CA48000BC4C7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = MainInterface.storyboard; sourceTree = "<group>"; };
-		B19E54BF2FE0CA49000BC4C7 /* SharedPayloadModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SharedPayloadModel.swift; path = ../../InspectFlowShareExtension/SharedPayloadModel.swift; sourceTree = "<group>"; };
-		B19E54C02FE0CA49000BC4C7 /* ShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ShareViewController.swift; path = ../../InspectFlowShareExtension/ShareViewController.swift; sourceTree = "<group>"; };
-		B19E54C12FE0CA49000BC4C7 /* InspectFlowShareExtension.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; name = InspectFlowShareExtension.entitlements; path = ../../InspectFlowShareExtension/InspectFlowShareExtension.entitlements; sourceTree = "<group>"; };
+		B19E54BF2FE0CA49000BC4C7 /* SharedPayloadModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedPayloadModel.swift; sourceTree = "<group>"; };
+		B19E54C02FE0CA49000BC4C7 /* ShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		B19E54C12FE0CA49000BC4C7 /* InspectFlowShareExtension.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = InspectFlowShareExtension.entitlements; sourceTree = "<group>"; };
 		B19E54CA2FE0CA6D000BC4C7 /* AgendaWidgetExtensionExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AgendaWidgetExtensionExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B19E54CC2FE0CA6D000BC4C7 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		B19E54CE2FE0CA6D000BC4C7 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		B19E54E32FE0CAF5000BC4C7 /* AgendaWidgetExtensionExtension-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AgendaWidgetExtensionExtension-Bridging-Header.h"; sourceTree = "<group>"; };
-		B19E54E42FE0CAF6000BC4C7 /* AgendaWidgetExtension.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; name = AgendaWidgetExtension.entitlements; path = ../../AgendaWidgetExtension/AgendaWidgetExtension.entitlements; sourceTree = "<group>"; };
-		B19E54E52FE0CAF6000BC4C7 /* AgendaWidgetBundle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AgendaWidgetBundle.swift; path = ../../AgendaWidgetExtension/AgendaWidgetBundle.swift; sourceTree = "<group>"; };
-		B19E54E62FE0CAF6000BC4C7 /* UpcomingEventLiveActivityWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UpcomingEventLiveActivityWidget.swift; path = ../../AgendaWidgetExtension/UpcomingEventLiveActivityWidget.swift; sourceTree = "<group>"; };
-		B19E54E72FE0CAF6000BC4C7 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../../AgendaWidgetExtension/Info.plist; sourceTree = "<group>"; };
-		B19E54E82FE0CAF6000BC4C7 /* AgendaWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AgendaWidget.swift; path = ../../AgendaWidgetExtension/AgendaWidget.swift; sourceTree = "<group>"; };
+		B19E54E42FE0CAF6000BC4C7 /* AgendaWidgetExtension.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; name = AgendaWidgetExtension.entitlements; path = "../../../../../Desktop/inspectflow-network/ios-native/AgendaWidgetExtension/AgendaWidgetExtension.entitlements"; sourceTree = "<group>"; };
+		B19E54E52FE0CAF6000BC4C7 /* AgendaWidgetBundle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AgendaWidgetBundle.swift; path = "../../../../../Desktop/inspectflow-network/ios-native/AgendaWidgetExtension/AgendaWidgetBundle.swift"; sourceTree = "<group>"; };
+		B19E54E62FE0CAF6000BC4C7 /* UpcomingEventLiveActivityWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UpcomingEventLiveActivityWidget.swift; path = "../../../../../Desktop/inspectflow-network/ios-native/AgendaWidgetExtension/UpcomingEventLiveActivityWidget.swift"; sourceTree = "<group>"; };
+		B19E54E72FE0CAF6000BC4C7 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = "../../../../../Desktop/inspectflow-network/ios-native/AgendaWidgetExtension/Info.plist"; sourceTree = "<group>"; };
+		B19E54E82FE0CAF6000BC4C7 /* AgendaWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AgendaWidget.swift; path = "../../../../../Desktop/inspectflow-network/ios-native/AgendaWidgetExtension/AgendaWidget.swift"; sourceTree = "<group>"; };
 		B19E54F62FE0CB9A000BC4C7 /* AgendaWidgetExtensionExtensionRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AgendaWidgetExtensionExtensionRelease.entitlements; sourceTree = "<group>"; };
-		B19E54F72FE0CC33000BC4C7 /* AutoInspectorNetworkRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = AutoInspectorNetworkRelease.entitlements; path = AutoInspectorNetwork/AutoInspectorNetworkRelease.entitlements; sourceTree = "<group>"; };
+		B19E54F72FE0CC33000BC4C7 /* AutoInspectorNetworkRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AutoInspectorNetworkRelease.entitlements; sourceTree = "<group>"; };
 		B19E54F92FE0CCA0000BC4C7 /* InspectFlowShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = InspectFlowShareExtension.entitlements; sourceTree = "<group>"; };
-		B19E54FA2FE0CCF8000BC4C7 /* AutoInspectorNetwork.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; name = AutoInspectorNetwork.entitlements; path = ../AutoInspectorNetwork.entitlements; sourceTree = "<group>"; };
+		B19E54FA2FE0CCF8000BC4C7 /* AutoInspectorNetwork.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = AutoInspectorNetwork.entitlements; sourceTree = "<group>"; };
+		B19E550D2FE173B6000BC4C7 /* InspectionModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = InspectionModel.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -419,17 +404,16 @@
 		B18DD61C2FE097D500026CD5 = {
 			isa = PBXGroup;
 			children = (
+				B19E550C2FE173B6000BC4C7 /* InspectionModel.xcdatamodeld */,
 				B19E54FA2FE0CCF8000BC4C7 /* AutoInspectorNetwork.entitlements */,
 				B19E54F72FE0CC33000BC4C7 /* AutoInspectorNetworkRelease.entitlements */,
 				B19E54F62FE0CB9A000BC4C7 /* AgendaWidgetExtensionExtensionRelease.entitlements */,
-				B19E540A2FE0C9A8000BC4C7 /* AgendaWidgetExtension */,
 				B19E53E82FE0C9A7000BC4C7 /* App */,
 				B19E53E72FE0C9A6000BC4C7 /* Assets.xcassets */,
 				B19E539C2FE0C9A6000BC4C7 /* CarPlay */,
 				B19E53A52FE0C9A6000BC4C7 /* Core */,
 				B19E53482FE0C9A5000BC4C7 /* Features */,
 				B19E539B2FE0C9A5000BC4C7 /* Info.plist */,
-				B19E53A32FE0C9A6000BC4C7 /* InspectionModel.xcdatamodeld */,
 				B19E53EE2FE0C9A7000BC4C7 /* Shared */,
 				B19E54AC2FE0C9D4000BC4C7 /* InspectFlowShareExtension */,
 				B19E54D02FE0CA6D000BC4C7 /* AgendaWidgetExtension */,
@@ -465,8 +449,7 @@
 				B19E53922FE0C9A5000BC4C7 /* Trips */,
 				B19E53952FE0C9A5000BC4C7 /* Mileage */,
 			);
-			name = Features;
-			path = ../Features;
+			path = Features;
 			sourceTree = "<group>";
 		};
 		B19E53492FE0C9A5000BC4C7 /* Settings */ = {
@@ -674,8 +657,7 @@
 				B19E53A12FE0C9A6000BC4C7 /* CarPlayTripService.swift */,
 				B19E53A22FE0C9A6000BC4C7 /* CarPlayStop.swift */,
 			);
-			name = CarPlay;
-			path = ../CarPlay;
+			path = CarPlay;
 			sourceTree = "<group>";
 		};
 		B19E53A52FE0C9A6000BC4C7 /* Core */ = {
@@ -696,8 +678,7 @@
 				B19E53E22FE0C9A6000BC4C7 /* Notifications */,
 				B19E53E42FE0C9A6000BC4C7 /* Debug */,
 			);
-			name = Core;
-			path = ../Core;
+			path = Core;
 			sourceTree = "<group>";
 		};
 		B19E53A62FE0C9A6000BC4C7 /* Maps */ = {
@@ -893,8 +874,7 @@
 				B19E53EC2FE0C9A7000BC4C7 /* AppDelegate.swift */,
 				B19E53ED2FE0C9A7000BC4C7 /* AutoInspectorNetworkApp.swift */,
 			);
-			name = App;
-			path = ../App;
+			path = App;
 			sourceTree = "<group>";
 		};
 		B19E53EE2FE0C9A7000BC4C7 /* Shared */ = {
@@ -907,8 +887,7 @@
 				B19E54082FE0C9A8000BC4C7 /* ImportInboxStore.swift */,
 				B19E54092FE0C9A8000BC4C7 /* ImportInboxView.swift */,
 			);
-			name = Shared;
-			path = ../Shared;
+			path = Shared;
 			sourceTree = "<group>";
 		};
 		B19E53EF2FE0C9A7000BC4C7 /* UI */ = {
@@ -960,19 +939,6 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		B19E540A2FE0C9A8000BC4C7 /* AgendaWidgetExtension */ = {
-			isa = PBXGroup;
-			children = (
-				B19E540B2FE0C9A8000BC4C7 /* AgendaWidgetBundle.swift */,
-				B19E540C2FE0C9A8000BC4C7 /* AgendaWidgetExtension.entitlements */,
-				B19E540D2FE0C9A8000BC4C7 /* UpcomingEventLiveActivityWidget.swift */,
-				B19E540E2FE0C9A8000BC4C7 /* AgendaWidget.swift */,
-				B19E540F2FE0C9A8000BC4C7 /* Info.plist */,
-			);
-			name = AgendaWidgetExtension;
-			path = ../AgendaWidgetExtension;
-			sourceTree = "<group>";
-		};
 		B19E54AC2FE0C9D4000BC4C7 /* InspectFlowShareExtension */ = {
 			isa = PBXGroup;
 			children = (
@@ -992,8 +958,7 @@
 			children = (
 				B19E54BD2FE0CA48000BC4C7 /* MainInterface.storyboard */,
 			);
-			name = Base.lproj;
-			path = ../../InspectFlowShareExtension/Base.lproj;
+			path = Base.lproj;
 			sourceTree = "<group>";
 		};
 		B19E54CB2FE0CA6D000BC4C7 /* Frameworks */ = {
@@ -1133,7 +1098,6 @@
 			files = (
 				B19E54C22FE0CA49000BC4C7 /* Info.plist in Resources */,
 				B19E54C32FE0CA49000BC4C7 /* MainInterface.storyboard in Resources */,
-				B19E54F02FE0CAF6000BC4C7 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1155,7 +1119,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B19E542B2FE0C9A8000BC4C7 /* TaxView.swift in Sources */,
-				B19E54A42FE0C9A9000BC4C7 /* UpcomingEventLiveActivityWidget.swift in Sources */,
 				B19E54822FE0C9A9000BC4C7 /* TripTrackingController.swift in Sources */,
 				B19E54762FE0C9A9000BC4C7 /* AuthModels.swift in Sources */,
 				B19E542E2FE0C9A8000BC4C7 /* InspectionsViewModel.swift in Sources */,
@@ -1168,7 +1131,6 @@
 				B19E54902FE0C9A9000BC4C7 /* SyncStatusView.swift in Sources */,
 				B19E54932FE0C9A9000BC4C7 /* AINStatusPill.swift in Sources */,
 				B19E547B2FE0C9A9000BC4C7 /* AuditLogger.swift in Sources */,
-				B19E54A52FE0C9A9000BC4C7 /* AgendaWidget.swift in Sources */,
 				B19E54122FE0C9A8000BC4C7 /* DeveloperToolsSection.swift in Sources */,
 				B19E54452FE0C9A8000BC4C7 /* JobEditSheet.swift in Sources */,
 				B19E549D2FE0C9A9000BC4C7 /* DomainModels.swift in Sources */,
@@ -1180,13 +1142,11 @@
 				B19E544E2FE0C9A8000BC4C7 /* MileageEditView.swift in Sources */,
 				B19E54242FE0C9A8000BC4C7 /* ScheduleRootView.swift in Sources */,
 				B19E547C2FE0C9A9000BC4C7 /* SwiftDataMetadataStore.swift in Sources */,
-				B19E54A32FE0C9A9000BC4C7 /* AgendaWidgetBundle.swift in Sources */,
 				B19E54202FE0C9A8000BC4C7 /* EventInspectorView.swift in Sources */,
 				B19E543E2FE0C9A8000BC4C7 /* VehiclesView.swift in Sources */,
 				B19E54922FE0C9A9000BC4C7 /* AINOverlays.swift in Sources */,
 				B19E545C2FE0C9A8000BC4C7 /* CalendarRepository.swift in Sources */,
 				B19E547F2FE0C9A9000BC4C7 /* Outbox.swift in Sources */,
-				B19E54FD2FE0CE92000BC4C7 /* ShareViewController.swift in Sources */,
 				B19E548E2FE0C9A9000BC4C7 /* AINDebugBanner.swift in Sources */,
 				B19E54472FE0C9A8000BC4C7 /* JobCreateViewModel.swift in Sources */,
 				B19E54492FE0C9A8000BC4C7 /* TripsView.swift in Sources */,
@@ -1231,7 +1191,6 @@
 				B19E548C2FE0C9A9000BC4C7 /* AINCard.swift in Sources */,
 				B19E54272FE0C9A8000BC4C7 /* EventDetailWindow.swift in Sources */,
 				B19E54562FE0C9A8000BC4C7 /* CarPlayStop.swift in Sources */,
-				B19E54EC2FE0CAF6000BC4C7 /* UpcomingEventLiveActivityWidget.swift in Sources */,
 				B19E54A02FE0C9A9000BC4C7 /* SharedPayloadModel.swift in Sources */,
 				B19E549C2FE0C9A9000BC4C7 /* AINTheme.swift in Sources */,
 				B19E54952FE0C9A9000BC4C7 /* AINStates.swift in Sources */,
@@ -1239,7 +1198,6 @@
 				B19E54462FE0C9A8000BC4C7 /* JobsViewModel.swift in Sources */,
 				B19E54842FE0C9A9000BC4C7 /* DebugUser.swift in Sources */,
 				B19E54872FE0C9A9000BC4C7 /* MainTabView.swift in Sources */,
-				B19E54572FE0C9A8000BC4C7 /* InspectionModel.xcdatamodeld in Sources */,
 				B19E54332FE0C9A8000BC4C7 /* NextStopCard.swift in Sources */,
 				B19E54622FE0C9A8000BC4C7 /* EventRepository.swift in Sources */,
 				B19E541B2FE0C9A8000BC4C7 /* ScheduleSidebar.swift in Sources */,
@@ -1264,7 +1222,6 @@
 				B19E546F2FE0C9A9000BC4C7 /* RealtimeSubscriptions.swift in Sources */,
 				B19E54722FE0C9A9000BC4C7 /* JSONDecoder+Supabase.swift in Sources */,
 				B19E543B2FE0C9A8000BC4C7 /* VehicleDetailViewModel.swift in Sources */,
-				B19E54F22FE0CAF6000BC4C7 /* AgendaWidget.swift in Sources */,
 				B19E54702FE0C9A9000BC4C7 /* RestClient.swift in Sources */,
 				B19E54582FE0C9A8000BC4C7 /* MapsLookupService.swift in Sources */,
 				B19E546B2FE0C9A9000BC4C7 /* SupabaseConfig.swift in Sources */,
@@ -1305,6 +1262,7 @@
 				B19E54182FE0C9A8000BC4C7 /* CalendarSyncSettingsView.swift in Sources */,
 				B19E54142FE0C9A8000BC4C7 /* OrganizationSettingsView.swift in Sources */,
 				B19E547A2FE0C9A9000BC4C7 /* InspectFlowConfig.swift in Sources */,
+				B19E550E2FE173B6000BC4C7 /* InspectionModel.xcdatamodeld in Sources */,
 				B19E54482FE0C9A8000BC4C7 /* DriveView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1313,9 +1271,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B19E54F32FE0CAF6000BC4C7 /* AgendaWidget.swift in Sources */,
 				B19E54C52FE0CA49000BC4C7 /* ShareViewController.swift in Sources */,
-				B19E54ED2FE0CAF6000BC4C7 /* UpcomingEventLiveActivityWidget.swift in Sources */,
 				B19E54C42FE0CA49000BC4C7 /* SharedPayloadModel.swift in Sources */,
 				B19E54EA2FE0CAF6000BC4C7 /* AgendaWidgetBundle.swift in Sources */,
 			);
@@ -1326,7 +1282,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B19E54F42FE0CAF6000BC4C7 /* AgendaWidget.swift in Sources */,
-				B19E54FE2FE0CE92000BC4C7 /* ShareViewController.swift in Sources */,
 				B19E54EB2FE0CAF6000BC4C7 /* AgendaWidgetBundle.swift in Sources */,
 				B19E54EE2FE0CAF6000BC4C7 /* UpcomingEventLiveActivityWidget.swift in Sources */,
 			);
@@ -1697,14 +1652,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		B19E53A32FE0C9A6000BC4C7 /* InspectionModel.xcdatamodeld */ = {
+		B19E550C2FE173B6000BC4C7 /* InspectionModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				B19E53A42FE0C9A6000BC4C7 /* InspectionModel.xcdatamodel */,
+				B19E550D2FE173B6000BC4C7 /* InspectionModel.xcdatamodel */,
 			);
-			currentVersion = B19E53A42FE0C9A6000BC4C7 /* InspectionModel.xcdatamodel */;
-			name = InspectionModel.xcdatamodeld;
-			path = ../InspectionModel.xcdatamodeld;
+			currentVersion = B19E550D2FE173B6000BC4C7 /* InspectionModel.xcdatamodel */;
+			path = InspectionModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
