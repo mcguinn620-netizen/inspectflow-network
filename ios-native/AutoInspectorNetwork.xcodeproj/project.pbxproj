@@ -71,7 +71,6 @@
 		B19E544D2FE0C9A8000BC4C7 /* MileageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E53982FE0C9A5000BC4C7 /* MileageView.swift */; };
 		B19E544E2FE0C9A8000BC4C7 /* MileageEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E53992FE0C9A5000BC4C7 /* MileageEditView.swift */; };
 		B19E544F2FE0C9A8000BC4C7 /* AddMileageActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E539A2FE0C9A5000BC4C7 /* AddMileageActionSheet.swift */; };
-		B19E54502FE0C9A8000BC4C7 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B19E539B2FE0C9A5000BC4C7 /* Info.plist */; };
 		B19E54512FE0C9A8000BC4C7 /* CarPlayNavigationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E539D2FE0C9A6000BC4C7 /* CarPlayNavigationCoordinator.swift */; };
 		B19E54522FE0C9A8000BC4C7 /* CarPlayScheduleTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E539E2FE0C9A6000BC4C7 /* CarPlayScheduleTemplate.swift */; };
 		B19E54532FE0C9A8000BC4C7 /* CarPlaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E539F2FE0C9A6000BC4C7 /* CarPlaySceneDelegate.swift */; };
@@ -153,7 +152,6 @@
 		B19E54A12FE0C9A9000BC4C7 /* ImportInboxStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54082FE0C9A8000BC4C7 /* ImportInboxStore.swift */; };
 		B19E54A22FE0C9A9000BC4C7 /* ImportInboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54092FE0C9A8000BC4C7 /* ImportInboxView.swift */; };
 		B19E54B52FE0C9D4000BC4C7 /* InspectFlowShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B19E54AB2FE0C9D4000BC4C7 /* InspectFlowShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		B19E54C22FE0CA49000BC4C7 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B19E54BB2FE0CA48000BC4C7 /* Info.plist */; };
 		B19E54C32FE0CA49000BC4C7 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B19E54BD2FE0CA48000BC4C7 /* MainInterface.storyboard */; };
 		B19E54C42FE0CA49000BC4C7 /* SharedPayloadModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54BF2FE0CA49000BC4C7 /* SharedPayloadModel.swift */; };
 		B19E54C52FE0CA49000BC4C7 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54C02FE0CA49000BC4C7 /* ShareViewController.swift */; };
@@ -164,7 +162,6 @@
 		B19E54EA2FE0CAF6000BC4C7 /* AgendaWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54E52FE0CAF6000BC4C7 /* AgendaWidgetBundle.swift */; };
 		B19E54EB2FE0CAF6000BC4C7 /* AgendaWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54E52FE0CAF6000BC4C7 /* AgendaWidgetBundle.swift */; };
 		B19E54EE2FE0CAF6000BC4C7 /* UpcomingEventLiveActivityWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54E62FE0CAF6000BC4C7 /* UpcomingEventLiveActivityWidget.swift */; };
-		B19E54F12FE0CAF6000BC4C7 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B19E54E72FE0CAF6000BC4C7 /* Info.plist */; };
 		B19E54F42FE0CAF6000BC4C7 /* AgendaWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54E82FE0CAF6000BC4C7 /* AgendaWidget.swift */; };
 		B19E54F52FE0CB8B000BC4C7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B19E53E72FE0C9A6000BC4C7 /* Assets.xcassets */; };
 		B19E55002FE0CEA9000BC4C7 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B19E54BD2FE0CA48000BC4C7 /* MainInterface.storyboard */; };
@@ -1088,7 +1085,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B19E54502FE0C9A8000BC4C7 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1096,7 +1092,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B19E54C22FE0CA49000BC4C7 /* Info.plist in Resources */,
 				B19E54C32FE0CA49000BC4C7 /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1107,7 +1102,6 @@
 			files = (
 				B19E54F52FE0CB8B000BC4C7 /* Assets.xcassets in Resources */,
 				B19E55002FE0CEA9000BC4C7 /* MainInterface.storyboard in Resources */,
-				B19E54F12FE0CAF6000BC4C7 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
