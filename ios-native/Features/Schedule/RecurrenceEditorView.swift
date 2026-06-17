@@ -123,6 +123,8 @@ struct RecurrenceEditorView: View {
     }
 }
 
+#if swift(>=5.9) && os(iOS)
 #Preview {
     RecurrenceEditorView(initial: .none) { _ in }
 }
+#endif
