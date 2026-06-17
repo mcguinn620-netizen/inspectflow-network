@@ -108,6 +108,7 @@
 		B19E54762FE0C9A9000BC4C7 /* AuthModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E53CE2FE0C9A6000BC4C7 /* AuthModels.swift */; };
 		B19E54772FE0C9A9000BC4C7 /* StorageClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E53D02FE0C9A6000BC4C7 /* StorageClient.swift */; };
 		B19E54782FE0C9A9000BC4C7 /* RealtimeChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E53D22FE0C9A6000BC4C7 /* RealtimeChannel.swift */; };
+		B19E54782FE0C9A9000BC4D0 /* RealtimeSubscriptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E53D22FE0C9A6000BC4D0 /* RealtimeSubscriptions.swift */; };
 		B19E54792FE0C9A9000BC4C7 /* FunctionsClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E53D42FE0C9A6000BC4C7 /* FunctionsClient.swift */; };
 		B19E547A2FE0C9A9000BC4C7 /* InspectFlowConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E53D52FE0C9A6000BC4C7 /* InspectFlowConfig.swift */; };
 		B19E547B2FE0C9A9000BC4C7 /* AuditLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E53D72FE0C9A6000BC4C7 /* AuditLogger.swift */; };
@@ -305,6 +306,7 @@
 		B19E53CE2FE0C9A6000BC4C7 /* AuthModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthModels.swift; sourceTree = "<group>"; };
 		B19E53D02FE0C9A6000BC4C7 /* StorageClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageClient.swift; sourceTree = "<group>"; };
 		B19E53D22FE0C9A6000BC4C7 /* RealtimeChannel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealtimeChannel.swift; sourceTree = "<group>"; };
+		B19E53D22FE0C9A6000BC4D0 /* RealtimeSubscriptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealtimeSubscriptions.swift; sourceTree = "<group>"; };
 		B19E53D42FE0C9A6000BC4C7 /* FunctionsClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunctionsClient.swift; sourceTree = "<group>"; };
 		B19E53D52FE0C9A6000BC4C7 /* InspectFlowConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InspectFlowConfig.swift; sourceTree = "<group>"; };
 		B19E53D72FE0C9A6000BC4C7 /* AuditLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuditLogger.swift; sourceTree = "<group>"; };
@@ -786,6 +788,7 @@
 			isa = PBXGroup;
 			children = (
 				B19E53D22FE0C9A6000BC4C7 /* RealtimeChannel.swift */,
+				B19E53D22FE0C9A6000BC4D0 /* RealtimeSubscriptions.swift */,
 			);
 			path = Realtime;
 			sourceTree = "<group>";
@@ -1241,6 +1244,7 @@
 				B19E54852FE0C9A9000BC4C7 /* DebugUserService.swift in Sources */,
 				B19E54172FE0C9A8000BC4C7 /* EarningsSettingsView.swift in Sources */,
 				B19E54782FE0C9A9000BC4C7 /* RealtimeChannel.swift in Sources */,
+				B19E54782FE0C9A9000BC4D0 /* RealtimeSubscriptions.swift in Sources */,
 				B19E54812FE0C9A9000BC4C7 /* CoreDataCache.swift in Sources */,
 				B19E54182FE0C9A8000BC4C7 /* CalendarSyncSettingsView.swift in Sources */,
 				B19E54142FE0C9A8000BC4C7 /* OrganizationSettingsView.swift in Sources */,

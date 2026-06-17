@@ -1,5 +1,4 @@
 import Foundation
-import InspectFlowConnector
 
 /// Backs `MileageView`. Reuses the trip-tracking flows from the legacy
 /// `TripsViewModel` so the active-trip banner keeps working unchanged.
