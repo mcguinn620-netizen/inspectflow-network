@@ -1,8 +1,6 @@
 # Name Change Plan — "InspectFlow Network" → "Automotive Inspector Network"
 
-(Will be saved to `.lovable/name-change-plan.md` on approval so it persists for reference.)
-
-## Locked decisions (from your answers)
+## Locked decisions
 1. Web app user-visible name → **change** to "Automotive Inspector Network".
 2. iOS `CFBundleDisplayName` → **stays the same**.
 3. App Group + Keychain access group identifiers → **stay the same** (protects installed-app data).
@@ -80,10 +78,3 @@ If the codebase is later aligned to the new name, ~50 files contain `InspectFlow
 2. Rename Share Extension target/folder/class, regenerate `project.pbxproj`, build green.
 3. Sweep docs + edge-function string.
 4. Leave App Group / Keychain IDs untouched.
-
----
-
-## Files created/edited on approval of this plan
-- `.lovable/name-change-plan.md` (new) — this document.
-- Phase 1 §4 edits: `index.html`, `public/manifest.webmanifest`, `README.md`, `RELEASING.md`, `CLEANUP.md`.
-- No other code changes.
