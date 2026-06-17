@@ -1244,6 +1244,7 @@
 				B19E54852FE0C9A9000BC4C7 /* DebugUserService.swift in Sources */,
 				B19E54172FE0C9A8000BC4C7 /* EarningsSettingsView.swift in Sources */,
 				B19E54782FE0C9A9000BC4C7 /* RealtimeChannel.swift in Sources */,
+				B19E54782FE0C9A9000BC4D0 /* RealtimeSubscriptions.swift in Sources */,
 				B19E54812FE0C9A9000BC4C7 /* CoreDataCache.swift in Sources */,
 				B19E54182FE0C9A8000BC4C7 /* CalendarSyncSettingsView.swift in Sources */,
 				B19E54142FE0C9A8000BC4C7 /* OrganizationSettingsView.swift in Sources */,
