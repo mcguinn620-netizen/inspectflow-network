@@ -168,6 +168,7 @@
 		B19E55102FE1F5C6000BC4C7 /* UpcomingEventLiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E53FE2FE0C9A8000BC4C7 /* UpcomingEventLiveActivityAttributes.swift */; };
 		B19E55112FE1F631000BC4C7 /* AgendaWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54E82FE0CAF6000BC4C7 /* AgendaWidget.swift */; };
 		B19E55122FE1F63E000BC4C7 /* UpcomingEventLiveActivityWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54E62FE0CAF6000BC4C7 /* UpcomingEventLiveActivityWidget.swift */; };
+		B19E55132FE351FD000BC4C7 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B19E539B2FE0C9A5000BC4C7 /* Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1077,6 +1078,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B19E55132FE351FD000BC4C7 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1424,7 +1426,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"AutoInspectorNetwork/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 264U37X2A5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1457,7 +1459,7 @@
 				CODE_SIGN_ENTITLEMENTS = AutoInspectorNetwork/AutoInspectorNetworkRelease.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"AutoInspectorNetwork/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 264U37X2A5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
