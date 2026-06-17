@@ -23,7 +23,7 @@ public final class CalendarRepository: ObservableObject {
 
     private var changeTask: Task<Void, Never>?
 
-    init(
+    internal init(
         service: EventKitService = .shared,
         defaults: UserDefaults = .standard
     ) {
