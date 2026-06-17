@@ -788,6 +788,7 @@
 			isa = PBXGroup;
 			children = (
 				B19E53D22FE0C9A6000BC4C7 /* RealtimeChannel.swift */,
+				B19E53D22FE0C9A6000BC4D0 /* RealtimeSubscriptions.swift */,
 			);
 			path = Realtime;
 			sourceTree = "<group>";
