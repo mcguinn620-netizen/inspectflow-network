@@ -1,6 +1,6 @@
 # Audit Fix Plan — 19 compile errors / 10 files
 
-Saved on approval to `.lovable/audit-fix-plan.md` for future implementation.
+Saved for future implementation.
 
 ---
 
@@ -181,25 +181,52 @@ init(
 
 ---
 
-## Phase 4 — Missing `RealtimeSubscription` symbol
+## Phase 4 — Missing `RealtimeSubscription` symbol (CORRECTED)
 
-`RealtimeSubscription` is declared in module `InspectFlowConnector`. Add the import to the top of each of these files (after `import Foundation`):
+### Problem discovered during investigation
+`InspectFlowConnector` sources under `ios-native/Core/InspectFlowConnector/` are compiled **directly into the main app target** as regular source files, not linked as a SwiftPM package. Therefore `import InspectFlowConnector` is invalid — there is no separate module to import.
 
-```swift
-import InspectFlowConnector
-```
+The original Phase 4 (adding `import InspectFlowConnector`) is **wrong** and must be reverted.
 
-**Files:**
+### Actual root cause
+`RealtimeSubscription` is declared in `Core/InspectFlowConnector/Realtime/RealtimeSubscriptions.swift`. That file exists on disk but is **not registered in `project.pbxproj`** (only `RealtimeChannel.swift` is in the Realtime group). Therefore `RealtimeSubscription` never compiles into the app.
+
+### Correct fix
+
+#### 4.1 Remove the invalid imports (revert Phase 4)
+In these four files, delete the line `import InspectFlowConnector`:
+
 1. `ios-native/Features/Inspections/InspectionsViewModel.swift`
 2. `ios-native/Features/Jobs/JobsViewModel.swift`
 3. `ios-native/Features/Mileage/MileageViewModel.swift`
 4. `ios-native/Features/Trips/TripsViewModel.swift`
 
-Then verify target membership in `project.pbxproj` — each viewmodel's compile-sources phase must link the `InspectFlowConnector` product (already wired by `regenerate_pbxproj.py`; re-run the validator if in doubt):
+#### 4.2 Add `RealtimeSubscriptions.swift` to the Xcode target
+File: `ios-native/Core/InspectFlowConnector/Realtime/RealtimeSubscriptions.swift`
 
-```bash
-python3 ios-native/scripts/validate_pbxproj.py
+Register it in `ios-native/AutoInspectorNetwork.xcodeproj/project.pbxproj` using two fresh 24-char hex UUIDs (ensure uniqueness; e.g. `B19E53D22FE0C9A6000BC4D0` for fileRef, `B19E54782FE0C9A9000BC4D0` for buildFile).
+
+a. **PBXBuildFile section** — add:
 ```
+B19E54782FE0C9A9000BC4D0 /* RealtimeSubscriptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E53D22FE0C9A6000BC4D0 /* RealtimeSubscriptions.swift */; };
+```
+
+b. **PBXFileReference section** — add:
+```
+B19E53D22FE0C9A6000BC4D0 /* RealtimeSubscriptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealtimeSubscriptions.swift; sourceTree = "<group>"; };
+```
+
+c. **Realtime PBXGroup children** — add:
+```
+B19E53D22FE0C9A6000BC4D0 /* RealtimeSubscriptions.swift */,
+```
+
+d. **Sources build phase** — add:
+```
+B19E54782FE0C9A9000BC4D0 /* RealtimeSubscriptions.swift in Sources */,
+```
+
+After editing, run `python3 ios-native/scripts/validate_pbxproj.py` to check integrity.
 
 ---
 
@@ -232,9 +259,11 @@ Target: 0 errors.
 6. `ios-native/Core/Persistence/SwiftDataMetadataStore.swift`
 7. `ios-native/Core/Persistence/ScheduleMetadataStore.swift` (factory guard, if missing)
 8. `ios-native/Features/Schedule/ScheduleViewModel.swift`
-9. `ios-native/Features/Inspections/InspectionsViewModel.swift`
-10. `ios-native/Features/Jobs/JobsViewModel.swift`
-11. `ios-native/Features/Mileage/MileageViewModel.swift`
-12. `ios-native/Features/Trips/TripsViewModel.swift`
-13. `RELEASING.md` — Core Data attribute rename / migration note
-14. `.lovable/audit-fix-plan.md` — this plan, saved for future reference
+9. `ios-native/Features/Inspections/InspectionsViewModel.swift` (remove import)
+10. `ios-native/Features/Jobs/JobsViewModel.swift` (remove import)
+11. `ios-native/Features/Mileage/MileageViewModel.swift` (remove import)
+12. `ios-native/Features/Trips/TripsViewModel.swift` (remove import)
+13. `ios-native/Core/InspectFlowConnector/Realtime/RealtimeSubscriptions.swift` (add to pbxproj)
+14. `ios-native/AutoInspectorNetwork.xcodeproj/project.pbxproj` (register RealtimeSubscriptions)
+15. `RELEASING.md` — Core Data attribute rename / migration note
+16. `.lovable/audit-fix-plan.md` — this plan, saved for future reference
