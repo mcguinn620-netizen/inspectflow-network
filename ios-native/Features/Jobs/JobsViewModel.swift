@@ -1,5 +1,4 @@
 import Foundation
-import InspectFlowConnector
 
 @MainActor
 final class JobsViewModel: ObservableObject {
