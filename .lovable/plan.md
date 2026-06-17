@@ -1,89 +1,240 @@
-# Name Change Plan — "InspectFlow Network" → "Automotive Inspector Network"
+# Audit Fix Plan — 19 compile errors / 10 files
 
-(Will be saved to `.lovable/name-change-plan.md` on approval so it persists for reference.)
-
-## Locked decisions (from your answers)
-1. Web app user-visible name → **change** to "Automotive Inspector Network".
-2. iOS `CFBundleDisplayName` → **stays the same**.
-3. App Group + Keychain access group identifiers → **stay the same** (protects installed-app data).
+Saved on approval to `.lovable/audit-fix-plan.md` for future implementation.
 
 ---
 
-## Phase 1 — Non-code rename (execute on approval)
+## Phase 1 — Critical blockers
 
-### 1. GitHub
-- Rename repo `inspectflow-network` → `automotive-inspector-network` (GitHub redirects old URLs).
-- Update repo description + topics.
-- Local clones: `git remote set-url origin <new-url>`.
-- Confirm Lovable ↔ GitHub link still resolves after rename.
+### 1.1 WidgetBackground.colorset — add explicit light variant
+**File:** `ios-native/AgendaWidgetExtension/Assets.xcassets/WidgetBackground.colorset/Contents.json`
 
-### 2. Lovable project
-- Rename project to "Automotive Inspector Network".
-- Preview/published URLs unchanged unless custom domain is re-pointed.
+Replace the first (universal, no-appearances) entry so both light and dark are explicit:
 
-### 3. Bitrise
-- Rename app in Bitrise dashboard; reconnect to renamed repo if it doesn't auto-follow.
-- No `bitrise.yml` changes.
+```json
+{
+  "colors" : [
+    {
+      "appearances" : [{ "appearance" : "luminosity", "value" : "light" }],
+      "color" : {
+        "color-space" : "srgb",
+        "components" : { "alpha" : "1.000", "red" : "1.000", "green" : "1.000", "blue" : "1.000" }
+      },
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [{ "appearance" : "luminosity", "value" : "dark" }],
+      "color" : {
+        "color-space" : "srgb",
+        "components" : { "alpha" : "1.000", "red" : "0.110", "green" : "0.110", "blue" : "0.110" }
+      },
+      "idiom" : "universal"
+    }
+  ],
+  "info" : { "author" : "xcode", "version" : 1 }
+}
+```
 
-### 4. Web app user-visible copy
-- `index.html`: `<title>`, `og:title`, `apple-mobile-web-app-title`, meta description.
-- `public/manifest.webmanifest`: `name`, `short_name`, `description`.
-- Top-level `README.md`, `RELEASING.md`, `CLEANUP.md`: headings + intros.
+### 1.2 Core Data — rename reserved `entityName` attribute
+**File:** `ios-native/InspectionModel.xcdatamodeld/InspectionModel.xcdatamodel/contents`
 
-### 5. App Store / TestFlight
-- Update app name, subtitle, marketing/support URLs at next submission.
+`entityName` collides with `NSManagedObject.entity().name`. Rename to `recordEntityName`:
 
-### 6. Explicitly NOT changing in Phase 1
-- iOS `CFBundleDisplayName`, App Group ID, Keychain access group, bundle IDs, file names, type names, Swift module names.
+```xml
+<entity name="CachedRecord" representedClassName="CachedRecord" syncable="YES" codeGenerationType="class">
+    <attribute name="recordEntityName" optional="YES" attributeType="String"/>
+    <attribute name="id" optional="YES" attributeType="String"/>
+    <attribute name="payload" optional="YES" attributeType="Binary"/>
+    <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+</entity>
+```
 
----
+No Swift call sites reference `CachedRecord.entityName`. Add a one-line note to `RELEASING.md` about lightweight migration (set `shouldInferMappingModelAutomatically = true` and `shouldMigrateStoreAutomatically = true` on the `NSPersistentStoreDescription` — already the default in `PersistenceController`).
 
-## Phase 2 — Inventory only (do NOT change yet)
+### 1.3 `#Preview` guard — compiler + availability
+**File:** `ios-native/Features/Schedule/RecurrenceEditorView.swift` (lines 126–130)
 
-If the codebase is later aligned to the new name, ~50 files contain `InspectFlow`. Grouped by blast radius:
+Replace the existing `#if swift(>=5.9) && os(iOS)` block with a compiler + availability guard so older Xcode toolchains skip the macro entirely:
 
-### A. Swift package & module (highest — breaks every `import`)
-- `swift-connector/Sources/InspectFlowConnector/…` (8 files)
-- `swift-connector/Tests/InspectFlowConnectorTests/…`
-- `swift-connector/Package.swift` — product/target `InspectFlowConnector`
-- `ios-native/Package.swift` (local mirror)
-- `ios-native/Core/InspectFlowConnector/…` (9 mirrored files)
-- `ios-native/Tests/InspectFlowConnectorTests/AuthRefreshTests.swift`
-- Every `import InspectFlowConnector` (Core/Network, Core/Sync, Core/Calendar, Core/Auth, AgendaWidgetExtension, ShareExtension, Shared, Features/Settings, Features/Schedule)
-- Types: `InspectFlowClient`, `InspectFlowConfig` + references
-- Proposed: `AINConnector` / `AINClient` / `AINConfig`
-
-### B. iOS Share Extension
-- Directory `ios-native/InspectFlowShareExtension/`
-- `InspectFlowShareExtension.entitlements`
-- `ShareViewController.swift` + references in `Shared/ImportInboxStore.swift`, `Shared/Models/SharedPayloadModel.swift`, `Shared/UI/AINFriendlyError.swift`
-- Xcode target/group in `project.pbxproj`, shared scheme, `ios-native/scripts/regenerate_pbxproj.py`
-- Extension bundle ID change → re-provisioning required (recommend keep)
-
-### C. Xcode project (already `AutoInspectorNetwork` — partial cleanup only)
-- `ios-native/AutoInspectorNetwork.xcodeproj/project.pbxproj` — the `InspectFlow*` extension half changes per (B)
-- Schemes under `xcshareddata/xcschemes/`
-
-### D. Supabase edge function
-- `supabase/functions/intake-fetch-url/index.ts` — one cosmetic string
-
-### E. Docs
-- `README.md`, `RELEASING.md`, `swift-connector/README.md`, `ios-native/README.md`, `ios-native/PLAYGROUNDS.md`
-
-### F. Identifiers locked to keep
-- App Group ID, Keychain access group, all bundle IDs, Core Data model `InspectionModel` (already neutral).
+```swift
+#if compiler(>=5.9)
+@available(iOS 17.0, macOS 14.0, *)
+#Preview {
+    RecurrenceEditorView(initial: .none) { _ in }
+}
+#endif
+```
 
 ---
 
-## Recommended Phase 2 sequencing (when greenlit separately)
-1. Rename Swift package + module, fix all `import`s, build green.
-2. Rename Share Extension target/folder/class, regenerate `project.pbxproj`, build green.
-3. Sweep docs + edge-function string.
-4. Leave App Group / Keychain IDs untouched.
+## Phase 2 — Access control normalization
+
+### 2.1 CalendarRepository — mark init explicitly internal
+**File:** `ios-native/Core/Calendar/CalendarRepository.swift` (line 26)
+
+```swift
+internal init(
+    service: EventKitService = .shared,
+    defaults: UserDefaults = .standard
+) {
+    self.service = service
+    self.defaults = defaults
+    self.hiddenCalendarIDs = Self.readHidden(defaults: defaults, key: visibilityKey)
+    reload()
+
+    changeTask = Task { [weak self] in
+        guard let self else { return }
+        for await _ in self.service.changes() {
+            self.reload()
+        }
+    }
+}
+```
+
+`public static let shared = CalendarRepository()` stays — only the init keyword changes.
+
+### 2.2 EventRepository — mark init explicitly internal
+**File:** `ios-native/Core/Calendar/EventRepository.swift` (line 39)
+
+```swift
+internal init(
+    service: EventKitService = .shared,
+    calendars: CalendarRepository = .shared,
+    metadata: ScheduleMetadataStore = ScheduleMetadataStoreFactory.make(),
+    debounceMilliseconds: Int = 250
+) {
+    self.service = service
+    self.calendars = calendars
+    self.metadata = metadata
+    self.debounce = .milliseconds(debounceMilliseconds)
+
+    changeTask = Task { [weak self] in
+        guard let self else { return }
+        for await _ in self.service.changes() {
+            self.invalidateCaches()
+            self.scheduleDebouncedBroadcast()
+        }
+    }
+}
+```
 
 ---
 
-## Files created/edited on approval of this plan
-- `.lovable/name-change-plan.md` (new) — this document.
-- Phase 1 §4 edits: `index.html`, `public/manifest.webmanifest`, `README.md`, `RELEASING.md`, `CLEANUP.md`.
-- No other code changes.
+## Phase 3 — Architecture
+
+### 3.1 SwiftDataMetadataStore — availability-gate the shared instance
+**File:** `ios-native/Core/Persistence/SwiftDataMetadataStore.swift`
+
+Stored static properties of `@available` types must themselves be gated. Replace line 81:
+
+```swift
+// Remove:  static let shared = SwiftDataMetadataStore()
+
+// Add at file scope, outside the class:
+@available(iOS 17.0, macOS 14.0, *)
+private let _swiftDataMetadataStoreShared = SwiftDataMetadataStore()
+
+// Inside the class:
+@available(iOS 17.0, macOS 14.0, *)
+static var shared: SwiftDataMetadataStore { _swiftDataMetadataStoreShared }
+```
+
+Update `ScheduleMetadataStoreFactory` (in `ScheduleMetadataStore.swift`) to call inside an `if #available(iOS 17, *)` block — verify the factory already does this; if not:
+
+```swift
+enum ScheduleMetadataStoreFactory {
+    static func make() -> ScheduleMetadataStore {
+        if #available(iOS 17.0, macOS 14.0, *) {
+            return SwiftDataMetadataStore.shared
+        } else {
+            return CoreDataMetadataStore.shared
+        }
+    }
+}
+```
+
+### 3.2 ScheduleViewModel — remove MainActor-isolated default arg
+**File:** `ios-native/Features/Schedule/ScheduleViewModel.swift` (lines 46–63)
+
+`CalendarFilterModel()` reads `UserDefaults` and the default-arg expression is evaluated on the MainActor at call sites, which Swift 6 flags. Switch to an optional default and build inside the body:
+
+```swift
+init(
+    events: EventRepository = .shared,
+    calendars: CalendarRepository = .shared,
+    filters: CalendarFilterModel? = nil,
+    searchService: ScheduleSearchService? = nil
+) {
+    self.events_repo = events
+    self.calendarsRepo = calendars
+    self.filters = filters ?? CalendarFilterModel()
+    self.searchService = searchService ?? ScheduleSearchService(repository: events)
+
+    changeTask = Task { [weak self] in
+        guard let self else { return }
+        for await _ in self.events_repo.changes() {
+            await self.reloadEvents()
+        }
+    }
+}
+```
+
+---
+
+## Phase 4 — Missing `RealtimeSubscription` symbol
+
+`RealtimeSubscription` is declared in module `InspectFlowConnector`. Add the import to the top of each of these files (after `import Foundation`):
+
+```swift
+import InspectFlowConnector
+```
+
+**Files:**
+1. `ios-native/Features/Inspections/InspectionsViewModel.swift`
+2. `ios-native/Features/Jobs/JobsViewModel.swift`
+3. `ios-native/Features/Mileage/MileageViewModel.swift`
+4. `ios-native/Features/Trips/TripsViewModel.swift`
+
+Then verify target membership in `project.pbxproj` — each viewmodel's compile-sources phase must link the `InspectFlowConnector` product (already wired by `regenerate_pbxproj.py`; re-run the validator if in doubt):
+
+```bash
+python3 ios-native/scripts/validate_pbxproj.py
+```
+
+---
+
+## Verification
+
+```bash
+cd ios-native
+xcodebuild -project AutoInspectorNetwork.xcodeproj -list
+xcodebuild -project AutoInspectorNetwork.xcodeproj \
+           -scheme AutoInspectorNetwork \
+           -destination 'generic/platform=iOS' \
+           -resolvePackageDependencies
+xcodebuild -project AutoInspectorNetwork.xcodeproj \
+           -scheme AutoInspectorNetwork \
+           -destination 'generic/platform=iOS' \
+           clean build CODE_SIGNING_ALLOWED=NO
+```
+
+Target: 0 errors.
+
+---
+
+## Files changed on implementation
+
+1. `ios-native/AgendaWidgetExtension/Assets.xcassets/WidgetBackground.colorset/Contents.json`
+2. `ios-native/InspectionModel.xcdatamodeld/InspectionModel.xcdatamodel/contents`
+3. `ios-native/Features/Schedule/RecurrenceEditorView.swift`
+4. `ios-native/Core/Calendar/CalendarRepository.swift`
+5. `ios-native/Core/Calendar/EventRepository.swift`
+6. `ios-native/Core/Persistence/SwiftDataMetadataStore.swift`
+7. `ios-native/Core/Persistence/ScheduleMetadataStore.swift` (factory guard, if missing)
+8. `ios-native/Features/Schedule/ScheduleViewModel.swift`
+9. `ios-native/Features/Inspections/InspectionsViewModel.swift`
+10. `ios-native/Features/Jobs/JobsViewModel.swift`
+11. `ios-native/Features/Mileage/MileageViewModel.swift`
+12. `ios-native/Features/Trips/TripsViewModel.swift`
+13. `RELEASING.md` — Core Data attribute rename / migration note
+14. `.lovable/audit-fix-plan.md` — this plan, saved for future reference
