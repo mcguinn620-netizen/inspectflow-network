@@ -1,4 +1,5 @@
 import Foundation
+import InspectFlowConnector
 
 @MainActor
 final class TripsViewModel: ObservableObject {

@@ -46,12 +46,12 @@ final class ScheduleViewModel: ObservableObject {
     init(
         events: EventRepository = .shared,
         calendars: CalendarRepository = .shared,
-        filters: CalendarFilterModel = CalendarFilterModel(),
+        filters: CalendarFilterModel? = nil,
         searchService: ScheduleSearchService? = nil
     ) {
         self.events_repo = events
         self.calendarsRepo = calendars
-        self.filters = filters
+        self.filters = filters ?? CalendarFilterModel()
         self.searchService = searchService ?? ScheduleSearchService(repository: events)
 
         changeTask = Task { [weak self] in

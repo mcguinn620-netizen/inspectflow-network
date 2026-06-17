@@ -76,9 +76,13 @@ final class EventMetadataSD {
 }
 
 @available(iOS 17.0, macOS 14.0, *)
+private let _swiftDataMetadataStoreShared = SwiftDataMetadataStore()
+
+@available(iOS 17.0, macOS 14.0, *)
 final class SwiftDataMetadataStore: ScheduleMetadataStore {
 
-    static let shared = SwiftDataMetadataStore()
+    static var shared: SwiftDataMetadataStore { _swiftDataMetadataStoreShared }
+
 
     private let container: ModelContainer
 

@@ -36,7 +36,7 @@ public final class EventRepository: ObservableObject {
     private var metadataCache: [String: EventMetadata] = [:]
     private var metadataCacheLoaded = false
 
-    init(
+    internal init(
         service: EventKitService = .shared,
         calendars: CalendarRepository = .shared,
         metadata: ScheduleMetadataStore = ScheduleMetadataStoreFactory.make(),
