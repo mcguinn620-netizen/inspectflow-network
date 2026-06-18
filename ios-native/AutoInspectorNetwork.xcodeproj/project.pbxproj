@@ -168,6 +168,8 @@
 		B19E55102FE1F5C6000BC4C7 /* UpcomingEventLiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E53FE2FE0C9A8000BC4C7 /* UpcomingEventLiveActivityAttributes.swift */; };
 		B19E55112FE1F631000BC4C7 /* AgendaWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54E82FE0CAF6000BC4C7 /* AgendaWidget.swift */; };
 		B19E55122FE1F63E000BC4C7 /* UpcomingEventLiveActivityWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54E62FE0CAF6000BC4C7 /* UpcomingEventLiveActivityWidget.swift */; };
+		B1D6D4642FE4180B00DE9306 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B19E54E72FE0CAF6000BC4C7 /* Info.plist */; };
+		B1D6D4652FE4181400DE9306 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B19E54BB2FE0CA48000BC4C7 /* Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -268,7 +270,6 @@
 		B19E53982FE0C9A5000BC4C7 /* MileageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MileageView.swift; sourceTree = "<group>"; };
 		B19E53992FE0C9A5000BC4C7 /* MileageEditView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MileageEditView.swift; sourceTree = "<group>"; };
 		B19E539A2FE0C9A5000BC4C7 /* AddMileageActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddMileageActionSheet.swift; sourceTree = "<group>"; };
-		B19E539B2FE0C9A5000BC4C7 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B19E539D2FE0C9A6000BC4C7 /* CarPlayNavigationCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarPlayNavigationCoordinator.swift; sourceTree = "<group>"; };
 		B19E539E2FE0C9A6000BC4C7 /* CarPlayScheduleTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarPlayScheduleTemplate.swift; sourceTree = "<group>"; };
 		B19E539F2FE0C9A6000BC4C7 /* CarPlaySceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarPlaySceneDelegate.swift; sourceTree = "<group>"; };
@@ -365,11 +366,12 @@
 		B19E54E62FE0CAF6000BC4C7 /* UpcomingEventLiveActivityWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UpcomingEventLiveActivityWidget.swift; path = "../../../../../Desktop/inspectflow-network/ios-native/AgendaWidgetExtension/UpcomingEventLiveActivityWidget.swift"; sourceTree = "<group>"; };
 		B19E54E72FE0CAF6000BC4C7 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = "../../../../../Desktop/inspectflow-network/ios-native/AgendaWidgetExtension/Info.plist"; sourceTree = "<group>"; };
 		B19E54E82FE0CAF6000BC4C7 /* AgendaWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AgendaWidget.swift; path = "../../../../../Desktop/inspectflow-network/ios-native/AgendaWidgetExtension/AgendaWidget.swift"; sourceTree = "<group>"; };
-		B19E54F62FE0CB9A000BC4C7 /* AgendaWidgetExtensionExtensionRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AgendaWidgetExtensionExtensionRelease.entitlements; sourceTree = "<group>"; };
-		B19E54F72FE0CC33000BC4C7 /* AutoInspectorNetworkRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AutoInspectorNetworkRelease.entitlements; sourceTree = "<group>"; };
 		B19E54F92FE0CCA0000BC4C7 /* InspectFlowShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = InspectFlowShareExtension.entitlements; sourceTree = "<group>"; };
 		B19E54FA2FE0CCF8000BC4C7 /* AutoInspectorNetwork.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = AutoInspectorNetwork.entitlements; sourceTree = "<group>"; };
 		B19E550D2FE173B6000BC4C7 /* InspectionModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = InspectionModel.xcdatamodel; sourceTree = "<group>"; };
+		B1D6D4672FE4647900DE9306 /* AutoInspectorNetworkRelease.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = AutoInspectorNetworkRelease.entitlements; sourceTree = "<group>"; };
+		B1D6D4682FE4647A00DE9306 /* AgendaWidgetExtensionExtensionRelease.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = AgendaWidgetExtensionExtensionRelease.entitlements; sourceTree = "<group>"; };
+		B1D6D4692FE4647A00DE9306 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -404,14 +406,14 @@
 			children = (
 				B19E550C2FE173B6000BC4C7 /* InspectionModel.xcdatamodeld */,
 				B19E54FA2FE0CCF8000BC4C7 /* AutoInspectorNetwork.entitlements */,
-				B19E54F72FE0CC33000BC4C7 /* AutoInspectorNetworkRelease.entitlements */,
-				B19E54F62FE0CB9A000BC4C7 /* AgendaWidgetExtensionExtensionRelease.entitlements */,
+				B1D6D4682FE4647A00DE9306 /* AgendaWidgetExtensionExtensionRelease.entitlements */,
+				B1D6D4672FE4647900DE9306 /* AutoInspectorNetworkRelease.entitlements */,
+				B1D6D4692FE4647A00DE9306 /* Info.plist */,
 				B19E53E82FE0C9A7000BC4C7 /* App */,
 				B19E53E72FE0C9A6000BC4C7 /* Assets.xcassets */,
 				B19E539C2FE0C9A6000BC4C7 /* CarPlay */,
 				B19E53A52FE0C9A6000BC4C7 /* Core */,
 				B19E53482FE0C9A5000BC4C7 /* Features */,
-				B19E539B2FE0C9A5000BC4C7 /* Info.plist */,
 				B19E53EE2FE0C9A7000BC4C7 /* Shared */,
 				B19E54AC2FE0C9D4000BC4C7 /* InspectFlowShareExtension */,
 				B19E54D02FE0CA6D000BC4C7 /* AgendaWidgetExtension */,
@@ -1084,6 +1086,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B1D6D4652FE4181400DE9306 /* Info.plist in Resources */,
 				B19E54C32FE0CA49000BC4C7 /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1094,6 +1097,7 @@
 			files = (
 				B19E54F52FE0CB8B000BC4C7 /* Assets.xcassets in Resources */,
 				B19E55002FE0CEA9000BC4C7 /* MainInterface.storyboard in Resources */,
+				B1D6D4642FE4180B00DE9306 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1427,8 +1431,8 @@
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 264U37X2A5;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = AutoInspectorNetwork/Info.plist;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -1460,8 +1464,8 @@
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 264U37X2A5;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = AutoInspectorNetwork/Info.plist;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

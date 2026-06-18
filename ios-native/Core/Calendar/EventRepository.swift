@@ -11,22 +11,22 @@ import EventKit
 ///   `EKEventStoreChanged`, so observers can refresh once per burst.
 @MainActor
 public final class EventRepository: ObservableObject {
-
+    
     public static let shared = EventRepository()
-
+    
     private let service: EventKitService
     private let calendars: CalendarRepository
     private let metadata: ScheduleMetadataStore
-
+    
     /// Debounce window for fan-out of EK change notifications.
     private let debounce: Duration
-
+    
     private var continuations: [UUID: AsyncStream<Void>.Continuation] = [:]
     private var changeTask: Task<Void, Never>?
     private var debounceTask: Task<Void, Never>?
-
+    
     // MARK: - Caches (Phase 6)
-
+    
     private struct EventCacheKey: Hashable {
         let start: Date
         let end: Date
@@ -35,7 +35,7 @@ public final class EventRepository: ObservableObject {
     private var eventCache: [EventCacheKey: [EKEvent]] = [:]
     private var metadataCache: [String: EventMetadata] = [:]
     private var metadataCacheLoaded = false
-
+    
     internal init(
         service: EventKitService = .shared,
         calendars: CalendarRepository = .shared,
@@ -46,7 +46,7 @@ public final class EventRepository: ObservableObject {
         self.calendars = calendars
         self.metadata = metadata
         self.debounce = .milliseconds(debounceMilliseconds)
-
+        
         changeTask = Task { [weak self] in
             guard let self else { return }
             for await _ in self.service.changes() {
@@ -55,7 +55,7 @@ public final class EventRepository: ObservableObject {
             }
         }
     }
-
+    
     /// Drops all in-memory caches. Called automatically on EK change events
     /// and exposed for explicit refresh from tests/UI.
     public func invalidateCaches() {
@@ -63,22 +63,22 @@ public final class EventRepository: ObservableObject {
         metadataCache.removeAll(keepingCapacity: true)
         metadataCacheLoaded = false
     }
-
+    
     deinit {
         changeTask?.cancel()
         debounceTask?.cancel()
     }
-
+    
     // MARK: - Access
-
+    
     public var hasAccess: Bool { service.hasAccess }
-
+    
     public func requestAccess() async -> Bool {
         await service.requestAccess()
     }
-
+    
     // MARK: - Fetch
-
+    
     /// Loads events in `interval`. If `visibleOnly` is true, hidden calendars
     /// (per `CalendarRepository`) are excluded.
     public func events(in interval: DateInterval, visibleOnly: Bool = true) -> [EKEvent] {
@@ -90,13 +90,13 @@ public final class EventRepository: ObservableObject {
         eventCache[key] = loaded
         return loaded
     }
-
+    
     public func event(matching identity: EventIdentity) -> EKEvent? {
         identity.resolve(in: service.store)
     }
-
+    
     // MARK: - Metadata
-
+    
     public func metadata(for event: EKEvent) async -> EventMetadata? {
         let identity = EventIdentity(event: event)
         if let eventID = identity.eventIdentifier, let cached = metadataCache[eventID] {
@@ -114,7 +114,7 @@ public final class EventRepository: ObservableObject {
         }
         return nil
     }
-
+    
     public func allMetadata() async -> [EventMetadata] {
         if metadataCacheLoaded {
             return Array(metadataCache.values)
@@ -124,29 +124,29 @@ public final class EventRepository: ObservableObject {
         metadataCacheLoaded = true
         return list
     }
-
+    
     /// Upserts metadata with deterministic conflict resolution against any
     /// existing record for the same logical event.
     @discardableResult
     public func upsertMetadata(_ incoming: EventMetadata) async throws -> EventMetadata {
         var next = incoming
         next.updatedAt = Date()
-
+        
         let existing: EventMetadata?
         if let externalID = incoming.externalID, !externalID.isEmpty {
             existing = try await metadata.metadata(forExternalID: externalID)
         } else {
             existing = try await metadata.metadata(for: incoming.eventID)
         }
-
+        
         let resolved = existing.map { EventConflictResolver.merge($0, next) } ?? next
         try await metadata.upsert(resolved)
         metadataCache[resolved.eventID] = resolved
         return resolved
     }
-
+    
     // MARK: - Event mutations
-
+    
     @discardableResult
     public func createEvent(
         title: String,
@@ -167,7 +167,7 @@ public final class EventRepository: ObservableObject {
         eventCache.removeAll(keepingCapacity: true)
         return event
     }
-
+    
     public func updateEvent(
         _ event: EKEvent,
         span: EKSpan = .thisEvent
@@ -175,7 +175,7 @@ public final class EventRepository: ObservableObject {
         try service.store.save(event, span: span, commit: true)
         eventCache.removeAll(keepingCapacity: true)
     }
-
+    
     public func deleteEvent(_ event: EKEvent, span: EKSpan = .thisEvent) async throws {
         try service.store.remove(event, span: span, commit: true)
         if let id = event.eventIdentifier {
@@ -184,7 +184,7 @@ public final class EventRepository: ObservableObject {
         }
         eventCache.removeAll(keepingCapacity: true)
     }
-
+    
     /// Reschedules `event` to `newStart`, preserving its duration. Bumps
     /// metadata `updatedAt`/`version` for conflict resolution.
     public func reschedule(_ event: EKEvent, to newStart: Date, span: EKSpan = .thisEvent) async throws {
@@ -199,7 +199,7 @@ public final class EventRepository: ObservableObject {
         event.startDate = newStart
         event.endDate = newStart.addingTimeInterval(duration)
         try service.store.save(event, span: span, commit: true)
-
+        
         if var meta = await metadata(for: event) {
             meta.version &+= 1
             meta.updatedAt = Date()
@@ -207,12 +207,12 @@ public final class EventRepository: ObservableObject {
             _ = try? await upsertMetadata(meta)
         }
     }
-
+    
     // MARK: - Job mirroring
-
+    
     /// Mirrors a `Job` into the system calendar and ties it to a metadata row.
     @discardableResult
-    public func mirror(job: Job, existingMetadataByJobID: [UUID: EventMetadata]) async throws -> EKEvent? {
+    func mirror(job: Job, existingMetadataByJobID: [UUID: EventMetadata]) async throws -> EKEvent? {
         let existingEventID = existingMetadataByJobID[job.id]?.eventID
         guard let newID = try await service.upsert(job: job, existingEventID: existingEventID) else {
             return nil
@@ -226,20 +226,22 @@ public final class EventRepository: ObservableObject {
         _ = try await upsertMetadata(meta)
         return event
     }
-
+    
     // MARK: - Change stream
-
+    
     /// Yields `()` after each debounced burst of EventKit changes.
     public func changes() -> AsyncStream<Void> {
         let id = UUID()
         return AsyncStream { continuation in
             self.continuations[id] = continuation
             continuation.onTermination = { @Sendable [weak self] _ in
-                Task { @MainActor in self?.continuations[id] = nil }
+                Task { @MainActor [weak self] in
+                    self?.continuations[id] = nil
+                }
             }
         }
     }
-
+    
     private func scheduleDebouncedBroadcast() {
         debounceTask?.cancel()
         debounceTask = Task { [debounce, weak self] in
@@ -250,4 +252,5 @@ public final class EventRepository: ObservableObject {
             }
         }
     }
+    
 }

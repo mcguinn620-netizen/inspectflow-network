@@ -93,7 +93,7 @@ public struct NaturalLanguageSchedulingService: Sendable {
         referenceDate: Date = Date()
     ) async throws -> EKEvent {
         let draft = try parse(raw, referenceDate: referenceDate)
-        return try repository.createEvent(
+        return try await repository.createEvent(
             title: draft.title,
             in: calendar,
             start: draft.start,

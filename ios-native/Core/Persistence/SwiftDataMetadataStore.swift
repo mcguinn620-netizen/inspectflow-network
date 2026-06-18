@@ -1,6 +1,6 @@
 import Foundation
 
-#if canImport(SwiftData)
+#if canImport(SwiftData) && swift(>=5.9)
 import SwiftData
 
 // MARK: - SwiftData backing (iOS 17+ / macOS 14+)
