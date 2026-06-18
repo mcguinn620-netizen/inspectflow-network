@@ -167,7 +167,6 @@
 		B19E550F2FE1F5B5000BC4C7 /* SharedAgendaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E53FF2FE0C9A8000BC4C7 /* SharedAgendaStore.swift */; };
 		B19E55102FE1F5C6000BC4C7 /* UpcomingEventLiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E53FE2FE0C9A8000BC4C7 /* UpcomingEventLiveActivityAttributes.swift */; };
 		B19E55112FE1F631000BC4C7 /* AgendaWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54E82FE0CAF6000BC4C7 /* AgendaWidget.swift */; };
-		B19E55122FE1F63E000BC4C7 /* UpcomingEventLiveActivityWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54E62FE0CAF6000BC4C7 /* UpcomingEventLiveActivityWidget.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1076,8 +1075,6 @@
 		B18DD6232FE097D500026CD5 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
-			files = (
-			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B19E54A92FE0C9D4000BC4C7 /* Resources */ = {
