@@ -366,9 +366,6 @@
 		B19E54FA2FE0CCF8000BC4C7 /* AutoInspectorNetwork.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = AutoInspectorNetwork.entitlements; sourceTree = "<group>"; };
 		B19E550D2FE173B6000BC4C7 /* InspectionModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = InspectionModel.xcdatamodel; sourceTree = "<group>"; };
 		B1D6D4672FE4647900DE9306 /* AutoInspectorNetworkRelease.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = AutoInspectorNetworkRelease.entitlements; sourceTree = "<group>"; };
-		B1D6D4692FE4647A00DE9306 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B1D6D46B2FE4718500DE9306 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B1D6D46D2FE4719200DE9306 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -405,7 +402,6 @@
 				B19E54FA2FE0CCF8000BC4C7 /* AutoInspectorNetwork.entitlements */,
 				B163B66E2FE4A39B00A7AC11 /* AgendaWidgetExtensionExtensionRelease.entitlements */,
 				B1D6D4672FE4647900DE9306 /* AutoInspectorNetworkRelease.entitlements */,
-				B1D6D4692FE4647A00DE9306 /* Info.plist */,
 				B19E53E82FE0C9A7000BC4C7 /* App */,
 				B19E53E72FE0C9A6000BC4C7 /* Assets.xcassets */,
 				B19E539C2FE0C9A6000BC4C7 /* CarPlay */,
@@ -930,7 +926,6 @@
 		B19E54AC2FE0C9D4000BC4C7 /* InspectFlowShareExtension */ = {
 			isa = PBXGroup;
 			children = (
-				B1D6D46B2FE4718500DE9306 /* Info.plist */,
 				B19E54F92FE0CCA0000BC4C7 /* InspectFlowShareExtension.entitlements */,
 				B19E54BC2FE0CA48000BC4C7 /* Base.lproj */,
 				B19E54C12FE0CA49000BC4C7 /* InspectFlowShareExtension.entitlements */,
@@ -961,7 +956,6 @@
 		B19E54D02FE0CA6D000BC4C7 /* AgendaWidgetExtension */ = {
 			isa = PBXGroup;
 			children = (
-				B1D6D46D2FE4719200DE9306 /* Info.plist */,
 				B19E54E82FE0CAF6000BC4C7 /* AgendaWidget.swift */,
 				B19E54E52FE0CAF6000BC4C7 /* AgendaWidgetBundle.swift */,
 				B19E54E42FE0CAF6000BC4C7 /* AgendaWidgetExtension.entitlements */,
@@ -1423,7 +1417,7 @@
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 264U37X2A5;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = NO;
+				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -1456,7 +1450,7 @@
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 264U37X2A5;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = NO;
+				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
