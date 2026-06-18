@@ -168,8 +168,6 @@
 		B19E55102FE1F5C6000BC4C7 /* UpcomingEventLiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E53FE2FE0C9A8000BC4C7 /* UpcomingEventLiveActivityAttributes.swift */; };
 		B19E55112FE1F631000BC4C7 /* AgendaWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54E82FE0CAF6000BC4C7 /* AgendaWidget.swift */; };
 		B19E55122FE1F63E000BC4C7 /* UpcomingEventLiveActivityWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19E54E62FE0CAF6000BC4C7 /* UpcomingEventLiveActivityWidget.swift */; };
-		B1D6D4642FE4180B00DE9306 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B19E54E72FE0CAF6000BC4C7 /* Info.plist */; };
-		B1D6D4652FE4181400DE9306 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B19E54BB2FE0CA48000BC4C7 /* Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -352,7 +350,6 @@
 		B19E54092FE0C9A8000BC4C7 /* ImportInboxView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportInboxView.swift; sourceTree = "<group>"; };
 		B19E54AB2FE0C9D4000BC4C7 /* InspectFlowShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = InspectFlowShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B19E54BA2FE0CA48000BC4C7 /* InspectFlowShareExtension-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "InspectFlowShareExtension-Bridging-Header.h"; sourceTree = "<group>"; };
-		B19E54BB2FE0CA48000BC4C7 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B19E54BE2FE0CA48000BC4C7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = MainInterface.storyboard; sourceTree = "<group>"; };
 		B19E54BF2FE0CA49000BC4C7 /* SharedPayloadModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedPayloadModel.swift; sourceTree = "<group>"; };
 		B19E54C02FE0CA49000BC4C7 /* ShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
@@ -364,7 +361,6 @@
 		B19E54E42FE0CAF6000BC4C7 /* AgendaWidgetExtension.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; name = AgendaWidgetExtension.entitlements; path = "../../../../../Desktop/inspectflow-network/ios-native/AgendaWidgetExtension/AgendaWidgetExtension.entitlements"; sourceTree = "<group>"; };
 		B19E54E52FE0CAF6000BC4C7 /* AgendaWidgetBundle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AgendaWidgetBundle.swift; path = "../../../../../Desktop/inspectflow-network/ios-native/AgendaWidgetExtension/AgendaWidgetBundle.swift"; sourceTree = "<group>"; };
 		B19E54E62FE0CAF6000BC4C7 /* UpcomingEventLiveActivityWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UpcomingEventLiveActivityWidget.swift; path = "../../../../../Desktop/inspectflow-network/ios-native/AgendaWidgetExtension/UpcomingEventLiveActivityWidget.swift"; sourceTree = "<group>"; };
-		B19E54E72FE0CAF6000BC4C7 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = "../../../../../Desktop/inspectflow-network/ios-native/AgendaWidgetExtension/Info.plist"; sourceTree = "<group>"; };
 		B19E54E82FE0CAF6000BC4C7 /* AgendaWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AgendaWidget.swift; path = "../../../../../Desktop/inspectflow-network/ios-native/AgendaWidgetExtension/AgendaWidget.swift"; sourceTree = "<group>"; };
 		B19E54F92FE0CCA0000BC4C7 /* InspectFlowShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = InspectFlowShareExtension.entitlements; sourceTree = "<group>"; };
 		B19E54FA2FE0CCF8000BC4C7 /* AutoInspectorNetwork.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = AutoInspectorNetwork.entitlements; sourceTree = "<group>"; };
@@ -372,6 +368,8 @@
 		B1D6D4672FE4647900DE9306 /* AutoInspectorNetworkRelease.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = AutoInspectorNetworkRelease.entitlements; sourceTree = "<group>"; };
 		B1D6D4682FE4647A00DE9306 /* AgendaWidgetExtensionExtensionRelease.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = AgendaWidgetExtensionExtensionRelease.entitlements; sourceTree = "<group>"; };
 		B1D6D4692FE4647A00DE9306 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B1D6D46B2FE4718500DE9306 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B1D6D46D2FE4719200DE9306 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -933,9 +931,9 @@
 		B19E54AC2FE0C9D4000BC4C7 /* InspectFlowShareExtension */ = {
 			isa = PBXGroup;
 			children = (
+				B1D6D46B2FE4718500DE9306 /* Info.plist */,
 				B19E54F92FE0CCA0000BC4C7 /* InspectFlowShareExtension.entitlements */,
 				B19E54BC2FE0CA48000BC4C7 /* Base.lproj */,
-				B19E54BB2FE0CA48000BC4C7 /* Info.plist */,
 				B19E54C12FE0CA49000BC4C7 /* InspectFlowShareExtension.entitlements */,
 				B19E54BF2FE0CA49000BC4C7 /* SharedPayloadModel.swift */,
 				B19E54C02FE0CA49000BC4C7 /* ShareViewController.swift */,
@@ -964,10 +962,10 @@
 		B19E54D02FE0CA6D000BC4C7 /* AgendaWidgetExtension */ = {
 			isa = PBXGroup;
 			children = (
+				B1D6D46D2FE4719200DE9306 /* Info.plist */,
 				B19E54E82FE0CAF6000BC4C7 /* AgendaWidget.swift */,
 				B19E54E52FE0CAF6000BC4C7 /* AgendaWidgetBundle.swift */,
 				B19E54E42FE0CAF6000BC4C7 /* AgendaWidgetExtension.entitlements */,
-				B19E54E72FE0CAF6000BC4C7 /* Info.plist */,
 				B19E54E62FE0CAF6000BC4C7 /* UpcomingEventLiveActivityWidget.swift */,
 				B19E54E32FE0CAF5000BC4C7 /* AgendaWidgetExtensionExtension-Bridging-Header.h */,
 			);
@@ -1086,7 +1084,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B1D6D4652FE4181400DE9306 /* Info.plist in Resources */,
 				B19E54C32FE0CA49000BC4C7 /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1097,7 +1094,6 @@
 			files = (
 				B19E54F52FE0CB8B000BC4C7 /* Assets.xcassets in Resources */,
 				B19E55002FE0CEA9000BC4C7 /* MainInterface.storyboard in Resources */,
-				B1D6D4642FE4180B00DE9306 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

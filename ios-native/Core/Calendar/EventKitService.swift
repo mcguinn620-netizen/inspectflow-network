@@ -9,63 +9,54 @@ import Combine
 /// changes via an `AsyncStream`.
 @MainActor
 final class EventKitService: ObservableObject {
-
+    
     static let shared = EventKitService()
-
+    
     let store = EKEventStore()
-
+    
     @Published private(set) var authorizationStatus: EKAuthorizationStatus =
         EKEventStore.authorizationStatus(for: .event)
 
+    var hasAccess: Bool {
+        authorizationStatus == .authorized
+    }
+    
     private var changeContinuations: [UUID: AsyncStream<Void>.Continuation] = [:]
     private var observerToken: NSObjectProtocol?
-
+    
     private init() {
         observerToken = NotificationCenter.default.addObserver(
             forName: .EKEventStoreChanged,
             object: store,
             queue: .main
         ) { [weak self] _ in
-            Task { @MainActor in
-                self?.broadcastChange()
-            }
+            self?.broadcastChange()
         }
     }
-
+    
     deinit {
         if let observerToken { NotificationCenter.default.removeObserver(observerToken) }
     }
-
+    
     // MARK: - Authorization
-
+    
     func requestAccess() async -> Bool {
-        if #available(iOS 17.0, *) {
-            do {
-                let granted = try await store.requestFullAccessToEvents()
-                authorizationStatus = EKEventStore.authorizationStatus(for: .event)
-                return granted
-            } catch {
-                return false
-            }
-        } else {
-            return await withCheckedContinuation { cont in
-                store.requestAccess(to: .event) { [weak self] granted, _ in
-                    Task { @MainActor in
-                        self?.authorizationStatus = EKEventStore.authorizationStatus(for: .event)
-                        cont.resume(returning: granted)
-                    }
+        await withCheckedContinuation { continuation in
+            store.requestAccess(to: .event) { [weak self] granted, _ in
+                DispatchQueue.main.async {
+                    self?.authorizationStatus =
+                    EKEventStore.authorizationStatus(for: .event)
+                    
+                    continuation.resume(returning: granted)
                 }
             }
         }
     }
+}
 
-    var hasAccess: Bool {
-        if #available(iOS 17.0, *) {
-            return authorizationStatus == .fullAccess || authorizationStatus == .writeOnly
-        } else {
-            return authorizationStatus == .authorized
-        }
-    }
+        var hasAccess: Bool {
+            authorizationStatus == .authorized
+}
 
     // MARK: - Fetch
 
@@ -141,9 +132,12 @@ final class EventKitService: ObservableObject {
     func changes() -> AsyncStream<Void> {
         let id = UUID()
         return AsyncStream { continuation in
-            self.changeContinuations[id] = continuation
-            continuation.onTermination = { @Sendable [weak self] _ in
-                Task { @MainActor in self?.changeContinuations[id] = nil }
+            continuation.onTermination = { [weak self] _ in
+                guard let self else { return }
+
+                Task { @MainActor [weak self] in
+                    self?.changeContinuations[id] = nil
+                }
             }
         }
     }
