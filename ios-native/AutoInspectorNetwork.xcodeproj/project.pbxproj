@@ -202,6 +202,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		B163B66E2FE4A39B00A7AC11 /* AgendaWidgetExtensionExtensionRelease.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; name = AgendaWidgetExtensionExtensionRelease.entitlements; path = AgendaWidgetExtension/AgendaWidgetExtensionExtensionRelease.entitlements; sourceTree = "<group>"; };
 		B18DD6252FE097D500026CD5 /* AutoInspectorNetwork.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutoInspectorNetwork.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B19E534A2FE0C9A5000BC4C7 /* AboutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		B19E534B2FE0C9A5000BC4C7 /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -357,15 +358,14 @@
 		B19E54CC2FE0CA6D000BC4C7 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		B19E54CE2FE0CA6D000BC4C7 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		B19E54E32FE0CAF5000BC4C7 /* AgendaWidgetExtensionExtension-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AgendaWidgetExtensionExtension-Bridging-Header.h"; sourceTree = "<group>"; };
-		B19E54E42FE0CAF6000BC4C7 /* AgendaWidgetExtension.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; name = AgendaWidgetExtension.entitlements; path = "../../../../../Desktop/inspectflow-network/ios-native/AgendaWidgetExtension/AgendaWidgetExtension.entitlements"; sourceTree = "<group>"; };
-		B19E54E52FE0CAF6000BC4C7 /* AgendaWidgetBundle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AgendaWidgetBundle.swift; path = "../../../../../Desktop/inspectflow-network/ios-native/AgendaWidgetExtension/AgendaWidgetBundle.swift"; sourceTree = "<group>"; };
-		B19E54E62FE0CAF6000BC4C7 /* UpcomingEventLiveActivityWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UpcomingEventLiveActivityWidget.swift; path = "../../../../../Desktop/inspectflow-network/ios-native/AgendaWidgetExtension/UpcomingEventLiveActivityWidget.swift"; sourceTree = "<group>"; };
-		B19E54E82FE0CAF6000BC4C7 /* AgendaWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AgendaWidget.swift; path = "../../../../../Desktop/inspectflow-network/ios-native/AgendaWidgetExtension/AgendaWidget.swift"; sourceTree = "<group>"; };
+		B19E54E42FE0CAF6000BC4C7 /* AgendaWidgetExtension.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; name = AgendaWidgetExtension.entitlements; path = Info.plist; sourceTree = "<group>"; };
+		B19E54E52FE0CAF6000BC4C7 /* AgendaWidgetBundle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AgendaWidgetBundle.swift; path = Info.plist; sourceTree = "<group>"; };
+		B19E54E62FE0CAF6000BC4C7 /* UpcomingEventLiveActivityWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UpcomingEventLiveActivityWidget.swift; path = Info.plist; sourceTree = "<group>"; };
+		B19E54E82FE0CAF6000BC4C7 /* AgendaWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AgendaWidget.swift; path = Info.plist; sourceTree = "<group>"; };
 		B19E54F92FE0CCA0000BC4C7 /* InspectFlowShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = InspectFlowShareExtension.entitlements; sourceTree = "<group>"; };
 		B19E54FA2FE0CCF8000BC4C7 /* AutoInspectorNetwork.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = AutoInspectorNetwork.entitlements; sourceTree = "<group>"; };
 		B19E550D2FE173B6000BC4C7 /* InspectionModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = InspectionModel.xcdatamodel; sourceTree = "<group>"; };
 		B1D6D4672FE4647900DE9306 /* AutoInspectorNetworkRelease.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = AutoInspectorNetworkRelease.entitlements; sourceTree = "<group>"; };
-		B1D6D4682FE4647A00DE9306 /* AgendaWidgetExtensionExtensionRelease.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = AgendaWidgetExtensionExtensionRelease.entitlements; sourceTree = "<group>"; };
 		B1D6D4692FE4647A00DE9306 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B1D6D46B2FE4718500DE9306 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B1D6D46D2FE4719200DE9306 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -403,7 +403,7 @@
 			children = (
 				B19E550C2FE173B6000BC4C7 /* InspectionModel.xcdatamodeld */,
 				B19E54FA2FE0CCF8000BC4C7 /* AutoInspectorNetwork.entitlements */,
-				B1D6D4682FE4647A00DE9306 /* AgendaWidgetExtensionExtensionRelease.entitlements */,
+				B163B66E2FE4A39B00A7AC11 /* AgendaWidgetExtensionExtensionRelease.entitlements */,
 				B1D6D4672FE4647900DE9306 /* AutoInspectorNetworkRelease.entitlements */,
 				B1D6D4692FE4647A00DE9306 /* Info.plist */,
 				B19E53E82FE0C9A7000BC4C7 /* App */,
@@ -1212,7 +1212,6 @@
 				B19E545D2FE0C9A8000BC4C7 /* NaturalLanguageSchedulingService.swift in Sources */,
 				B19E54192FE0C9A8000BC4C7 /* AvailabilitySettingsView.swift in Sources */,
 				B19E54552FE0C9A8000BC4C7 /* CarPlayTripService.swift in Sources */,
-				B19E55122FE1F63E000BC4C7 /* UpcomingEventLiveActivityWidget.swift in Sources */,
 				B19E54792FE0C9A9000BC4C7 /* FunctionsClient.swift in Sources */,
 				B19E54772FE0C9A9000BC4C7 /* StorageClient.swift in Sources */,
 				B19E54672FE0C9A9000BC4C7 /* AppState.swift in Sources */,
@@ -1451,7 +1450,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = AutoInspectorNetwork/AutoInspectorNetworkRelease.entitlements;
+				CODE_SIGN_ENTITLEMENTS = AutoInspectorNetworkRelease.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
@@ -1571,7 +1570,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = AgendaWidgetExtensionExtensionRelease.entitlements;
+				CODE_SIGN_ENTITLEMENTS = AgendaWidgetExtension/AgendaWidgetExtensionExtensionRelease.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 264U37X2A5;
