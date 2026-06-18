@@ -1,7 +1,7 @@
 import Foundation
+
 #if canImport(SwiftData)
 import SwiftData
-#endif
 
 // MARK: - SwiftData backing (iOS 17+ / macOS 14+)
 //
@@ -218,3 +218,5 @@ final class SwiftDataMetadataStore: ScheduleMetadataStore {
 fileprivate func encodeJSONString<T: Encodable>(_ value: T) -> String? {
     (try? JSONEncoder().encode(value)).flatMap { String(data: $0, encoding: .utf8) }
 }
+#endif // canImport(SwiftData)
+
