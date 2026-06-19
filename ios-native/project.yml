@@ -1,0 +1,210 @@
+name: AutoInspectorNetwork
+
+# Regenerate the Xcode project deterministically with:
+#   cd ios-native && xcodegen generate
+#
+# This file is the source of truth for AutoInspectorNetwork.xcodeproj/project.pbxproj.
+# Keeping it checked in lets Bitrise (or any developer) rebuild the pbxproj from scratch
+# before `xcodebuild`, eliminating the manual-edit corruption class of bugs.
+
+options:
+  bundleIdPrefix: ios
+  deploymentTarget:
+    iOS: "16.2"
+  developmentLanguage: en
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+  groupSortPosition: top
+  xcodeVersion: "14.2"
+  defaultConfig: Release
+
+configs:
+  Debug: debug
+  Release: release
+
+settings:
+  base:
+    ALWAYS_SEARCH_USER_PATHS: NO
+    CLANG_ANALYZER_NONNULL: YES
+    CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: YES_AGGRESSIVE
+    CLANG_CXX_LANGUAGE_STANDARD: "gnu++20"
+    CLANG_ENABLE_MODULES: YES
+    CLANG_ENABLE_OBJC_ARC: YES
+    CLANG_ENABLE_OBJC_WEAK: YES
+    ENABLE_STRICT_OBJC_MSGSEND: YES
+    GCC_C_LANGUAGE_STANDARD: gnu11
+    GCC_NO_COMMON_BLOCKS: YES
+    GCC_WARN_ABOUT_RETURN_TYPE: YES_ERROR
+    GCC_WARN_UNDECLARED_SELECTOR: YES
+    GCC_WARN_UNINITIALIZED_AUTOS: YES_AGGRESSIVE
+    GCC_WARN_UNUSED_FUNCTION: YES
+    GCC_WARN_UNUSED_VARIABLE: YES
+    IPHONEOS_DEPLOYMENT_TARGET: "16.2"
+    SDKROOT: iphoneos
+    SWIFT_VERSION: "5.0"
+    DEVELOPMENT_TEAM: 264U37X2A5
+    CODE_SIGN_STYLE: Automatic
+    CURRENT_PROJECT_VERSION: 1
+    MARKETING_VERSION: "1.0"
+  configs:
+    Debug:
+      DEBUG_INFORMATION_FORMAT: dwarf
+      ENABLE_TESTABILITY: YES
+      GCC_DYNAMIC_NO_PIC: NO
+      GCC_OPTIMIZATION_LEVEL: 0
+      GCC_PREPROCESSOR_DEFINITIONS:
+        - "DEBUG=1"
+        - "$(inherited)"
+      MTL_ENABLE_DEBUG_INFO: INCLUDE_SOURCE
+      ONLY_ACTIVE_ARCH: YES
+      SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG
+      SWIFT_OPTIMIZATION_LEVEL: "-Onone"
+      COPY_PHASE_STRIP: NO
+    Release:
+      DEBUG_INFORMATION_FORMAT: "dwarf-with-dsym"
+      ENABLE_NS_ASSERTIONS: NO
+      MTL_ENABLE_DEBUG_INFO: NO
+      SWIFT_COMPILATION_MODE: wholemodule
+      SWIFT_OPTIMIZATION_LEVEL: "-O"
+      VALIDATE_PRODUCT: YES
+      COPY_PHASE_STRIP: NO
+
+targets:
+
+  AutoInspectorNetwork:
+    type: application
+    platform: iOS
+    deploymentTarget: "16.2"
+    sources:
+      - path: App
+      - path: CarPlay
+      - path: Core
+      - path: Features
+      - path: Shared
+      - path: InspectionModel.xcdatamodeld
+      - path: AutoInspectorNetwork.xcdatamodeld
+      - path: AutoInspectorNetwork-Bridging-Header.h
+        buildPhase: none
+    info:
+      path: AutoInspectorNetwork/Info.plist
+    entitlements:
+      path: AutoInspectorNetwork/AutoInspectorNetwork.entitlements
+    settings:
+      base:
+        ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        CODE_SIGN_ENTITLEMENTS: AutoInspectorNetwork/AutoInspectorNetwork.entitlements
+        DEVELOPMENT_ASSET_PATHS: ""
+        ENABLE_PREVIEWS: YES
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_FILE: AutoInspectorNetwork/Info.plist
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
+        LD_RUNPATH_SEARCH_PATHS:
+          - "$(inherited)"
+          - "@executable_path/Frameworks"
+        PRODUCT_BUNDLE_IDENTIFIER: ios.AutoInspectorNetwork
+        PRODUCT_NAME: "$(TARGET_NAME)"
+        SWIFT_EMIT_LOC_STRINGS: YES
+        SWIFT_OBJC_BRIDGING_HEADER: "AutoInspectorNetwork-Bridging-Header.h"
+        TARGETED_DEVICE_FAMILY: "1,2"
+    dependencies:
+      - sdk: ActivityKit.framework
+      - target: InspectFlowShareExtension
+      - target: AgendaWidgetExtensionExtension
+
+  InspectFlowShareExtension:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "16.2"
+    sources:
+      - path: InspectFlowShareExtension
+        excludes:
+          - "Info.plist"
+          - "InspectFlowShareExtension.entitlements"
+    info:
+      path: InspectFlowShareExtension/Info.plist
+    entitlements:
+      path: InspectFlowShareExtension/InspectFlowShareExtension.entitlements
+    settings:
+      base:
+        CODE_SIGN_ENTITLEMENTS: InspectFlowShareExtension/InspectFlowShareExtension.entitlements
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_FILE: InspectFlowShareExtension/Info.plist
+        INFOPLIST_KEY_CFBundleDisplayName: InspectFlowShareExtension
+        INFOPLIST_KEY_NSHumanReadableCopyright: ""
+        LD_RUNPATH_SEARCH_PATHS:
+          - "$(inherited)"
+          - "@executable_path/Frameworks"
+          - "@executable_path/../../Frameworks"
+        PRODUCT_BUNDLE_IDENTIFIER: ios.AutoInspectorNetwork.InspectFlowShareExtension
+        PRODUCT_NAME: "$(TARGET_NAME)"
+        SKIP_INSTALL: YES
+        SWIFT_EMIT_LOC_STRINGS: YES
+        SWIFT_OBJC_BRIDGING_HEADER: "InspectFlowShareExtension/InspectFlowShareExtension-Bridging-Header.h"
+        TARGETED_DEVICE_FAMILY: "1,2"
+
+  AgendaWidgetExtensionExtension:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "16.1"
+    sources:
+      - path: AgendaWidgetExtension
+        excludes:
+          - "Info.plist"
+          - "AgendaWidgetExtensionExtensionRelease.entitlements"
+    info:
+      path: AgendaWidgetExtension/Info.plist
+    entitlements:
+      path: AgendaWidgetExtension/AgendaWidgetExtensionExtensionRelease.entitlements
+    settings:
+      base:
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME: WidgetBackground
+        CODE_SIGN_ENTITLEMENTS: AgendaWidgetExtension/AgendaWidgetExtensionExtensionRelease.entitlements
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_FILE: AgendaWidgetExtension/Info.plist
+        INFOPLIST_KEY_CFBundleDisplayName: AgendaWidgetExtension
+        INFOPLIST_KEY_NSHumanReadableCopyright: ""
+        IPHONEOS_DEPLOYMENT_TARGET: "16.1"
+        LD_RUNPATH_SEARCH_PATHS:
+          - "$(inherited)"
+          - "@executable_path/Frameworks"
+          - "@executable_path/../../Frameworks"
+          - "@executable_path/../../../../Frameworks"
+        PRODUCT_BUNDLE_IDENTIFIER: ios.AgendaWidgetExtension
+        PRODUCT_NAME: "$(TARGET_NAME)"
+        # NOTE: legacy pbxproj had SDKROOT=watchos here, but the widget is an iOS
+        # WidgetKit + ActivityKit extension. Forcing iphoneos so xcodebuild targets
+        # the correct platform.
+        SDKROOT: iphoneos
+        SKIP_INSTALL: YES
+        SWIFT_EMIT_LOC_STRINGS: YES
+        SWIFT_OBJC_BRIDGING_HEADER: "AgendaWidgetExtension/AgendaWidgetExtensionExtension-Bridging-Header.h"
+        TARGETED_DEVICE_FAMILY: "1,2"
+    dependencies:
+      - sdk: WidgetKit.framework
+      - sdk: SwiftUI.framework
+      - sdk: ActivityKit.framework
+
+schemes:
+  AutoInspectorNetwork:
+    build:
+      targets:
+        AutoInspectorNetwork: all
+        InspectFlowShareExtension: [test, analyze, archive]
+        AgendaWidgetExtensionExtension: [test, analyze, archive]
+    run:
+      config: Debug
+    test:
+      config: Debug
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release
