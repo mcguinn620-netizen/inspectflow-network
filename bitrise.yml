@@ -73,6 +73,7 @@ workflows:
     summary: Archive AutoInspectorNetwork and export an IPA.
     steps:
     - git-clone@8: {}
+    - xcodegen@0: {}
     - certificate-and-profile-installer@1: {}
     - xcode-archive@6:
         inputs:
