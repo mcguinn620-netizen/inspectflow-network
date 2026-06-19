@@ -2,7 +2,7 @@
 //  AgendaWidgetExtension.swift
 //  AgendaWidgetExtension
 //
-//  Created by Matt McGuinn on 6/15/26.
+//  Created by Matt McGuinn on 6/19/26.
 //
 
 import WidgetKit
@@ -33,6 +33,12 @@ struct Provider: IntentTimelineProvider {
         let timeline = Timeline(entries: entries, policy: .atEnd)
         completion(timeline)
     }
+
+    func recommendations() -> [IntentRecommendation<ConfigurationIntent>] {
+        return [
+            IntentRecommendation(intent: ConfigurationIntent(), description: "My Intent Widget")
+        ]
+    }
 }
 
 struct SimpleEntry: TimelineEntry {
@@ -48,6 +54,7 @@ struct AgendaWidgetExtensionEntryView : View {
     }
 }
 
+@main
 struct AgendaWidgetExtension: Widget {
     let kind: String = "AgendaWidgetExtension"
 
@@ -63,6 +70,6 @@ struct AgendaWidgetExtension: Widget {
 struct AgendaWidgetExtension_Previews: PreviewProvider {
     static var previews: some View {
         AgendaWidgetExtensionEntryView(entry: SimpleEntry(date: Date(), configuration: ConfigurationIntent()))
-            .previewContext(WidgetPreviewContext(family: .systemSmall))
+            .previewContext(WidgetPreviewContext(family: .accessoryRectangular))
     }
 }

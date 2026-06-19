@@ -2,162 +2,29 @@
 //  ShareViewController.swift
 //  InspectFlowShareExtension
 //
-//  Created by Matt McGuinn on 6/11/26.
+//  Created by Matt McGuinn on 6/19/26.
 //
 
 import UIKit
-import UniformTypeIdentifiers
+import Social
 
-final class ShareViewController: UIViewController {
+class ShareViewController: SLComposeServiceViewController {
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        processInput()
+    override func isContentValid() -> Bool {
+        // Do validation of contentText and/or NSExtensionContext attachments here
+        return true
     }
 
-    private func processInput() {
-
-        guard
-            let item = extensionContext?.inputItems.first as? NSExtensionItem
-        else {
-            complete()
-            return
-        }
-
-        guard let providers = item.attachments else {
-            complete()
-            return
-        }
-
-        for provider in providers {
-
-            if provider.hasItemConformingToTypeIdentifier(
-                UTType.url.identifier
-            ) {
-
-                handleURL(provider)
-                return
-            }
-
-            if provider.hasItemConformingToTypeIdentifier(
-                UTType.pdf.identifier
-            ) {
-
-                handlePDF(provider)
-                return
-            }
-        }
-
-        complete()
+    override func didSelectPost() {
+        // This is called after the user selects Post. Do the upload of contentText and/or NSExtensionContext attachments.
+    
+        // Inform the host that we're done, so it un-blocks its UI. Note: Alternatively you could call super's -didSelectPost, which will similarly complete the extension context.
+        self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
     }
 
-    private func handleURL(
-        _ provider: NSItemProvider
-    ) {
-
-        provider.loadItem(
-            forTypeIdentifier: UTType.url.identifier,
-            options: nil
-        ) { item, error in
-
-            guard let url = item as? URL else {
-                self.complete()
-                return
-            }
-
-            let payload = SharedImport(
-                id: UUID(),
-                kind: .webLink,
-                title: url.absoluteString,
-                url: url.absoluteString,
-                localFile: nil,
-                createdAt: Date()
-            )
-
-            self.save(payload)
-        }
+    override func configurationItems() -> [Any]! {
+        // To add configuration options via table cells at the bottom of the sheet, return an array of SLComposeSheetConfigurationItem here.
+        return []
     }
 
-    private func handlePDF(
-        _ provider: NSItemProvider
-    ) {
-
-        provider.loadFileRepresentation(
-            forTypeIdentifier: UTType.pdf.identifier
-        ) { url, error in
-
-            guard let url else {
-                self.complete()
-                return
-            }
-
-            let payload = SharedImport(
-                id: UUID(),
-                kind: .pdf,
-                title: url.lastPathComponent,
-                url: nil,
-                localFile: url.path,
-                createdAt: Date()
-            )
-
-            self.save(payload)
-        }
-    }
-
-    private func save(
-        _ payload: SharedImport
-    ) {
-
-        let defaults = UserDefaults(
-            suiteName: "group.com.inspectflow.shared"
-        )
-
-        var items: [Data] =
-            defaults?.array(
-                forKey: "sharedImports"
-            ) as? [Data] ?? []
-
-        if let data = try? JSONEncoder().encode(payload) {
-            items.append(data)
-        }
-
-        defaults?.set(
-            items,
-            forKey: "sharedImports"
-        )
-
-        DispatchQueue.main.async {
-            self.launchMainApp()
-        }
-    }
-
-    private func launchMainApp() {
-
-        let url = URL(
-            string: "inspectflow://imports"
-        )!
-
-        // UIApplication.open(_:) is unavailable in app extensions.
-        // Walk the responder chain and invoke `openURL:` via selector.
-        let selector = NSSelectorFromString("openURL:")
-        var responder: UIResponder? = self
-
-        while let current = responder {
-            if current.responds(to: selector) {
-                _ = current.perform(selector, with: url)
-                break
-            }
-            responder = current.next
-        }
-
-        complete()
-    }
-
-    private func complete() {
-
-        extensionContext?.completeRequest(
-            returningItems: nil
-        )
-    }
 }

@@ -13,12 +13,17 @@ final class ScheduleViewModel: ObservableObject {
     enum DisplayMode: String, CaseIterable, Identifiable {
         case day, week, month, list
         var id: String { rawValue }
+        
         var title: String {
             switch self {
-            case .day: "Day"
-            case .week: "Week"
-            case .month: "Month"
-            case .list: "List"
+            case .day:
+                return "Day"
+            case .week:
+                return "Week"
+            case .month:
+                return "Month"
+            case .list:
+                return "List"
             }
         }
     }
