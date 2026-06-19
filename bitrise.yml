@@ -73,7 +73,9 @@ workflows:
     summary: Archive AutoInspectorNetwork and export an IPA.
     steps:
     - git-clone@8: {}
-    - xcodegen@0: {}
+    - xcodegen@0:
+        inputs:
+        - spec_path: $BITRISE_SOURCE_DIR/ios-native/project.yml
     - certificate-and-profile-installer@1: {}
     - xcode-archive@6:
         inputs:
