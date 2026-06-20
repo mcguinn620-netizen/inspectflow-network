@@ -40,8 +40,8 @@ final class EventMetadataSD {
         tagsJSON: String = "[]",
         checklistJSON: String = "[]",
         richNotes: String = "",
-        priority: String = "normal",   // EventPriority.normal.rawValue
-        status: String = "confirmed",  // EventStatus.confirmed.rawValue
+        priority: String = EventPriority.normal.rawValue,
+        status: String = EventStatus.confirmed.rawValue,
 
 
         estimatedDuration: Double = 0,
