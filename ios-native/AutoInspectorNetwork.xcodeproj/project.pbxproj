@@ -169,9 +169,7 @@
 		B1C334112FE565D3005BC015 /* AgendaWidgetExtensionBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EBD42FE4D91500C3027E /* AgendaWidgetExtensionBundle.swift */; };
 		B1C334862FE56C15005BC015 /* AgendaWidgetExtensionExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B1C333FE2FE5657F005BC015 /* AgendaWidgetExtensionExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B1C3348B2FE5DF2E005BC015 /* ActivityKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1C334892FE56C38005BC015 /* ActivityKit.framework */; };
-		B1C3348C2FE5DF2E005BC015 /* ActivityKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B1C334892FE56C38005BC015 /* ActivityKit.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B1C334902FE5DFB6005BC015 /* ActivityKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1C3348E2FE5DFAE005BC015 /* ActivityKit.framework */; };
-		B1C334912FE5DFB6005BC015 /* ActivityKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B1C3348E2FE5DFAE005BC015 /* ActivityKit.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -202,28 +200,6 @@
 				B1C333F42FE563CC005BC015 /* InspectFlowShareExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B1C3348D2FE5DF2E005BC015 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				B1C3348C2FE5DF2E005BC015 /* ActivityKit.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B1C334922FE5DFB6005BC015 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				B1C334912FE5DFB6005BC015 /* ActivityKit.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -1009,7 +985,6 @@
 				B1B6E9E02FE4D70200C3027E /* Frameworks */,
 				B1B6E9E12FE4D70200C3027E /* Resources */,
 				B1C333F32FE563CC005BC015 /* Embed Foundation Extensions */,
-				B1C3348D2FE5DF2E005BC015 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1046,7 +1021,6 @@
 				B1C333FA2FE5657F005BC015 /* Sources */,
 				B1C333FB2FE5657F005BC015 /* Frameworks */,
 				B1C333FC2FE5657F005BC015 /* Resources */,
-				B1C334922FE5DFB6005BC015 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1458,6 +1432,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AutoInspectorNetwork/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Auto Inspector Network";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -1468,7 +1443,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MACOSX_DEPLOYMENT_TARGET = 13.1;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ios.AutoInspectorNetwork;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1495,6 +1470,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AutoInspectorNetwork/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Auto Inspector Network";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -1505,7 +1481,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MACOSX_DEPLOYMENT_TARGET = 13.1;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ios.AutoInspectorNetwork;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1589,7 +1565,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ios.AgendaWidgetExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = ios.AutoInspectorNetwork.AgendaWidgetExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1623,7 +1599,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ios.AgendaWidgetExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = ios.AutoInspectorNetwork.AgendaWidgetExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
