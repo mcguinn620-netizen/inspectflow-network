@@ -138,11 +138,13 @@ public enum ScheduleMetadataStoreFactory {
     /// Returns the best available backing store for the current OS.
     /// On iOS 17+ we use SwiftData; on iOS 16 we fall back to Core Data.
     public static func make() -> ScheduleMetadataStore {
+        #if canImport(SwiftData) && swift(>=5.9)
         if #available(iOS 17.0, macOS 14.0, *) {
             return SwiftDataMetadataStore.shared
-        } else {
-            return CoreDataMetadataStore.shared
         }
+        #endif
+
+        return CoreDataMetadataStore.shared
     }
 }
 

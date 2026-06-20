@@ -54,7 +54,6 @@ struct AgendaWidgetExtensionEntryView : View {
     }
 }
 
-@main
 struct AgendaWidgetExtension: Widget {
     let kind: String = "AgendaWidgetExtension"
 

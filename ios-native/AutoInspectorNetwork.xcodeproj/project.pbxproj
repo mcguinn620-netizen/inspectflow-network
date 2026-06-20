@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B152F13B2FE647C2001185F1 /* SharedAgendaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EC3B2FE4D91800C3027E /* SharedAgendaStore.swift */; };
+		B152F13C2FE647DB001185F1 /* UpcomingEventLiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EC3A2FE4D91800C3027E /* UpcomingEventLiveActivityAttributes.swift */; };
+		B152F13D2FE64A9B001185F1 /* SwiftDataMetadataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EC0C2FE4D91600C3027E /* SwiftDataMetadataStore.swift */; };
 		B1B6EC462FE4D91800C3027E /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EB742FE4D91400C3027E /* AboutView.swift */; };
 		B1B6EC472FE4D91800C3027E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EB752FE4D91400C3027E /* SettingsView.swift */; };
 		B1B6EC482FE4D91800C3027E /* DeveloperToolsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EB762FE4D91400C3027E /* DeveloperToolsSection.swift */; };
@@ -1288,10 +1291,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B152F13B2FE647C2001185F1 /* SharedAgendaStore.swift in Sources */,
 				B1C3340B2FE56581005BC015 /* AgendaWidgetExtension.intentdefinition in Sources */,
 				B1C334102FE565D3005BC015 /* AgendaWidget.swift in Sources */,
 				B1C334112FE565D3005BC015 /* AgendaWidgetExtensionBundle.swift in Sources */,
+				B152F13D2FE64A9B001185F1 /* SwiftDataMetadataStore.swift in Sources */,
 				B1C3340F2FE565D3005BC015 /* AgendaWidgetExtensionLiveActivity.swift in Sources */,
+				B152F13C2FE647DB001185F1 /* UpcomingEventLiveActivityAttributes.swift in Sources */,
 				B1C334062FE5657F005BC015 /* AgendaWidgetExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1574,7 +1580,7 @@
 				INFOPLIST_FILE = AgendaWidgetExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = AgendaWidgetExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1585,8 +1591,9 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ios.AgendaWidgetExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = watchos;
+				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -1607,7 +1614,7 @@
 				INFOPLIST_FILE = AgendaWidgetExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = AgendaWidgetExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1618,8 +1625,9 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ios.AgendaWidgetExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = watchos;
+				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
