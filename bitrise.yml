@@ -75,7 +75,81 @@ workflows:
     - git-clone@8: {}
     - xcodegen@0:
         inputs:
-        - spec_path: $BITRISE_SOURCE_DIR/ios-native/project.yml
+        - spec_path: "$BITRISE_SOURCE_DIR/ios-native/project.yml"
+    - script@1:
+        inputs:
+        - content: "#!/usr/bin/env bash
+
+            - script@1:
+
+            \    title: Build Xcode Workspace
+
+            \    inputs:
+
+            \      - content: |-
+
+            \          #!/bin/bash
+
+            \          set -euo pipefail
+
+
+            \          # -----------------------------
+
+            \          # CONFIGURATION
+
+            \          # -----------------------------
+
+            \          WORKSPACE_PATH=\"MyApp.xcworkspace\"   # Path to your
+            .xcworkspace
+
+            \          SCHEME_NAME=\"MyApp\"                  # Scheme to build
+
+            \          CONFIGURATION=\"Release\"              # Build
+            configuration (Debug/Release)
+
+            \          DESTINATION=\"generic/platform=iOS\"   # Destination
+            (device/simulator)
+
+            \          ARCHIVE_PATH=\"$BITRISE_DEPLOY_DIR/MyApp.xcarchive\"
+
+
+            \          echo \"🔹 Building workspace: $WORKSPACE_PATH\"
+
+            \          echo \"🔹 Scheme: $SCHEME_NAME\"
+
+            \          echo \"🔹 Configuration: $CONFIGURATION\"
+
+            \          echo \"🔹 Destination: $DESTINATION\"
+
+
+            \          # -----------------------------
+
+            \          # CLEAN & BUILD
+
+            \          # -----------------------------
+
+            \          xcodebuild \\
+
+            \            -workspace \"$WORKSPACE_PATH\" \\
+
+            \            -scheme \"$SCHEME_NAME\" \\
+
+            \            -configuration \"$CONFIGURATION\" \\
+
+            \            -destination \"$DESTINATION\" \\
+
+            \            clean build \\
+
+            \            CODE_SIGN_IDENTITY=\"\" \\
+
+            \            CODE_SIGNING_REQUIRED=NO \\
+
+            \            CODE_SIGNING_ALLOWED=NO \\
+
+            \            | xcpretty
+
+
+            \          echo \"✅ Build completed successfully.\"\n"
     - certificate-and-profile-installer@1: {}
     - xcode-archive@6:
         inputs:
