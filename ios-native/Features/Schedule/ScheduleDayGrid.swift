@@ -18,9 +18,9 @@ struct ScheduleDayGrid: View {
 
 
     private let startHour = 6
-    private let endHour = 22
-    private let hourHeight: CGFloat = 56
-    private let railWidth: CGFloat = 52
+    private let endHour = 19
+    private let hourHeight: CGFloat = 72
+    private let railWidth: CGFloat = 72
     private let snapMinutes = 15
 
     private var hours: [Int] { Array(startHour..<endHour) }

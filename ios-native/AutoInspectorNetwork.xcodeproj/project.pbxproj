@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B14EB5C02FE95C4000F4C353 /* NativeCalendarMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14EB5BF2FE95C4000F4C353 /* NativeCalendarMetrics.swift */; };
+		B14EB5C22FE95CBD00F4C353 /* NativeCalendarLayoutEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14EB5C12FE95CBD00F4C353 /* NativeCalendarLayoutEngine.swift */; };
 		B152F13B2FE647C2001185F1 /* SharedAgendaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EC3B2FE4D91800C3027E /* SharedAgendaStore.swift */; };
 		B152F13C2FE647DB001185F1 /* UpcomingEventLiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EC3A2FE4D91800C3027E /* UpcomingEventLiveActivityAttributes.swift */; };
 		B1B6EC462FE4D91800C3027E /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EB742FE4D91400C3027E /* AboutView.swift */; };
@@ -204,6 +206,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		B14EB5BF2FE95C4000F4C353 /* NativeCalendarMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeCalendarMetrics.swift; sourceTree = "<group>"; };
+		B14EB5C12FE95CBD00F4C353 /* NativeCalendarLayoutEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeCalendarLayoutEngine.swift; sourceTree = "<group>"; };
 		B1B6E9E32FE4D70200C3027E /* AutoInspectorNetwork.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutoInspectorNetwork.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1B6E9FA2FE4D7BC00C3027E /* AutoInspectorNetwork-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AutoInspectorNetwork-Bridging-Header.h"; sourceTree = "<group>"; };
 		B1B6EB712FE4D91300C3027E /* AutoInspectorNetwork.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = AutoInspectorNetwork.entitlements; sourceTree = "<group>"; };
@@ -697,6 +701,8 @@
 				B1B6EBE92FE4D91600C3027E /* EventRepository+Snapshot.swift */,
 				B1B6EBEA2FE4D91600C3027E /* EventConflictResolver.swift */,
 				B1B6EBEB2FE4D91600C3027E /* EventDragPayload.swift */,
+				B14EB5BF2FE95C4000F4C353 /* NativeCalendarMetrics.swift */,
+				B14EB5C12FE95CBD00F4C353 /* NativeCalendarLayoutEngine.swift */,
 			);
 			path = Calendar;
 			sourceTree = "<group>";
@@ -1159,6 +1165,7 @@
 				B1B6EC7D2FE4D91800C3027E /* JobCreateViewModel.swift in Sources */,
 				B1B6ECA02FE4D91800C3027E /* EventDragPayload.swift in Sources */,
 				B1B6ECD62FE4D91900C3027E /* AINRoleBadge.swift in Sources */,
+				B14EB5C22FE95CBD00F4C353 /* NativeCalendarLayoutEngine.swift in Sources */,
 				B1B6EC792FE4D91800C3027E /* JobsView.swift in Sources */,
 				B1B6EC9C2FE4D91800C3027E /* EventRepository.swift in Sources */,
 				B1B6EC622FE4D91800C3027E /* IntakeInboxView.swift in Sources */,
@@ -1199,6 +1206,7 @@
 				B1B6ECD72FE4D91900C3027E /* AINButtons.swift in Sources */,
 				B1B6EC6B2FE4D91800C3027E /* ActiveTripBanner.swift in Sources */,
 				B1B6ECBC2FE4D91900C3027E /* PushRegistrar.swift in Sources */,
+				B14EB5C02FE95C4000F4C353 /* NativeCalendarMetrics.swift in Sources */,
 				B1B6EC972FE4D91800C3027E /* NaturalLanguageSchedulingService.swift in Sources */,
 				B1B6ECBE2FE4D91900C3027E /* DebugUserService.swift in Sources */,
 				B1B6EC642FE4D91800C3027E /* InspectionsViewModel.swift in Sources */,
