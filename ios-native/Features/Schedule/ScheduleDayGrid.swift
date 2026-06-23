@@ -92,7 +92,13 @@ struct ScheduleDayGrid: View {
                         .padding(.trailing, 6)
                         .offset(y: -6)
                     VStack(spacing: 0) {
-                        Divider()
+                        Rectangle()
+                            .fill(.secondary.opacity(0.18))
+                            .frame(height: 0.5)
+                        Rectangle()
+                            .fill(.secondary.opacity(0.08))
+                            .frame(height: 0.5)
+                            .offset(y: 36)
                         Spacer(minLength: 0)
                     }
                 }
