@@ -133,7 +133,7 @@ enum NativeCalendarLayoutEngine {
                 placements.append(
                     NativeCalendarTimelinePlacement(
                         id: assignment.item.id,
-                        kind: assignment.item.kind,
+                        kind: assignment.item.placementKind,
                         start: assignment.item.start,
                         end: assignment.item.end,
                         y: CGFloat(yMinutes - startHour * 60) / 60.0 * hourHeight,
