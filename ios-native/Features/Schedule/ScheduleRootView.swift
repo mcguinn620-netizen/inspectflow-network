@@ -3,9 +3,8 @@ import EventKit
 
 /// Adaptive entry point for the native Schedule experience.
 ///
-/// On regular-width devices (iPad / Mac Catalyst) it presents a three-pane
-/// `NavigationSplitView`: sidebar → calendar grid → event inspector. On
-/// compact widths (iPhone) it falls back to a stacked `NavigationStack`.
+/// Regular width uses a calendar-style three column split view.
+/// Compact width uses a stacked navigation flow.
 struct ScheduleRootView: View {
 
     @EnvironmentObject private var appState: AppState
@@ -19,7 +18,9 @@ struct ScheduleRootView: View {
                 NavigationSplitView(columnVisibility: $columnVisibility) {
                     CalendarSidebarView(viewModel: viewModel, filters: viewModel.filters)
                 } content: {
-                    ScheduleContentPane(viewModel: viewModel)
+                    NavigationStack {
+                        ScheduleContentPane(viewModel: viewModel)
+                    }
                 } detail: {
                     NavigationStack {
                         EventInspectorView(viewModel: viewModel)
@@ -35,14 +36,15 @@ struct ScheduleRootView: View {
                 }
             }
         }
-        .task { await viewModel.bootstrap(orgId: appState.activeOrganizationID) }
+        .task {
+            await viewModel.bootstrap(orgId: appState.activeOrganizationID)
+        }
         .alert("Schedule", isPresented: errorBinding) {
             Button("OK") { viewModel.errorMessage = nil }
         } message: {
             Text(viewModel.errorMessage ?? "")
         }
     }
-
 
     private var detailBinding: Binding<Bool> {
         Binding(
@@ -64,7 +66,7 @@ struct ScheduleRootView: View {
     }
 }
 
-// MARK: - Content pane (Day / Week / Month / List switcher)
+// MARK: - Content pane
 
 struct ScheduleContentPane: View {
     @ObservedObject var viewModel: ScheduleViewModel
@@ -81,22 +83,30 @@ struct ScheduleContentPane: View {
         )
     }
 
+    private var unsyncedJobs: [Job] {
+        viewModel.jobs.filter { job in
+            !viewModel.metadataByEventID.values.contains(where: { $0.jobID == job.id })
+        }
+    }
+
+    private var screenTitle: String {
+        let cal = Calendar.current
+        switch mode.wrappedValue {
+        case .day:
+            return viewModel.selectedDate.formatted(.dateTime.weekday(.wide).month().day())
+        case .week:
+            let weekStart = Date.startOfScheduleWeek(for: viewModel.selectedDate)
+            let weekEnd = cal.date(byAdding: .day, value: 6, to: weekStart) ?? weekStart
+            return "\(weekStart.formatted(.dateTime.month().day())) – \(weekEnd.formatted(.dateTime.month().day()))"
+        case .month:
+            return viewModel.selectedDate.formatted(.dateTime.month(.wide).year())
+        case .list:
+            return "Schedule"
+        }
+    }
 
     var body: some View {
-        VStack(spacing: 0) {
-            Picker("View", selection: mode) {
-                ForEach(ScheduleViewModel.DisplayMode.allCases) { m in
-                    Text(m.title).tag(m)
-                }
-            }
-            .pickerStyle(.segmented)
-            .padding(.horizontal)
-            .padding(.vertical, 8)
-
-            dayNavigator
-
-            Divider()
-
+        Group {
             if !viewModel.filters.searchQuery.isEmpty {
                 searchResultsList
             } else {
@@ -105,10 +115,16 @@ struct ScheduleContentPane: View {
                     ScheduleDayGrid(
                         date: viewModel.selectedDate,
                         events: viewModel.events,
-                        jobs: viewModel.jobs.filter { unsynced($0) },
+                        jobs: unsyncedJobs,
                         coordinator: dropCoordinator,
-                        onSelectEvent: { ev in viewModel.selectedEventID = ev.eventIdentifier; viewModel.selectedJobID = nil },
-                        onSelectJob: { job in viewModel.selectedJobID = job.id; viewModel.selectedEventID = nil }
+                        onSelectEvent: { ev in
+                            viewModel.selectedEventID = ev.eventIdentifier
+                            viewModel.selectedJobID = nil
+                        },
+                        onSelectJob: { job in
+                            viewModel.selectedJobID = job.id
+                            viewModel.selectedEventID = nil
+                        }
                     )
                 case .week:
                     weekView
@@ -116,20 +132,58 @@ struct ScheduleContentPane: View {
                     ScheduleMonthMatrix(
                         selectedDate: $viewModel.selectedDate,
                         events: viewModel.events,
-                        coordinator: dropCoordinator
+                        jobs: unsyncedJobs,
+                        coordinator: dropCoordinator,
+                        onSelectDay: { day in
+                            viewModel.selectedDate = day
+                        }
                     )
                 case .list:
                     eventList
                 }
-
             }
         }
-        .navigationTitle("Schedule")
+        .navigationTitle(screenTitle)
+        .navigationBarTitleDisplayMode(.large)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarBackground(Color(.systemBackground), for: .navigationBar)
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button("Today") { viewModel.selectedDate = Date() }
+            ToolbarItemGroup(placement: .navigationBarLeading) {
+                Button {
+                    goToday()
+                } label: {
+                    Text("Today")
+                        .fontWeight(.semibold)
+                }
             }
-            ToolbarItem(placement: .navigationBarTrailing) {
+
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
+                Button {
+                    shift(by: -1)
+                } label: {
+                    Image(systemName: "chevron.left")
+                }
+                .accessibilityLabel("Previous")
+
+                Button {
+                    shift(by: 1)
+                } label: {
+                    Image(systemName: "chevron.right")
+                }
+                .accessibilityLabel("Next")
+
+                Menu {
+                    ForEach(ScheduleViewModel.DisplayMode.allCases) { displayMode in
+                        Button {
+                            rawMode = displayMode.rawValue
+                        } label: {
+                            Label(displayMode.title, systemImage: icon(for: displayMode))
+                        }
+                    }
+                } label: {
+                    Label(mode.wrappedValue.title, systemImage: icon(for: mode.wrappedValue))
+                }
+
                 QuickAddEventField(viewModel: viewModel)
             }
         }
@@ -140,9 +194,40 @@ struct ScheduleContentPane: View {
             ),
             prompt: "Search events, tags, notes"
         )
-        .refreshable { await viewModel.load(orgId: nil) }
+        .refreshable {
+            await viewModel.load(orgId: nil)
+        }
         .onChange(of: viewModel.selectedDate) { _ in
             Task { await viewModel.reloadEvents() }
+        }
+    }
+
+    private func goToday() {
+        viewModel.selectedDate = Date()
+    }
+
+    private func shift(by step: Int) {
+        let cal = Calendar.current
+        switch mode.wrappedValue {
+        case .day, .list:
+            viewModel.selectedDate = cal.date(byAdding: .day, value: step, to: viewModel.selectedDate) ?? viewModel.selectedDate
+        case .week:
+            viewModel.selectedDate = cal.date(byAdding: .day, value: step * 7, to: viewModel.selectedDate) ?? viewModel.selectedDate
+        case .month:
+            viewModel.selectedDate = cal.date(byAdding: .month, value: step, to: viewModel.selectedDate) ?? viewModel.selectedDate
+        }
+    }
+
+    private func icon(for mode: ScheduleViewModel.DisplayMode) -> String {
+        switch mode {
+        case .day:
+            return "calendar.day.timeline.leading"
+        case .week:
+            return "calendar"
+        case .month:
+            return "square.grid.3x3"
+        case .list:
+            return "list.bullet"
         }
     }
 
@@ -153,12 +238,16 @@ struct ScheduleContentPane: View {
                 viewModel.selectedJobID = nil
             } label: {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(hit.event.title ?? "Untitled").font(.subheadline)
+                    Text(hit.event.title ?? "Untitled")
+                        .font(.subheadline)
                     HStack(spacing: 6) {
                         Text(hit.event.startDate, format: .dateTime.month().day().hour().minute())
-                            .font(.caption).foregroundStyle(.secondary)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                         if let category = hit.metadata?.category {
-                            Text("· \(category)").font(.caption).foregroundStyle(.secondary)
+                            Text("· \(category)")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                         }
                     }
                 }
@@ -174,47 +263,23 @@ struct ScheduleContentPane: View {
         }
     }
 
-
-    private var dayNavigator: some View {
-        HStack {
-            Button { shift(by: -1) } label: { Image(systemName: "chevron.left") }
-            Spacer()
-            Text(viewModel.selectedDate, format: .dateTime.weekday(.wide).month().day().year())
-                .font(.subheadline.weight(.semibold))
-            Spacer()
-            Button { shift(by: 1) } label: { Image(systemName: "chevron.right") }
-        }
-        .padding(.horizontal)
-        .padding(.bottom, 6)
-    }
-
-    private func shift(by days: Int) {
-        viewModel.selectedDate = Calendar.current.date(
-            byAdding: .day, value: days, to: viewModel.selectedDate
-        ) ?? viewModel.selectedDate
-    }
-
-    private func unsynced(_ job: Job) -> Bool {
-        !viewModel.metadataByEventID.values.contains(where: { $0.jobID == job.id })
-    }
-
-    // MARK: Week (reuses existing ScheduleWeekCalendarView)
-
     private var weekView: some View {
         let weekStart = Date.startOfScheduleWeek(for: viewModel.selectedDate)
         return ScheduleWeekGrid(
             weekStart: weekStart,
             events: viewModel.events,
+            jobs: unsyncedJobs,
             coordinator: dropCoordinator,
             onSelectEvent: { ev in
                 viewModel.selectedEventID = ev.eventIdentifier
                 viewModel.selectedJobID = nil
+            },
+            onSelectJob: { job in
+                viewModel.selectedJobID = job.id
+                viewModel.selectedEventID = nil
             }
         )
     }
-
-
-    // MARK: List
 
     private var eventList: some View {
         List {
@@ -230,7 +295,8 @@ struct ScheduleContentPane: View {
                                     .fill(Color(cgColor: ev.calendar?.cgColor ?? UIColor.systemBlue.cgColor))
                                     .frame(width: 8, height: 8)
                                 VStack(alignment: .leading) {
-                                    Text(ev.title ?? "Untitled").font(.subheadline)
+                                    Text(ev.title ?? "Untitled")
+                                        .font(.subheadline)
                                     Text(ev.startDate, format: .dateTime.hour().minute())
                                         .font(.caption)
                                         .foregroundStyle(.secondary)

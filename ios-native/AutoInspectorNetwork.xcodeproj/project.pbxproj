@@ -9,6 +9,13 @@
 /* Begin PBXBuildFile section */
 		B14EB5C02FE95C4000F4C353 /* NativeCalendarMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14EB5BF2FE95C4000F4C353 /* NativeCalendarMetrics.swift */; };
 		B14EB5C22FE95CBD00F4C353 /* NativeCalendarLayoutEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14EB5C12FE95CBD00F4C353 /* NativeCalendarLayoutEngine.swift */; };
+		B14EB5CA2FEB6DDB00F4C353 /* ScheduleDayGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14EB5C32FEB6DDA00F4C353 /* ScheduleDayGrid.swift */; };
+		B14EB5CB2FEB6DDB00F4C353 /* NativeCalendarMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14EB5C42FEB6DDA00F4C353 /* NativeCalendarMetrics.swift */; };
+		B14EB5CC2FEB6DDB00F4C353 /* NativeCalendarLayoutEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14EB5C52FEB6DDB00F4C353 /* NativeCalendarLayoutEngine.swift */; };
+		B14EB5CD2FEB6DDB00F4C353 /* ScheduleRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14EB5C62FEB6DDB00F4C353 /* ScheduleRootView.swift */; };
+		B14EB5CE2FEB6DDB00F4C353 /* ScheduleMonthMatrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14EB5C72FEB6DDB00F4C353 /* ScheduleMonthMatrix.swift */; };
+		B14EB5CF2FEB6DDB00F4C353 /* ScheduleWeekGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14EB5C82FEB6DDB00F4C353 /* ScheduleWeekGrid.swift */; };
+		B14EB5D02FEB6DDB00F4C353 /* NativeNowIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14EB5C92FEB6DDB00F4C353 /* NativeNowIndicator.swift */; };
 		B152F13B2FE647C2001185F1 /* SharedAgendaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EC3B2FE4D91800C3027E /* SharedAgendaStore.swift */; };
 		B152F13C2FE647DB001185F1 /* UpcomingEventLiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EC3A2FE4D91800C3027E /* UpcomingEventLiveActivityAttributes.swift */; };
 		B1B6EC462FE4D91800C3027E /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EB742FE4D91400C3027E /* AboutView.swift */; };
@@ -30,12 +37,8 @@
 		B1B6EC562FE4D91800C3027E /* EventInspectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EB852FE4D91400C3027E /* EventInspectorView.swift */; };
 		B1B6EC572FE4D91800C3027E /* ScheduleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EB862FE4D91400C3027E /* ScheduleViewModel.swift */; };
 		B1B6EC582FE4D91800C3027E /* ScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EB872FE4D91400C3027E /* ScheduleView.swift */; };
-		B1B6EC592FE4D91800C3027E /* ScheduleWeekGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EB882FE4D91400C3027E /* ScheduleWeekGrid.swift */; };
-		B1B6EC5A2FE4D91800C3027E /* ScheduleRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EB892FE4D91400C3027E /* ScheduleRootView.swift */; };
 		B1B6EC5B2FE4D91800C3027E /* EventDropDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EB8A2FE4D91400C3027E /* EventDropDelegates.swift */; };
-		B1B6EC5C2FE4D91800C3027E /* ScheduleMonthMatrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EB8B2FE4D91400C3027E /* ScheduleMonthMatrix.swift */; };
 		B1B6EC5D2FE4D91800C3027E /* EventDetailWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EB8C2FE4D91400C3027E /* EventDetailWindow.swift */; };
-		B1B6EC5E2FE4D91800C3027E /* ScheduleDayGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EB8D2FE4D91400C3027E /* ScheduleDayGrid.swift */; };
 		B1B6EC5F2FE4D91800C3027E /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EB8F2FE4D91400C3027E /* AuthViewModel.swift */; };
 		B1B6EC602FE4D91800C3027E /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EB902FE4D91400C3027E /* AuthView.swift */; };
 		B1B6EC612FE4D91800C3027E /* TaxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EB922FE4D91400C3027E /* TaxView.swift */; };
@@ -208,6 +211,13 @@
 /* Begin PBXFileReference section */
 		B14EB5BF2FE95C4000F4C353 /* NativeCalendarMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeCalendarMetrics.swift; sourceTree = "<group>"; };
 		B14EB5C12FE95CBD00F4C353 /* NativeCalendarLayoutEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeCalendarLayoutEngine.swift; sourceTree = "<group>"; };
+		B14EB5C32FEB6DDA00F4C353 /* ScheduleDayGrid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleDayGrid.swift; sourceTree = "<group>"; };
+		B14EB5C42FEB6DDA00F4C353 /* NativeCalendarMetrics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeCalendarMetrics.swift; sourceTree = "<group>"; };
+		B14EB5C52FEB6DDB00F4C353 /* NativeCalendarLayoutEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeCalendarLayoutEngine.swift; sourceTree = "<group>"; };
+		B14EB5C62FEB6DDB00F4C353 /* ScheduleRootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleRootView.swift; sourceTree = "<group>"; };
+		B14EB5C72FEB6DDB00F4C353 /* ScheduleMonthMatrix.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleMonthMatrix.swift; sourceTree = "<group>"; };
+		B14EB5C82FEB6DDB00F4C353 /* ScheduleWeekGrid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleWeekGrid.swift; sourceTree = "<group>"; };
+		B14EB5C92FEB6DDB00F4C353 /* NativeNowIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeNowIndicator.swift; sourceTree = "<group>"; };
 		B1B6E9E32FE4D70200C3027E /* AutoInspectorNetwork.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutoInspectorNetwork.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1B6E9FA2FE4D7BC00C3027E /* AutoInspectorNetwork-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AutoInspectorNetwork-Bridging-Header.h"; sourceTree = "<group>"; };
 		B1B6EB712FE4D91300C3027E /* AutoInspectorNetwork.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = AutoInspectorNetwork.entitlements; sourceTree = "<group>"; };
@@ -230,12 +240,8 @@
 		B1B6EB852FE4D91400C3027E /* EventInspectorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventInspectorView.swift; sourceTree = "<group>"; };
 		B1B6EB862FE4D91400C3027E /* ScheduleViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleViewModel.swift; sourceTree = "<group>"; };
 		B1B6EB872FE4D91400C3027E /* ScheduleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleView.swift; sourceTree = "<group>"; };
-		B1B6EB882FE4D91400C3027E /* ScheduleWeekGrid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleWeekGrid.swift; sourceTree = "<group>"; };
-		B1B6EB892FE4D91400C3027E /* ScheduleRootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleRootView.swift; sourceTree = "<group>"; };
 		B1B6EB8A2FE4D91400C3027E /* EventDropDelegates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventDropDelegates.swift; sourceTree = "<group>"; };
-		B1B6EB8B2FE4D91400C3027E /* ScheduleMonthMatrix.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleMonthMatrix.swift; sourceTree = "<group>"; };
 		B1B6EB8C2FE4D91400C3027E /* EventDetailWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventDetailWindow.swift; sourceTree = "<group>"; };
-		B1B6EB8D2FE4D91400C3027E /* ScheduleDayGrid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleDayGrid.swift; sourceTree = "<group>"; };
 		B1B6EB8F2FE4D91400C3027E /* AuthViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		B1B6EB902FE4D91400C3027E /* AuthView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		B1B6EB922FE4D91400C3027E /* TaxView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaxView.swift; sourceTree = "<group>"; };
@@ -481,6 +487,13 @@
 		B1B6EB7E2FE4D91400C3027E /* Schedule */ = {
 			isa = PBXGroup;
 			children = (
+				B14EB5C52FEB6DDB00F4C353 /* NativeCalendarLayoutEngine.swift */,
+				B14EB5C42FEB6DDA00F4C353 /* NativeCalendarMetrics.swift */,
+				B14EB5C92FEB6DDB00F4C353 /* NativeNowIndicator.swift */,
+				B14EB5C32FEB6DDA00F4C353 /* ScheduleDayGrid.swift */,
+				B14EB5C72FEB6DDB00F4C353 /* ScheduleMonthMatrix.swift */,
+				B14EB5C62FEB6DDB00F4C353 /* ScheduleRootView.swift */,
+				B14EB5C82FEB6DDB00F4C353 /* ScheduleWeekGrid.swift */,
 				B1B6EB7F2FE4D91400C3027E /* RecurrenceEditorView.swift */,
 				B1B6EB802FE4D91400C3027E /* ScheduleSidebar.swift */,
 				B1B6EB812FE4D91400C3027E /* CalendarKitDayView.swift */,
@@ -490,12 +503,8 @@
 				B1B6EB852FE4D91400C3027E /* EventInspectorView.swift */,
 				B1B6EB862FE4D91400C3027E /* ScheduleViewModel.swift */,
 				B1B6EB872FE4D91400C3027E /* ScheduleView.swift */,
-				B1B6EB882FE4D91400C3027E /* ScheduleWeekGrid.swift */,
-				B1B6EB892FE4D91400C3027E /* ScheduleRootView.swift */,
 				B1B6EB8A2FE4D91400C3027E /* EventDropDelegates.swift */,
-				B1B6EB8B2FE4D91400C3027E /* ScheduleMonthMatrix.swift */,
 				B1B6EB8C2FE4D91400C3027E /* EventDetailWindow.swift */,
-				B1B6EB8D2FE4D91400C3027E /* ScheduleDayGrid.swift */,
 			);
 			path = Schedule;
 			sourceTree = "<group>";
@@ -1109,7 +1118,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B1B6EC5C2FE4D91800C3027E /* ScheduleMonthMatrix.swift in Sources */,
 				B1B6ECAB2FE4D91800C3027E /* InspectFlowClient.swift in Sources */,
 				B1B6ECC52FE4D91900C3027E /* CarPlayStop.swift in Sources */,
 				B1B6EC672FE4D91800C3027E /* InspectionDetailView.swift in Sources */,
@@ -1126,6 +1134,8 @@
 				B1B6ECD82FE4D91900C3027E /* AINSortMenu.swift in Sources */,
 				B1B6EC6F2FE4D91800C3027E /* ProfileViewModel.swift in Sources */,
 				B1B6EC4F2FE4D91800C3027E /* AvailabilitySettingsView.swift in Sources */,
+				B14EB5CF2FEB6DDB00F4C353 /* ScheduleWeekGrid.swift in Sources */,
+				B14EB5CE2FEB6DDB00F4C353 /* ScheduleMonthMatrix.swift in Sources */,
 				B1B6EC5B2FE4D91800C3027E /* EventDropDelegates.swift in Sources */,
 				B1B6ECBD2FE4D91900C3027E /* DebugUser.swift in Sources */,
 				B1B6EC852FE4D91800C3027E /* AddMileageActionSheet.swift in Sources */,
@@ -1170,14 +1180,15 @@
 				B1B6EC9C2FE4D91800C3027E /* EventRepository.swift in Sources */,
 				B1B6EC622FE4D91800C3027E /* IntakeInboxView.swift in Sources */,
 				B1B6EC682FE4D91800C3027E /* DashboardView.swift in Sources */,
+				B14EB5CD2FEB6DDB00F4C353 /* ScheduleRootView.swift in Sources */,
 				B1B6ECA92FE4D91800C3027E /* QueryBuilder.swift in Sources */,
 				B1B6ECD92FE4D91900C3027E /* UpcomingEventLiveActivityAttributes.swift in Sources */,
 				B1B6ECBB2FE4D91900C3027E /* TripTrackingController.swift in Sources */,
 				B1B6ECE12FE4D91900C3027E /* ImportInboxStore.swift in Sources */,
 				B1B6EC7C2FE4D91800C3027E /* JobsViewModel.swift in Sources */,
+				B14EB5CA2FEB6DDB00F4C353 /* ScheduleDayGrid.swift in Sources */,
 				B1B6ECA82FE4D91800C3027E /* RestClient.swift in Sources */,
 				B1B6ECB32FE4D91900C3027E /* InspectFlowConfig.swift in Sources */,
-				B1B6EC5E2FE4D91800C3027E /* ScheduleDayGrid.swift in Sources */,
 				B1B6ECA42FE4D91800C3027E /* SupabaseClientProvider.swift in Sources */,
 				B1B6EC9F2FE4D91800C3027E /* EventConflictResolver.swift in Sources */,
 				B1B6ECDD2FE4D91900C3027E /* DomainModels.swift in Sources */,
@@ -1197,8 +1208,8 @@
 				B1B6EC942FE4D91800C3027E /* EventKitService+Recurrence.swift in Sources */,
 				B1B6ECA22FE4D91800C3027E /* KeychainStore.swift in Sources */,
 				B1B6EC782FE4D91800C3027E /* JobCreateView.swift in Sources */,
+				B14EB5CB2FEB6DDB00F4C353 /* NativeCalendarMetrics.swift in Sources */,
 				B1B6ECC12FE4D91900C3027E /* CarPlayScheduleTemplate.swift in Sources */,
-				B1B6EC592FE4D91800C3027E /* ScheduleWeekGrid.swift in Sources */,
 				B1B6EC702FE4D91800C3027E /* VehicleEditViewModel.swift in Sources */,
 				B1B6EC6C2FE4D91800C3027E /* InspectorDashboardHomeView.swift in Sources */,
 				B1B6EC9E2FE4D91800C3027E /* EventRepository+Snapshot.swift in Sources */,
@@ -1208,12 +1219,14 @@
 				B1B6ECBC2FE4D91900C3027E /* PushRegistrar.swift in Sources */,
 				B14EB5C02FE95C4000F4C353 /* NativeCalendarMetrics.swift in Sources */,
 				B1B6EC972FE4D91800C3027E /* NaturalLanguageSchedulingService.swift in Sources */,
+				B14EB5D02FEB6DDB00F4C353 /* NativeNowIndicator.swift in Sources */,
 				B1B6ECBE2FE4D91900C3027E /* DebugUserService.swift in Sources */,
 				B1B6EC642FE4D91800C3027E /* InspectionsViewModel.swift in Sources */,
 				B1B6EC742FE4D91800C3027E /* VehiclesView.swift in Sources */,
 				B1B6EC4C2FE4D91800C3027E /* NotificationSettingsView.swift in Sources */,
 				B1B6ECB92FE4D91900C3027E /* SyncEngine.swift in Sources */,
 				B1B6EC572FE4D91800C3027E /* ScheduleViewModel.swift in Sources */,
+				B14EB5CC2FEB6DDB00F4C353 /* NativeCalendarLayoutEngine.swift in Sources */,
 				B1B6ECCD2FE4D91900C3027E /* TripMapSnapshot.swift in Sources */,
 				B1B6EC6D2FE4D91800C3027E /* DashboardViewModel.swift in Sources */,
 				B1B6ECCF2FE4D91900C3027E /* OpenInMapsButton.swift in Sources */,
@@ -1235,7 +1248,6 @@
 				B1B6ECAC2FE4D91800C3027E /* SessionStore.swift in Sources */,
 				B1B6EC492FE4D91800C3027E /* InspectorVehiclesView.swift in Sources */,
 				B1B6ECCE2FE4D91900C3027E /* AINDebugBanner.swift in Sources */,
-				B1B6EC5A2FE4D91800C3027E /* ScheduleRootView.swift in Sources */,
 				B1B6EC7A2FE4D91800C3027E /* JobDetailView.swift in Sources */,
 				B1B6ECC02FE4D91900C3027E /* CarPlayNavigationCoordinator.swift in Sources */,
 				B1B6ECB42FE4D91900C3027E /* AuditLogger.swift in Sources */,

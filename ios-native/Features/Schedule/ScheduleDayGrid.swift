@@ -1,10 +1,9 @@
 import SwiftUI
 import EventKit
 
-/// Native single-day timeline grid that replaces the CalendarKit day view.
-///
-/// Renders an hour rail on the left and positions `EKEvent` blocks (and any
-/// unsynced `Job`s) on a single column. Pure SwiftUI, iOS 16 compatible.
+/// Native single-day timeline grid with an Apple Calendar-inspired layout.
+/// Keeps the existing EventKit / Job integration while changing only the
+/// rendering to a denser 24-hour timeline with overlap lanes.
 struct ScheduleDayGrid: View {
 
     let date: Date
@@ -16,38 +15,170 @@ struct ScheduleDayGrid: View {
 
     @State private var dropHighlight: Date?
 
-
-    private let startHour = 6
-    private let endHour = 19
-    private let hourHeight: CGFloat = 72
-    private let railWidth: CGFloat = 72
+    private let startHour = NativeCalendarMetrics.startHour
+    private let endHour = NativeCalendarMetrics.endHour
+    private let hourHeight: CGFloat = NativeCalendarMetrics.hourHeight
+    private let railWidth: CGFloat = NativeCalendarMetrics.railWidth
     private let snapMinutes = 15
 
     private var hours: [Int] { Array(startHour..<endHour) }
 
+    private var timelineHeight: CGFloat {
+        CGFloat(endHour - startHour) * hourHeight
+    }
+
     var body: some View {
-        ScrollView {
-            ZStack(alignment: .topLeading) {
-                hourRail
-                dropTargetColumn
-                dropHighlightOverlay
-                nowLine
-                blocksOverlay
+        ScrollView(.vertical) {
+            VStack(spacing: 0) {
+                dayHeader
+                GeometryReader { geo in
+                    let width = max(0, geo.size.width)
+                    timeline(width: width)
+                        .frame(height: timelineHeight)
+                }
+                .frame(height: timelineHeight)
             }
-            .frame(height: CGFloat(hours.count) * hourHeight)
         }
+        .background(NativeCalendarMetrics.sidebarBackground)
+    }
+
+    private var dayHeader: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(date, format: .dateTime.weekday(.wide))
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+
+            HStack(alignment: .firstTextBaseline, spacing: 10) {
+                Text(date, format: .dateTime.month(.wide).day())
+                    .font(.system(size: 34, weight: .bold, design: .default))
+                    .foregroundStyle(.primary)
+
+                if Calendar.current.isDateInToday(date) {
+                    Text("Today")
+                        .font(.caption.weight(.semibold))
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Capsule().fill(.red.opacity(0.12)))
+                        .foregroundStyle(.red)
+                }
+            }
+
+            Text(date, format: .dateTime.year())
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, NativeCalendarMetrics.dayHeaderPadding)
+        .padding(.top, 12)
+        .padding(.bottom, 10)
+        .background(.thinMaterial)
+        .overlay(Divider(), alignment: .bottom)
     }
 
     @ViewBuilder
-    private var dropTargetColumn: some View {
-        if let coordinator {
-            GeometryReader { geo in
-                let width = max(0, geo.size.width - railWidth - 8)
+    private func timeline(width: CGFloat) -> some View {
+        let contentWidth = max(0, width - railWidth)
+        let placements = NativeCalendarLayoutEngine.placements(
+            for: date,
+            events: events,
+            jobs: jobs,
+            startHour: startHour,
+            endHour: endHour,
+            hourHeight: hourHeight
+        )
+
+        HStack(spacing: 0) {
+            hourRail
+                .frame(width: railWidth, height: timelineHeight, alignment: .top)
+
+            dayBody(width: contentWidth, placements: placements)
+        }
+        .frame(width: width, height: timelineHeight, alignment: .topLeading)
+        .background(Color(.systemBackground))
+    }
+
+    private var hourRail: some View {
+        VStack(spacing: 0) {
+            ForEach(hours, id: \.self) { hour in
+                HStack(spacing: 0) {
+                    Text(hourLabel(hour))
+                        .font(.caption2.monospacedDigit())
+                        .foregroundStyle(.secondary)
+                        .frame(width: railWidth - 10, alignment: .trailing)
+                        .padding(.trailing, 8)
+                        .offset(y: -6)
+
+                    VStack(spacing: 0) {
+                        Rectangle()
+                            .fill(.secondary.opacity(NativeCalendarMetrics.majorLineOpacity))
+                            .frame(height: 0.5)
+
+                        Rectangle()
+                            .fill(.secondary.opacity(NativeCalendarMetrics.minorLineOpacity))
+                            .frame(height: 0.5)
+                            .offset(y: hourHeight / 2)
+
+                        Spacer(minLength: 0)
+                    }
+                }
+                .frame(height: hourHeight, alignment: .top)
+            }
+        }
+        .background(Color(.systemBackground))
+    }
+
+    @ViewBuilder
+    private func dayBody(
+        width: CGFloat,
+        placements: [NativeCalendarTimelinePlacement]
+    ) -> some View {
+        let lineWidth = max(0, width)
+        let laneGap = NativeCalendarMetrics.laneGap
+
+        ZStack(alignment: .topLeading) {
+            hourGrid(width: lineWidth)
+
+            if let highlight = dropHighlight,
+               Calendar.current.isDate(highlight, inSameDayAs: date) {
+                let y = yOffset(for: highlight)
+                Rectangle()
+                    .fill(Color.accentColor.opacity(0.16))
+                    .frame(width: lineWidth, height: CGFloat(snapMinutes) / 60.0 * hourHeight)
+                    .offset(y: y)
+            }
+
+            ForEach(placements) { placement in
+                timelineCard(placement)
+                    .frame(
+                        width: laneWidth(for: placement, width: lineWidth, gap: laneGap),
+                        height: placement.height,
+                        alignment: .topLeading
+                    )
+                    .offset(
+                        x: xOffset(for: placement, width: lineWidth, gap: laneGap),
+                        y: placement.y
+                    )
+            }
+
+            if let y = nowLineY(), Calendar.current.isDateInToday(date) {
+                NativeNowIndicator()
+                    .frame(width: lineWidth)
+                    .offset(y: y)
+            }
+
+            dropTarget(width: lineWidth)
+        }
+        .frame(width: width, height: timelineHeight, alignment: .topLeading)
+        .contentShape(Rectangle())
+    }
+
+    private func dropTarget(width: CGFloat) -> some View {
+        Group {
+            if let coordinator {
                 Rectangle()
                     .fill(Color.clear)
+                    .frame(width: width, height: timelineHeight)
                     .contentShape(Rectangle())
-                    .frame(width: width, height: CGFloat(hours.count) * hourHeight)
-                    .offset(x: railWidth + 4)
                     .onDrop(
                         of: [EventDragPayload.utType],
                         delegate: TimeColumnDropDelegate(
@@ -64,199 +195,163 @@ struct ScheduleDayGrid: View {
         }
     }
 
-    @ViewBuilder
-    private var dropHighlightOverlay: some View {
-        if let hl = dropHighlight, Calendar.current.isDate(hl, inSameDayAs: date) {
-            GeometryReader { geo in
-                let width = max(0, geo.size.width - railWidth - 8)
-                let comps = Calendar.current.dateComponents([.hour, .minute], from: hl)
-                let mins = (comps.hour ?? 0) * 60 + (comps.minute ?? 0) - startHour * 60
-                let y = CGFloat(max(0, mins)) / 60.0 * hourHeight
-                Rectangle()
-                    .fill(Color.accentColor.opacity(0.18))
-                    .frame(width: width, height: CGFloat(snapMinutes) / 60 * hourHeight)
-                    .offset(x: railWidth + 4, y: y)
-            }
-        }
-    }
-
-
-    private var hourRail: some View {
+    private func hourGrid(width: CGFloat) -> some View {
         VStack(spacing: 0) {
-            ForEach(hours, id: \.self) { hour in
-                HStack(spacing: 0) {
-                    Text(hourLabel(hour))
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                        .frame(width: railWidth, alignment: .trailing)
-                        .padding(.trailing, 6)
-                        .offset(y: -6)
-                    VStack(spacing: 0) {
-                        Rectangle()
-                            .fill(.secondary.opacity(0.18))
-                            .frame(height: 0.5)
-                        Rectangle()
-                            .fill(.secondary.opacity(0.08))
-                            .frame(height: 0.5)
-                            .offset(y: 36)
-                        Spacer(minLength: 0)
-                    }
+            ForEach(hours, id: \.self) { _ in
+                VStack(spacing: 0) {
+                    Rectangle()
+                        .fill(.secondary.opacity(NativeCalendarMetrics.majorLineOpacity))
+                        .frame(height: 0.5)
+
+                    Rectangle()
+                        .fill(.secondary.opacity(NativeCalendarMetrics.minorLineOpacity))
+                        .frame(height: 0.5)
+                        .offset(y: hourHeight / 2)
+
+                    Spacer(minLength: 0)
                 }
                 .frame(height: hourHeight, alignment: .top)
             }
         }
+        .frame(width: width, height: timelineHeight, alignment: .topLeading)
     }
-
-    private var nowLine: some View {
-        GeometryReader { geo in
-            if Calendar.current.isDateInToday(date) {
-                let comps = Calendar.current.dateComponents([.hour, .minute], from: Date())
-                let minutes = (comps.hour ?? 0) * 60 + (comps.minute ?? 0)
-                let startMinutes = startHour * 60
-                if minutes >= startMinutes && minutes <= endHour * 60 {
-                    let y = CGFloat(minutes - startMinutes) / 60.0 * hourHeight
-                    Rectangle()
-                        .fill(Color.red)
-                        .frame(width: max(0, geo.size.width - railWidth), height: 1.5)
-                        .offset(x: railWidth, y: y)
-                }
-            }
-        }
-    }
-
-    private var blocksOverlay: some View {
-        GeometryReader { geo in
-            let columnWidth = max(0, geo.size.width - railWidth - 8)
-            ZStack(alignment: .topLeading) {
-                ForEach(eventBlocks(), id: \.id) { block in
-                    eventBlockView(block)
-                        .frame(width: columnWidth, height: max(28, block.height))
-                        .offset(x: railWidth + 4, y: block.y)
-                }
-                ForEach(unsyncedJobBlocks(), id: \.id) { block in
-                    jobBlockView(block)
-                        .frame(width: columnWidth, height: max(28, block.height))
-                        .offset(x: railWidth + 4, y: block.y)
-                }
-            }
-        }
-    }
-
-    // MARK: - Block views
 
     @ViewBuilder
-    private func eventBlockView(_ block: EventBlock) -> some View {
-        Button { onSelectEvent(block.event) } label: {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(block.event.title ?? "Untitled")
-                    .font(.caption.weight(.semibold))
-                    .lineLimit(2)
-                Text(block.event.startDate, format: .dateTime.hour().minute())
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+    private func timelineCard(_ placement: NativeCalendarTimelinePlacement) -> some View {
+        let content = Button {
+            switch placement.kind {
+            case .event(let event):
+                onSelectEvent(event)
+            case .job(let job):
+                onSelectJob(job)
             }
-            .padding(6)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(
-                RoundedRectangle(cornerRadius: 6)
-                    .fill(Color(cgColor: block.event.calendar?.cgColor ?? UIColor.systemBlue.cgColor)
-                        .opacity(0.22))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 6)
-                    .stroke(Color(cgColor: block.event.calendar?.cgColor ?? UIColor.systemBlue.cgColor)
-                        .opacity(0.7), lineWidth: 1)
-            )
-        }
-        .buttonStyle(.plain)
-        .opacity((block.event.calendar?.allowsContentModifications ?? true) ? 1.0 : 0.7)
-        .onDrag {
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
-            return EventDragPayload(event: block.event).itemProvider()
-        }
-    }
+        } label: {
+            VStack(alignment: .leading, spacing: 3) {
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    Circle()
+                        .fill(placement.baseColor)
+                        .frame(width: 6, height: 6)
 
+                    Text(cardTitle(for: placement))
+                        .font(.system(size: 12, weight: .semibold))
+                        .lineLimit(2)
+                        .foregroundStyle(.primary)
+                }
 
-    @ViewBuilder
-    private func jobBlockView(_ block: JobBlock) -> some View {
-        Button { onSelectJob(block.job) } label: {
-            VStack(alignment: .leading, spacing: 2) {
-                Label(block.job.title, systemImage: "wrench.and.screwdriver")
-                    .font(.caption.weight(.semibold))
-                    .lineLimit(2)
-                if let at = block.job.scheduledAt {
-                    Text(at, format: .dateTime.hour().minute())
-                        .font(.caption2)
+                if let subtitle = cardSubtitle(for: placement) {
+                    Text(subtitle)
+                        .font(.system(size: 10))
                         .foregroundStyle(.secondary)
+                        .lineLimit(1)
                 }
             }
-            .padding(6)
             .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 5)
             .background(
-                RoundedRectangle(cornerRadius: 6)
-                    .fill(Color.orange.opacity(0.18))
+                RoundedRectangle(cornerRadius: NativeCalendarMetrics.eventCornerRadius, style: .continuous)
+                    .fill(placement.baseColor.opacity(0.18))
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 6)
-                    .stroke(Color.orange.opacity(0.7), lineWidth: 1)
+                RoundedRectangle(cornerRadius: NativeCalendarMetrics.eventCornerRadius, style: .continuous)
+                    .strokeBorder(placement.baseColor.opacity(0.28), lineWidth: 0.5)
             )
+            .shadow(color: .black.opacity(0.03), radius: 1, x: 0, y: 0.5)
         }
         .buttonStyle(.plain)
-    }
+        .opacity(placement.isReadOnly ? 0.78 : 1.0)
 
-    // MARK: - Block layout
-
-    private struct EventBlock: Identifiable {
-        let id: String
-        let event: EKEvent
-        let y: CGFloat
-        let height: CGFloat
-    }
-
-    private struct JobBlock: Identifiable {
-        let id: UUID
-        let job: Job
-        let y: CGFloat
-        let height: CGFloat
-    }
-
-    private func eventBlocks() -> [EventBlock] {
-        let cal = Calendar.current
-        return events.compactMap { event in
-            guard let id = event.eventIdentifier,
-                  cal.isDate(event.startDate, inSameDayAs: date) else { return nil }
-            let (y, h) = position(start: event.startDate, end: event.endDate)
-            return EventBlock(id: id, event: event, y: y, height: h)
+        switch placement.kind {
+        case .event(let event):
+            content.onDrag {
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                return EventDragPayload(event: event).itemProvider()
+            }
+        case .job:
+            content
         }
     }
 
-    private func unsyncedJobBlocks() -> [JobBlock] {
-        let cal = Calendar.current
-        return jobs.compactMap { job in
-            guard let start = job.scheduledAt,
-                  cal.isDate(start, inSameDayAs: date) else { return nil }
-            let (y, h) = position(start: start, end: start.addingTimeInterval(3600))
-            return JobBlock(id: job.id, job: job, y: y, height: h)
+    private func cardTitle(for placement: NativeCalendarTimelinePlacement) -> String {
+        switch placement.kind {
+        case .event(let event):
+            return event.title?.isEmpty == false ? (event.title ?? "Untitled") : "Untitled"
+        case .job(let job):
+            return job.title
         }
     }
 
-    private func position(start: Date, end: Date) -> (CGFloat, CGFloat) {
+    private func cardSubtitle(for placement: NativeCalendarTimelinePlacement) -> String? {
+        let formatter = Self.timeFormatter
+        switch placement.kind {
+        case .event(let event):
+            return "\(formatter.string(from: event.startDate)) – \(formatter.string(from: event.endDate))"
+        case .job(let job):
+            guard let start = job.scheduledAt else { return nil }
+            return formatter.string(from: start)
+        }
+    }
+
+    private func laneWidth(
+        for placement: NativeCalendarTimelinePlacement,
+        width: CGFloat,
+        gap: CGFloat
+    ) -> CGFloat {
+        let columns = max(1, placement.totalColumns)
+        let gaps = CGFloat(max(0, columns - 1)) * gap
+        return max(
+            44,
+            (width - gaps) / CGFloat(columns)
+        )
+    }
+
+    private func xOffset(
+        for placement: NativeCalendarTimelinePlacement,
+        width: CGFloat,
+        gap: CGFloat
+    ) -> CGFloat {
+        let lane = laneWidth(for: placement, width: width, gap: gap)
+        return CGFloat(placement.column) * (lane + gap)
+    }
+
+    private func nowLineY() -> CGFloat? {
+        guard Calendar.current.isDateInToday(date) else { return nil }
         let cal = Calendar.current
-        let s = cal.dateComponents([.hour, .minute], from: start)
-        let startMin = (s.hour ?? 0) * 60 + (s.minute ?? 0)
-        let duration = max(30, Int(end.timeIntervalSince(start) / 60))
-        let originMin = startHour * 60
-        let clamped = max(originMin, min(startMin, endHour * 60 - 30))
-        let y = CGFloat(clamped - originMin) / 60.0 * hourHeight
-        let h = CGFloat(duration) / 60.0 * hourHeight
-        return (y, h)
+        let comps = cal.dateComponents([.hour, .minute], from: Date())
+        let minutes = (comps.hour ?? 0) * 60 + (comps.minute ?? 0)
+        let origin = startHour * 60
+        guard minutes >= origin && minutes <= endHour * 60 else { return nil }
+        return CGFloat(minutes - origin) / 60.0 * hourHeight
+    }
+
+    private func yOffset(for date: Date) -> CGFloat {
+        let cal = Calendar.current
+        let comps = cal.dateComponents([.hour, .minute], from: date)
+        let minutes = (comps.hour ?? 0) * 60 + (comps.minute ?? 0)
+        let origin = startHour * 60
+        let clamped = max(origin, min(minutes, endHour * 60))
+        return CGFloat(clamped - origin) / 60.0 * hourHeight
     }
 
     private func hourLabel(_ hour: Int) -> String {
-        var comps = DateComponents()
-        comps.hour = hour
-        let f = DateFormatter()
-        f.dateFormat = "h a"
-        return Calendar.current.date(from: comps).map { f.string(from: $0) } ?? "\(hour)"
+        let cal = Calendar.current
+        guard let date = cal.date(bySettingHour: hour, minute: 0, second: 0, of: self.date) else {
+            return "\(hour)"
+        }
+        return Self.hourFormatter.string(from: date)
     }
+
+    private static let timeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = .current
+        formatter.dateFormat = "h:mm a"
+        return formatter
+    }()
+
+    private static let hourFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = .current
+        formatter.dateFormat = "h a"
+        return formatter
+    }()
 }
