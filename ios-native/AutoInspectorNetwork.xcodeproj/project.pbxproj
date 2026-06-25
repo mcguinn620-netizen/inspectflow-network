@@ -66,6 +66,8 @@
 		B1B6EC7B2FE4D91800C3027E /* JobEditSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EBB72FE4D91400C3027E /* JobEditSheet.swift */; };
 		B1B6EC7C2FE4D91800C3027E /* JobsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EBB82FE4D91400C3027E /* JobsViewModel.swift */; };
 		B1B6EC7D2FE4D91800C3027E /* JobCreateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EBB92FE4D91400C3027E /* JobCreateViewModel.swift */; };
+		B1B6EC782FE4D91800C3027E /* JobCreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EBB42FE4D91400C3027E /* JobCreateView.swift */; };
+		B14EB5D12FEB6DDB00F4C353 /* NativeNowIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14EB5D02FEB6DDB00F4C353 /* NativeNowIndicator.swift */; };
 		B1B6EC7E2FE4D91800C3027E /* DriveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EBBB2FE4D91400C3027E /* DriveView.swift */; };
 		B1B6EC7F2FE4D91800C3027E /* TripsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EBBD2FE4D91400C3027E /* TripsView.swift */; };
 		B1B6EC802FE4D91800C3027E /* TripsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EBBE2FE4D91400C3027E /* TripsViewModel.swift */; };
@@ -211,6 +213,7 @@
 		B14EB5C62FEB6DDB00F4C353 /* ScheduleRootView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleRootView.swift; sourceTree = "<group>"; };
 		B14EB5C72FEB6DDB00F4C353 /* ScheduleMonthMatrix.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleMonthMatrix.swift; sourceTree = "<group>"; };
 		B14EB5C82FEB6DDB00F4C353 /* ScheduleWeekGrid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleWeekGrid.swift; sourceTree = "<group>"; };
+		B14EB5D02FEB6DDB00F4C353 /* NativeNowIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeNowIndicator.swift; sourceTree = "<group>"; };
 		B1B6E9E32FE4D70200C3027E /* AutoInspectorNetwork.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutoInspectorNetwork.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1B6E9FA2FE4D7BC00C3027E /* AutoInspectorNetwork-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AutoInspectorNetwork-Bridging-Header.h"; sourceTree = "<group>"; };
 		B1B6EB712FE4D91300C3027E /* AutoInspectorNetwork.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = AutoInspectorNetwork.entitlements; sourceTree = "<group>"; };
@@ -485,6 +488,7 @@
 				B14EB5C72FEB6DDB00F4C353 /* ScheduleMonthMatrix.swift */,
 				B14EB5C62FEB6DDB00F4C353 /* ScheduleRootView.swift */,
 				B14EB5C82FEB6DDB00F4C353 /* ScheduleWeekGrid.swift */,
+				B14EB5D02FEB6DDB00F4C353 /* NativeNowIndicator.swift */,
 				B1B6EB7F2FE4D91400C3027E /* RecurrenceEditorView.swift */,
 				B1B6EB802FE4D91400C3027E /* ScheduleSidebar.swift */,
 				B1B6EB812FE4D91400C3027E /* CalendarKitDayView.swift */,
@@ -1163,6 +1167,8 @@
 				B1B6EC4A2FE4D91800C3027E /* OrganizationSettingsView.swift in Sources */,
 				B1B6EC822FE4D91800C3027E /* MileageViewModel.swift in Sources */,
 				B1B6EC7D2FE4D91800C3027E /* JobCreateViewModel.swift in Sources */,
+				B1B6EC782FE4D91800C3027E /* JobCreateView.swift in Sources */,
+				B14EB5D12FEB6DDB00F4C353 /* NativeNowIndicator.swift in Sources */,
 				B1B6ECA02FE4D91800C3027E /* EventDragPayload.swift in Sources */,
 				B1B6ECD62FE4D91900C3027E /* AINRoleBadge.swift in Sources */,
 				B1B6EC792FE4D91800C3027E /* JobsView.swift in Sources */,
