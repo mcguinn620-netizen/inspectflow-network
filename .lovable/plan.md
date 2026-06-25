@@ -1,58 +1,51 @@
-## Root causes
+# iOS Native Compile Audit — Findings & Fix Plan
 
-Three of the four errors are the same legacy `project.pbxproj` hygiene problem we hit before. The fourth is a Swift type-inference bug.
+A read-only audit (using `swiftdata-pro` + `bug-hunt-swarm` skills, parallel subagent) ran across all 158 Swift files, the `project.pbxproj`, and `project.yml`. Headline result: **no confirmed P0 build breaks today** — `JobCreateView.swift` and `NativeNowIndicator.swift` are already registered after the last fix. The real risks are **shadow/orphan files that will explode the next time XcodeGen regenerates the pbxproj**.
 
-### 1. `Cannot find 'JobCreateView' in scope` — JobsView.swift:62
-`ios-native/Features/Jobs/JobCreateView.swift` exists on disk and has a `PBXFileReference` + group entry in `project.pbxproj` (lines 263, 620), but it has **no `PBXBuildFile` entry and is missing from the `AutoInspectorNetwork` Sources build phase**. Its sibling `JobCreateViewModel.swift` is wired in correctly (line 1165). The file never gets compiled, so the symbol doesn't exist for `JobsView` to reference.
+---
 
-### 2 & 4. `Cannot find 'NativeNowIndicator' in scope` — ScheduleDayGrid.swift:164, ScheduleWeekGrid.swift:174
-`ios-native/Features/Schedule/NativeNowIndicator.swift` exists on disk but has **zero references in `project.pbxproj`** — no file reference, no build file, no group membership. It's invisible to Xcode.
+## P0 — Build-breaking right now
 
-### 3. `Generic parameter 'ElementOfResult' could not be inferred` — ScheduleMonthMatrix.swift:169
-Classic Swift inference failure inside `jobs.compactMap { job in ... }` (lines 169-178). The closure uses `guard let ... else { return nil }` and then returns a `MonthTimelineItem`, but with no explicit return type the compiler can't pick `ElementOfResult` between `MonthTimelineItem` and `MonthTimelineItem?`. Nothing wrong with the project file here — purely a Swift annotation problem.
+None confirmed.
 
-## Fix plan
+## P1 — Will break on next XcodeGen run
 
-### Step 1 — Add the two missing files to the `AutoInspectorNetwork` target in `project.pbxproj`
+`project.yml` includes `Core/**` and `Features/**` recursively. Two stub files duplicate types already declared in their canonical sibling — currently safe only because pbxproj excludes them by path.
 
-Surgical edits only, mirroring the pattern already used for `JobCreateViewModel.swift` and other Schedule files:
+| # | File | Duplicates | Action |
+|---|------|-----------|--------|
+| P1-1 | `ios-native/Core/Calendar/NativeCalendarLayoutEngine.swift` (76-line stub) | `enum NativeCalendarLayoutEngine`, `struct NativeCalendarEventLayout` already in `Features/Schedule/NativeCalendarLayoutEngine.swift` (252 lines, real impl) | **Delete** the Core/Calendar stub |
+| P1-2 | `ios-native/Features/Schedule/NativeCalendarMetrics.swift` (24 lines) | `enum NativeCalendarMetrics` already in `Core/Calendar/NativeCalendarMetrics.swift` (32 lines, canonical) | **Delete** the Features/Schedule shadow |
+| P1-3 | `ios-native/Shared/Widget/SharedAgendaStore.swift` is in **main app target only**; widget extension may need it | `AgendaWidgetExtension/AgendaWidget.swift` | **Inspect** `AgendaWidget.swift` — if it references the `SharedAgendaStore` Swift type directly, add the file to the widget target's Sources build phase in `project.pbxproj` + `project.yml`. If it only reads App Group JSON, leave alone. |
 
-a. **`JobCreateView.swift`** — add one `PBXBuildFile` entry near line 68 (alongside `JobCreateViewModel.swift in Sources`) and one reference in the main-app Sources build phase near line 1165. The `PBXFileReference` (263) and group entry (620) already exist; do not duplicate them.
+## P2 — Dead code / future risk
 
-b. **`NativeNowIndicator.swift`** — add all four entries:
-   - one `PBXBuildFile` (Sources)
-   - one `PBXFileReference` (sourcecode.swift, path `NativeNowIndicator.swift`)
-   - one entry in the `Features/Schedule` group children, next to `ScheduleDayGrid.swift`/`ScheduleWeekGrid.swift`
-   - one entry in the main-app Sources build phase
+| # | File | Issue | Action |
+|---|------|-------|--------|
+| P2-1 | `ios-native/Persistence.swift` | Xcode template leftover, references nonexistent `Item` entity, declares a second `PersistenceController` (struct) that collides with the real `final class PersistenceController` in `Core/Persistence/PersistenceController.swift` | Delete |
+| P2-2 | `ios-native/Core/Calendar/File.swift` | Empty placeholder (`import Foundation` only) | Delete |
+| P2-3 | `Shared/Models/SharedPayloadModel.swift` ↔ `InspectFlowShareExtension/SharedPayloadModel.swift` | Hand-synchronized copies; silent drift = runtime JSON decode failure | Add a round-trip unit test, or extract to a shared SPM module (follow-up) |
 
-Only the main `AutoInspectorNetwork` target is touched; the widget extension target is left alone (consistent with last session's fix).
+## Confirmed healthy (previously suspected)
 
-### Step 2 — Fix the compactMap inference in `ScheduleMonthMatrix.swift`
+- `SwiftDataMetadataStore.swift` — all four "missing" types (`ScheduleMetadataStore`, `EventMetadata`, `EventPriority`, `EventStatus`) are declared in `Core/Persistence/ScheduleMetadataStore.swift` (lines 108, 45, 19, 24). File is properly gated with `#if canImport(SwiftData) && swift(>=5.9)` + `@available(iOS 17, *)`. Protocol conformance complete.
+- `JobCreateView.swift`, `NativeNowIndicator.swift` — wired into pbxproj at lines 1170–1171.
+- `JobCreateViewModel.swift` — `@MainActor` isolation correct; `async` calls properly awaited; optional bridging on `SupabaseService.createJob` arguments compiles cleanly.
+- All recently-touched Schedule files have correct `SwiftUI` + `EventKit` imports.
+- Extension target membership (CarPlay, AgendaWidget, ShareExtension) correct.
 
-Annotate the closure return type so the compiler resolves `ElementOfResult`:
+---
 
-```swift
-// Before (line 169)
-let dayJobs = jobs.compactMap { job in
-    guard let scheduledAt = job.scheduledAt, ... else { return nil }
-    return MonthTimelineItem(...)
-}
+## Proposed Build-Mode Steps
 
-// After
-let dayJobs = jobs.compactMap { job -> MonthTimelineItem? in
-    guard let scheduledAt = job.scheduledAt, ... else { return nil }
-    return MonthTimelineItem(...)
-}
-```
+1. **Delete 4 orphan/stub files** (one `rm` each):
+   - `ios-native/Core/Calendar/NativeCalendarLayoutEngine.swift`
+   - `ios-native/Features/Schedule/NativeCalendarMetrics.swift`
+   - `ios-native/Persistence.swift`
+   - `ios-native/Core/Calendar/File.swift`
+2. **Read `AgendaWidgetExtension/AgendaWidget.swift`** to decide P1-3. If it imports/uses `SharedAgendaStore` as a Swift type, add a `PBXBuildFile` entry for `SharedAgendaStore.swift` in the `AgendaWidgetExtensionExtension` target's Sources phase (`project.pbxproj`) — pattern matches the JobCreateView/NativeNowIndicator additions already made.
+3. **Skip P2-3** unless you want the test scaffold this turn.
 
-One-line change, no behavioral impact.
+No source code logic changes required — this is purely cleanup of dead/duplicate files plus one conditional target-membership fix. None of the deletions touch any file currently in a build phase.
 
-### Step 3 — Verification
-
-- `rg "JobCreateView\.swift|NativeNowIndicator\.swift" ios-native/AutoInspectorNetwork.xcodeproj/project.pbxproj` should show both files with `PBXBuildFile`, `PBXFileReference`, group, and Sources-phase entries.
-- Confirm `project.yml` already lists `Features/Jobs/**` and `Features/Schedule/**` by glob (it does), so the next XcodeGen run on Bitrise will stay in sync.
-- All four reported errors resolve; no source files other than `ScheduleMonthMatrix.swift` are modified.
-
-### Skills used
-- **swiftui-pro** — confirmed the `compactMap` closure-typing pattern as the canonical Swift fix.
-- Built-in code exploration (`rg`, `code--view`) to map pbxproj membership and locate the inference site.
+**Skills used:** `bug-hunt-swarm` (parallel read-only investigation), `swiftdata-pro` (verified SwiftData store gating + protocol conformance).
