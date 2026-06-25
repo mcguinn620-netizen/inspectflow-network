@@ -133,7 +133,7 @@ struct ScheduleWeekGrid: View {
 
     @ViewBuilder
     private func dayColumn(day: Date, index: Int, columnWidth: CGFloat) -> some View {
-        let xOffset = CGFloat(index) * columnWidth
+        let columnxOffset = CGFloat(index) * columnWidth
         let dayEvents = eventsFor(day: day)
         let dayJobs = jobsFor(day: day)
         let placements = NativeCalendarLayoutEngine.placements(
@@ -144,19 +144,17 @@ struct ScheduleWeekGrid: View {
             endHour: endHour,
             hourHeight: hourHeight
         )
-
-        ZStack(alignment: .topLeading) {
-            dayGrid(columnWidth: columnWidth)
-
-            if let highlight = dropHighlight,
-               Calendar.current.isDate(highlight, inSameDayAs: day) {
-                let y = yOffset(for: highlight)
-                Rectangle()
-                    .fill(Color.accentColor.opacity(0.16))
-                    .frame(width: columnWidth, height: CGFloat(snapMinutes) / 60.0 * hourHeight)
-                    .offset(y: y)
-            }
-
+return ZStack(alignment: .topLeading) {
+        ForEach(placements(for: index)) { placement in
+            timelineCard(for: placement, width: columnWidth)
+                .frame(width: laneWidth(for: placement, width: columnWidth))
+                // 2. Updated to use the renamed constant
+                .offset(x: columnXOffset) 
+                .offset(
+                    // 3. Explicitly calling the function by its name
+                    x: xOffset(for: placement, width: columnWidth),
+                    y: placement.y
+                )
             ForEach(placements) { placement in
                 timelineCard(placement)
                     .frame(
