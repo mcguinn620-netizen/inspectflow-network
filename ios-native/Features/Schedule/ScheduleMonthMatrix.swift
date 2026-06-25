@@ -166,7 +166,7 @@ struct ScheduleMonthMatrix: View {
                 )
             }
 
-        let dayJobs = jobs.compactMap { job in
+        let dayJobs = jobs.compactMap { job -> MonthTimelineItem? in
             guard let scheduledAt = job.scheduledAt, calendar.isDate(scheduledAt, inSameDayAs: day) else { return nil }
             return MonthTimelineItem(
                 identifier: "job-\(job.id.uuidString)",
