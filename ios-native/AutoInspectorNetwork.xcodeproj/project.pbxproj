@@ -13,8 +13,10 @@
 		B14EB5CD2FEB6DDB00F4C353 /* ScheduleRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14EB5C62FEB6DDB00F4C353 /* ScheduleRootView.swift */; };
 		B14EB5CE2FEB6DDB00F4C353 /* ScheduleMonthMatrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14EB5C72FEB6DDB00F4C353 /* ScheduleMonthMatrix.swift */; };
 		B14EB5CF2FEB6DDB00F4C353 /* ScheduleWeekGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14EB5C82FEB6DDB00F4C353 /* ScheduleWeekGrid.swift */; };
+		B14EB5D12FEB6DDB00F4C353 /* NativeNowIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14EB5D02FEB6DDB00F4C353 /* NativeNowIndicator.swift */; };
 		B152F13B2FE647C2001185F1 /* SharedAgendaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EC3B2FE4D91800C3027E /* SharedAgendaStore.swift */; };
 		B152F13C2FE647DB001185F1 /* UpcomingEventLiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EC3A2FE4D91800C3027E /* UpcomingEventLiveActivityAttributes.swift */; };
+		B18822BB2FEE9AE4001B5678 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B18822BA2FEE9AE3001B5678 /* Assets.xcassets */; };
 		B1B6EC462FE4D91800C3027E /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EB742FE4D91400C3027E /* AboutView.swift */; };
 		B1B6EC472FE4D91800C3027E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EB752FE4D91400C3027E /* SettingsView.swift */; };
 		B1B6EC482FE4D91800C3027E /* DeveloperToolsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EB762FE4D91400C3027E /* DeveloperToolsSection.swift */; };
@@ -61,13 +63,12 @@
 		B1B6EC752FE4D91800C3027E /* VehicleWriteModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EBAF2FE4D91400C3027E /* VehicleWriteModels.swift */; };
 		B1B6EC762FE4D91800C3027E /* VehicleEditSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EBB12FE4D91400C3027E /* VehicleEditSheet.swift */; };
 		B1B6EC772FE4D91800C3027E /* VehicleDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EBB22FE4D91400C3027E /* VehicleDetailView.swift */; };
+		B1B6EC782FE4D91800C3027E /* JobCreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EBB42FE4D91400C3027E /* JobCreateView.swift */; };
 		B1B6EC792FE4D91800C3027E /* JobsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EBB52FE4D91400C3027E /* JobsView.swift */; };
 		B1B6EC7A2FE4D91800C3027E /* JobDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EBB62FE4D91400C3027E /* JobDetailView.swift */; };
 		B1B6EC7B2FE4D91800C3027E /* JobEditSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EBB72FE4D91400C3027E /* JobEditSheet.swift */; };
 		B1B6EC7C2FE4D91800C3027E /* JobsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EBB82FE4D91400C3027E /* JobsViewModel.swift */; };
 		B1B6EC7D2FE4D91800C3027E /* JobCreateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EBB92FE4D91400C3027E /* JobCreateViewModel.swift */; };
-		B1B6EC782FE4D91800C3027E /* JobCreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EBB42FE4D91400C3027E /* JobCreateView.swift */; };
-		B14EB5D12FEB6DDB00F4C353 /* NativeNowIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14EB5D02FEB6DDB00F4C353 /* NativeNowIndicator.swift */; };
 		B1B6EC7E2FE4D91800C3027E /* DriveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EBBB2FE4D91400C3027E /* DriveView.swift */; };
 		B1B6EC7F2FE4D91800C3027E /* TripsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EBBD2FE4D91400C3027E /* TripsView.swift */; };
 		B1B6EC802FE4D91800C3027E /* TripsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EBBE2FE4D91400C3027E /* TripsViewModel.swift */; };
@@ -214,6 +215,7 @@
 		B14EB5C72FEB6DDB00F4C353 /* ScheduleMonthMatrix.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleMonthMatrix.swift; sourceTree = "<group>"; };
 		B14EB5C82FEB6DDB00F4C353 /* ScheduleWeekGrid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleWeekGrid.swift; sourceTree = "<group>"; };
 		B14EB5D02FEB6DDB00F4C353 /* NativeNowIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeNowIndicator.swift; sourceTree = "<group>"; };
+		B18822BA2FEE9AE3001B5678 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B1B6E9E32FE4D70200C3027E /* AutoInspectorNetwork.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutoInspectorNetwork.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1B6E9FA2FE4D7BC00C3027E /* AutoInspectorNetwork-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AutoInspectorNetwork-Bridging-Header.h"; sourceTree = "<group>"; };
 		B1B6EB712FE4D91300C3027E /* AutoInspectorNetwork.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = AutoInspectorNetwork.entitlements; sourceTree = "<group>"; };
@@ -414,6 +416,7 @@
 		B1B6E9DA2FE4D70200C3027E = {
 			isa = PBXGroup;
 			children = (
+				B18822BA2FEE9AE3001B5678 /* Assets.xcassets */,
 				B1C334132FE56769005BC015 /* AutoInspectorNetwork.entitlements */,
 				B1C334122FE56750005BC015 /* Info.plist */,
 				B1B6EC242FE4D91700C3027E /* App */,
@@ -1086,6 +1089,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B18822BB2FEE9AE4001B5678 /* Assets.xcassets in Resources */,
 				B1B6EC862FE4D91800C3027E /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
