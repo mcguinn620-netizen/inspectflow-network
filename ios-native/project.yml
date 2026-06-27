@@ -176,7 +176,7 @@ targets:
           - "@executable_path/Frameworks"
           - "@executable_path/../../Frameworks"
           - "@executable_path/../../../../Frameworks"
-        PRODUCT_BUNDLE_IDENTIFIER: ios.AgendaWidgetExtension
+        PRODUCT_BUNDLE_IDENTIFIER: ios.AutoInspectorNetwork.AgendaWidgetExtension
         PRODUCT_NAME: "$(TARGET_NAME)"
         # NOTE: legacy pbxproj had SDKROOT=watchos here, but the widget is an iOS
         # WidgetKit + ActivityKit extension. Forcing iphoneos so xcodebuild targets
