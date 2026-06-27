@@ -107,7 +107,7 @@ targets:
         LD_RUNPATH_SEARCH_PATHS:
           - "$(inherited)"
           - "@executable_path/Frameworks"
-        PRODUCT_BUNDLE_IDENTIFIER: ios.AutoInspectorNetwork
+        PRODUCT_BUNDLE_IDENTIFIER: com.autoinspectornetwork.ios
         PRODUCT_NAME: "$(TARGET_NAME)"
         SWIFT_EMIT_LOC_STRINGS: YES
         SWIFT_OBJC_BRIDGING_HEADER: "AutoInspectorNetwork-Bridging-Header.h"
@@ -141,7 +141,7 @@ targets:
           - "$(inherited)"
           - "@executable_path/Frameworks"
           - "@executable_path/../../Frameworks"
-        PRODUCT_BUNDLE_IDENTIFIER: ios.AutoInspectorNetwork.InspectFlowShareExtension
+        PRODUCT_BUNDLE_IDENTIFIER: com.autoinspectornetwork.ios.InspectFlowShareExtension
         PRODUCT_NAME: "$(TARGET_NAME)"
         SKIP_INSTALL: YES
         SWIFT_EMIT_LOC_STRINGS: YES
@@ -176,7 +176,7 @@ targets:
           - "@executable_path/Frameworks"
           - "@executable_path/../../Frameworks"
           - "@executable_path/../../../../Frameworks"
-        PRODUCT_BUNDLE_IDENTIFIER: ios.AutoInspectorNetwork.AgendaWidgetExtension
+        PRODUCT_BUNDLE_IDENTIFIER: com.autoinspectornetwork.ios.AgendaWidgetExtension
         PRODUCT_NAME: "$(TARGET_NAME)"
         # NOTE: legacy pbxproj had SDKROOT=watchos here, but the widget is an iOS
         # WidgetKit + ActivityKit extension. Forcing iphoneos so xcodebuild targets
