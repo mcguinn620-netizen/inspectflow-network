@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import re
 import sys
+import plistlib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,6 +16,17 @@ PROJECT_YML = ROOT / "project.yml"
 PBXPROJ = ROOT / "AutoInspectorNetwork.xcodeproj" / "project.pbxproj"
 HOST_TARGET = "AutoInspectorNetwork"
 EMBEDDED_TARGETS = ("InspectFlowShareExtension", "AgendaWidgetExtensionExtension")
+EXPECTED_BUNDLE_IDS = {
+    HOST_TARGET: "com.autoinspectornetwork.ios",
+    "InspectFlowShareExtension": "com.autoinspectornetwork.ios.InspectFlowShareExtension",
+    "AgendaWidgetExtensionExtension": "com.autoinspectornetwork.ios.AgendaWidgetExtension",
+}
+INFO_PLISTS = {
+    HOST_TARGET: ROOT / "AutoInspectorNetwork" / "Info.plist",
+    "InspectFlowShareExtension": ROOT / "InspectFlowShareExtension" / "Info.plist",
+    "AgendaWidgetExtensionExtension": ROOT / "AgendaWidgetExtension" / "Info.plist",
+}
+LEGACY_BUNDLE_ID_PREFIX = "ios.AutoInspectorNetwork"
 
 
 def read(path: Path) -> str:
@@ -130,10 +142,59 @@ def validate_prefix(source: str, bundle_ids: dict[str, str | set[str]]) -> list[
     return errors
 
 
+def validate_expected_bundle_ids(source: str, bundle_ids: dict[str, str | set[str]]) -> list[str]:
+    errors: list[str] = []
+    for target, expected in EXPECTED_BUNDLE_IDS.items():
+        values = bundle_ids.get(target)
+        if not values:
+            errors.append(f"{source}: missing {target} PRODUCT_BUNDLE_IDENTIFIER")
+            continue
+        value_set = values if isinstance(values, set) else {values}
+        for bundle_id in sorted(value_set):
+            if bundle_id != expected:
+                errors.append(f"{source}: {target} bundle id '{bundle_id}' must be '{expected}'")
+    return errors
+
+
+def validate_info_plists() -> list[str]:
+    """Ensure checked-in Info.plists do not override target bundle identifiers."""
+    errors: list[str] = []
+    for target, path in INFO_PLISTS.items():
+        with path.open("rb") as handle:
+            plist = plistlib.load(handle)
+        plist_bundle_id = plist.get("CFBundleIdentifier")
+        if plist_bundle_id and plist_bundle_id not in (
+            "$(PRODUCT_BUNDLE_IDENTIFIER)",
+            EXPECTED_BUNDLE_IDS[target],
+        ):
+            errors.append(
+                f"{path.relative_to(ROOT)}: CFBundleIdentifier '{plist_bundle_id}' would override "
+                f"{target}'s PRODUCT_BUNDLE_IDENTIFIER"
+            )
+    return errors
+
+
+def validate_no_legacy_bundle_ids() -> list[str]:
+    errors: list[str] = []
+    for path in (PROJECT_YML, PBXPROJ):
+        for line_number, line in enumerate(read(path).splitlines(), start=1):
+            if LEGACY_BUNDLE_ID_PREFIX in line:
+                errors.append(
+                    f"{path.relative_to(ROOT)}:{line_number}: legacy bundle id '{LEGACY_BUNDLE_ID_PREFIX}' remains"
+                )
+    return errors
+
+
 def main() -> int:
     errors = []
-    errors.extend(validate_prefix("project.yml", parse_xcodegen_bundle_ids(read(PROJECT_YML))))
-    errors.extend(validate_prefix("project.pbxproj", parse_pbxproj_bundle_ids(read(PBXPROJ))))
+    project_yml_bundle_ids = parse_xcodegen_bundle_ids(read(PROJECT_YML))
+    pbxproj_bundle_ids = parse_pbxproj_bundle_ids(read(PBXPROJ))
+    errors.extend(validate_expected_bundle_ids("project.yml", project_yml_bundle_ids))
+    errors.extend(validate_prefix("project.yml", project_yml_bundle_ids))
+    errors.extend(validate_expected_bundle_ids("project.pbxproj", pbxproj_bundle_ids))
+    errors.extend(validate_prefix("project.pbxproj", pbxproj_bundle_ids))
+    errors.extend(validate_info_plists())
+    errors.extend(validate_no_legacy_bundle_ids())
 
     if errors:
         for error in errors:
