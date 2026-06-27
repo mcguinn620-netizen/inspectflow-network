@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B1C333FD2FE5657F005BC015"
-               BuildableName = "AgendaWidgetExtensionExtension.appex"
-               BlueprintName = "AgendaWidgetExtensionExtension"
+               BuildableName = "AgendaWidgetExtension.appex"
+               BlueprintName = "AgendaWidgetExtension"
                ReferencedContainer = "container:AutoInspectorNetwork.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
