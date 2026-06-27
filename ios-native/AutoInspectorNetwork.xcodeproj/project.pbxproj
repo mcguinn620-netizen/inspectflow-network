@@ -216,6 +216,8 @@
 		B14EB5C82FEB6DDB00F4C353 /* ScheduleWeekGrid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleWeekGrid.swift; sourceTree = "<group>"; };
 		B14EB5D02FEB6DDB00F4C353 /* NativeNowIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeNowIndicator.swift; sourceTree = "<group>"; };
 		B18822BA2FEE9AE3001B5678 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B18822BC2FEEA269001B5678 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B18822BE2FEEA284001B5678 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B1B6E9E32FE4D70200C3027E /* AutoInspectorNetwork.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutoInspectorNetwork.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1B6E9FA2FE4D7BC00C3027E /* AutoInspectorNetwork-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AutoInspectorNetwork-Bridging-Header.h"; sourceTree = "<group>"; };
 		B1B6EB712FE4D91300C3027E /* AutoInspectorNetwork.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = AutoInspectorNetwork.entitlements; sourceTree = "<group>"; };
@@ -950,6 +952,7 @@
 		B1C333EA2FE563CC005BC015 /* InspectFlowShareExtension */ = {
 			isa = PBXGroup;
 			children = (
+				B18822BC2FEEA269001B5678 /* Info.plist */,
 				B1B6EBC72FE4D91400C3027E /* InspectFlowShareExtension.entitlements */,
 				B1B6EBC82FE4D91400C3027E /* MainInterface.storyboard */,
 				B1B6EBCA2FE4D91400C3027E /* ShareViewController.swift */,
@@ -973,6 +976,7 @@
 		B1C334042FE5657F005BC015 /* AgendaWidgetExtension */ = {
 			isa = PBXGroup;
 			children = (
+				B18822BE2FEEA284001B5678 /* Info.plist */,
 				B1B6EBD22FE4D91500C3027E /* AgendaWidgetExtensionLiveActivity.swift */,
 				B1B6EBD42FE4D91500C3027E /* AgendaWidgetExtensionBundle.swift */,
 				B1B6EBD52FE4D91500C3027E /* AgendaWidgetExtensionExtensionRelease.entitlements */,
@@ -1447,6 +1451,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AutoInspectorNetwork/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Auto Inspector Network";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -1485,6 +1490,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AutoInspectorNetwork/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Auto Inspector Network";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -1512,7 +1518,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 264U37X2A5;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = InspectFlowShareExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = InspectFlowShareExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -1538,7 +1544,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 264U37X2A5;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = InspectFlowShareExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = InspectFlowShareExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -1566,7 +1572,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 264U37X2A5;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = AgendaWidgetExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = AgendaWidgetExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -1586,7 +1592,7 @@
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 4;
+				TARGETED_DEVICE_FAMILY = "1,2,4";
 				TVOS_DEPLOYMENT_TARGET = 16.1;
 				WATCHOS_DEPLOYMENT_TARGET = 9.1;
 			};
@@ -1600,7 +1606,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 264U37X2A5;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = AgendaWidgetExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = AgendaWidgetExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -1620,7 +1626,7 @@
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 4;
+				TARGETED_DEVICE_FAMILY = "1,2,4";
 				TVOS_DEPLOYMENT_TARGET = 16.1;
 				WATCHOS_DEPLOYMENT_TARGET = 9.1;
 			};
