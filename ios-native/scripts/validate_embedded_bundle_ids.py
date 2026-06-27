@@ -16,6 +16,9 @@ PROJECT_YML = ROOT / "project.yml"
 PBXPROJ = ROOT / "AutoInspectorNetwork.xcodeproj" / "project.pbxproj"
 HOST_TARGET = "AutoInspectorNetwork"
 EMBEDDED_TARGETS = ("InspectFlowShareExtension", "AgendaWidgetExtensionExtension")
+TARGET_ALIASES = {
+    "AgendaWidgetExtensionExtension": ("AgendaWidgetExtensionExtension", "AgendaWidgetExtension"),
+}
 EXPECTED_BUNDLE_IDS = {
     HOST_TARGET: "com.autoinspectornetwork.ios",
     "InspectFlowShareExtension": "com.autoinspectornetwork.ios.InspectFlowShareExtension",
@@ -129,7 +132,7 @@ def validate_prefix(source: str, bundle_ids: dict[str, str | set[str]]) -> list[
     host_id = next(iter(host_set))
 
     for target in EMBEDDED_TARGETS:
-        values = bundle_ids.get(target)
+        values = next((bundle_ids[name] for name in TARGET_ALIASES.get(target, (target,)) if name in bundle_ids), None)
         if not values:
             errors.append(f"{source}: missing {target} PRODUCT_BUNDLE_IDENTIFIER")
             continue
@@ -145,7 +148,7 @@ def validate_prefix(source: str, bundle_ids: dict[str, str | set[str]]) -> list[
 def validate_expected_bundle_ids(source: str, bundle_ids: dict[str, str | set[str]]) -> list[str]:
     errors: list[str] = []
     for target, expected in EXPECTED_BUNDLE_IDS.items():
-        values = bundle_ids.get(target)
+        values = next((bundle_ids[name] for name in TARGET_ALIASES.get(target, (target,)) if name in bundle_ids), None)
         if not values:
             errors.append(f"{source}: missing {target} PRODUCT_BUNDLE_IDENTIFIER")
             continue
@@ -157,7 +160,7 @@ def validate_expected_bundle_ids(source: str, bundle_ids: dict[str, str | set[st
 
 
 def validate_info_plists() -> list[str]:
-    """Ensure checked-in Info.plists do not override target bundle identifiers."""
+    """Ensure checked-in Info.plists keep extension install metadata valid."""
     errors: list[str] = []
     for target, path in INFO_PLISTS.items():
         with path.open("rb") as handle:
@@ -170,6 +173,11 @@ def validate_info_plists() -> list[str]:
             errors.append(
                 f"{path.relative_to(ROOT)}: CFBundleIdentifier '{plist_bundle_id}' would override "
                 f"{target}'s PRODUCT_BUNDLE_IDENTIFIER"
+            )
+        if target in EMBEDDED_TARGETS and not plist.get("CFBundleVersion"):
+            errors.append(
+                f"{path.relative_to(ROOT)}: CFBundleVersion is required so Xcode can create "
+                f"{target}'s app extension placeholder"
             )
     return errors
 
