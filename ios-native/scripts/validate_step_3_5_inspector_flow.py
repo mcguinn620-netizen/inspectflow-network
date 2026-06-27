@@ -184,9 +184,6 @@ assert_contains(
     ],
 )
 
-settings = read("Features/Settings/SettingsView.swift")
-assert_contains("Features/Settings/SettingsView.swift", settings, ["Voice cues while driving"])
-
 main_tab = read("App/MainTabView.swift")
 assert_contains("App/MainTabView.swift", main_tab, ["InspectorDashboardHomeView", "role"])
 

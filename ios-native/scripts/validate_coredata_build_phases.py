@@ -43,7 +43,8 @@ resource_entries = phase_files('/* Begin PBXResourcesBuildPhase section */', '/*
 source_entries = phase_files('/* Begin PBXSourcesBuildPhase section */', '/* End PBXSourcesBuildPhase section */')
 
 bad_resource_swift = [e for e in resource_entries if e[0].endswith('.swift in Resources') or e[1] == 'sourcecode.swift']
-has_model_resource = any('xcdatamodeld in Resources' in e[0] for e in resource_entries)
+model_source_entries = [e for e in source_entries if 'xcdatamodeld in Sources' in e[0]]
+model_resource_entries = [e for e in resource_entries if 'xcdatamodeld in Resources' in e[0]]
 
 if bad_resource_swift:
     print('ERROR: Swift files found in Copy Bundle Resources:')
@@ -51,10 +52,17 @@ if bad_resource_swift:
         print(f' - {name} (line {line})')
     sys.exit(1)
 
-if not has_model_resource:
-    print('ERROR: Missing InspectionModel.xcdatamodeld in Resources build phase')
+if model_resource_entries:
+    print('ERROR: Core Data models found in Copy Bundle Resources; Xcode should compile .xcdatamodeld files from Sources:')
+    for name, _, line in model_resource_entries:
+        print(f' - {name} (line {line})')
+    sys.exit(1)
+
+if not model_source_entries:
+    print('ERROR: Missing .xcdatamodeld in Sources build phase')
     sys.exit(1)
 
 print('OK: No Swift files in Copy Bundle Resources.')
-print('OK: InspectionModel.xcdatamodeld remains in Resources.')
+print('OK: Core Data .xcdatamodeld files are compiled from Sources, not copied as raw resources.')
+print(f'Info: Core Data model source entries = {len(model_source_entries)}')
 print(f'Info: Resources entries = {len(resource_entries)}, Source entries = {len(source_entries)}')
