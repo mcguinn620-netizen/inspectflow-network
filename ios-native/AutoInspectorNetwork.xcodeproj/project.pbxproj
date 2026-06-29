@@ -290,8 +290,8 @@
 		B1B6EBCF2FE4D91500C3027E /* InspectionModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = InspectionModel.xcdatamodel; sourceTree = "<group>"; };
 		B1B6EBD22FE4D91500C3027E /* AgendaWidgetExtensionLiveActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgendaWidgetExtensionLiveActivity.swift; sourceTree = "<group>"; };
 		B1B6EBD42FE4D91500C3027E /* AgendaWidgetExtensionBundle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgendaWidgetExtensionBundle.swift; sourceTree = "<group>"; };
-		B1B6EBD52FE4D91500C3027E /* AgendaWidgetExtensionExtensionRelease.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = AgendaWidgetExtensionExtensionRelease.entitlements; sourceTree = "<group>"; };
-		B1B6EBD62FE4D91500C3027E /* AgendaWidgetExtensionExtension-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AgendaWidgetExtensionExtension-Bridging-Header.h"; sourceTree = "<group>"; };
+		B1B6EBD52FE4D91500C3027E /* AgendaWidgetExtensionRelease.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = AgendaWidgetExtensionRelease.entitlements; sourceTree = "<group>"; };
+		B1B6EBD62FE4D91500C3027E /* AgendaWidgetExtension-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AgendaWidgetExtension-Bridging-Header.h"; sourceTree = "<group>"; };
 		B1B6EBD82FE4D91500C3027E /* AgendaWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgendaWidget.swift; sourceTree = "<group>"; };
 		B1B6EBDC2FE4D91600C3027E /* MapsLookupService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapsLookupService.swift; sourceTree = "<group>"; };
 		B1B6EBDE2FE4D91600C3027E /* CalendarSyncService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarSyncService.swift; sourceTree = "<group>"; };
@@ -979,8 +979,8 @@
 				B18822BE2FEEA284001B5678 /* Info.plist */,
 				B1B6EBD22FE4D91500C3027E /* AgendaWidgetExtensionLiveActivity.swift */,
 				B1B6EBD42FE4D91500C3027E /* AgendaWidgetExtensionBundle.swift */,
-				B1B6EBD52FE4D91500C3027E /* AgendaWidgetExtensionExtensionRelease.entitlements */,
-				B1B6EBD62FE4D91500C3027E /* AgendaWidgetExtensionExtension-Bridging-Header.h */,
+				B1B6EBD52FE4D91500C3027E /* AgendaWidgetExtensionRelease.entitlements */,
+				B1B6EBD62FE4D91500C3027E /* AgendaWidgetExtension-Bridging-Header.h */,
 				B1B6EBD82FE4D91500C3027E /* AgendaWidget.swift */,
 				B1C334052FE5657F005BC015 /* AgendaWidgetExtension.swift */,
 				B1C334072FE5657F005BC015 /* AgendaWidgetExtension.intentdefinition */,
