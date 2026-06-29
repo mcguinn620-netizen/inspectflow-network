@@ -1,12 +1,16 @@
 // swift-tools-version: 5.9
 // Swift Playgrounds 4.4+ / Xcode 15+ App package for Auto Inspector Network.
 //
-// Open `AutoInspectorNetwork.swiftpm` in Swift Playgrounds (iPad/macOS) or Xcode.
-// This bundle reuses the App/Core/Features/Shared sources from the parent
-// `ios-native/` folder. CarPlay, widget, and share-extension targets are
-// intentionally excluded — Swift Playgrounds cannot build extension targets.
+// IMPORTANT: This package lives at the REPO ROOT (not inside `ios-native/`).
+// Swift Playgrounds / SwiftPM rejects targets whose `path` escapes the package
+// root, so a `.swiftpm` folder nested inside `ios-native/` cannot reference
+// `..` for sources. Keeping the package at the repo root lets the AppHost
+// target point at `ios-native/{App,Core,Features,Shared}` from *within* the
+// package root.
 //
-// See ios-native/PLAYGROUNDS.md for setup notes and known limitations.
+// Open `AutoInspectorNetwork.swiftpm` in Swift Playgrounds (iPad/macOS) or
+// Xcode. CarPlay, widget, and share-extension targets are intentionally
+// excluded — Swift Playgrounds cannot build extension targets.
 
 import PackageDescription
 import AppleProductTypes
@@ -42,7 +46,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(name: "InspectFlowConnector", path: "..")
+        .package(name: "InspectFlowConnector", path: "ios-native")
     ],
     targets: [
         .executableTarget(
@@ -50,9 +54,8 @@ let package = Package(
             dependencies: [
                 .product(name: "InspectFlowConnector", package: "InspectFlowConnector")
             ],
-            path: "..",
+            path: "ios-native",
             exclude: [
-                "AutoInspectorNetwork.swiftpm",
                 "AutoInspectorNetwork.xcodeproj",
                 "AutoInspectorNetwork.xcworkspace",
                 "AutoInspectorNetwork",
