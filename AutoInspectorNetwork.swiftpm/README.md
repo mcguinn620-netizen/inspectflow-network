@@ -3,10 +3,14 @@
 Swift Playgrounds 4.4+ / Xcode 15+ App package that wraps the `ios-native/`
 sources so the app can be opened and run on iPad without Xcode.
 
+**Location:** this package lives at the **repo root** (not inside `ios-native/`).
+SwiftPM forbids target `path` values that escape the package root, so the
+`.swiftpm` must sit above `ios-native/` to reference its sources.
+
 ## Open
 
 - **Swift Playgrounds (iPad / macOS):** tap `AutoInspectorNetwork.swiftpm`.
-- **Xcode:** `open AutoInspectorNetwork.swiftpm` from the `ios-native/` folder.
+- **Xcode:** `open AutoInspectorNetwork.swiftpm` from the repo root.
 
 ## What's included
 
