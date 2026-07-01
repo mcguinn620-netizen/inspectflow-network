@@ -18,25 +18,49 @@
     <meta name="description" content="Field execution tool for vehicle inspectors — schedule, trips, jobs, and tax." />
     <meta name="author" content="Drive Smooth" />
 
-    <!-- PWA -->
-    <link id="app-manifest" rel="manifest" href="/manifest.webmanifest" />
+    <!-- PWA — manifest is injected at runtime, and only on production hosts. -->
     <script>
-      // Strip the manifest link inside Lovable preview iframes — the asset is
-      // auth-gated there and the 401 trips Lovable's preview render heuristic.
+      // Preview-safe PWA gating. The Lovable mobile-preview renderer trips its
+      // "couldn't render" heuristic when it sees a manifest link or a service
+      // worker in the iframe, so we NEVER emit either in preview / dev / editor
+      // contexts. The decision is cached on window for /src/main.tsx to reuse.
       (function () {
-        try {
-          var h = window.location.hostname;
-          var inIframe = window.self !== window.top;
-          if (
-            inIframe ||
-            h.indexOf("lovableproject.com") !== -1 ||
-            h.indexOf("lovable.app") !== -1 ||
-            h.indexOf("id-preview--") !== -1
-          ) {
-            var l = document.getElementById("app-manifest");
-            if (l && l.parentNode) l.parentNode.removeChild(l);
+        function isPreviewEnv() {
+          try {
+            if (window.self !== window.top) return true;
+          } catch (e) {
+            return true; // cross-origin frame access threw → treat as preview
           }
-        } catch (e) {}
+          var h = (window.location.hostname || "").toLowerCase();
+          if (!h) return true;
+          if (h === "localhost" || h === "127.0.0.1" || h === "0.0.0.0") return true;
+          if (h.endsWith(".local")) return true;
+          var needles = [
+            "lovableproject.com",
+            "lovableproject-dev.com",
+            "lovable.app",
+            "lovable.dev",
+            "id-preview--",
+            "preview--",
+            "sandbox.lovable",
+          ];
+          for (var i = 0; i < needles.length; i++) {
+            if (h.indexOf(needles[i]) !== -1) return true;
+          }
+          try {
+            if (/[?&](sw=off|preview=1)\b/.test(window.location.search || "")) return true;
+          } catch (e) {}
+          return false;
+        }
+        var preview = isPreviewEnv();
+        window.__LOVABLE_IS_PREVIEW__ = preview;
+        if (!preview) {
+          var link = document.createElement("link");
+          link.rel = "manifest";
+          link.href = "/manifest.webmanifest";
+          link.id = "app-manifest";
+          document.head.appendChild(link);
+        }
       })();
     </script>
     <meta name="theme-color" content="#0f172a" />
