@@ -1,5 +1,6 @@
 import type { AppRole } from "@/hooks/useUserRoles";
 
+
 export const AUTH_BYPASS = import.meta.env.VITE_AUTH_BYPASS !== "false";
 
 export interface MockUser {
