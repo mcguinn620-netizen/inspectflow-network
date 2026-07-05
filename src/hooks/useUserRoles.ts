@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { AUTH_BYPASS, getMockUser, MOCK_USERS } from "@/lib/authBypass";
+
 
 export type AppRole =
   | "super_admin"
@@ -29,6 +31,23 @@ export function useUserRoles() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (AUTH_BYPASS) {
+      const m = getMockUser();
+      if (!m) {
+        setRoles([]);
+        setMemberships([]);
+        setActiveOrgId(null);
+        setLoading(false);
+        return;
+      }
+      setRoles([m.role]);
+      setMemberships([
+        { organization_id: m.org_id, role: m.role, is_default: true, organization_name: m.org_name },
+      ]);
+      setActiveOrgId(m.org_id);
+      setLoading(false);
+      return;
+    }
     if (!user) {
       setRoles([]);
       setMemberships([]);
@@ -36,6 +55,7 @@ export function useUserRoles() {
       setLoading(false);
       return;
     }
+
     let cancelled = false;
     (async () => {
       setLoading(true);

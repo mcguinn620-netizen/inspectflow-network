@@ -32,6 +32,10 @@ import InspectorTax from "./pages/inspector/InspectorTax";
 import MechanicDashboard from "./pages/mechanic/MechanicDashboard";
 import DispatchDashboard from "./pages/dispatch/DispatchDashboard";
 import { RoleRoute } from "./components/RoleRoute";
+import PickRole from "./pages/PickRole";
+import { DevRoleSwitcher } from "./components/DevRoleSwitcher";
+import { AUTH_BYPASS, getMockUser } from "@/lib/authBypass";
+
 
 const queryClient = new QueryClient();
 
@@ -53,20 +57,28 @@ function AppSplash() {
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   if (loading) return <AppSplash />;
-  if (!user) return <Navigate to="/auth" replace />;
+  if (!user) return <Navigate to={AUTH_BYPASS ? "/pick-role" : "/auth"} replace />;
   return <>{children}</>;
 }
 
 function HomeRedirect() {
   const { isAdmin, loading } = useUserRoles();
   if (loading) return <AppSplash />;
-  return isAdmin ? <Index /> : <Navigate to="/app/inspector/dashboard" replace />;
+  if (isAdmin) return <Index />;
+  if (AUTH_BYPASS) {
+    const m = getMockUser();
+    if (m) return <Navigate to={m.landing} replace />;
+  }
+  return <Navigate to="/app/inspector/dashboard" replace />;
 }
+
 
 const AppRoutes = () => (
   <Routes>
     <Route path="/auth" element={<AuthPage />} />
+    <Route path="/pick-role" element={<PickRole />} />
     <Route path="/" element={<ProtectedRoute><HomeRedirect /></ProtectedRoute>} />
+
 
     {/* Inspector workspace */}
     <Route path="/app/inspector/dashboard" element={<ProtectedRoute><InspectorDashboard /></ProtectedRoute>} />
@@ -106,6 +118,8 @@ const App = () => (
             <ActiveTripProvider>
               <AppRoutes />
               <InstallPrompt />
+              <DevRoleSwitcher />
+
             </ActiveTripProvider>
           </AuthProvider>
         </BrowserRouter>
