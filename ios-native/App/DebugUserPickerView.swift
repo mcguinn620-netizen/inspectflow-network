@@ -1,8 +1,9 @@
 import SwiftUI
 
-#if DEBUG
-/// DEV-only impersonation picker. Lists every user × organization × role and
-/// lets the engineer continue as any of them without a password.
+/// Test-user picker. Under `AuthBypass.isEnabled` this is the app's entry
+/// screen: pick any of the 10 hardcoded mock users to enter the app with
+/// that role, no password. In real-auth mode (DEBUG only) it falls back to
+/// browsing real Supabase memberships for impersonation.
 struct DebugUserPickerView: View {
     @EnvironmentObject private var appState: AppState
     @Environment(\.dismiss) private var dismiss
@@ -63,7 +64,7 @@ struct DebugUserPickerView: View {
                     .searchable(text: $query, prompt: "Search name, email, organization, or role")
                 }
             }
-            .navigationTitle("Debug User Picker")
+            .navigationTitle(AuthBypass.isEnabled ? "Pick a Test User" : "Debug User Picker")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 if appState.selectedDebugUser != nil {
@@ -81,9 +82,11 @@ struct DebugUserPickerView: View {
             Image(systemName: "exclamationmark.triangle.fill")
                 .foregroundColor(AINTheme.Color.warn)
             VStack(alignment: .leading, spacing: 2) {
-                Text("Development Only")
+                Text(AuthBypass.isEnabled ? "Login Bypassed" : "Development Only")
                     .font(.subheadline).fontWeight(.semibold)
-                Text("Pick a user to impersonate. No password required. Production builds never show this screen.")
+                Text(AuthBypass.isEnabled
+                     ? "Pick any test user to enter the app with that role. No password required."
+                     : "Pick a user to impersonate. No password required. Production builds never show this screen.")
                     .font(.caption)
                     .foregroundColor(AINTheme.Color.textSecondary)
             }
@@ -154,4 +157,4 @@ struct DebugUserPickerView: View {
         loading = false
     }
 }
-#endif
+
