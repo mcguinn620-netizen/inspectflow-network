@@ -13,18 +13,25 @@ final class AppState: ObservableObject {
     @Published var activeOrganizationID: UUID?
     @Published var effectiveRole: String = "inspector"
 
-    #if DEBUG
     @Published var selectedDebugUser: DebugUser?
     private let debugUserIDKey = "debugUserID"
-    #endif
+    private let debugUserPayloadKey = "debugUserPayload"
 
     func bootstrap() async {
+        if AuthBypass.isEnabled {
+            if let user = loadStoredDebugUser() {
+                applyDebugUser(user)
+            } else {
+                authState = .signedOut
+            }
+            return
+        }
+
         #if DEBUG
         if let user = loadStoredDebugUser() {
             applyDebugUser(user)
             return
         }
-        // Try to hydrate from a stored debug user ID by fetching it once.
         if let idString = UserDefaults.standard.string(forKey: debugUserIDKey),
            let id = UUID(uuidString: idString) {
             if let user = try? await DebugUserService.fetchOne(id: id) {
@@ -53,6 +60,10 @@ final class AppState: ObservableObject {
     func didSignIn() async { await bootstrap() }
 
     func signOut() async {
+        if AuthBypass.isEnabled {
+            clearDebugUser()
+            return
+        }
         try? await SupabaseService.shared.signOut()
         activeOrganizationID = nil
         effectiveRole = "inspector"
@@ -62,18 +73,17 @@ final class AppState: ObservableObject {
         #endif
     }
 
-    #if DEBUG
     func debugSignIn(as user: DebugUser) {
         UserDefaults.standard.set(user.id.uuidString, forKey: debugUserIDKey)
         if let data = try? JSONEncoder().encode(user) {
-            UserDefaults.standard.set(data, forKey: "debugUserPayload")
+            UserDefaults.standard.set(data, forKey: debugUserPayloadKey)
         }
         applyDebugUser(user)
     }
 
     func clearDebugUser() {
         UserDefaults.standard.removeObject(forKey: debugUserIDKey)
-        UserDefaults.standard.removeObject(forKey: "debugUserPayload")
+        UserDefaults.standard.removeObject(forKey: debugUserPayloadKey)
         selectedDebugUser = nil
         activeOrganizationID = nil
         effectiveRole = "inspector"
@@ -93,8 +103,7 @@ final class AppState: ObservableObject {
     }
 
     private func loadStoredDebugUser() -> DebugUser? {
-        guard let data = UserDefaults.standard.data(forKey: "debugUserPayload") else { return nil }
+        guard let data = UserDefaults.standard.data(forKey: debugUserPayloadKey) else { return nil }
         return try? JSONDecoder().decode(DebugUser.self, from: data)
     }
-    #endif
 }
