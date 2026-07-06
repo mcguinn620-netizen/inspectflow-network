@@ -1,7 +1,7 @@
 import Foundation
 
-#if DEBUG
-/// DEV-only impersonation record. Compiled out of release builds.
+/// Impersonation record used by the test-user picker and (in real-auth mode)
+/// the DEBUG-only Supabase-backed user browser.
 struct DebugUser: Identifiable, Codable, Hashable {
     let id: UUID
     let fullName: String?
@@ -33,4 +33,3 @@ enum DebugRoleGroup: String {
         }
     }
 }
-#endif
