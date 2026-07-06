@@ -1,8 +1,9 @@
 import SwiftUI
 
-#if DEBUG
-/// DEV-only impersonation picker. Lists every user × organization × role and
-/// lets the engineer continue as any of them without a password.
+/// Test-user picker. Under `AuthBypass.isEnabled` this is the app's entry
+/// screen: pick any of the 10 hardcoded mock users to enter the app with
+/// that role, no password. In real-auth mode (DEBUG only) it falls back to
+/// browsing real Supabase memberships for impersonation.
 struct DebugUserPickerView: View {
     @EnvironmentObject private var appState: AppState
     @Environment(\.dismiss) private var dismiss
