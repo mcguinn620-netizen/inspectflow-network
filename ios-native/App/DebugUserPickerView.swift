@@ -64,7 +64,7 @@ struct DebugUserPickerView: View {
                     .searchable(text: $query, prompt: "Search name, email, organization, or role")
                 }
             }
-            .navigationTitle("Debug User Picker")
+            .navigationTitle(AuthBypass.isEnabled ? "Pick a Test User" : "Debug User Picker")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 if appState.selectedDebugUser != nil {
