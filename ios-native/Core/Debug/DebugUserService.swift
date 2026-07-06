@@ -1,9 +1,37 @@
 import Foundation
 
-#if DEBUG
-/// DEV-only service that lists all known (user × organization) memberships
-/// so an engineer can impersonate any user without a password.
+/// Lists (user × organization) memberships for the test-user / impersonation
+/// picker. When `AuthBypass.isEnabled` is true, returns the hardcoded
+/// `MockUsers.all` list with no network calls. Otherwise (real-auth mode),
+/// falls back to querying Supabase — kept behind `#if DEBUG` so release
+/// builds without bypass can't browse real accounts.
 enum DebugUserService {
+    static func fetchDebugUsers() async throws -> [DebugUser] {
+        if AuthBypass.isEnabled {
+            return MockUsers.all.sorted { lhs, rhs in
+                (lhs.fullName ?? "").localizedCaseInsensitiveCompare(rhs.fullName ?? "") == .orderedAscending
+            }
+        }
+        #if DEBUG
+        return try await fetchFromSupabase()
+        #else
+        return []
+        #endif
+    }
+
+    static func fetchOne(id: UUID) async throws -> DebugUser? {
+        if AuthBypass.isEnabled {
+            return MockUsers.first(id: id)
+        }
+        #if DEBUG
+        let all = try await fetchFromSupabase()
+        return all.first(where: { $0.id == id })
+        #else
+        return nil
+        #endif
+    }
+
+    #if DEBUG
     private struct Row: Decodable {
         let userID: UUID
         let role: String
@@ -23,7 +51,7 @@ enum DebugUserService {
         }
     }
 
-    static func fetchDebugUsers() async throws -> [DebugUser] {
+    private static func fetchFromSupabase() async throws -> [DebugUser] {
         let client = SupabaseClientProvider.shared
         let rows: [Row] = try await client.db.from("organization_users")
             .select("user_id, role, organization_id, profiles!inner(full_name), organizations(name)")
@@ -44,10 +72,5 @@ enum DebugUserService {
             (lhs.fullName ?? "").localizedCaseInsensitiveCompare(rhs.fullName ?? "") == .orderedAscending
         }
     }
-
-    static func fetchOne(id: UUID) async throws -> DebugUser? {
-        let all = try await fetchDebugUsers()
-        return all.first(where: { $0.id == id })
-    }
+    #endif
 }
-#endif
