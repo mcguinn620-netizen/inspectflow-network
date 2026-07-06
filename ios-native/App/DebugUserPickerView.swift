@@ -82,9 +82,11 @@ struct DebugUserPickerView: View {
             Image(systemName: "exclamationmark.triangle.fill")
                 .foregroundColor(AINTheme.Color.warn)
             VStack(alignment: .leading, spacing: 2) {
-                Text("Development Only")
+                Text(AuthBypass.isEnabled ? "Login Bypassed" : "Development Only")
                     .font(.subheadline).fontWeight(.semibold)
-                Text("Pick a user to impersonate. No password required. Production builds never show this screen.")
+                Text(AuthBypass.isEnabled
+                     ? "Pick any test user to enter the app with that role. No password required."
+                     : "Pick a user to impersonate. No password required. Production builds never show this screen.")
                     .font(.caption)
                     .foregroundColor(AINTheme.Color.textSecondary)
             }
