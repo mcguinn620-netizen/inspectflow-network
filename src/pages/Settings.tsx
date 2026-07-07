@@ -17,6 +17,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import LemonSquadIntegration from "@/pages/settings/LemonSquadIntegration";
 
 
 const US_STATES = [
