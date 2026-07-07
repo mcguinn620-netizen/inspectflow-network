@@ -53,14 +53,14 @@ export default function LemonSquadIntegration() {
     setSaving(true);
     // NOTE: password_ciphertext is a placeholder for future Vault encryption.
     // For now it stores an obfuscated (base64) value so it is not plaintext at rest.
-    const payload: Record<string, unknown> = {
+    const payload = {
       user_id: user.id,
       site: SITE,
       username,
-      submission_mode: "draft",
+      submission_mode: "draft" as const,
       is_active: true,
+      ...(password ? { password_ciphertext: btoa(password) } : {}),
     };
-    if (password) payload.password_ciphertext = btoa(password);
     const { error } = cred
       ? await supabase.from("external_site_credentials").update(payload).eq("id", cred.id)
       : await supabase.from("external_site_credentials").insert(payload);
