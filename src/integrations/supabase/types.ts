@@ -306,6 +306,48 @@ export type Database = {
           },
         ]
       }
+      external_site_credentials: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          last_error: string | null
+          last_login_at: string | null
+          password_ciphertext: string | null
+          site: string
+          submission_mode: Database["public"]["Enums"]["lemonsquad_submission_mode"]
+          updated_at: string
+          user_id: string
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_error?: string | null
+          last_login_at?: string | null
+          password_ciphertext?: string | null
+          site: string
+          submission_mode?: Database["public"]["Enums"]["lemonsquad_submission_mode"]
+          updated_at?: string
+          user_id: string
+          username: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_error?: string | null
+          last_login_at?: string | null
+          password_ciphertext?: string | null
+          site?: string
+          submission_mode?: Database["public"]["Enums"]["lemonsquad_submission_mode"]
+          updated_at?: string
+          user_id?: string
+          username?: string
+        }
+        Relationships: []
+      }
       inspection_requests: {
         Row: {
           client_name: string | null
@@ -851,6 +893,78 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      lemonsquad_field_maps: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          form_hash: string
+          form_key: string
+          id: string
+          mapping_json: Json
+          sample_fields_json: Json | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          form_hash: string
+          form_key: string
+          id?: string
+          mapping_json: Json
+          sample_fields_json?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          form_hash?: string
+          form_key?: string
+          id?: string
+          mapping_json?: Json
+          sample_fields_json?: Json | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      lemonsquad_sessions: {
+        Row: {
+          cookies_json: Json | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          last_used_at: string | null
+          pending_challenge_started_at: string | null
+          pending_challenge_url: string | null
+          updated_at: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          cookies_json?: Json | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          last_used_at?: string | null
+          pending_challenge_started_at?: string | null
+          pending_challenge_url?: string | null
+          updated_at?: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          cookies_json?: Json | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          last_used_at?: string | null
+          pending_challenge_started_at?: string | null
+          pending_challenge_url?: string | null
+          updated_at?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       organization_users: {
         Row: {
@@ -1630,6 +1744,10 @@ export type Database = {
         | "fleet_manager"
         | "mechanic"
         | "dispatcher"
+      lemonsquad_submission_mode:
+        | "draft"
+        | "review_confirm"
+        | "auto_on_complete"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1768,6 +1886,11 @@ export const Constants = {
         "fleet_manager",
         "mechanic",
         "dispatcher",
+      ],
+      lemonsquad_submission_mode: [
+        "draft",
+        "review_confirm",
+        "auto_on_complete",
       ],
     },
   },

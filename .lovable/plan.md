@@ -1,65 +1,69 @@
-# Disable login for now + add a role picker with test users
+## Part A — Save the current iOS auth bypass plan
 
-Goal: temporarily bypass the real Supabase login so anyone hitting the app lands on a **Role Picker** that switches between all 10 app roles. Real auth code stays fully intact so we can flip it back on with a single flag.
+Copy the executed iOS Auth Bypass work into `.lovable/ios-auth-bypass.md` (mirrors the format of `.lovable/auth-bypass-web.md`) so both platforms have a written record we can flip off later. No code moves.
 
-## Behavior
-- On visit → land on `/pick-role` (new page). Choose a role → app "signs you in" as that role's test user → routed to the right workspace.
-- A small floating "Switch role" chip in the corner (dev-only) to jump back to the picker from any page.
-- Toggle: `VITE_AUTH_BYPASS` env flag (default **on** for now). When off, everything reverts to real Supabase auth with zero code changes.
+Sections:
+- Toggle (`AUTH_BYPASS` in `Info.plist`, default `YES`)
+- `AuthBypass.swift` and `MockUsers.swift` (same 10 users as web)
+- `DebugUserService` / `AppState` / `RootView` / `DebugUserPickerView` changes
+- What stays intact for re-enabling (`AuthView`, `AuthViewModel`, `SupabaseService`, Supabase RLS)
 
-## Test users (one per role, all 10)
-| Role | Display name | Fake email |
-|---|---|---|
-| super_admin | Sam Superadmin | super@test.local |
-| network_admin | Nina Networkadmin | network@test.local |
-| company_admin | Cam Companyadmin | company@test.local |
-| repair_shop_manager | Riley Shopmanager | shop@test.local |
-| inspector | Ivy Inspector | inspector@test.local |
-| technician | Theo Technician | tech@test.local |
-| client | Cleo Client | client@test.local |
-| fleet_manager | Fran Fleetmanager | fleet@test.local |
-| mechanic | Max Mechanic | mechanic@test.local |
-| dispatcher | Dana Dispatcher | dispatch@test.local |
+---
 
-Each test user gets a stable fake UUID and a fake org id, stored in a single `MOCK_USERS` table in code.
+## Part B — New plan: "Lemon Squad" AI Agent
 
-## Technical plan (kept small, real auth untouched)
+Goal: an AI agent that (1) pulls new inspection requests from **lemonsquad.com** into our schedule and (2) fills a **draft** inspection report on their site (photos, captions, annotations) that a human submits. Auto-submit and review-confirm-submit stay as concept-only stubs.
 
-1. **New** `src/lib/authBypass.ts`
-   - `export const AUTH_BYPASS = import.meta.env.VITE_AUTH_BYPASS !== "false";` (default on)
-   - `MOCK_USERS` array (role, id, email, full_name, org_id, org_name)
-   - `getMockUser()` / `setMockUser(role)` — persisted in `localStorage` under `mock_auth_role`.
+### Triggers
+- **Inbound email** into existing `intake-ingest-gmail` / `intake-ingest-outlook` — if sender/subject matches Lemon Squad, hand off to the new agent instead of the generic parser.
+- **SMS / Telegram** via existing `intake-telegram-webhook` — same handoff on trigger phrase (`"lemon squad"`).
+- **Manual button** "Sync Lemon Squad" on Inspector dashboard + iOS `InspectorDashboard`.
+- (No timed poll — user did not select it.)
 
-2. **Edit** `src/hooks/useAuth.tsx` — add a bypass branch **at the top** of `AuthProvider`. When `AUTH_BYPASS` is true, skip all Supabase calls and expose a minimal fake `User`/`Session` built from the selected mock user. `signOut()` clears the mock role and returns to picker. Real Supabase branch below stays byte-identical.
+### Execution model
+- **Server-side** (Supabase Edge Function + Browserless/Browserbase hosted Chromium) for the routine path: login with stored creds → scrape open requests → create job/schedule → download request PDFs.
+- **On-device** (iOS `WKWebView` in a hidden or presented sheet) for anything that needs a human: MFA/CAPTCHA challenges, and the "upload photos + captions + annotations" step against the actual logged-in browser session, which mirrors user actions and is far more robust than screenscraping the multipart upload API.
+- Session cookies captured on device sync back to the server via a new `lemonsquad_sessions` table so the next server run reuses them until they expire.
 
-3. **Edit** `src/hooks/useUserRoles.ts` — same bypass branch at the top: when on, return `roles`/`memberships`/`activeOrgId`/`isAdmin` derived from the mock user, no Supabase reads.
+### Credentials
+- Per-user encrypted credentials in a new `external_site_credentials` table (`user_id`, `site='lemonsquad'`, `username`, `password_ciphertext`, `cookies_jsonb`, `expires_at`). Encryption via Supabase Vault (`pgsodium`) — never returned to the client in plaintext.
+- Settings → Integrations → "Connect Lemon Squad" form to save/update.
+- OAuth-first is aspirational; Lemon Squad has no public OAuth, so password login is the initial path with the hook left in place.
 
-4. **New** `src/pages/PickRole.tsx` — grid of 10 role cards (title, description, "Enter as …" button). Clicking calls `setMockUser(role)` then navigates:
-   - inspector → `/app/inspector/dashboard`
-   - mechanic → `/app/mechanic/dashboard`
-   - dispatcher → `/app/dispatch/dashboard`
-   - super_admin / network_admin / company_admin → `/`
-   - repair_shop_manager → `/repair-shop`
-   - client → `/client-portal`
-   - fleet_manager → `/dispatch`
-   - technician → `/app/inspector/dashboard`
+### AI field mapping (first-run + cached)
+- First submission per Lemon Squad form version: server sends form field labels + our inspection JSON to Lovable AI Gateway (`google/gemini-3-flash-preview`) with a structured `Output` schema; result cached in `lemonsquad_field_maps(form_hash, mapping_json)`.
+- Subsequent runs read the cache; on schema/hash change, re-infer.
 
-5. **New** `src/components/DevRoleSwitcher.tsx` — small fixed bottom-right pill showing current role + "Switch". Mounted globally, only when `AUTH_BYPASS`.
+### Report submission mode (per user answer)
+- **Implement now:** Draft-only. Agent fills the form and stops; human submits on lemonsquad.com.
+- **Stubs for later (concept only, do not wire):** `submissionMode` enum in `external_site_credentials` with values `draft` | `review_confirm` | `auto_on_complete`; UI shows the other two as disabled with "Coming soon".
 
-6. **Edit** `src/App.tsx`
-   - Add `<Route path="/pick-role" element={<PickRole />} />`
-   - When `AUTH_BYPASS` and no mock role selected, `ProtectedRoute` redirects to `/pick-role` instead of `/auth`.
-   - Mount `<DevRoleSwitcher />` alongside `<InstallPrompt />`.
-   - `HomeRedirect` respects mock role too (admins → `Index`, others → their workspace).
+### MFA handling
+- If server hits MFA/CAPTCHA/"verify it's you", it stores the challenge URL + partial session on `lemonsquad_sessions.pending_challenge`, sends the assigned user an APNs push ("Lemon Squad needs verification"), deep-linking into a new `LemonSquadChallengeView` (iOS `WKWebView`) that loads the challenge URL with restored cookies. On success, the WebView exports fresh cookies back to `lemonsquad_sessions`, and the server resumes the queued run.
 
-7. **No DB changes.** No Supabase writes. RLS-guarded queries will simply return empty for mock users — pages should already handle empty states. (If a specific page misbehaves with a fake user, we'll patch it in a follow-up.)
+### Data & routing into the schedule
+- New request → insert into `inspection_requests` (existing intake path) with `source='lemonsquad'`, `external_id`, `external_url`, then run existing intelligent-dispatch to create a scheduled job/trip stop. Attachments (request PDF) go to `intake-files` bucket.
 
-## What stays intact (re-enable later by setting `VITE_AUTH_BYPASS=false`)
-- `src/pages/Auth.tsx` — unchanged, route `/auth` still mounted.
-- All Supabase auth calls in `useAuth` and `useUserRoles` — unchanged, just gated behind the bypass branch.
-- All RLS policies and DB triggers — unchanged.
+### Files to add
+- `supabase/functions/lemonsquad-agent/index.ts` — orchestrator (Browserless driver, login, list, download, draft-fill).
+- `supabase/functions/_shared/lemonsquadClient.ts` — Playwright-over-Browserless helpers.
+- `supabase/functions/_shared/lemonsquadMapper.ts` — AI field-mapping (Lovable AI Gateway).
+- `supabase/migrations/*` — `external_site_credentials`, `lemonsquad_sessions`, `lemonsquad_field_maps` (RLS scoped to `user_id` / `has_role('admin')`, GRANTs to `authenticated` + `service_role`, vault-encrypted password column).
+- `src/pages/settings/LemonSquadIntegration.tsx` — connect form + status + "Sync now".
+- `src/components/lemonsquad/SyncButton.tsx` — dashboard trigger.
+- `ios-native/Features/Integrations/LemonSquadChallengeView.swift` — `WKWebView` MFA/upload host with cookie import/export.
+- `ios-native/Features/Integrations/LemonSquadSyncButton.swift` — dashboard trigger + push notification handler.
 
-## Out of scope
-- Creating real Supabase auth users for each role (mock-only for now).
-- Seeding demo data per role.
-- Removing or refactoring `Auth.tsx`.
+### Secrets required (request via `add_secret` when we build)
+- `BROWSERLESS_TOKEN` (hosted headless Chromium)
+- `LEMONSQUAD_APP_APNS_TOPIC` (push channel — reuse existing if configured)
+- `LOVABLE_API_KEY` already present.
+
+### Out of scope (this plan)
+- Auto-submit and review-confirm-submit flows (kept as UI stubs only).
+- Other third-party sites (design allows adding them under the same tables, but only lemonsquad.com is implemented).
+- Any change to real Supabase auth or the bypass flags.
+
+### Open follow-ups (do not block approval)
+- Provide one real Lemon Squad request email + one screenshot of their inspection form so first-run mapping can be validated.
+- Confirm APNs is already wired for the iOS app (needed for MFA push).
