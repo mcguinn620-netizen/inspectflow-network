@@ -430,6 +430,8 @@ export default function SettingsPage() {
             </Button>
           </CardContent>
         </Card>
+
+        <LemonSquadIntegration />
       </div>
     </DashboardLayout>
   );
