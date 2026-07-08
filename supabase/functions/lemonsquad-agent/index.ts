@@ -62,28 +62,43 @@ Deno.serve(async (req) => {
       .eq("user_id", userId)
       .maybeSingle();
 
+    // Load cached form map (seeded from real screenshots; AI re-maps when hash changes).
+    const { data: fieldMap } = await supabase
+      .from("lemonsquad_field_maps")
+      .select("form_key, form_hash, mapping_json, updated_at")
+      .eq("form_key", "inspection_report")
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
     if (!BROWSERLESS_TOKEN) {
       return json({
         ok: false,
-        stage: "not_configured",
+        stage: "awaiting_browserless_token",
         message:
-          "Agent scaffolding is live but headless browser (BROWSERLESS_TOKEN) " +
-          "and a real form mapping are not wired yet. Ask the developer to add " +
-          "BROWSERLESS_TOKEN and provide a Lemon Squad form screenshot.",
+          "Credentials, session cache, and form field map are ready. Add the " +
+          "BROWSERLESS_TOKEN secret to enable headless login + scrape + draft fill.",
         action,
         userId,
         hasSession: !!session,
+        hasFieldMap: !!fieldMap,
+        formHash: fieldMap?.form_hash ?? null,
+        mappedFieldCount: fieldMap
+          ? Object.keys(((fieldMap.mapping_json as Record<string, unknown>)?.fields as Record<string, unknown>) ?? {}).length
+          : 0,
       });
     }
 
-    // TODO: dispatch by action. Left as TODO until browser + form are known.
-    // switch (action) {
-    //   case "sync_requests":    return await syncRequests(supabase, cred, session);
-    //   case "start_draft":      return await startDraft(supabase, cred, session, body);
-    //   case "resume_after_mfa": return await resumeAfterMfa(supabase, cred, session);
-    // }
-
-    return json({ ok: true, action, message: "Skeleton reached; real logic pending." });
+    // TODO once BROWSERLESS_TOKEN is set: dispatch by action.
+    //   sync_requests    -> login -> scrape open jobs -> upsert inspection_requests
+    //   start_draft      -> open job -> pre-fill draft using fieldMap -> Save (never Submit)
+    //   resume_after_mfa -> replay cookies from iOS WebView -> continue previous action
+    return json({
+      ok: true,
+      action,
+      formHash: fieldMap?.form_hash,
+      message: "Skeleton reached; browser dispatch pending implementation.",
+    });
   } catch (e) {
     console.error("lemonsquad-agent error", e);
     return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
