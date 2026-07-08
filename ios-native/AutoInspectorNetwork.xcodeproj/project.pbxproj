@@ -17,6 +17,8 @@
 		B152F13B2FE647C2001185F1 /* SharedAgendaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EC3B2FE4D91800C3027E /* SharedAgendaStore.swift */; };
 		B152F13C2FE647DB001185F1 /* UpcomingEventLiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EC3A2FE4D91800C3027E /* UpcomingEventLiveActivityAttributes.swift */; };
 		B15F45D52FFE753A00596A0B /* AuthBypass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15F45D42FFE753A00596A0B /* AuthBypass.swift */; };
+		B15F45D72FFE774100596A0B /* MockUsers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15F45D62FFE774100596A0B /* MockUsers.swift */; };
+		B15F45D92FFE796300596A0B /* AINRoleBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15F45D82FFE796300596A0B /* AINRoleBadge.swift */; };
 		B18822BB2FEE9AE4001B5678 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B18822BA2FEE9AE3001B5678 /* Assets.xcassets */; };
 		B1B6EC462FE4D91800C3027E /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EB742FE4D91400C3027E /* AboutView.swift */; };
 		B1B6EC472FE4D91800C3027E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EB752FE4D91400C3027E /* SettingsView.swift */; };
@@ -217,6 +219,8 @@
 		B14EB5C82FEB6DDB00F4C353 /* ScheduleWeekGrid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleWeekGrid.swift; sourceTree = "<group>"; };
 		B14EB5D02FEB6DDB00F4C353 /* NativeNowIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeNowIndicator.swift; sourceTree = "<group>"; };
 		B15F45D42FFE753A00596A0B /* AuthBypass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthBypass.swift; sourceTree = "<group>"; };
+		B15F45D62FFE774100596A0B /* MockUsers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUsers.swift; sourceTree = "<group>"; };
+		B15F45D82FFE796300596A0B /* AINRoleBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AINRoleBadge.swift; sourceTree = "<group>"; };
 		B18822BA2FEE9AE3001B5678 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B18822BC2FEEA269001B5678 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B18822BE2FEEA284001B5678 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -861,6 +865,7 @@
 			children = (
 				B1B6EC182FE4D91600C3027E /* DebugUser.swift */,
 				B1B6EC192FE4D91600C3027E /* DebugUserService.swift */,
+				B15F45D62FFE774100596A0B /* MockUsers.swift */,
 			);
 			path = Debug;
 			sourceTree = "<group>";
@@ -913,6 +918,7 @@
 				B1B6EC302FE4D91800C3027E /* SyncStatusView.swift */,
 				B1B6EC312FE4D91800C3027E /* AINFriendlyError.swift */,
 				B1B6EC322FE4D91800C3027E /* AINOverlays.swift */,
+				B15F45D82FFE796300596A0B /* AINRoleBadge.swift */,
 				B1B6EC332FE4D91800C3027E /* AINStatusPill.swift */,
 				B1B6EC342FE4D91800C3027E /* AINInputs.swift */,
 				B1B6EC352FE4D91800C3027E /* AINStates.swift */,
@@ -1153,6 +1159,7 @@
 				B1B6EC732FE4D91800C3027E /* VehiclesViewModel.swift in Sources */,
 				B1B6EC5D2FE4D91800C3027E /* EventDetailWindow.swift in Sources */,
 				B1B6ECDF2FE4D91900C3027E /* InspectionTemplateModels.swift in Sources */,
+				B15F45D72FFE774100596A0B /* MockUsers.swift in Sources */,
 				B1B6EC9A2FE4D91800C3027E /* FocusFilterManager.swift in Sources */,
 				B1B6EC602FE4D91800C3027E /* AuthView.swift in Sources */,
 				B1B6ECDE2FE4D91900C3027E /* IntakeModels.swift in Sources */,
@@ -1212,6 +1219,7 @@
 				B1B6EC462FE4D91800C3027E /* AboutView.swift in Sources */,
 				B1B6EC842FE4D91800C3027E /* MileageEditView.swift in Sources */,
 				B1B6EC942FE4D91800C3027E /* EventKitService+Recurrence.swift in Sources */,
+				B15F45D92FFE796300596A0B /* AINRoleBadge.swift in Sources */,
 				B1B6ECA22FE4D91800C3027E /* KeychainStore.swift in Sources */,
 				B1B6ECC12FE4D91900C3027E /* CarPlayScheduleTemplate.swift in Sources */,
 				B1B6EC702FE4D91800C3027E /* VehicleEditViewModel.swift in Sources */,
