@@ -16,6 +16,7 @@
 		B14EB5D12FEB6DDB00F4C353 /* NativeNowIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14EB5D02FEB6DDB00F4C353 /* NativeNowIndicator.swift */; };
 		B152F13B2FE647C2001185F1 /* SharedAgendaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EC3B2FE4D91800C3027E /* SharedAgendaStore.swift */; };
 		B152F13C2FE647DB001185F1 /* UpcomingEventLiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EC3A2FE4D91800C3027E /* UpcomingEventLiveActivityAttributes.swift */; };
+		B15F45D52FFE753A00596A0B /* AuthBypass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15F45D42FFE753A00596A0B /* AuthBypass.swift */; };
 		B18822BB2FEE9AE4001B5678 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B18822BA2FEE9AE3001B5678 /* Assets.xcassets */; };
 		B1B6EC462FE4D91800C3027E /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EB742FE4D91400C3027E /* AboutView.swift */; };
 		B1B6EC472FE4D91800C3027E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B6EB752FE4D91400C3027E /* SettingsView.swift */; };
@@ -215,6 +216,7 @@
 		B14EB5C72FEB6DDB00F4C353 /* ScheduleMonthMatrix.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleMonthMatrix.swift; sourceTree = "<group>"; };
 		B14EB5C82FEB6DDB00F4C353 /* ScheduleWeekGrid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduleWeekGrid.swift; sourceTree = "<group>"; };
 		B14EB5D02FEB6DDB00F4C353 /* NativeNowIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeNowIndicator.swift; sourceTree = "<group>"; };
+		B15F45D42FFE753A00596A0B /* AuthBypass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthBypass.swift; sourceTree = "<group>"; };
 		B18822BA2FEE9AE3001B5678 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B18822BC2FEEA269001B5678 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B18822BE2FEEA284001B5678 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -719,6 +721,7 @@
 			isa = PBXGroup;
 			children = (
 				B1B6EBED2FE4D91600C3027E /* AppState.swift */,
+				B15F45D42FFE753A00596A0B /* AuthBypass.swift */,
 				B1B6EBEE2FE4D91600C3027E /* KeychainStore.swift */,
 			);
 			path = Auth;
@@ -1256,6 +1259,7 @@
 				B1B6ECCA2FE4D91900C3027E /* AppDelegate.swift in Sources */,
 				B1B6EC552FE4D91800C3027E /* QuickAddEventField.swift in Sources */,
 				B1B6ECC62FE4D91900C3027E /* AutoInspectorNetwork.xcdatamodeld in Sources */,
+				B15F45D52FFE753A00596A0B /* AuthBypass.swift in Sources */,
 				B1B6ECA12FE4D91800C3027E /* AppState.swift in Sources */,
 				B1B6EC932FE4D91800C3027E /* CalendarSyncService.swift in Sources */,
 				B1B6ECE02FE4D91900C3027E /* SharedPayloadModel.swift in Sources */,
