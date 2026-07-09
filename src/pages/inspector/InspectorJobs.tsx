@@ -204,7 +204,10 @@ export default function InspectorJobs() {
             <h1 className="text-2xl font-semibold tracking-tight">Jobs</h1>
             <p className="text-sm text-muted-foreground mt-1">All inspection jobs assigned to you</p>
           </div>
-          <Button onClick={openNew}><Plus className="h-4 w-4 mr-1.5" />New Job</Button>
+          <div className="flex items-center gap-2">
+            <ImportInspectionDialog />
+            <Button onClick={openNew}><Plus className="h-4 w-4 mr-1.5" />New Job</Button>
+          </div>
         </div>
 
         <Tabs value={filter} onValueChange={v => setFilter(v as FilterKey)}>
