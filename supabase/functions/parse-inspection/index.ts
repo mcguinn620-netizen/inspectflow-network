@@ -9,11 +9,11 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { text, source_type } = await req.json();
+    const { text, source_type, image_url } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    const systemPrompt = `You are an automotive inspection request parser. Extract structured data from unstructured inspection requests (emails, forms, auction sheets, dealer requests).
+    const systemPrompt = `You are an automotive inspection request parser. Extract structured data from unstructured inspection requests (emails, forms, auction sheets, dealer requests, or photos of forms).
 
 Extract these fields:
 - client_name: The person or contact requesting the inspection
@@ -42,6 +42,13 @@ Also determine:
 
 Return ONLY valid JSON with these exact keys. Use null for fields you cannot determine.`;
 
+    const userContent: unknown = image_url
+      ? [
+          { type: "text", text: `Parse this ${source_type ?? "image"} inspection request from the attached image. If additional text is provided, treat it as supplementary context:\n\n${text ?? ""}` },
+          { type: "image_url", image_url: { url: image_url } },
+        ]
+      : `Parse this ${source_type ?? "email"} inspection request:\n\n${text ?? ""}`;
+
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -52,7 +59,7 @@ Return ONLY valid JSON with these exact keys. Use null for fields you cannot det
         model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: systemPrompt },
-          { role: "user", content: `Parse this ${source_type} inspection request:\n\n${text}` },
+          { role: "user", content: userContent },
         ],
         tools: [
           {
