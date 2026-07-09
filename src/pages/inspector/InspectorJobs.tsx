@@ -15,6 +15,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
+import { ImportInspectionDialog } from "@/components/intake/ImportInspectionDialog";
 import { OpenInMapsButton } from "@/components/maps/OpenInMapsButton";
 import { LocationAutocomplete } from "@/components/maps/LocationAutocomplete";
 import {
