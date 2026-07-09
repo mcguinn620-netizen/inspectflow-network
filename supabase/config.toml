@@ -23,3 +23,6 @@ verify_jwt = false
 
 [functions.intake-fetch-url]
 verify_jwt = false
+
+[functions.intake-public]
+verify_jwt = false
