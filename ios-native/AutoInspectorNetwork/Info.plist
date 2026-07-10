@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>AUTH_BYPASS</key>
-	<string>YES</string>
+	<string>NO</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
