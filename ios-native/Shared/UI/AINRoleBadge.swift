@@ -1,6 +1,6 @@
 import SwiftUI
 
-#if DEBUG
+
 struct AINRoleBadge: View {
     let role: String
 
@@ -31,4 +31,4 @@ struct AINRoleBadge: View {
             .overlay(Capsule().stroke(color.opacity(0.35), lineWidth: 1))
     }
 }
-#endif
+
