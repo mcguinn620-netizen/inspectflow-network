@@ -34,8 +34,10 @@ final class SupabaseService {
 
     // MARK: - Auth
 
-    var currentUserID: UUID? { client.auth.currentUser?.id }
-    var hasSession: Bool { client.auth.currentSession != nil }
+    /// Under `AuthBypass`, the selected mock user stands in for the Supabase user.
+    var currentUserID: UUID? { MockSession.userID ?? client.auth.currentUser?.id }
+    var hasSession: Bool { MockSession.isActive || client.auth.currentSession != nil }
+
 
     @discardableResult
     func restoreAndValidateSession() async throws -> InspectFlowSession {
@@ -61,7 +63,13 @@ final class SupabaseService {
     // MARK: - Profile
 
     func fetchMyProfile(userId: UUID) async throws -> UserProfile {
-        try await client.db.from("profiles")
+        if MockSession.isActive {
+            guard let row: UserProfile = try await MockSession.readOne("profiles") else {
+                throw MockSession.MockSessionError.server("Profile not found for test user")
+            }
+            return row
+        }
+        return try await client.db.from("profiles")
             .select()
             .eq("id", userId.uuidString)
             .single()
@@ -69,6 +77,11 @@ final class SupabaseService {
     }
 
     func fetchDefaultOrganization(userId: UUID) async throws -> OrganizationMembership? {
+        if MockSession.isActive, let orgId = MockSession.organizationID {
+            return try await MockSession.readOne("organization_users",
+                filters: [.eq("organization_id", orgId.uuidString)],
+                order: "is_default", ascending: false)
+        }
         let memberships: [OrganizationMembership] = try await client.db.from("organization_users")
             .select()
             .eq("user_id", userId.uuidString)
@@ -81,7 +94,12 @@ final class SupabaseService {
     // MARK: - Inspector Vehicles
 
     func fetchInspectorVehicles(userId: UUID) async throws -> [InspectorVehicle] {
-        try await client.db.from("inspector_vehicles")
+        if MockSession.isActive {
+            return try await MockSession.read("inspector_vehicles",
+                filters: [.eq("is_archived", false)],
+                order: "is_default", ascending: false)
+        }
+        return try await client.db.from("inspector_vehicles")
             .select()
             .eq("user_id", userId.uuidString)
             .eq("is_archived", false)
@@ -137,7 +155,10 @@ final class SupabaseService {
 
 
     func fetchTrips(userId: UUID, limit: Int = 50) async throws -> [Trip] {
-        try await client.db.from("trips")
+        if MockSession.isActive {
+            return try await MockSession.read("trips", order: "created_at", ascending: false, limit: limit)
+        }
+        return try await client.db.from("trips")
             .select()
             .eq("user_id", userId.uuidString)
             .order("created_at", ascending: false)
@@ -151,6 +172,12 @@ final class SupabaseService {
         else if let currentUserID { uid = currentUserID }
         else { throw TripLifecycleError.missingCurrentUser }
 
+        if MockSession.isActive {
+            let rows: [Trip] = try await MockSession.read("trips",
+                filters: [.inList("status", activeTripStatuses)],
+                order: "created_at", ascending: false, limit: 1)
+            return rows.first
+        }
         let trips: [Trip] = try await client.db.from("trips")
             .select()
             .eq("user_id", uid.uuidString)
@@ -164,7 +191,12 @@ final class SupabaseService {
     // MARK: - Jobs
 
     func fetchJobs(orgId: UUID, limit: Int = 50) async throws -> [Job] {
-        try await client.db.from("jobs")
+        if MockSession.isActive {
+            return try await MockSession.read("jobs",
+                filters: [.eq("organization_id", orgId.uuidString), .isNull("deleted_at")],
+                order: "scheduled_at", ascending: true, limit: limit)
+        }
+        return try await client.db.from("jobs")
             .select()
             .eq("organization_id", orgId.uuidString)
             .isNull("deleted_at")
@@ -177,6 +209,16 @@ final class SupabaseService {
     /// Schedule week grid so all jobs in view come back, not just the first 50.
     func fetchJobs(orgId: UUID, from: Date, to: Date, limit: Int = 200) async throws -> [Job] {
         let iso = ISO8601DateFormatter()
+        if MockSession.isActive {
+            return try await MockSession.read("jobs",
+                filters: [
+                    .eq("organization_id", orgId.uuidString),
+                    .isNull("deleted_at"),
+                    .gte("scheduled_at", iso.string(from: from)),
+                    .lt("scheduled_at", iso.string(from: to))
+                ],
+                order: "scheduled_at", ascending: true, limit: limit)
+        }
         return try await client.db.from("jobs")
             .select()
             .eq("organization_id", orgId.uuidString)
@@ -250,6 +292,11 @@ final class SupabaseService {
     }
 
     func fetchOrgInspectors(orgId: UUID) async throws -> [OrganizationMembership] {
+        if MockSession.isActive {
+            return try await MockSession.read("organization_users",
+                filters: [.eq("organization_id", orgId.uuidString), .eq("role", "inspector")],
+                limit: 100)
+        }
         let rows: [OrganizationMembership] = try await client.db.from("organization_users")
             .select()
             .eq("organization_id", orgId.uuidString)
@@ -272,7 +319,12 @@ final class SupabaseService {
     // MARK: - Inspection requests
 
     func fetchInspectionRequests(orgId: UUID, limit: Int = 50) async throws -> [InspectionRequest] {
-        try await client.db.from("inspection_requests")
+        if MockSession.isActive {
+            return try await MockSession.read("inspection_requests",
+                filters: [.eq("organization_id", orgId.uuidString)],
+                order: "created_at", ascending: false, limit: limit)
+        }
+        return try await client.db.from("inspection_requests")
             .select()
             .eq("organization_id", orgId.uuidString)
             .order("created_at", ascending: false)
@@ -283,6 +335,12 @@ final class SupabaseService {
     // MARK: - Intake
 
     func fetchIntakeItems(orgId: UUID, status: String? = nil, limit: Int = 100) async throws -> [IntakeItem] {
+        if MockSession.isActive {
+            var mockFilters: [MockSession.Filter] = [.eq("organization_id", orgId.uuidString)]
+            if let status { mockFilters.append(.eq("status", status)) }
+            return try await MockSession.read("intake_items",
+                filters: mockFilters, order: "created_at", ascending: false, limit: limit)
+        }
         var q = client.db.from("intake_items")
             .select()
             .eq("organization_id", orgId.uuidString)
@@ -537,7 +595,12 @@ final class SupabaseService {
     }
 
     func fetchTripStops(tripId: UUID, limit: Int = 50) async throws -> [TripStop] {
-        try await client.db.from("trip_stops")
+        if MockSession.isActive {
+            return try await MockSession.read("trip_stops",
+                filters: [.eq("trip_id", tripId.uuidString)],
+                order: "sort_order", ascending: true, limit: limit)
+        }
+        return try await client.db.from("trip_stops")
             .select()
             .eq("trip_id", tripId.uuidString)
             .order("sort_order", ascending: true)
@@ -546,7 +609,12 @@ final class SupabaseService {
     }
 
     func fetchTripLocationPoints(tripId: UUID, limit: Int = 500) async throws -> [TripLocationPoint] {
-        try await client.db.from("trip_location_points")
+        if MockSession.isActive, let orgId = MockSession.organizationID {
+            return try await MockSession.read("trip_location_points",
+                filters: [.eq("organization_id", orgId.uuidString), .eq("trip_id", tripId.uuidString)],
+                order: "recorded_at", ascending: true, limit: limit)
+        }
+        return try await client.db.from("trip_location_points")
             .select("id,trip_id,latitude,longitude,recorded_at")
             .eq("trip_id", tripId.uuidString)
             .order("recorded_at", ascending: true)
