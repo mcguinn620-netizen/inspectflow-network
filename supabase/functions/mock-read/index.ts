@@ -65,7 +65,12 @@ Deno.serve(async (req) => {
         .eq("user_id", mockUserId)
         .eq("organization_id", String(orgFilter.value))
         .maybeSingle();
-      if (!member) return json({ ok: true, rows: [] });
+      if (!member) {
+        if (operation === "insert" || operation === "update") {
+          return json({ error: "Mock user is not a member of that organization" }, 403);
+        }
+        return json({ ok: true, rows: [] });
+      }
     }
 
     if (operation === "insert" || operation === "update") {
