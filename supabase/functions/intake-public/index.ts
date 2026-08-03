@@ -148,11 +148,13 @@ Deno.serve(async (req) => {
         if (uErr || !u.user) throw new Error("Invalid session");
       }
 
+      // `inspection_requests` has no organization_id column — the org link
+      // lives on the job row created below.
       const insertRow = {
         ...payload,
-        organization_id: orgId,
         status: "request_received",
       };
+
       const { data: reqRow, error: insErr } = await admin
         .from("inspection_requests").insert(insertRow).select("id").single();
       if (insErr) throw new Error(insErr.message);
