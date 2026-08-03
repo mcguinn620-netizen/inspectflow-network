@@ -15,6 +15,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
+import { isMockUserId, mockSelect, mockInsert, mockUpdate } from "@/lib/mockRead";
 import { ImportInspectionDialog } from "@/components/intake/ImportInspectionDialog";
 import { OpenInMapsButton } from "@/components/maps/OpenInMapsButton";
 import { LocationAutocomplete } from "@/components/maps/LocationAutocomplete";
@@ -53,8 +54,26 @@ export default function InspectorJobs() {
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [defaults, setDefaults] = useState<{ fee: number; mileageFee: number; taxRate: number }>({ fee: 75, mileageFee: 0, taxRate: 0.25 });
 
+  const isMock = isMockUserId(user?.id);
+  const orgFilter = activeOrgId ? [{ column: "organization_id", op: "eq" as const, value: activeOrgId }] : [];
+
   const load = async () => {
     if (!activeOrgId || !user) return;
+    if (isMock) {
+      try {
+        const rows = await mockSelect<Job>(user.id, "jobs", {
+          filters: [...orgFilter, { column: "deleted_at", op: "is", value: null }],
+          order: "scheduled_at",
+          ascending: true,
+          limit: 200,
+        });
+        setJobs(rows);
+      } catch (e: any) {
+        toast.error(e.message ?? "Failed to load jobs");
+      }
+      setTripJobMap({});
+      return;
+    }
     const { data } = await supabase
       .from("jobs").select("*").eq("organization_id", activeOrgId)
       .is("deleted_at", null).order("scheduled_at", { ascending: true, nullsFirst: false });
@@ -126,6 +145,24 @@ export default function InspectorJobs() {
       mileage_fee: form.mileage_fee !== undefined && form.mileage_fee !== null ? Number(form.mileage_fee) : null,
       notes: form.notes || null,
     };
+    if (isMock) {
+      try {
+        if (editing) {
+          await mockUpdate(user.id, "jobs", editing.id, { ...payload, updated_by: user.id }, orgFilter);
+          toast.success("Job updated");
+        } else {
+          await mockInsert(user.id, "jobs", {
+            ...payload, organization_id: activeOrgId, assigned_to: user.id, created_by: user.id,
+          }, orgFilter);
+          toast.success("Job created");
+        }
+      } catch (e: any) {
+        return toast.error(e.message ?? "Failed to save job");
+      }
+      setOpen(false);
+      load();
+      return;
+    }
     if (editing) {
       const { error } = await supabase.from("jobs").update({ ...payload, updated_by: user.id }).eq("id", editing.id);
       if (error) return toast.error(error.message);
@@ -146,8 +183,16 @@ export default function InspectorJobs() {
     if (pendingId) return;
     setPendingId(key);
     try {
-      const ok = await setJobStatusSafe(j, status);
-      if (ok) load();
+      if (isMock && user) {
+        const extras: Record<string, unknown> = { status };
+        if (status === "in_progress") extras.actual_start_time = new Date().toISOString();
+        if (status === "completed") extras.actual_end_time = new Date().toISOString();
+        await mockUpdate(user.id, "jobs", j.id, extras, orgFilter);
+        load();
+      } else {
+        const ok = await setJobStatusSafe(j, status);
+        if (ok) load();
+      }
     } finally {
       setPendingId(null);
     }
@@ -155,6 +200,21 @@ export default function InspectorJobs() {
 
   const duplicate = async (j: Job) => {
     if (!user || !activeOrgId) return;
+    if (isMock) {
+      try {
+        await mockInsert(user.id, "jobs", {
+          organization_id: activeOrgId, assigned_to: user.id, created_by: user.id,
+          title: `${j.title} (copy)`, customer_name: j.customer_name, location: j.location,
+          estimated_duration_minutes: j.estimated_duration_minutes ?? 60,
+          status: "scheduled", fee_override: j.fee_override, mileage_fee: j.mileage_fee, notes: j.notes,
+        }, orgFilter);
+        toast.success("Job duplicated");
+        load();
+      } catch (e: any) {
+        toast.error(e.message ?? "Failed to duplicate job");
+      }
+      return;
+    }
     const { error } = await supabase.from("jobs").insert({
       organization_id: activeOrgId, assigned_to: user.id, created_by: user.id,
       title: `${j.title} (copy)`, customer_name: j.customer_name, location: j.location,
